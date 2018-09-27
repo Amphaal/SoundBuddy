@@ -3,7 +3,8 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${env:HOMEPATH}/.conan/data/**"
             ],
             "defines": [
                 "_DEBUG",

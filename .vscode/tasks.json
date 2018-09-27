@@ -15,7 +15,7 @@
         {
             "label": "Configure linker x64 (cmake)",
             "type": "shell",
-            "command": "cmake .. -G \"Visual Studio 15 2017 Win64\"",
+            "command": "cmake .. -G 'Visual Studio 15 2017 Win64'",
             "group": "test"
         },
         {

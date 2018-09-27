@@ -8,6 +8,7 @@
  #include "Poco/Thread.h"
  #include "Poco/Stopwatch.h"
  #include <iostream>
+ #include "Qt"
 
  using Poco::Timer;
  using Poco::TimerCallback;
