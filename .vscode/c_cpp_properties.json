@@ -4,7 +4,8 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${env:HOMEPATH}/.conan/data/**"
+                "${env:HOMEPATH}/.conan/data/**",
+                "${env:SYSTEMDRIVE}/.conan/**"
             ],
             "defines": [
                 "_DEBUG",
