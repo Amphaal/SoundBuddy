@@ -8,7 +8,7 @@
  #include "Poco/Thread.h"
  #include "Poco/Stopwatch.h"
  #include <iostream>
- #include <QApplication>
+ #include "QtWidgets/QApplication"
 
  using Poco::Timer;
  using Poco::TimerCallback;
@@ -27,7 +27,14 @@
  };
 
  int main(int argc, char** argv){
-    QApplication app(argc, argv);
- 
+    
+     TimerExample example;
+     Timer timer(250, 500);
+     timer.start(TimerCallback<TimerExample>(example, &TimerExample::onTimer));
+
+     Thread::sleep(5000);
+     timer.stop();
+
+    QApplication app = new QApplication(argc, argv); 
     return app.exec();
  }

@@ -6,5 +6,10 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
 add_executable(feedtnz feedtnz.cpp)
+
+
+find_package(Qt5Widgets CONFIG REQUIRED)
+target_link_libraries(feedtnz Qt5::Widgets)
+
 target_link_libraries(feedtnz ${CONAN_LIBS})
 set_target_properties(feedtnz PROPERTIES LINK_FLAGS "/ignore:4099")
