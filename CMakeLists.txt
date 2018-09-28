@@ -5,11 +5,13 @@ add_definitions("-std=c++11")
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
-add_executable(feedtnz feedtnz.cpp)
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Widgets REQUIRED)
 
+add_executable(${PROJECT_NAME} feedtnz.cpp)
 
-find_package(Qt5Widgets CONFIG REQUIRED)
-target_link_libraries(feedtnz Qt5::Widgets)
+target_link_libraries(${PROJECT_NAME} Qt5::Widgets)
+target_link_libraries(${PROJECT_NAME} Qt5::Core)
 
-target_link_libraries(feedtnz ${CONAN_LIBS})
-set_target_properties(feedtnz PROPERTIES LINK_FLAGS "/ignore:4099")
+target_link_libraries(${PROJECT_NAME} ${CONAN_LIBS})
+set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/ignore:4099")

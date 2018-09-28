@@ -1,9 +1,8 @@
 [requires]
-Poco/1.9.0@pocoproject/stable
 Qt/5.11.2@bincrafters/stable
-
-[options]
-Qt:widgets=True
 
 [generators]
 cmake
+
+[imports]
+bin, *.pdb -> ./bin

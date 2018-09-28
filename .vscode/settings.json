@@ -5,6 +5,7 @@
         "qapplication": "cpp",
         "qt": "cpp",
         "qtcore": "cpp",
-        "qpushbutton": "cpp"
+        "qpushbutton": "cpp",
+        "xiosbase": "cpp"
     }
 }
