@@ -5,4 +5,7 @@ Qt/5.11.2@bincrafters/stable
 cmake
 
 [imports]
-bin, *.pdb -> ./bin
+plugins/platforms, *.dll -> ./bin/platforms
+bin, *.dll-> ./bin 
+lib, *.dylib* -> ./bin
+lib, *.so* -> ./bin 

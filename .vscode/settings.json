@@ -6,6 +6,7 @@
         "qt": "cpp",
         "qtcore": "cpp",
         "qpushbutton": "cpp",
-        "xiosbase": "cpp"
+        "xiosbase": "cpp",
+        "qcoreapplication": "cpp"
     }
 }
