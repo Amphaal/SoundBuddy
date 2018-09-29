@@ -6,7 +6,7 @@ int main(int argc, char** argv){
     QApplication app(argc, argv);
     
     //Add app icon for windows
-    QIcon mainIcon(":/src/resources/icon.ico");
+    QIcon mainIcon(":/icons/feedtnz.ico");
     app.setWindowIcon(mainIcon);
 
     //inst
