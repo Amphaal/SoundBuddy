@@ -16,5 +16,13 @@ set(CMAKE_AUTOUIC ON)
 # Find the QtCore library
 find_package(Qt5Widgets REQUIRED)
 
-add_executable(${PROJECT_NAME} feedtnz.cpp)
+if (WIN32)
+    add_executable(${PROJECT_NAME} WIN32 src/feedtnz.cpp)
+endif (WIN32)
+if (APPLE)
+    add_executable(${PROJECT_NAME} src/feedtnz.cpp)
+endif (APPLE)
+
+
 target_link_libraries(${PROJECT_NAME} Qt5::Widgets)
+
