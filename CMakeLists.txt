@@ -15,14 +15,14 @@ set(CMAKE_AUTOUIC ON)
 
 # Find the QtCore library
 find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Core REQUIRED)
 
 if (WIN32)
-    add_executable(${PROJECT_NAME} WIN32 src/feedtnz.cpp)
+    SET(WINDOWS_RESOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/resources/resources.res)
+    add_executable(${PROJECT_NAME} WIN32 src/feedtnz.cpp ${WINDOWS_RESOURCE_PATH})
 endif (WIN32)
 if (APPLE)
     add_executable(${PROJECT_NAME} src/feedtnz.cpp)
 endif (APPLE)
 
-
-target_link_libraries(${PROJECT_NAME} Qt5::Widgets)
-
+target_link_libraries(${PROJECT_NAME} Qt5::Widgets Qt5::Core)

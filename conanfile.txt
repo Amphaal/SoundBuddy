@@ -5,7 +5,9 @@ Qt/5.11.2@bincrafters/stable
 cmake
 
 [imports]
-plugins/platforms, *.dll -> ./bin/platforms
-bin, *.dll-> ./bin 
-lib, *.dylib* -> ./bin
-lib, *.so* -> ./bin 
+
+#WINDOWS
+plugins/platforms, qwindows*.dll -> ./bin/platforms
+bin, Qt5Widgets*.dll -> ./bin 
+bin, Qt5Core*.dll -> ./bin 
+bin, Qt5Gui*.dll -> ./bin 
