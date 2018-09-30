@@ -9,13 +9,13 @@ class FeedTNZTab : public QWidget {
     QPlainTextEdit *messages;
     
     public:
-    FeedTNZTab::FeedTNZTab(QWidget *parent) : QWidget(parent) {
+    FeedTNZTab(QWidget *parent) : QWidget(parent) {
         QPlainTextEdit messages(this);
         this->messages = &messages;
         this->messages->setReadOnly(true);
     }
 
-    void FeedTNZTab::messageHandler(string &message) {
+    void messageHandler(string &message) {
         
         //handle linefeeds in appending
         QString before = this->messages->toPlainText();

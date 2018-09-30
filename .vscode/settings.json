@@ -68,6 +68,9 @@
         "qdebug": "cpp",
         "qobject": "cpp",
         "qicon": "cpp",
-        "qcloseevent": "cpp"
+        "qcloseevent": "cpp",
+        "ctime": "cpp",
+        "fstream": "cpp",
+        "sstream": "cpp"
     }
 }

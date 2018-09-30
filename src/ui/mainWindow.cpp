@@ -13,8 +13,7 @@
 #include "QtGui/QIcon"
 
 #include "feedtnzTab.cpp"
-
-using namespace std;
+#include "../helpers/uiHelper.cpp"
 
 class MainWindow : public QMainWindow {
 
@@ -53,14 +52,23 @@ class MainWindow : public QMainWindow {
         QMenuBar *menu = new QMenuBar;
         QMenu *fileMenuItem = menu->addMenu("File");
 
-        //Actions
+        /*Actions*/
+        //myWTNZAction
         QAction *myWTNZAction = new QAction("My WTNZ", fileMenuItem);
         myWTNZAction->setEnabled(false);
-        //myWTNZAction.triggered.connect(this->accessWTNZ);
+        QObject::connect(
+            myWTNZAction, &QAction::triggered,
+            this, &MainWindow::accessWTNZ
+        );
 
+        //updateConfigAction
         QAction *updateConfigAction = new QAction("Update configuration file", fileMenuItem);
-        //updateConfigAction.triggered.connect(this->openConfigFile);
+        QObject::connect(
+            updateConfigAction, &QAction::triggered,
+            this, &MainWindow::openConfigFile
+        );
 
+        //bind
         fileMenuItem->addAction(myWTNZAction);
         fileMenuItem->addAction(updateConfigAction);
         this->setMenuWidget(menu);
@@ -79,12 +87,13 @@ class MainWindow : public QMainWindow {
     }
 
     void accessWTNZ() {
-
+        
     }
 
     void openConfigFile() {
 
     }
+
 
     void MainWindow::closeEvent (QCloseEvent *event) {
         this->trayIcon->hide();
