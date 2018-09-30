@@ -1,17 +1,19 @@
-#include <QApplication>
-#include <QIcon>
-#include <QPushButton>
+#include "QtCore/QString"
+#include "QtWidgets/QApplication"
+#include "QtWidgets/QStyleFactory"
+#include "ui/mainWindow.cpp"
 
 int main(int argc, char** argv){
+    
+    //setup app
+    QString title("FeedTNZ");
     QApplication app(argc, argv);
-    
-    //Add app icon for windows
-    QIcon mainIcon(":/icons/feedtnz.ico");
-    app.setWindowIcon(mainIcon);
+    app.setApplicationName(title);
+    app.setStyle(QStyleFactory::create("Fusion")); 
 
-    //inst
-    QPushButton bouton("Salut les Zéros, la forme ?");
-    bouton.show();
-    
+    //fetch main window
+    MainWindow mw(&title);
+
+    //wait for the app to close
     return app.exec();
 }

@@ -10,8 +10,13 @@ conan_basic_setup()
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Core REQUIRED)
 
+#set resrouces 
+SET(CMAKE_AUTORCC ON)
+SET(FEEDTNZ_RES src/resources/resources.qrc)
+
 if (WIN32)
-    add_executable(${PROJECT_NAME} WIN32 src/feedtnz.cpp src/resources/resources.rc)
+    SET(FEEDTNZ_ICO_WIN src/resources/resources.rc)
+    add_executable(${PROJECT_NAME} WIN32 src/feedtnz.cpp ${FEEDTNZ_RES} ${FEEDTNZ_ICO_WIN})
 endif (WIN32)
 
 if (APPLE)
