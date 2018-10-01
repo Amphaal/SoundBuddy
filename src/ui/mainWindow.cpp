@@ -12,11 +12,6 @@
 #include "QtGui/QHideEvent"
 #include "QtGui/QIcon"
 
-#ifdef __APPLE__
-    #include <QAbstractEventDispatcher>
-    #include "mac/nativeEvents.h"
-#endif
-
 #include "feedtnzTab.cpp"
 
 class MainWindow : public QMainWindow {
@@ -26,10 +21,6 @@ class MainWindow : public QMainWindow {
     
     public:
     MainWindow(QString *title) {     
-        //#ifdef __APPLE__
-        //    MainWindowEventFilter *ntevFilter = new MainWindowEventFilter(this);
-        //    QAbstractEventDispatcher::instance()->installNativeEventFilter(ntevFilter);
-        //#endif
         this->title = title;
         this->setWindowTitle(*title);
         this->_initUI();
