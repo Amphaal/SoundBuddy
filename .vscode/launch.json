@@ -5,15 +5,22 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(Windows) Launch",
-            "type": "cppvsdbg",
+            "name": "Launch",
+            "windows": {
+                "type": "cppvsdbg",
+                "program": "${workspaceFolder}/build/bin/feedtnz.exe",
+            },
+            "osx": {
+                "MIMode": "lldb",
+                "program": "${workspaceFolder}/build/bin/FeedTNZ.app/Contents/MacOS/feedtnz",
+            },
+            "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/bin/feedtnz.exe",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build/",
+            "cwd": "${workspaceFolder}/build/bin/",
             "environment": [],
-            "externalConsole": true,
+            "externalConsole": false,
             "preLaunchTask": "build",
         }
     ]

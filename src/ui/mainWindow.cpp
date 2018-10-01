@@ -13,7 +13,6 @@
 #include "QtGui/QIcon"
 
 #include "feedtnzTab.cpp"
-#include "../helpers/uiHelper.cpp"
 
 class MainWindow : public QMainWindow {
 
@@ -95,16 +94,16 @@ class MainWindow : public QMainWindow {
     }
 
 
-    void MainWindow::closeEvent (QCloseEvent *event) {
+    void closeEvent (QCloseEvent *event) {
         this->trayIcon->hide();
     }
 
-    void MainWindow::hideEvent (QHideEvent *event) {
+    void hideEvent (QHideEvent *event) {
         event->ignore();
         this->hide();
     }
 
-    void MainWindow::trueShow(QSystemTrayIcon::ActivationReason reason) {
+    void trueShow(QSystemTrayIcon::ActivationReason reason) {
         this->raise();
         this->activateWindow();
         this->showNormal();
