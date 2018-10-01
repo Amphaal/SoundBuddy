@@ -13,15 +13,17 @@
 #include "QtGui/QIcon"
 
 #include "feedtnzTab.cpp"
+#include "../helpers/configHelper.cpp"
 
 class MainWindow : public QMainWindow {
 
     QString *title;
+    ConfigHelper helper;
     QSystemTrayIcon *trayIcon;
-    
+
     public:
-    MainWindow(QString *title) {     
-        this->title = title;
+    MainWindow(QString *title) : title(title), helper(ConfigHelper()) {     
+        this->helper.accessConfig();
         this->setWindowTitle(*title);
         this->_initUI();
     }
@@ -98,7 +100,7 @@ class MainWindow : public QMainWindow {
     }
 
     void openConfigFile() {
-
+        
     }
 
     ///

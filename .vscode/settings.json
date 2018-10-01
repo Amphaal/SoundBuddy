@@ -75,6 +75,22 @@
         "qhideevent": "cpp",
         "qabstractnativeeventfilter": "cpp",
         "qabstracteventdispatcher": "cpp",
-        "filesystem": "cpp"
+        "filesystem": "cpp",
+        "cctype": "cpp",
+        "array": "cpp",
+        "bitset": "cpp",
+        "codecvt": "cpp",
+        "complex": "cpp",
+        "deque": "cpp",
+        "iomanip": "cpp",
+        "locale": "cpp",
+        "optional": "cpp",
+        "set": "cpp",
+        "string_view": "cpp",
+        "typeindex": "cpp",
+        "xlocbuf": "cpp",
+        "xlocmes": "cpp",
+        "xlocmon": "cpp",
+        "xloctime": "cpp"
     }
 }

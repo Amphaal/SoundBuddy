@@ -1,27 +1,45 @@
 #include <functional>
-#include <iostream>
-//#include "./platformHelper.cpp"
+#include <fstream>
+#include <filesystem>
 
-using namespace std;
+#ifdef __APPLE__
+    #include "./mac/platformHelper.cpp"
+#endif
+#ifdef _WIN32
+    #include "./windows/platformHelper.cpp"
+#endif
 
 class ConfigHelper {
 
-    const string configFile = "config.json";
+    const char* configFile = "config.json";
     const vector<string> requiredConfigFields{"targetUrl", "user", "password"};
     
-    typedef function<void(string)> MessageHelper;
-    bool silentMode;
-
     public:
-    ConfigHelper(function<void(string)> messageHelperFunc = NULL, bool silentMode = false) : callMessageHelper(move(messageHelperFunc)), silentMode(silentMode) {}
+        ConfigHelper(function<void(string)> messageHelperFunc = NULL, bool silentMode = false) : callMessageHelper(move(messageHelperFunc)), silentMode(silentMode), streamHandler(fstream()) {}
+
+        //get configuration data from file
+        void accessConfig() {
+            
+            //check if exists, if not create file
+             filesystem::path confP(this->configFile);
+            // if(filesystem::exists(confP)) {
+            //     this->streamHandler.open(this->configFile, fstream::out);
+            //     this->streamHandler.close();
+            // }
+
+            //PlatformHelper::openFileInOS(this->configFile);
+        }
 
     private:
-    MessageHelper callMessageHelper;
-    
-    //seek in iTunes preference file the library location
-    string getITunesLibLocation() {
-        if(this->callMessageHelper) this->callMessageHelper("Getting XML file location...");
+        typedef function<void(string)> MessageHelper;
+        MessageHelper callMessageHelper;
+        bool silentMode;
+        fstream streamHandler;
+        
+        //seek in iTunes preference file the library location
+        string getITunesLibLocation() {
+            if(this->callMessageHelper) this->callMessageHelper("Getting XML file location...");
 
-        //string pathToPrefs = PlatformHelper::getITunesPrefFileProbableLocation();
-    }
-}
+            //string pathToPrefs = PlatformHelper::getITunesPrefFileProbableLocation();
+        }
+};
