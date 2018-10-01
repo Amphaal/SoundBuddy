@@ -22,6 +22,7 @@ class MainWindow : public QMainWindow {
     public:
     MainWindow(QString *title) {
         this->title = title;
+        this->setWindowTitle(*title);
         this->_initUI();
     }
     

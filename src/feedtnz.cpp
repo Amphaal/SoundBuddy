@@ -10,6 +10,7 @@ int main(int argc, char** argv){
     QApplication app(argc, argv);
     app.setApplicationName(title);
     app.setStyle(QStyleFactory::create("Fusion")); 
+    app.setAttribute(Qt::AA_UseHighDpiPixmaps);
 
     //fetch main window
     MainWindow mw(&title);

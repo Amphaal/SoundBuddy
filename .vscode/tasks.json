@@ -7,13 +7,13 @@
     },
     "tasks": [
         {
-            "label": "Download Dependencies for Debug (conan)",
+            "label": "1. Download Dependencies for Debug (conan)",
             "type": "shell",
             "command": "conan install .. -s build_type=Debug",
             "group": "test"
         },
         {
-            "label": "Configure linker (cmake)",
+            "label": "2. Generate Project files (cmake)",
             "type": "shell",
             "windows": {
                 "command": "cmake .. -G 'Visual Studio 15 2017 Win64'",
@@ -24,7 +24,7 @@
             "group": "test"
         },
         {
-            "label": "Build for Debug (cmake)",
+            "label": "3. Build for Debug (cmake)",
             "type": "shell",
             "command": "cmake --build . --config Debug",
             "group": "test",
