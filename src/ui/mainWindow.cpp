@@ -12,6 +12,11 @@
 #include "QtGui/QHideEvent"
 #include "QtGui/QIcon"
 
+#ifdef __APPLE__
+    #include <QAbstractEventDispatcher>
+    #include "mac/nativeEvents.h"
+#endif
+
 #include "feedtnzTab.cpp"
 
 class MainWindow : public QMainWindow {
@@ -20,20 +25,27 @@ class MainWindow : public QMainWindow {
     QSystemTrayIcon *trayIcon;
     
     public:
-    MainWindow(QString *title) {
+    MainWindow(QString *title) {     
+        //#ifdef __APPLE__
+        //    MainWindowEventFilter *ntevFilter = new MainWindowEventFilter(this);
+        //    QAbstractEventDispatcher::instance()->installNativeEventFilter(ntevFilter);
+        //#endif
         this->title = title;
         this->setWindowTitle(*title);
         this->_initUI();
     }
     
     private:
+    
+    ///
+    ///UI instanciation
+    ///
 
     void _initUI() {
         this->setMinimumSize(QSize(480, 400));
         this->_initUITabs();
         this->_initUIMenu();
         this->_initUITray();
-        this->show();
     }
 
     void _initUITabs() {
@@ -86,6 +98,10 @@ class MainWindow : public QMainWindow {
         trayIcon->show();
     }
 
+    ///
+    /// Functionnalities helpers calls
+    ///
+
     void accessWTNZ() {
         
     }
@@ -94,14 +110,25 @@ class MainWindow : public QMainWindow {
 
     }
 
+    ///
+    /// Events handling
+    ///
 
-    void closeEvent (QCloseEvent *event) {
-        this->trayIcon->hide();
+    //hide window on minimize, only triggered on windows
+    void hideEvent(QEvent* event)
+    {
+        this->trueHide(event);
     }
 
-    void hideEvent (QHideEvent *event) {
-        event->ignore();
-        this->hide();
+    void closeEvent(QCloseEvent *event) {
+        
+        //apple specific behaviour, prevent closing
+        #ifdef __APPLE__
+            return this->trueHide(event);
+        #endif
+
+        //hide trayicon on shutdown for Windows, refereshes the UI frames of system tray
+        this->trayIcon->hide();
     }
 
     void trueShow(QSystemTrayIcon::ActivationReason reason) {
@@ -109,4 +136,10 @@ class MainWindow : public QMainWindow {
         this->activateWindow();
         this->showNormal();
     }
+
+    void trueHide(QEvent* event) {
+        event->ignore();
+        this->hide();
+    }
+
 };

@@ -1,6 +1,6 @@
 #include <functional>
 #include <iostream>
-#include "./platformHelper.cpp"
+//#include "./platformHelper.cpp"
 
 using namespace std;
 
@@ -13,9 +13,7 @@ class ConfigHelper {
     bool silentMode;
 
     public:
-    ConfigHelper(function<void(string)> messageHelperFunc = NULL, bool silentMode = false) : callMessageHelper(move(messageHelperFunc)), silentMode(silentMode) {
-
-    }
+    ConfigHelper(function<void(string)> messageHelperFunc = NULL, bool silentMode = false) : callMessageHelper(move(messageHelperFunc)), silentMode(silentMode) {}
 
     private:
     MessageHelper callMessageHelper;
@@ -24,6 +22,6 @@ class ConfigHelper {
     string getITunesLibLocation() {
         if(this->callMessageHelper) this->callMessageHelper("Getting XML file location...");
 
-        string pathToPrefs = PlatformHelper::getITunesPrefFileProbableLocation();
+        //string pathToPrefs = PlatformHelper::getITunesPrefFileProbableLocation();
     }
 }

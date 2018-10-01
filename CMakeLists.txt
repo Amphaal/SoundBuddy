@@ -27,6 +27,10 @@ if (APPLE)
     #set bundle type
     SET(FEEDTNZ_BUNDLE_TYPE MACOSX_BUNDLE)
 
+    SET(CMAKE_EXE_LINKER_FLAGS "-framework AppKit -w")
+
+    list(APPEND FEEDTNZ_ENTRYPOINT src/ui/mac/nativeEvents.mm)
+
     #add icon
     set(MACOSX_BUNDLE_ICON_FILE feedtnz.icns)
     set(FEEDTNZ_ICO_WIN src/resources/icons/feedtnz.icns)

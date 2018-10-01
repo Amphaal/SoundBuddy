@@ -71,6 +71,9 @@
         "qcloseevent": "cpp",
         "ctime": "cpp",
         "fstream": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "qhideevent": "cpp",
+        "qabstractnativeeventfilter": "cpp",
+        "qabstracteventdispatcher": "cpp"
     }
 }
