@@ -74,6 +74,7 @@
         "sstream": "cpp",
         "qhideevent": "cpp",
         "qabstractnativeeventfilter": "cpp",
-        "qabstracteventdispatcher": "cpp"
+        "qabstracteventdispatcher": "cpp",
+        "filesystem": "cpp"
     }
 }
