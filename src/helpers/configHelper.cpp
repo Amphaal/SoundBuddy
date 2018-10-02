@@ -5,11 +5,12 @@
 #include "platformHelper.cpp"
 
 class ConfigHelper {
-
-    const std::string configFile = "config.json";
-    const std::vector<std::string> requiredConfigFields{"targetUrl", "user", "password"};
-
+    
     public:
+    
+        const std::string configFile = "config.json";
+        const std::vector<std::string> requiredConfigFields{"targetUrl", "user", "password"};
+    
         //constructor
         ConfigHelper() : streamHandler(std::fstream()) {}
                 

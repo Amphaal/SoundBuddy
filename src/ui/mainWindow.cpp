@@ -1,6 +1,7 @@
 #include "QtCore/QString"
 #include "QtCore/QSize"
 #include "QtCore/QObject"
+#include "QtCore/QFileSystemWatcher"
 #include "QtWidgets/QTabWidget"
 #include "QtWidgets/QMainWindow"
 #include "QtWidgets/QWidget"
@@ -12,8 +13,11 @@
 #include "QtGui/QHideEvent"
 #include "QtGui/QIcon"
 
+#include "nlohmann/json.hpp"
+
 #include "feedtnzTab.cpp"
 #include "../helpers/configHelper.cpp"
+#include "../helpers/platformHelper.cpp"
 
 class MainWindow : public QMainWindow {
 
@@ -22,12 +26,15 @@ class MainWindow : public QMainWindow {
     QSystemTrayIcon *trayIcon;
     bool forceQuitOnMacOS = false;
     vector<QAction> myWTNZActions;
+    nlohmann::json *config;
+    QFileSystemWatcher *watcher;
+    string wtnzUrl;
     
     public:
     MainWindow(QString *title) : title(title), helper(ConfigHelper()) {     
-        this->helper.accessConfig();
         this->setWindowTitle(*title);
         this->_initUI();
+        this->setupConfigFile();
     }
     
     private:
@@ -115,13 +122,33 @@ class MainWindow : public QMainWindow {
         return fileMenuItem;
     }
 
+
+    void setupConfigFile() {
+        this->updateMenuItems();
+        QFileSystemWatcher watcher = new QFileSystemWatcher;
+        this->watcher  = &watcher;
+        this->watcher->addPath(QString(this->helper.configFile.c_str()));
+        connect(this->watcher, &QFileSystemWatcher::fileChanged,
+                this, &MainWindow::updateMenuItems);
+    }
+
+    void updateMenuItems() {
+        auto lconfig = this->helper.accessConfig();
+        this->config = &lconfig;
+        if (lconfig["targetUrl"] != nullptr && lconfig["user"] != nullptr) {
+            this->wtnzUrl = lconfig["targetUrl"];
+            this->wtnzUrl +=  + "/";
+            this->wtnzUrl += lconfig["user"]
+        }
+    }      
+
     ///
     /// Functionnalities helpers calls
     ///
 
 
     void accessWTNZ() {
-
+        PlatformHelper::openUrlInBrowser(this->wtnzUrl.c_str());
     }
 
     //open the config file into the OS browser
