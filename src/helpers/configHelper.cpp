@@ -2,7 +2,7 @@
 #include <boost/filesystem.hpp>
 #include "nlohmann/json.hpp"
 
-#include "platformHelper.cpp"
+#include "platformHelper/platformHelper.h"
 
 class ConfigHelper {
     
@@ -12,11 +12,11 @@ class ConfigHelper {
         const std::vector<std::string> requiredConfigFields{"targetUrl", "user", "password"};
     
         //constructor
-        ConfigHelper() : streamHandler(std::fstream()) {}
+        ConfigHelper() : streamHandler(std::fstream()), pHelper(PlatformHelper()) {}
                 
         //open the configuration file
         void openConfigFile() {
-            PlatformHelper::openFileInOS(this->configFile);
+            this->pHelper.openFileInOS(this->configFile);
         }
 
         void ensureConfigFileIsReadyForUpload() {
@@ -76,6 +76,7 @@ class ConfigHelper {
 
     private:
         std::fstream streamHandler;
+        PlatformHelper pHelper;
 
         //write
         std::string writeFormatedFileFromObj(nlohmann::json *obj) {

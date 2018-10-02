@@ -17,28 +17,29 @@
 
 #include "feedtnzTab.cpp"
 #include "../helpers/configHelper.cpp"
-#include "../helpers/platformHelper.cpp"
+#include "../helpers/platformHelper/platformHelper.h"
 
 class MainWindow : public QMainWindow {
 
-    QString *title;
-    ConfigHelper helper;
-    QSystemTrayIcon *trayIcon;
-    bool forceQuitOnMacOS = false;
-    vector<QAction> myWTNZActions;
-    nlohmann::json *config;
-    QFileSystemWatcher *watcher;
-    string wtnzUrl;
+
     
     public:
-    MainWindow(QString *title) : title(title), helper(ConfigHelper()) {     
+    MainWindow(QString *title) : title(title), helper(ConfigHelper()), pHelper(PlatformHelper()) {     
         this->setWindowTitle(*title);
         this->_initUI();
         this->setupConfigFile();
     }
     
     private:
-    
+    QString *title;
+    ConfigHelper helper;
+    QSystemTrayIcon *trayIcon;
+    bool forceQuitOnMacOS = false;
+    vector<QAction*> myWTNZActions;
+    nlohmann::json *config;
+    QFileSystemWatcher *watcher;
+    string wtnzUrl;
+    PlatformHelper pHelper;
     ///
     ///UI instanciation
     ///
@@ -97,6 +98,7 @@ class MainWindow : public QMainWindow {
             myWTNZAction, &QAction::triggered,
             this, &MainWindow::accessWTNZ
         );
+        this->myWTNZActions.push_back(myWTNZAction);
 
         //updateConfigAction
         QAction *updateConfigAction = new QAction("Update configuration file", fileMenuItem);
@@ -138,7 +140,7 @@ class MainWindow : public QMainWindow {
         if (lconfig["targetUrl"] != nullptr && lconfig["user"] != nullptr) {
             this->wtnzUrl = lconfig["targetUrl"];
             this->wtnzUrl +=  + "/";
-            this->wtnzUrl += lconfig["user"]
+            this->wtnzUrl += lconfig["user"];
         }
     }      
 
@@ -148,7 +150,7 @@ class MainWindow : public QMainWindow {
 
 
     void accessWTNZ() {
-        PlatformHelper::openUrlInBrowser(this->wtnzUrl.c_str());
+        this->pHelper.openUrlInBrowser(this->wtnzUrl.c_str());
     }
 
     //open the config file into the OS browser

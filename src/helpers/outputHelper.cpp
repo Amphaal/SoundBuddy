@@ -1,7 +1,7 @@
 #include <boost/filesystem.hpp>
 #include "nlohmann/json.hpp"
 
-#include "platformHelper.cpp"
+#include "platformHelper/platformHelper.h"
 
 class OutputHelper {
         public:

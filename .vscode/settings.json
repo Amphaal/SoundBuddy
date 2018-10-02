@@ -96,6 +96,9 @@
         "forward_list": "cpp",
         "valarray": "cpp",
         "__config": "cpp",
-        "__nullptr": "cpp"
+        "__nullptr": "cpp",
+        "stack": "cpp",
+        "xthread": "cpp",
+        "thread": "cpp"
     }
 }
