@@ -20,6 +20,7 @@ class MainWindow : public QMainWindow {
     QString *title;
     ConfigHelper helper;
     QSystemTrayIcon *trayIcon;
+    bool forceQuitOnMacOS = false;
 
     public:
     MainWindow(QString *title) : title(title), helper(ConfigHelper()) {     
@@ -53,11 +54,34 @@ class MainWindow : public QMainWindow {
     }
 
     void _initUIMenu() {
-        //Menu
-        QMenuBar *menu = new QMenuBar;
-        QMenu *fileMenuItem = menu->addMenu("File");
+        QMenuBar *menuBar = new QMenuBar;
+        menuBar->addMenu(this->_getMenu());
+        this->setMenuWidget(menuBar);
+    }
 
-        /*Actions*/
+    void _initUITray() {
+        QSystemTrayIcon *trayIcon = new QSystemTrayIcon;
+        this->trayIcon = trayIcon;
+        trayIcon->setIcon(QIcon(":/icons/feedtnz.png"));
+        trayIcon->setToolTip(*this->title);
+
+        //double it to the tray icon
+        this->trayIcon->setContextMenu(this->_getMenu());
+
+        trayIcon->show();
+    }
+
+    QMenu* _getMenu() {
+
+        QMenu *fileMenuItem = new QMenu("File");
+
+        //monitorAction
+        QAction *monitorAction = new QAction("Open monitor...", fileMenuItem);
+        QObject::connect(
+            monitorAction, &QAction::triggered,
+            this, &MainWindow::trueShow
+        );
+
         //myWTNZAction
         QAction *myWTNZAction = new QAction("My WTNZ", fileMenuItem);
         myWTNZAction->setEnabled(false);
@@ -73,24 +97,21 @@ class MainWindow : public QMainWindow {
             this, &MainWindow::openConfigFile
         );
 
-        //bind
+        //quit
+        QAction *quitAction = new QAction("Quit", fileMenuItem);
+        QObject::connect(
+            quitAction, &QAction::triggered,
+            this, &MainWindow::forcedClose
+        );
+
+        fileMenuItem->addAction(monitorAction);
+        fileMenuItem->addSeparator();
         fileMenuItem->addAction(myWTNZAction);
         fileMenuItem->addAction(updateConfigAction);
-        this->setMenuWidget(menu);
+        fileMenuItem->addSeparator();
+        fileMenuItem->addAction(quitAction);
 
-        this->trayIcon->setContextMenu(fileMenuItem);
-    }
-
-    void _initUITray() {
-        QSystemTrayIcon *trayIcon = new QSystemTrayIcon;
-        this->trayIcon = trayIcon;
-        trayIcon->setIcon(QIcon(":/icons/feedtnz.png"));
-        trayIcon->setToolTip(*this->title);
-        QObject::connect(
-           trayIcon, &QSystemTrayIcon::activated,
-           this, &MainWindow::trueShow
-        );
-        trayIcon->show();
+        return fileMenuItem;
     }
 
     ///
@@ -121,17 +142,19 @@ class MainWindow : public QMainWindow {
         
         //apple specific behaviour, prevent closing
         #ifdef __APPLE__
-            return this->trueHide(event);
+            if(!this->forceQuitOnMacOS) {
+                return this->trueHide(event);
+            }
         #endif
 
         //hide trayicon on shutdown for Windows, refereshes the UI frames of system tray
         this->trayIcon->hide();
     }
 
-    void trueShow(QSystemTrayIcon::ActivationReason reason) {
-        this->raise();
-        this->activateWindow();
+    void trueShow() {
         this->showNormal();
+        this->activateWindow();
+        this->raise();
     }
 
     void trueHide(QEvent* event) {
@@ -139,4 +162,8 @@ class MainWindow : public QMainWindow {
         this->hide();
     }
 
+    void forcedClose() {
+        this->forceQuitOnMacOS = true;
+        this->close();
+    }
 };
