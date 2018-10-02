@@ -1,4 +1,3 @@
-#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <stdlib.h>  
 #include "../../libs/plistcpp/Plist.hpp"
@@ -7,6 +6,10 @@ class PlatformHelper {
     
     public:
         static void openFileInOS(const char* cpURL) {
+            ShellExecuteA(NULL, "open", "notepad", cpURL, NULL, SW_SHOWNORMAL);
+        }
+
+        static void openUrlInBrowser(const char* cpURL) {
             ShellExecuteA(NULL, "open", cpURL, NULL, NULL, SW_SHOWNORMAL);
         }
 

@@ -1,45 +1,99 @@
-#include <functional>
-#include <fstream>
 #include <filesystem>
+#include "nlohmann/json.hpp"
 
-#ifdef __APPLE__
-    #include "./mac/platformHelper.cpp"
-#endif
-#ifdef _WIN32
-    #include "./windows/platformHelper.cpp"
-#endif
+#include "platformHelper.cpp"
 
 class ConfigHelper {
 
-    const char* configFile = "config.json";
-    const vector<string> requiredConfigFields{"targetUrl", "user", "password"};
-    
+    const std::string configFile = "config.json";
+    const std::vector<std::string> requiredConfigFields{"targetUrl", "user", "password"};
+
     public:
-        ConfigHelper(function<void(string)> messageHelperFunc = NULL, bool silentMode = false) : callMessageHelper(move(messageHelperFunc)), silentMode(silentMode), streamHandler(fstream()) {}
+        //constructor
+        ConfigHelper() : streamHandler(std::fstream()) {}
+                
+        //open the configuration file
+        void openConfigFile() {
+            PlatformHelper::openFileInOS(this->configFile.c_str());
+        }
+
+        void ensureConfigFileIsReadyForUpload() {
+            nlohmann::json config = this->accessConfigRaw();
+
+            //check required field presence and adds them if missing
+            for (auto &rf : this->requiredConfigFields) {  
+                if (config[rf] == nullptr || config[rf] == "") {
+                    throw std::exception("Expected configuration values are missing. Please check the configuration file !");
+                }
+            }
+        }
 
         //get configuration data from file
-        void accessConfig() {
+        auto accessConfig() {
             
             //check if exists, if not create file
-             filesystem::path confP(this->configFile);
-            // if(filesystem::exists(confP)) {
-            //     this->streamHandler.open(this->configFile, fstream::out);
-            //     this->streamHandler.close();
-            // }
+            if(!this->fileExists(this->configFile)) {
+                this->streamHandler.open(this->configFile, std::fstream::out);
+                this->streamHandler.close();
+            }
+            
+            nlohmann::json config = this->accessConfigRaw();
 
-            //PlatformHelper::openFileInOS(this->configFile);
+            //check required field presence and adds them if missing
+            bool mustWrite = false;
+            for (auto &rf : this->requiredConfigFields) {  
+                if (config[rf] == nullptr) {
+                    config[rf] = nullptr;
+                    mustWrite = true;
+                }
+            }
+
+            //re-write as formated string
+            if(mustWrite) this->writeFormatedFileFromObj(&config);
+            
+            //return values
+            return config;
+        }
+
+        //update the current config file
+        void updateConfigFile(std::string paramToUpdate, std::string value) {
+            this->streamHandler.open(this->configFile, std::fstream::in);
+                nlohmann::json config;
+                this->streamHandler >> config;
+                config[paramToUpdate] = value;
+            this->streamHandler.close();
+            this->writeFormatedFileFromObj(&config);
+        }
+
+        //ensure a file exists
+        bool fileExists(std::string outputFileName) {
+            std::filesystem::path confP(outputFileName);
+            confP = std::filesystem::absolute(confP);
+            return std::filesystem::exists(confP);
         }
 
     private:
-        typedef function<void(string)> MessageHelper;
-        MessageHelper callMessageHelper;
-        bool silentMode;
-        fstream streamHandler;
-        
-        //seek in iTunes preference file the library location
-        string getITunesLibLocation() {
-            if(this->callMessageHelper) this->callMessageHelper("Getting XML file location...");
+        std::fstream streamHandler;
 
-            //string pathToPrefs = PlatformHelper::getITunesPrefFileProbableLocation();
+        //write
+        std::string writeFormatedFileFromObj(nlohmann::json *obj) {
+            this->streamHandler.open(this->configFile, std::fstream::out);
+            std::string result = obj->dump(4);
+            this->streamHandler << result << std::endl;
+            this->streamHandler.close();
+            return result;
+        }
+        
+        //get the config file and parse file content to variable
+        nlohmann::json accessConfigRaw() {
+            nlohmann::json config;
+            this->streamHandler.open(this->configFile, std::fstream::in);
+                try {
+                    this->streamHandler >> config;
+                } catch(const std::exception&) {
+                    config = {};
+                }
+            this->streamHandler.close();
+            return config;
         }
 };

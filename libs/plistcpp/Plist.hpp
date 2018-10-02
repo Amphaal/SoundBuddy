@@ -26,8 +26,8 @@
 #ifndef __PLIST_H__
 #define __PLIST_H__
 
-#include "../boost/any.hpp"
-#include "../boost/cstdint.hpp"
+#include <boost/any.hpp>
+#include <boost/cstdint.hpp>
 #include <string>
 #include <vector>
 #include <map>

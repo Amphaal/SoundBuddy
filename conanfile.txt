@@ -1,6 +1,7 @@
 [requires]
 Qt/5.11.2@bincrafters/stable
 boost/1.68.0@conan/stable
+jsonformoderncpp/3.2.0@vthiery/stable
 
 [generators]
 cmake

@@ -95,12 +95,14 @@ class MainWindow : public QMainWindow {
     /// Functionnalities helpers calls
     ///
 
+
     void accessWTNZ() {
-        
+
     }
 
+    //open the config file into the OS browser
     void openConfigFile() {
-        
+        this->helper.openConfigFile();
     }
 
     ///

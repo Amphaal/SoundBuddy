@@ -91,6 +91,9 @@
         "xlocbuf": "cpp",
         "xlocmes": "cpp",
         "xlocmon": "cpp",
-        "xloctime": "cpp"
+        "xloctime": "cpp",
+        "clocale": "cpp",
+        "forward_list": "cpp",
+        "valarray": "cpp"
     }
 }

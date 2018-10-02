@@ -22,31 +22,37 @@ SET(FEEDTNZ_RES src/resources/resources.qrc)
 SET(FEEDTNZ_ENTRYPOINT src/feedtnz.cpp)
 
 if (WIN32)
+
     #set bundle type
     SET(FEEDTNZ_BUNDLE_TYPE WIN32)
 
     #add icon
     SET(FEEDTNZ_ICO_WIN src/resources/resources.rc)
+
 endif (WIN32)
 
 if (APPLE)
+
     #set bundle type
     SET(FEEDTNZ_BUNDLE_TYPE MACOSX_BUNDLE)
 
+    #include Object C++ files to compile
     SET(CMAKE_EXE_LINKER_FLAGS "-framework AppKit -w")
-
     list(APPEND FEEDTNZ_ENTRYPOINT src/ui/mac/nativeEvents.mm)
 
     #add icon
     set(MACOSX_BUNDLE_ICON_FILE feedtnz.icns)
     set(FEEDTNZ_ICO_WIN src/resources/icons/feedtnz.icns)
     set_source_files_properties(${FEEDTNZ_ICO_WIN} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
+
 endif (APPLE)
 
 add_executable(${PROJECT_NAME} ${FEEDTNZ_BUNDLE_TYPE} ${FEEDTNZ_ENTRYPOINT} ${FEEDTNZ_RES} ${FEEDTNZ_ICO_WIN}) 
 target_link_libraries(${PROJECT_NAME} Qt5::Widgets Qt5::Core)
 
 if (APPLE)
+
     #add highdpi support via plist template
     set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/build_templates/Info.plist.in)
+    
 endif (APPLE)
