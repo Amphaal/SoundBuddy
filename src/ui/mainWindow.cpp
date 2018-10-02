@@ -21,7 +21,8 @@ class MainWindow : public QMainWindow {
     ConfigHelper helper;
     QSystemTrayIcon *trayIcon;
     bool forceQuitOnMacOS = false;
-
+    vector<QAction> myWTNZActions;
+    
     public:
     MainWindow(QString *title) : title(title), helper(ConfigHelper()) {     
         this->helper.accessConfig();
