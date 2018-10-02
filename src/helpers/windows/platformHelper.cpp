@@ -5,12 +5,12 @@
 class PlatformHelper {
     
     public:
-        static void openFileInOS(const char* cpURL) {
-            ShellExecuteA(NULL, "open", "notepad", cpURL, NULL, SW_SHOWNORMAL);
+        static void openFileInOS(std::string cpURL) {
+            ShellExecuteA(NULL, "open", "notepad", cpURL.c_str(), NULL, SW_SHOWNORMAL);
         }
 
-        static void openUrlInBrowser(const char* cpURL) {
-            ShellExecuteA(NULL, "open", cpURL, NULL, NULL, SW_SHOWNORMAL);
+        static void openUrlInBrowser(std::string cpURL) {
+            ShellExecuteA(NULL, "open", cpURL.c_str(), NULL, NULL, SW_SHOWNORMAL);
         }
 
         static std::string getITunesPrefFileProbableLocation() {

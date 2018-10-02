@@ -94,6 +94,8 @@
         "xloctime": "cpp",
         "clocale": "cpp",
         "forward_list": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "__config": "cpp",
+        "__nullptr": "cpp"
     }
 }

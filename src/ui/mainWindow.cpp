@@ -37,8 +37,8 @@ class MainWindow : public QMainWindow {
     void _initUI() {
         this->setMinimumSize(QSize(480, 400));
         this->_initUITabs();
-        this->_initUIMenu();
         this->_initUITray();
+        this->_initUIMenu();
     }
 
     void _initUITabs() {
@@ -77,6 +77,8 @@ class MainWindow : public QMainWindow {
         fileMenuItem->addAction(myWTNZAction);
         fileMenuItem->addAction(updateConfigAction);
         this->setMenuWidget(menu);
+
+        this->trayIcon->setContextMenu(fileMenuItem);
     }
 
     void _initUITray() {

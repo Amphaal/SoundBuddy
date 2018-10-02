@@ -16,6 +16,8 @@ conan_basic_setup(KEEP_RPATHS)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Core REQUIRED)
 
+add_definitions(-DBOOST_ERROR_CODE_HEADER_ONLY)
+
 #set resrouces 
 SET(CMAKE_AUTORCC ON)
 SET(FEEDTNZ_RES src/resources/resources.qrc)
@@ -37,8 +39,8 @@ if (APPLE)
     SET(FEEDTNZ_BUNDLE_TYPE MACOSX_BUNDLE)
 
     #include Object C++ files to compile
-    SET(CMAKE_EXE_LINKER_FLAGS "-framework AppKit -w")
-    list(APPEND FEEDTNZ_ENTRYPOINT src/ui/mac/nativeEvents.mm)
+    #SET(CMAKE_EXE_LINKER_FLAGS "-framework AppKit -w")
+    #list(APPEND FEEDTNZ_ENTRYPOINT src/ui/mac/nativeEvents.mm)
 
     #add icon
     set(MACOSX_BUNDLE_ICON_FILE feedtnz.icns)
@@ -48,7 +50,7 @@ if (APPLE)
 endif (APPLE)
 
 add_executable(${PROJECT_NAME} ${FEEDTNZ_BUNDLE_TYPE} ${FEEDTNZ_ENTRYPOINT} ${FEEDTNZ_RES} ${FEEDTNZ_ICO_WIN}) 
-target_link_libraries(${PROJECT_NAME} Qt5::Widgets Qt5::Core)
+target_link_libraries(${PROJECT_NAME} ${CONAN_LIBS} Qt5::Widgets Qt5::Core)
 
 if (APPLE)
 

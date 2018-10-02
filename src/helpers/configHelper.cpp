@@ -1,4 +1,5 @@
-#include <filesystem>
+#include <exception>
+#include <boost/filesystem.hpp>
 #include "nlohmann/json.hpp"
 
 #include "platformHelper.cpp"
@@ -14,7 +15,7 @@ class ConfigHelper {
                 
         //open the configuration file
         void openConfigFile() {
-            PlatformHelper::openFileInOS(this->configFile.c_str());
+            PlatformHelper::openFileInOS(this->configFile);
         }
 
         void ensureConfigFileIsReadyForUpload() {
@@ -23,7 +24,7 @@ class ConfigHelper {
             //check required field presence and adds them if missing
             for (auto &rf : this->requiredConfigFields) {  
                 if (config[rf] == nullptr || config[rf] == "") {
-                    throw std::exception("Expected configuration values are missing. Please check the configuration file !");
+                    throw "Expected configuration values are missing. Please check the configuration file !";
                 }
             }
         }
@@ -67,9 +68,9 @@ class ConfigHelper {
 
         //ensure a file exists
         bool fileExists(std::string outputFileName) {
-            std::filesystem::path confP(outputFileName);
-            confP = std::filesystem::absolute(confP);
-            return std::filesystem::exists(confP);
+            boost::filesystem::path confP(outputFileName);
+            confP = boost::filesystem::absolute(confP);
+            return boost::filesystem::exists(confP);
         }
 
     private:

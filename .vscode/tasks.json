@@ -9,7 +9,7 @@
         {
             "label": "1. Download Dependencies for Debug (conan)",
             "type": "shell",
-            "command": "conan install .. -s build_type=Debug",
+            "command": "conan install .. -s build_type=Debug --build missing",
             "group": "test"
         },
         {

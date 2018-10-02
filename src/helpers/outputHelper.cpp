@@ -1,4 +1,4 @@
-#include <filesystem>
+#include <boost/filesystem.hpp>
 #include "nlohmann/json.hpp"
 
 #include "platformHelper.cpp"
@@ -8,9 +8,9 @@ class OutputHelper {
 
         //ensure a file exists
         bool fileExists(std::string outputFileName) {
-            std::filesystem::path confP(outputFileName);
-            confP = std::filesystem::absolute(confP);
-            return std::filesystem::exists(confP);
+            boost::filesystem::path confP(outputFileName);
+            confP = boost::filesystem::absolute(confP);
+            return boost::filesystem::exists(confP);
         }
 
         //write outputfile
@@ -26,4 +26,4 @@ class OutputHelper {
             typedef std::function<void(std::string)> MessageHelper;
             MessageHelper callMessageHelper;
             bool silentMode;
-}
+};
