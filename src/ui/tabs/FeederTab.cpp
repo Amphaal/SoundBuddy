@@ -2,10 +2,11 @@
 #include "QtCore/QString"
 
 #include "TemplateTab.cpp"
+#include "../../workers/feeder.cpp"
 
 class FeederTab : public TemplateTab {
     public:
-        FeederTab(QWidget *parent) : TemplateTab(parent) {
+        FeederTab(QWidget *parent) : TemplateTab(parent, new FeederWorker) {
 
             this->tButton->setText(QString("Generate Digest and Upload"));
 

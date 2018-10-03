@@ -107,6 +107,7 @@
         "resumable": "cpp",
         "future": "cpp",
         "mutex": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "qscrollbar": "cpp"
     }
 }

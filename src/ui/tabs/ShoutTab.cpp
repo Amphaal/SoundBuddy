@@ -7,14 +7,15 @@
 
 #include "../../helpers/configHelper.cpp"
 #include "TemplateTab.cpp"
+#include "../../workers/shout.cpp"
 
 class ShoutTab : public TemplateTab {
     
     const std::string autoLaunchConfigParam = "autoLaunchShout";
     
     public:
-        ShoutTab(QWidget *parent, ConfigHelper *helper, nlohmann::json config) : 
-        TemplateTab(parent), helper(helper), config(config),
+        ShoutTab(QWidget *parent, ConfigHelper *helper, nlohmann::json config) : TemplateTab(parent, new ShoutWorker), 
+        helper(helper), config(config),
         checkAutoLaunch(new QCheckBox("Autostart at launch", this))
           {
             
@@ -37,15 +38,6 @@ class ShoutTab : public TemplateTab {
         ConfigHelper *helper;
         nlohmann::json config;
         QCheckBox *checkAutoLaunch;
-
-        void startThread() {
-            this->messages->setPlainText("");
-            this->tButton->setEnabled(false);
-        }
-    
-        void onThreadEnd() {
-            this->tButton->setEnabled(true);
-        }
 
         void changeAutoLaunch(bool isChecked) {
             this->helper->updateConfigFile(this->autoLaunchConfigParam, isChecked ? "true" : "false");
