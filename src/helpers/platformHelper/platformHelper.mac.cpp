@@ -13,8 +13,12 @@
         PlatformHelper::openFileInOS(cpURL);
     };
 
+    std::string PlatformHelper::getenv(char* variable) {
+        return getenv(variable);
+    }
+
     std::string PlatformHelper::getITunesPrefFileProbableLocation() {
-        return getenv("HOME") + std::string("/Library/Preferences/com.apple.iTunes.plist");
+        return PlatformHelper::getenv("HOME") + std::string("/Library/Preferences/com.apple.iTunes.plist");
     };
 
 #endif

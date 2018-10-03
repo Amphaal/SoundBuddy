@@ -36,7 +36,6 @@ class ShoutTab : public TemplateTab {
     private:
         ConfigHelper *helper;
         nlohmann::json config;
-        QPushButton *button;
         QCheckBox *checkAutoLaunch;
 
         void startThread() {

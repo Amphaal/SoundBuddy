@@ -14,8 +14,8 @@ class TemplateTab : public QWidget {
     public:
         TemplateTab(QWidget *parent) : QWidget(parent), 
         mainLayout(new QBoxLayout(QBoxLayout::TopToBottom, this)),
-        tButton(new QPushButton(this)),
-        messages(new QPlainTextEdit(this)) {
+        messages(new QPlainTextEdit(this)),
+        tButton(new QPushButton(this)) {
             this->messages->setReadOnly(true);
 
             connect(this->tButton, &QPushButton::clicked,
@@ -36,9 +36,9 @@ class TemplateTab : public QWidget {
         }
 
     protected:
-        QPlainTextEdit *messages;
-        QBoxLayout *mainLayout;
         QThread *bThread;
+        QBoxLayout *mainLayout;
+        QPlainTextEdit *messages;
         QPushButton *tButton;
         
         void startThread() {

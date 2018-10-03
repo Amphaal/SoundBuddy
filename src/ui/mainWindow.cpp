@@ -145,9 +145,9 @@ class MainWindow : public QMainWindow {
             if (WTNZUrlAvailable) {
                 
                 //set new WTNZ Url
-                this->wtnzUrl = this->config["targetUrl"];
-                this->wtnzUrl +=  + "/";
-                this->wtnzUrl += this->config["user"];
+                this->wtnzUrl = this->config["targetUrl"].get<std::string>();
+                this->wtnzUrl += "/";
+                this->wtnzUrl += this->config["user"].get<std::string>();
 
                 //update action state
                 for (QAction *action: this->myWTNZActions){action->setEnabled(true);}
@@ -176,7 +176,7 @@ class MainWindow : public QMainWindow {
         ///
 
         //hide window on minimize, only triggered on windows
-        void hideEvent(QEvent* event)
+        void hideEvent(QHideEvent *event)
         {
             this->trueHide(event);
         }

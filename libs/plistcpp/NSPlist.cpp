@@ -16,7 +16,7 @@
 
 #include <assert.h>
 #include <stdio.h>
-
+#include <iostream>
 #include "NSPlist.h"
 
 static char getEscapedChar(char c)
