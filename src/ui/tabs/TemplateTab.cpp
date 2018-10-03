@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QtCore/QString"
+#include "QtCore/QThread"
 #include "QtWidgets/QWidget"
 #include "QtWidgets/QPlainTextEdit"
 #include "QtWidgets/QBoxLayout"
@@ -39,15 +40,14 @@ class TemplateTab : public QWidget {
     protected:
         QPlainTextEdit *messages;
         QBoxLayout *mainLayout;
-        IThread *bThread;
+        QThread *bThread;
         QPushButton *tButton;
         
         void startThread() {
             this->messages->setPlainText("");
             this->tButton->setEnabled(false);
             
-            this->bThread = NULL;
-
+            //this->bThread = NULL;
         }
 
         void onThreadEnd() {

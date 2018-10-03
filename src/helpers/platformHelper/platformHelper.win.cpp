@@ -30,7 +30,4 @@
         return PlatformHelper::getenv("APPDATA") + std::string("\\Apple Computer\\Preferences\\com.apple.iTunes.plist");
     };
 
-    std::string PlatformHelper::getProbableITunesLibraryLocation(std::fstream *fileStream) {
-        return "";
-    };
 #endif
