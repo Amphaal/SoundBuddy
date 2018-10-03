@@ -102,6 +102,11 @@
         "thread": "cpp",
         "qlabel": "cpp",
         "qboxlayout": "cpp",
-        "qcheckbox": "cpp"
+        "qcheckbox": "cpp",
+        "condition_variable": "cpp",
+        "resumable": "cpp",
+        "future": "cpp",
+        "mutex": "cpp",
+        "random": "cpp"
     }
 }

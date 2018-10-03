@@ -1,29 +1,18 @@
 #include <string>
-#include "QtWidgets/QPushButton"
-#include "QtCore/QThread"
+#include "QtCore/QString"
 
 #include "TemplateTab.cpp"
 
 class FeederTab : public TemplateTab {
     public:
-        FeederTab(QWidget *parent) : TemplateTab(parent), 
-        button(new QPushButton("Generate Digest and Upload", this))  {
-            connect(this->button, &QPushButton::clicked,
-                    this, &FeederTab::startThread);
+        FeederTab(QWidget *parent) : TemplateTab(parent) {
+
+            this->tButton->setText(QString("Generate Digest and Upload"));
 
             this->mainLayout->addWidget(this->messages);
-            this->mainLayout->addWidget(this->button);
+            this->mainLayout->addWidget(this->tButton);
         }
 
     private:
-        QPushButton *button;
-        
-        void startThread() {
-            
-        }
-
-        void onThreadEnd() {
-            this->button->setEnabled(true);
-        }
     
 };

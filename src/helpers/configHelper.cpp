@@ -33,7 +33,7 @@ class ConfigHelper {
         }
 
         //get configuration data from file
-        auto accessConfig() {
+        nlohmann::json accessConfig() {
             
             //check if exists, if not create file
             if(!this->fileExists(this->configFile)) {

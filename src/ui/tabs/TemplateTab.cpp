@@ -4,20 +4,23 @@
 #include "QtWidgets/QWidget"
 #include "QtWidgets/QPlainTextEdit"
 #include "QtWidgets/QBoxLayout"
-#include "nlohmann/json.hpp"
+#include "QtWidgets/QPushButton"
+
+#include "../../tnzLib/IThread.cpp"
 
 using namespace std;
 
 class TemplateTab : public QWidget {
 
-    virtual void onThreadEnd() {};
-    virtual void startThread() {};
-
     public:
         TemplateTab(QWidget *parent) : QWidget(parent), 
         mainLayout(new QBoxLayout(QBoxLayout::TopToBottom, this)),
+        tButton(new QPushButton(this)),
         messages(new QPlainTextEdit(this)) {
             this->messages->setReadOnly(true);
+
+            connect(this->tButton, &QPushButton::clicked,
+                    this, &TemplateTab::startThread);
         }
 
         void messageHandler(string &message) {
@@ -36,4 +39,18 @@ class TemplateTab : public QWidget {
     protected:
         QPlainTextEdit *messages;
         QBoxLayout *mainLayout;
+        IThread *bThread;
+        QPushButton *tButton;
+        
+        void startThread() {
+            this->messages->setPlainText("");
+            this->tButton->setEnabled(false);
+            
+            this->bThread = NULL;
+
+        }
+
+        void onThreadEnd() {
+            this->tButton->setEnabled(true);
+        }
 };

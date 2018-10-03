@@ -22,6 +22,7 @@ class MainWindow : public QMainWindow {
    
     public:
         MainWindow(QString *title) : title(title), helper(ConfigHelper()), pHelper(PlatformHelper()) {     
+            this->updateConfigValues();
             this->setWindowTitle(*title);
             this->_initUI();
             this->setupConfigFile();
@@ -33,7 +34,7 @@ class MainWindow : public QMainWindow {
         ConfigHelper helper;
         QSystemTrayIcon *trayIcon;
         vector<QAction*> myWTNZActions;
-        nlohmann::json *config;
+        nlohmann::json config;
         QFileSystemWatcher *watcher;
         string wtnzUrl;
         PlatformHelper pHelper;
@@ -51,7 +52,7 @@ class MainWindow : public QMainWindow {
 
         void _initUITabs() {
             QTabWidget *tabs = new QTabWidget;
-            ShoutTab *shoutTab = new ShoutTab(tabs, &this->helper);
+            ShoutTab *shoutTab = new ShoutTab(tabs, &this->helper, this->config);
             FeederTab *feedTab = new FeederTab(tabs);
 
             tabs->addTab(shoutTab, "Shout!");
@@ -122,6 +123,9 @@ class MainWindow : public QMainWindow {
             return fileMenuItem;
         }
 
+        void updateConfigValues() {
+            this->config = this->helper.accessConfig();
+        }
 
         void setupConfigFile() {
             this->updateMenuItems();
@@ -135,15 +139,15 @@ class MainWindow : public QMainWindow {
         }
 
         void updateMenuItems(const QString &path = NULL) {
-            auto lconfig = this->helper.accessConfig();
-            this->config = &lconfig;
-            bool WTNZUrlAvailable = !lconfig["targetUrl"].empty() && !lconfig["user"].empty();
+            this->updateConfigValues();
+
+            bool WTNZUrlAvailable = !this->config["targetUrl"].empty() && !this->config["user"].empty();
             if (WTNZUrlAvailable) {
                 
                 //set new WTNZ Url
-                this->wtnzUrl = lconfig["targetUrl"];
+                this->wtnzUrl = this->config["targetUrl"];
                 this->wtnzUrl +=  + "/";
-                this->wtnzUrl += lconfig["user"];
+                this->wtnzUrl += this->config["user"];
 
                 //update action state
                 for (QAction *action: this->myWTNZActions){action->setEnabled(true);}

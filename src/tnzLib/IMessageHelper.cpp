@@ -1,8 +1,8 @@
 #include <functional>
 
-class MessageHelperR {
+class IMessageHelper {
     public:
-    MessageHelperR(std::function<void(std::string)> messageHelperFunc = NULL) : 
+    IMessageHelper(std::function<void(std::string)> messageHelperFunc = NULL) : 
         callMessageHelper(std::move(messageHelperFunc)) {}
 
     protected:

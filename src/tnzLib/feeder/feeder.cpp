@@ -1,8 +1,8 @@
 #include <string>
-#include "../messageHelperR.cpp"
+#include "../IMessageHelper.cpp"
 #include "../../helpers/platformHelper/platformHelper.h"
 
-class Feeder : public MessageHelperR {
+class Feeder : public IMessageHelper {
         
         private:
         PlatformHelper pHelper;
