@@ -1,3 +1,5 @@
+#pragma once
+
 #include <exception>
 #include <boost/filesystem.hpp>
 #include "nlohmann/json.hpp"

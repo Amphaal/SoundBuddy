@@ -13,11 +13,10 @@
 #include "QtGui/QHideEvent"
 #include "QtGui/QIcon"
 
-#include "nlohmann/json.hpp"
-
-#include "feedtnzTab.cpp"
 #include "../helpers/configHelper.cpp"
 #include "../helpers/platformHelper/platformHelper.h"
+#include "./tabs/ShoutTab.cpp"
+#include "./tabs/FeederTab.cpp"
 
 class MainWindow : public QMainWindow {
    
@@ -52,8 +51,8 @@ class MainWindow : public QMainWindow {
 
         void _initUITabs() {
             QTabWidget *tabs = new QTabWidget;
-            FeedTNZTab *shoutTab = new FeedTNZTab(tabs);
-            FeedTNZTab *feedTab = new FeedTNZTab(tabs);
+            ShoutTab *shoutTab = new ShoutTab(tabs, &this->helper);
+            FeederTab *feedTab = new FeederTab(tabs);
 
             tabs->addTab(shoutTab, "Shout!");
             tabs->addTab(feedTab, "Feeder");

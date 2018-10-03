@@ -99,6 +99,9 @@
         "__nullptr": "cpp",
         "stack": "cpp",
         "xthread": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "qlabel": "cpp",
+        "qboxlayout": "cpp",
+        "qcheckbox": "cpp"
     }
 }
