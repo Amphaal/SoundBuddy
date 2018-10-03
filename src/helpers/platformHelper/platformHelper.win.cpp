@@ -31,6 +31,6 @@
     };
 
     std::string PlatformHelper::getProbableITunesLibraryLocation(std::fstream *fileStream) {
-
+        return "";
     };
 #endif

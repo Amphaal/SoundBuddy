@@ -31,6 +31,9 @@ if (WIN32)
     #add icon
     SET(FEEDTNZ_ICO_WIN src/resources/resources.rc)
 
+    #platform specfic
+    list(APPEND FEEDTNZ_ENTRYPOINT src/helpers/platformHelper/platformHelper.win.cpp)
+
 endif (WIN32)
 
 if (APPLE)
@@ -41,6 +44,9 @@ if (APPLE)
     #include Object C++ files to compile
     #SET(CMAKE_EXE_LINKER_FLAGS "-framework AppKit -w")
     #list(APPEND FEEDTNZ_ENTRYPOINT src/ui/mac/nativeEvents.mm)
+    
+    #platform specfic
+    list(APPEND FEEDTNZ_ENTRYPOINT src/helpers/platformHelper/platformHelper.mac.cpp)
 
     #add icon
     set(MACOSX_BUNDLE_ICON_FILE feedtnz.icns)

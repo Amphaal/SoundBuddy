@@ -6,10 +6,10 @@
 
 class ConfigHelper {
     
-    public:
+    const std::string configFile = "config.json";
+    const std::vector<std::string> requiredConfigFields{"targetUrl", "user", "password"};
     
-        const std::string configFile = "config.json";
-        const std::vector<std::string> requiredConfigFields{"targetUrl", "user", "password"};
+    public:
     
         //constructor
         ConfigHelper() : streamHandler(std::fstream()), pHelper(PlatformHelper()) {}
@@ -43,15 +43,17 @@ class ConfigHelper {
 
             //check required field presence and adds them if missing
             bool mustWrite = false;
-            for (auto &rf : this->requiredConfigFields) {  
-                if (config[rf] == nullptr) {
+            for (auto &rf : this->requiredConfigFields) {
+                if (config.find(rf) == config.end()) {
                     config[rf] = nullptr;
                     mustWrite = true;
                 }
             }
 
             //re-write as formated string
-            if(mustWrite) this->writeFormatedFileFromObj(&config);
+            if(mustWrite) {
+                this->writeFormatedFileFromObj(&config);
+            }
             
             //return values
             return config;
@@ -72,6 +74,11 @@ class ConfigHelper {
             boost::filesystem::path confP(outputFileName);
             confP = boost::filesystem::absolute(confP);
             return boost::filesystem::exists(confP);
+        }
+
+        std::string getConfigFileFullPath() {
+            boost::filesystem::path confP(this->configFile);
+            return boost::filesystem::absolute(confP).string();
         }
 
     private:

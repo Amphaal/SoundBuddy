@@ -20,180 +20,190 @@
 #include "../helpers/platformHelper/platformHelper.h"
 
 class MainWindow : public QMainWindow {
-
-
-    
+   
     public:
-    MainWindow(QString *title) : title(title), helper(ConfigHelper()), pHelper(PlatformHelper()) {     
-        this->setWindowTitle(*title);
-        this->_initUI();
-        this->setupConfigFile();
-    }
+        MainWindow(QString *title) : title(title), helper(ConfigHelper()), pHelper(PlatformHelper()) {     
+            this->setWindowTitle(*title);
+            this->_initUI();
+            this->setupConfigFile();
+        }
     
     private:
-    QString *title;
-    ConfigHelper helper;
-    QSystemTrayIcon *trayIcon;
-    bool forceQuitOnMacOS = false;
-    vector<QAction*> myWTNZActions;
-    nlohmann::json *config;
-    QFileSystemWatcher *watcher;
-    string wtnzUrl;
-    PlatformHelper pHelper;
-    ///
-    ///UI instanciation
-    ///
+        bool forceQuitOnMacOS = false;
+        QString *title;
+        ConfigHelper helper;
+        QSystemTrayIcon *trayIcon;
+        vector<QAction*> myWTNZActions;
+        nlohmann::json *config;
+        QFileSystemWatcher *watcher;
+        string wtnzUrl;
+        PlatformHelper pHelper;
+    
+        ///
+        ///UI instanciation
+        ///
 
-    void _initUI() {
-        this->setMinimumSize(QSize(480, 400));
-        this->_initUITabs();
-        this->_initUITray();
-        this->_initUIMenu();
-    }
-
-    void _initUITabs() {
-        QTabWidget *tabs = new QTabWidget;
-        FeedTNZTab *shoutTab = new FeedTNZTab(tabs);
-        FeedTNZTab *feedTab = new FeedTNZTab(tabs);
-
-        tabs->addTab(shoutTab, "Shout!");
-        tabs->addTab(feedTab, "Feeder");
-
-        this->setCentralWidget(tabs);
-    }
-
-    void _initUIMenu() {
-        QMenuBar *menuBar = new QMenuBar;
-        menuBar->addMenu(this->_getMenu());
-        this->setMenuWidget(menuBar);
-    }
-
-    void _initUITray() {
-        QSystemTrayIcon *trayIcon = new QSystemTrayIcon;
-        this->trayIcon = trayIcon;
-        trayIcon->setIcon(QIcon(":/icons/feedtnz.png"));
-        trayIcon->setToolTip(*this->title);
-
-        //double it to the tray icon
-        this->trayIcon->setContextMenu(this->_getMenu());
-
-        trayIcon->show();
-    }
-
-    QMenu* _getMenu() {
-
-        QMenu *fileMenuItem = new QMenu("File");
-
-        //monitorAction
-        QAction *monitorAction = new QAction("Open monitor...", fileMenuItem);
-        QObject::connect(
-            monitorAction, &QAction::triggered,
-            this, &MainWindow::trueShow
-        );
-
-        //myWTNZAction
-        QAction *myWTNZAction = new QAction("My WTNZ", fileMenuItem);
-        myWTNZAction->setEnabled(false);
-        QObject::connect(
-            myWTNZAction, &QAction::triggered,
-            this, &MainWindow::accessWTNZ
-        );
-        this->myWTNZActions.push_back(myWTNZAction);
-
-        //updateConfigAction
-        QAction *updateConfigAction = new QAction("Update configuration file", fileMenuItem);
-        QObject::connect(
-            updateConfigAction, &QAction::triggered,
-            this, &MainWindow::openConfigFile
-        );
-
-        //quit
-        QAction *quitAction = new QAction("Quit", fileMenuItem);
-        QObject::connect(
-            quitAction, &QAction::triggered,
-            this, &MainWindow::forcedClose
-        );
-
-        fileMenuItem->addAction(monitorAction);
-        fileMenuItem->addSeparator();
-        fileMenuItem->addAction(myWTNZAction);
-        fileMenuItem->addAction(updateConfigAction);
-        fileMenuItem->addSeparator();
-        fileMenuItem->addAction(quitAction);
-
-        return fileMenuItem;
-    }
-
-
-    void setupConfigFile() {
-        this->updateMenuItems();
-        QFileSystemWatcher watcher = new QFileSystemWatcher;
-        this->watcher  = &watcher;
-        this->watcher->addPath(QString(this->helper.configFile.c_str()));
-        connect(this->watcher, &QFileSystemWatcher::fileChanged,
-                this, &MainWindow::updateMenuItems);
-    }
-
-    void updateMenuItems() {
-        auto lconfig = this->helper.accessConfig();
-        this->config = &lconfig;
-        if (lconfig["targetUrl"] != nullptr && lconfig["user"] != nullptr) {
-            this->wtnzUrl = lconfig["targetUrl"];
-            this->wtnzUrl +=  + "/";
-            this->wtnzUrl += lconfig["user"];
+        void _initUI() {
+            this->setMinimumSize(QSize(480, 400));
+            this->_initUITabs();
+            this->_initUITray();
+            this->_initUIMenu();
         }
-    }      
 
-    ///
-    /// Functionnalities helpers calls
-    ///
+        void _initUITabs() {
+            QTabWidget *tabs = new QTabWidget;
+            FeedTNZTab *shoutTab = new FeedTNZTab(tabs);
+            FeedTNZTab *feedTab = new FeedTNZTab(tabs);
+
+            tabs->addTab(shoutTab, "Shout!");
+            tabs->addTab(feedTab, "Feeder");
+
+            this->setCentralWidget(tabs);
+        }
+
+        void _initUIMenu() {
+            QMenuBar *menuBar = new QMenuBar;
+            menuBar->addMenu(this->_getMenu());
+            this->setMenuWidget(menuBar);
+        }
+
+        void _initUITray() {
+            QSystemTrayIcon *trayIcon = new QSystemTrayIcon;
+            this->trayIcon = trayIcon;
+            trayIcon->setIcon(QIcon(":/icons/feedtnz.png"));
+            trayIcon->setToolTip(*this->title);
+
+            //double it to the tray icon
+            this->trayIcon->setContextMenu(this->_getMenu());
+
+            trayIcon->show();
+        }
+
+        QMenu* _getMenu() {
+
+            QMenu *fileMenuItem = new QMenu("File");
+
+            //monitorAction
+            QAction *monitorAction = new QAction("Open monitor...", fileMenuItem);
+            QObject::connect(
+                monitorAction, &QAction::triggered,
+                this, &MainWindow::trueShow
+            );
+
+            //myWTNZAction
+            QAction *myWTNZAction = new QAction("My WTNZ", fileMenuItem);
+            myWTNZAction->setEnabled(false);
+            QObject::connect(
+                myWTNZAction, &QAction::triggered,
+                this, &MainWindow::accessWTNZ
+            );
+            this->myWTNZActions.push_back(myWTNZAction);
+
+            //updateConfigAction
+            QAction *updateConfigAction = new QAction("Update configuration file", fileMenuItem);
+            QObject::connect(
+                updateConfigAction, &QAction::triggered,
+                this, &MainWindow::openConfigFile
+            );
+
+            //quit
+            QAction *quitAction = new QAction("Quit", fileMenuItem);
+            QObject::connect(
+                quitAction, &QAction::triggered,
+                this, &MainWindow::forcedClose
+            );
+
+            fileMenuItem->addAction(monitorAction);
+            fileMenuItem->addSeparator();
+            fileMenuItem->addAction(myWTNZAction);
+            fileMenuItem->addAction(updateConfigAction);
+            fileMenuItem->addSeparator();
+            fileMenuItem->addAction(quitAction);
+
+            return fileMenuItem;
+        }
 
 
-    void accessWTNZ() {
-        this->pHelper.openUrlInBrowser(this->wtnzUrl.c_str());
-    }
+        void setupConfigFile() {
+            this->updateMenuItems();
 
-    //open the config file into the OS browser
-    void openConfigFile() {
-        this->helper.openConfigFile();
-    }
+            std::string f = this->helper.getConfigFileFullPath();
+            QFileSystemWatcher *watcher = new QFileSystemWatcher(QStringList(f.c_str()), this);
+            this->watcher = watcher;
+            
+            connect(watcher, &QFileSystemWatcher::fileChanged,
+                    this, &MainWindow::updateMenuItems);
+        }
 
-    ///
-    /// Events handling
-    ///
+        void updateMenuItems(const QString &path = NULL) {
+            auto lconfig = this->helper.accessConfig();
+            this->config = &lconfig;
+            bool WTNZUrlAvailable = !lconfig["targetUrl"].empty() && !lconfig["user"].empty();
+            if (WTNZUrlAvailable) {
+                
+                //set new WTNZ Url
+                this->wtnzUrl = lconfig["targetUrl"];
+                this->wtnzUrl +=  + "/";
+                this->wtnzUrl += lconfig["user"];
 
-    //hide window on minimize, only triggered on windows
-    void hideEvent(QEvent* event)
-    {
-        this->trueHide(event);
-    }
-
-    void closeEvent(QCloseEvent *event) {
-        
-        //apple specific behaviour, prevent closing
-        #ifdef __APPLE__
-            if(!this->forceQuitOnMacOS) {
-                return this->trueHide(event);
+                //update action state
+                for (QAction *action: this->myWTNZActions){action->setEnabled(true);}
+            } else {
+                //update action state
+                for (QAction *action: this->myWTNZActions){action->setEnabled(false);}
             }
-        #endif
+        }      
 
-        //hide trayicon on shutdown for Windows, refereshes the UI frames of system tray
-        this->trayIcon->hide();
-    }
+        ///
+        /// Functionnalities helpers calls
+        ///
 
-    void trueShow() {
-        this->showNormal();
-        this->activateWindow();
-        this->raise();
-    }
 
-    void trueHide(QEvent* event) {
-        event->ignore();
-        this->hide();
-    }
+        void accessWTNZ() {
+            this->pHelper.openUrlInBrowser(this->wtnzUrl.c_str());
+        }
 
-    void forcedClose() {
-        this->forceQuitOnMacOS = true;
-        this->close();
-    }
+        //open the config file into the OS browser
+        void openConfigFile() {
+            this->helper.openConfigFile();
+        }
+
+        ///
+        /// Events handling
+        ///
+
+        //hide window on minimize, only triggered on windows
+        void hideEvent(QEvent* event)
+        {
+            this->trueHide(event);
+        }
+
+        void closeEvent(QCloseEvent *event) {
+            
+            //apple specific behaviour, prevent closing
+            #ifdef __APPLE__
+                if(!this->forceQuitOnMacOS) {
+                    return this->trueHide(event);
+                }
+            #endif
+
+            //hide trayicon on shutdown for Windows, refereshes the UI frames of system tray
+            this->trayIcon->hide();
+        }
+
+        void trueShow() {
+            this->showNormal();
+            this->activateWindow();
+            this->raise();
+        }
+
+        void trueHide(QEvent* event) {
+            event->ignore();
+            this->hide();
+        }
+
+        void forcedClose() {
+            this->forceQuitOnMacOS = true;
+            this->close();
+        }
 };
