@@ -1,17 +1,19 @@
 #include <string>
 #include <fstream>
 #include <exception>
-#include "./ITNZWorker.cpp"
+#include "QtWidgets/QWidget"
+
+#include "./ITNZWorker.h"
 #include "../helpers/platformHelper/platformHelper.h"
 #include "../../libs/plistcpp/Plist.hpp"
 
 class FeederWorker : public ITNZWorker {
-        
+
     const std::string outputFileName = "output/output.json";
     const std::string warningsFileName = "output/warnings.json";
 
     public:
-        FeederWorker() : pHelper(new PlatformHelper()) {}
+		FeederWorker(QWidget *parent) : ITNZWorker(parent), pHelper(new PlatformHelper()) {}
 
         void run() override {
             emit printLog("WARNING ! Make sure you activated the XML file sharing in iTunes>Preferences>Advanced.");

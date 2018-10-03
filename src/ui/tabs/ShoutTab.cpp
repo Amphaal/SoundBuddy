@@ -14,7 +14,7 @@ class ShoutTab : public TemplateTab {
     const std::string autoLaunchConfigParam = "autoLaunchShout";
     
     public:
-        ShoutTab(QWidget *parent, ConfigHelper *helper, nlohmann::json config) : TemplateTab(parent, new ShoutWorker), 
+        ShoutTab(QWidget *parent, ConfigHelper *helper, nlohmann::json config) : TemplateTab(parent, new ShoutWorker(this)), 
         helper(helper), config(config),
         checkAutoLaunch(new QCheckBox("Autostart at launch", this))
           {

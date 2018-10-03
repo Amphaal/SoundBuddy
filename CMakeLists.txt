@@ -1,3 +1,8 @@
+SET(CMAKE_INCLUDE_CURRENT_DIR YES)
+SET(CMAKE_AUTOMOC ON)
+SET(CMAKE_AUTORCC ON)
+SET(CMAKE_VERBOSE_MAKEFILE TRUE)
+
 project(FeedTNZ)
 cmake_minimum_required(VERSION 3.1.0)
 
@@ -6,8 +11,6 @@ set(CMAKE_CXX_STANDARD 17)
 if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
 endif(MSVC)
-
-set(CMAKE_VERBOSE_MAKEFILE TRUE)
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(KEEP_RPATHS)
@@ -19,9 +22,8 @@ find_package(Qt5Core REQUIRED)
 add_definitions(-DBOOST_ERROR_CODE_HEADER_ONLY)
 
 #set resrouces 
-SET(CMAKE_AUTORCC ON)
 SET(FEEDTNZ_RES src/resources/resources.qrc)
-SET(FEEDTNZ_ENTRYPOINT src/feedtnz.cpp)
+SET(FEEDTNZ_ENTRYPOINT src/workers/ITNZWorker.h src/feedtnz.cpp)
 
 #add libs
 list(APPEND FEEDTNZ_ENTRYPOINT 
@@ -65,7 +67,10 @@ if (APPLE)
 endif (APPLE)
 
 add_executable(${PROJECT_NAME} ${FEEDTNZ_BUNDLE_TYPE} ${FEEDTNZ_ENTRYPOINT} ${FEEDTNZ_RES} ${FEEDTNZ_ICO_WIN}) 
+
+#add libs
 target_link_libraries(${PROJECT_NAME} ${CONAN_LIBS} Qt5::Widgets Qt5::Core)
+
 
 if (APPLE)
 

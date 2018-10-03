@@ -6,7 +6,6 @@ pugixml/1.9@bincrafters/stable
 
 [generators]
 cmake
-virtualrunenv
 
 [imports]
 

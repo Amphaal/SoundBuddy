@@ -108,6 +108,7 @@
         "future": "cpp",
         "mutex": "cpp",
         "random": "cpp",
-        "qscrollbar": "cpp"
+        "qscrollbar": "cpp",
+        "*.moc": "cpp"
     }
 }

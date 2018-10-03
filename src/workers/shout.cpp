@@ -1,9 +1,10 @@
-#include "./ITNZWorker.cpp"
+#include "./ITNZWorker.h"
+#include "QtWidgets/QWidget"
 
 class ShoutWorker : public ITNZWorker {
-    
+
     public:
-        ShoutWorker() {}
+        ShoutWorker(QWidget *parent) :  ITNZWorker(parent) {}
         
         void run() override {
 

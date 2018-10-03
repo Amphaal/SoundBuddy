@@ -1,14 +1,3 @@
-#pragma once
-#include "QtCore/QObject"
+#include "./ITNZWorker.h"
 
-class ITNZWorker : public QObject {
-
-    Q_OBJECT
-
-    public:
-        virtual void run();
-        ITNZWorker() {}
-
-    signals:
-        void printLog(const std::string &message);
-};
+ITNZWorker::ITNZWorker(QWidget *parent) : QObject(parent) {};

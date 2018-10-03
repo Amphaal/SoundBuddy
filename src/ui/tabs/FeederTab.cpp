@@ -6,7 +6,7 @@
 
 class FeederTab : public TemplateTab {
     public:
-        FeederTab(QWidget *parent) : TemplateTab(parent, new FeederWorker) {
+        FeederTab(QWidget *parent) : TemplateTab(parent, new FeederWorker(this)) {
 
             this->tButton->setText(QString("Generate Digest and Upload"));
 

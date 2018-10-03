@@ -48,7 +48,7 @@ class TemplateTab : public QWidget {
             this->bThread->start();
         }
 
-        void printLog(string &message) {
+        void printLog(string message) {
             
             //handle linefeeds in appending
             QString before = this->messages->toPlainText();
