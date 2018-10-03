@@ -7,8 +7,6 @@
 #include "QtWidgets/QBoxLayout"
 #include "QtWidgets/QPushButton"
 
-#include "../../tnzLib/IThread.cpp"
-
 using namespace std;
 
 class TemplateTab : public QWidget {

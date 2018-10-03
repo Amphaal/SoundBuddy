@@ -21,7 +21,16 @@ add_definitions(-DBOOST_ERROR_CODE_HEADER_ONLY)
 #set resrouces 
 SET(CMAKE_AUTORCC ON)
 SET(FEEDTNZ_RES src/resources/resources.qrc)
-SET(FEEDTNZ_ENTRYPOINT src/feedtnz.cpp libs/plistcpp/Plist.cpp libs/plistcpp/PlistDate.cpp)
+SET(FEEDTNZ_ENTRYPOINT src/feedtnz.cpp)
+
+#add libs
+list(APPEND FEEDTNZ_ENTRYPOINT 
+    libs/plistcpp/Plist.cpp 
+    libs/plistcpp/PlistDate.cpp
+    libs/plistcpp/NSPlist.cpp
+    libs/plistcpp/NSPlistParser.cpp
+    libs/plistcpp/NSPlistLexer.cpp
+)
 
 if (WIN32)
 
