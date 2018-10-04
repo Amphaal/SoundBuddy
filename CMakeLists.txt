@@ -23,7 +23,11 @@ add_definitions(-DBOOST_ERROR_CODE_HEADER_ONLY)
 
 #set resrouces 
 SET(FEEDTNZ_RES src/resources/resources.qrc)
-SET(FEEDTNZ_ENTRYPOINT src/workers/base/ITNZWorker.h src/feedtnz.cpp)
+SET(FEEDTNZ_ENTRYPOINT src/feedtnz.cpp)
+    
+#platform specfic
+list(APPEND FEEDTNZ_ENTRYPOINT src/helpers/platformHelper/platformHelper.cpp)
+list(APPEND FEEDTNZ_ENTRYPOINT src/workers/base/ITNZWorker.h)
 
 #add libs
 list(APPEND FEEDTNZ_ENTRYPOINT 
@@ -42,9 +46,6 @@ if (WIN32)
     #add icon
     SET(FEEDTNZ_ICO_WIN src/resources/resources.rc)
 
-    #platform specfic
-    list(APPEND FEEDTNZ_ENTRYPOINT src/helpers/platformHelper/platformHelper.win.cpp)
-
 endif (WIN32)
 
 if (APPLE)
@@ -55,9 +56,6 @@ if (APPLE)
     #include Object C++ files to compile
     #SET(CMAKE_EXE_LINKER_FLAGS "-framework AppKit -w")
     #list(APPEND FEEDTNZ_ENTRYPOINT src/ui/mac/nativeEvents.mm)
-    
-    #platform specfic
-    list(APPEND FEEDTNZ_ENTRYPOINT src/helpers/platformHelper/platformHelper.mac.cpp)
 
     #add icon
     set(MACOSX_BUNDLE_ICON_FILE feedtnz.icns)

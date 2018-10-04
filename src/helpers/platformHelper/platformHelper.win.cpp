@@ -4,21 +4,28 @@
     #include <stdlib.h>  
 
     #include "platformHelper.h"
+    #include <string>
+    #include <map>
+    #include <boost/any.hpp>
+    #include <boost/locale.hpp>
 
-    void PlatformHelper::openFileInOS(std::string cpURL) {
+    using namespace boost;
+    using namespace std;
+
+    void PlatformHelper::openFileInOS(string cpURL) {
         ShellExecuteA(NULL, "open", "notepad", cpURL.c_str(), NULL, SW_SHOWNORMAL);
     };
 
-    void PlatformHelper::openUrlInBrowser(std::string cpURL) {
+    void PlatformHelper::openUrlInBrowser(string cpURL) {
         ShellExecuteA(NULL, "open", cpURL.c_str(), NULL, NULL, SW_SHOWNORMAL);
     };
 
-    std::string PlatformHelper::getenv(char* variable) {
+    string PlatformHelper::getenv(char* variable) {
         char* buf = nullptr;
         size_t sz = 0;
         if (_dupenv_s(&buf, &sz, variable) == 0 && buf != nullptr)
         {
-            std::string ret = buf;
+            string ret = buf;
             free(buf);
             return ret;
         } else {
@@ -26,8 +33,21 @@
         }
     };
     
-    std::string PlatformHelper::getITunesPrefFileProbableLocation() {
-        return PlatformHelper::getenv("APPDATA") + std::string("\\Apple Computer\\Preferences\\com.apple.iTunes.plist");
+    string PlatformHelper::getITunesPrefFileProbableLocation() {
+        return PlatformHelper::getenv("APPDATA") + string("\\Apple Computer\\Preferences\\com.apple.iTunes.plist");
     };
+
+    string PlatformHelper::extractItunesLibLocationFromMap(map<string, any> *pListAsMap) {
+        auto rAsAny = pListAsMap->at("LXML:1:iTunes Library XML Location");
+        auto rAsVector = any_cast<vector<char>>(rAsAny);
+        
+        //reformat for source UTF-16
+        string rAsString;
+        for (int b = 0; b < rAsVector.size() ; b++)
+        {
+            if(b % 2 == 0) rAsString += rAsVector[b];
+        }
+        return rAsString;
+    }
 
 #endif

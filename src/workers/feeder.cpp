@@ -1,16 +1,20 @@
 #include <string>
 #include <fstream>
 #include <exception>
+#include <map>
 #include "QtWidgets/QWidget"
 
 #include "base/ITNZWorker.h"
 #include "../helpers/platformHelper/platformHelper.h"
 #include "../../libs/plistcpp/Plist.hpp"
 
+using namespace boost;
+using namespace std;
+
 class FeederWorker : public ITNZWorker {
 
-    const std::string outputFileName = "output/output.json";
-    const std::string warningsFileName = "output/warnings.json";
+    const string outputFileName = "output/output.json";
+    const string warningsFileName = "output/warnings.json";
 
     public:
 		FeederWorker() : pHelper(new PlatformHelper()) {}
@@ -29,7 +33,10 @@ class FeederWorker : public ITNZWorker {
     private:
         PlatformHelper *pHelper;
 
-        void generateLibJSONFile() {}
+        void generateLibJSONFile() {
+            auto itnzLibPath = this->getITunesLibLocation();
+
+        }
         void uploadLibToServer() {}
 
         ///
@@ -37,12 +44,15 @@ class FeederWorker : public ITNZWorker {
         ///
 
         //seek in iTunes preference file the library location
-        std::string getITunesLibLocation() {
+        string getITunesLibLocation() {
             emit printLog("Getting XML file location...");
 
-            std::string pathToPrefs = this->pHelper->getITunesPrefFileProbableLocation();
+            string pathToPrefs = this->pHelper->getITunesPrefFileProbableLocation();
+            
+            map<string, any> pListAsMap; 
+		    Plist::readPlist(pathToPrefs.c_str(), pListAsMap);
 
-            return "";
+            return this->pHelper->extractItunesLibLocationFromMap(&pListAsMap);
         }
 
 };
