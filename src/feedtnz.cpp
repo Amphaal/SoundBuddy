@@ -12,6 +12,9 @@ int main(int argc, char** argv){
     app.setApplicationName(title);
     app.setStyle(QStyleFactory::create("Fusion")); 
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
+    
+    //configure threads
+    qRegisterMetaType<std::string>("std::string");
 
     //fetch main window
     MainWindow mw(&title);

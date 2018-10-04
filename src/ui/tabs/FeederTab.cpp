@@ -5,12 +5,17 @@
 #include "../../workers/feeder.cpp"
 
 class FeederTab : public TemplateTab {
+
+    ITNZWorker* getWorkerThread() override {
+        return new FeederWorker();
+    }
+
     public:
-        FeederTab(QWidget *parent) : TemplateTab(parent, new FeederWorker(this)) {
+        FeederTab(QWidget *parent) : TemplateTab(parent) {
 
             this->tButton->setText(QString("Generate Digest and Upload"));
 
-            this->mainLayout->addWidget(this->messages);
+            this->mainLayout->addWidget(this->tEdit);
             this->mainLayout->addWidget(this->tButton);
         }
 

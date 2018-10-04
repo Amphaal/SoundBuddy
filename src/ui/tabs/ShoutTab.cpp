@@ -13,8 +13,12 @@ class ShoutTab : public TemplateTab {
     
     const std::string autoLaunchConfigParam = "autoLaunchShout";
     
+    ITNZWorker* getWorkerThread() override {
+        return new ShoutWorker();
+    }
+    
     public:
-        ShoutTab(QWidget *parent, ConfigHelper *helper, nlohmann::json config) : TemplateTab(parent, new ShoutWorker(this)), 
+        ShoutTab(QWidget *parent, ConfigHelper *helper, nlohmann::json config) : TemplateTab(parent), 
         helper(helper), config(config),
         checkAutoLaunch(new QCheckBox("Autostart at launch", this))
           {
@@ -24,7 +28,7 @@ class ShoutTab : public TemplateTab {
             connect(this->checkAutoLaunch, &QCheckBox::stateChanged,
             this, &ShoutTab::changeAutoLaunch);
 
-            this->mainLayout->addWidget(this->messages);
+            this->mainLayout->addWidget(this->tEdit);
             this->mainLayout->addWidget(this->tButton);
             this->mainLayout->addWidget(this->checkAutoLaunch);
 

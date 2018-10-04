@@ -3,7 +3,7 @@
 #include <exception>
 #include "QtWidgets/QWidget"
 
-#include "./ITNZWorker.h"
+#include "base/ITNZWorker.h"
 #include "../helpers/platformHelper/platformHelper.h"
 #include "../../libs/plistcpp/Plist.hpp"
 
@@ -13,7 +13,7 @@ class FeederWorker : public ITNZWorker {
     const std::string warningsFileName = "output/warnings.json";
 
     public:
-		FeederWorker(QWidget *parent) : ITNZWorker(parent), pHelper(new PlatformHelper()) {}
+		FeederWorker() : pHelper(new PlatformHelper()) {}
 
         void run() override {
             emit printLog("WARNING ! Make sure you activated the XML file sharing in iTunes>Preferences>Advanced.");

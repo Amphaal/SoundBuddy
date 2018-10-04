@@ -23,7 +23,7 @@ add_definitions(-DBOOST_ERROR_CODE_HEADER_ONLY)
 
 #set resrouces 
 SET(FEEDTNZ_RES src/resources/resources.qrc)
-SET(FEEDTNZ_ENTRYPOINT src/workers/ITNZWorker.h src/feedtnz.cpp)
+SET(FEEDTNZ_ENTRYPOINT src/workers/base/ITNZWorker.h src/feedtnz.cpp)
 
 #add libs
 list(APPEND FEEDTNZ_ENTRYPOINT 
