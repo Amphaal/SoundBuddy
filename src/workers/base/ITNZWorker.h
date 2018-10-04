@@ -8,4 +8,5 @@ class ITNZWorker : public QThread {
 
     signals:
         void printLog(const std::string &message);
+        void error();
 };

@@ -25,8 +25,10 @@
     };
 
     std::string PlatformHelper::extractItunesLibLocationFromMap(std::map<std::string, boost::any> *pListAsMap) {
-        std::string dir = convertedPlist->at("NSNavLastRootDirectory").string();
-        boost::filesystem::path mapP(dir);
+        auto rAsAny = convertedPlist->at("NSNavLastRootDirectory");
+        auto rAsVector = any_cast<vector<char>>(rAsAny);
+        auto rAsString = string(rAsVector.start(), rAsVector.end());
+        boost::filesystem::path mapP(rAsString);
         mapP = mapP.parent_path();
         return boost::filesystem::absolute(mapP).string() + "iTunes Music Library.xml";
     }

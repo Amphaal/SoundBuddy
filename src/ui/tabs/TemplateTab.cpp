@@ -43,6 +43,9 @@ class TemplateTab : public QWidget {
                     this, &TemplateTab::onThreadEnd);
             connect(this->bThread, &ITNZWorker::printLog,
                     this, &TemplateTab::printLog);
+            connect(this->bThread, &ITNZWorker::error,
+                    this, &TemplateTab::colorSwap);
+            
             this->bThread->start();
         }
 
@@ -66,6 +69,14 @@ class TemplateTab : public QWidget {
             }
         }
         
+        void colorSwap() {
+            QPalette p = this->tEdit->palette();
+            p.setColor(QPalette::Active, QPalette::Base, Qt::red);
+            p.setColor(QPalette::Inactive, QPalette::Base, Qt::red);
+
+            this->tEdit->setPalette(p);
+        }
+
         void onThreadEnd() {
            this->tButton->setEnabled(true);
         }

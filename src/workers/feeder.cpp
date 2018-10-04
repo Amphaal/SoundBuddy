@@ -27,6 +27,7 @@ class FeederWorker : public ITNZWorker {
                 this->uploadLibToServer();
             } catch (const std::exception& e) {
                 emit printLog(e.what());
+                emit error();
             }
         }
 
@@ -35,9 +36,10 @@ class FeederWorker : public ITNZWorker {
 
         void generateLibJSONFile() {
             auto itnzLibPath = this->getITunesLibLocation();
+        }
+        void uploadLibToServer() {
 
         }
-        void uploadLibToServer() {}
 
         ///
         /// HELPERS
