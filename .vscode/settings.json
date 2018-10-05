@@ -110,6 +110,7 @@
         "random": "cpp",
         "qscrollbar": "cpp",
         "*.moc": "cpp",
-        "qthread": "cpp"
+        "qthread": "cpp",
+        "qstyle": "cpp"
     }
 }

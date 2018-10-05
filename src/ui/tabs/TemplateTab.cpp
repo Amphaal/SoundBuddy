@@ -7,8 +7,10 @@
 #include "QtWidgets/QBoxLayout"
 #include "QtWidgets/QPushButton"
 #include "QtWidgets/QScrollBar"
+#include <QStyle>
 
 #include "../../workers/base/ITNZWorker.h"
+#include "../../helpers/stringHelper.cpp"
 
 using namespace std;
 
@@ -37,6 +39,7 @@ class TemplateTab : public QWidget {
 
             this->tButton->setEnabled(false);
             this->tEdit->setPlainText("");
+            this->tEdit->setPalette(this->style()->standardPalette());
 
             this->bThread = this->getWorkerThread();
             connect(this->bThread, &QThread::finished,
@@ -49,10 +52,11 @@ class TemplateTab : public QWidget {
             this->bThread->start();
         }
 
-        void printLog(const std::string &message) {
+        void printLog(const std::string &message, bool replacePreviousLine) {
             
             //handle linefeeds in appending
             std::string messages = this->tEdit->toPlainText().toStdString();
+            if (replacePreviousLine) messages = StringHelper::splitPath(messages, "\n");
             if(messages != "") {
                 messages += '\r';
             }

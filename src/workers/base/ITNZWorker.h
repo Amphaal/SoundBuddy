@@ -7,6 +7,6 @@ class ITNZWorker : public QThread {
     Q_OBJECT
 
     signals:
-        void printLog(const std::string &message);
+        void printLog(const std::string &message, bool replacePreviousLine = false);
         void error();
 };
