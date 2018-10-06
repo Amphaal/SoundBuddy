@@ -25,13 +25,13 @@ class FeederWorker : public ITNZWorker {
     const string warningsFileName = "output\\warnings.json";
 
     public:
-		FeederWorker() : pHelper(new PlatformHelper()) {}
+		FeederWorker() {}
 
         void run() override {
             emit printLog("WARNING ! Make sure you activated the XML file sharing in iTunes>Preferences>Advanced.");
 
             try {
-                this->generateLibJSONFile();
+                //this->generateLibJSONFile();
                 this->uploadLibToServer();
             } catch (const std::exception& e) {
                 emit printLog(e.what());
@@ -40,8 +40,8 @@ class FeederWorker : public ITNZWorker {
         }
 
     private:
-        PlatformHelper *pHelper;
- 
+
+        //generate files
         void generateLibJSONFile() {
             auto itnzLibPath = this->getITunesLibLocation();
             this->processFile(itnzLibPath);
@@ -51,7 +51,7 @@ class FeederWorker : public ITNZWorker {
             if (warningsCount) {
                 emit printLog("WARNING ! " + std::to_string(warningsCount)  + 
                 " files in your library are missing important metadata and consequently were removed from the output file ! " + 
-                "Please check the \"" + this->outputFileName + "\" file in the output folder for more informations.");
+                "Please check the \"" + this->outputFileName + "\" file for more informations.");
 
                 emit printLog("Unmolding \"" + this->warningsFileName + "\"...");
                 OutputHelper::writeAsJsonFile(&this->warnings, this->warningsFileName);
@@ -64,17 +64,21 @@ class FeederWorker : public ITNZWorker {
 
             emit printLog("OK, output file is ready for breakfast !");
         }
-        void uploadLibToServer() {
 
+
+        //upload
+        void uploadLibToServer() {
+            emit printLog("Let's try to send now !");
+            
         }
 
 
         ///
-        /// XML Helpers
+        /// XML / JSON Helpers
         ///
 
-        int recCount;
-        int expectedCount;
+        size_t recCount;
+        size_t expectedCount;
         nlohmann::json libAsJSON;
         nlohmann::json warnings;
         const set<string> requiredAttrs = {"Track ID", "Track Number", "Year", "Name", "Album Artist", "Album", "Genre", "Date Added"};
@@ -148,14 +152,7 @@ class FeederWorker : public ITNZWorker {
                     pathToKey = this->resursiveDict(&child.node(), pathToKey);
                 }
 
-                //log...
-                bool mustReplacePrevious = this->recCount;
-                this->recCount++;
-                bool canLog = ((this->recCount % 100) == 0 && this->recCount <= this->expectedCount) || this->recCount == this->expectedCount || !mustReplacePrevious;
-                if(canLog) {
-                    string log = std::to_string(this->recCount)  + " over " + std::to_string(this->expectedCount) + "...";
-                    emit printLog(log, mustReplacePrevious);
-                }
+                tracksEmitHelper();
 
                 //return
                 return StringHelper::splitPath(pathToKey);
@@ -168,6 +165,8 @@ class FeederWorker : public ITNZWorker {
             
             this->warnings = {}; 
             set<string> tracksIdToRemove = {};
+            this->recCount = 0;
+            this->expectedCount = this->libAsJSON.size();
             
             //through each tracks
             for(auto track : this->libAsJSON.items()) {
@@ -205,6 +204,8 @@ class FeederWorker : public ITNZWorker {
 
                 //set optionnal values default
                 if (track.value()["Disc Number"] == nullptr) track.value()["Disc Number"] = "1";
+
+                tracksEmitHelper();
             }
 
             //remove tracks with warnings
@@ -215,16 +216,29 @@ class FeederWorker : public ITNZWorker {
         /// Other Helpers
         ///
 
+        //log...
+        void tracksEmitHelper() {
+            bool mustReplacePrevious = this->recCount;
+            this->recCount++;
+            bool canLog = ((this->recCount % 100) == 0 && this->recCount <= this->expectedCount) || this->recCount == this->expectedCount || !mustReplacePrevious;
+            if(canLog) {
+                string log = std::to_string(this->recCount)  + " over " + std::to_string(this->expectedCount) + "...";
+                emit printLog(log, mustReplacePrevious);
+            }
+        }
+
         //seek in iTunes preference file the library location
         string getITunesLibLocation() {
             emit printLog("Getting XML file location...");
 
-            string pathToPrefs = this->pHelper->getITunesPrefFileProbableLocation();
+            PlatformHelper *pHelper = new PlatformHelper;
+
+            string pathToPrefs = pHelper->getITunesPrefFileProbableLocation();
             
             map<string, any> pListAsMap; 
             try {
 		        Plist::readPlist(pathToPrefs.c_str(), pListAsMap);
-                return this->pHelper->extractItunesLibLocationFromMap(&pListAsMap);
+                return pHelper->extractItunesLibLocationFromMap(&pListAsMap);
             } catch (...) {
                 throw "An issue happened while fetching iTunes's XML file location. Have you installed iTunes ?";
             }
