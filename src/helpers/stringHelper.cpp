@@ -15,4 +15,14 @@ class StringHelper {
         static bool has_only_digits(const string s) {
             return s.find_first_not_of( "0123456789" ) == string::npos;
         }
+
+        static string ucwords(string input) {
+            input[0] = toupper(input[0]);
+            for (int i = 1; i < input.length; i++)
+            {   
+                if (input[i - 1] == ' ') input[i] = toupper(input[i]);
+                else tolower(input[i]);
+            }
+            return input;
+        }
 };

@@ -2,6 +2,7 @@
 #include <fstream>
 #include <exception>
 #include <map>
+#include <set>
 #include <pugixml.hpp>
 #include "nlohmann/json.hpp"
 
@@ -45,24 +46,21 @@ class FeederWorker : public ITNZWorker {
             auto itnzLibPath = this->getITunesLibLocation();
             this->processFile(itnzLibPath);
 
-            nlohmann::json *outputJSON = &this->libAsJSON[0];
-            nlohmann::json *warningsJSON = &this->libAsJSON[1];
-
-            //check warinings
-            size_t warningsCount = warningsJSON->size();
+            //check warnings
+            auto warningsCount = this->warnings.size();
             if (warningsCount) {
                 emit printLog("WARNING ! " + std::to_string(warningsCount)  + 
                 " files in your library are missing important metadata and consequently were removed from the output file ! " + 
                 "Please check the \"" + this->outputFileName + "\" file in the output folder for more informations.");
 
                 emit printLog("Unmolding \"" + this->warningsFileName + "\"...");
-                OutputHelper::writeAsJsonFile(warningsJSON, this->warningsFileName);
+                OutputHelper::writeAsJsonFile(&this->warnings, this->warningsFileName);
             } else {
                 std::remove(this->warningsFileName.c_str());
             }
 
             emit printLog("Unmolding \"" + this->outputFileName + "\"...");
-            OutputHelper::writeAsJsonFile(outputJSON, this->outputFileName);
+            OutputHelper::writeAsJsonFile(&this->libAsJSON, this->outputFileName);
 
             emit printLog("OK, output file is ready for breakfast !");
         }
@@ -78,8 +76,9 @@ class FeederWorker : public ITNZWorker {
         int recCount;
         int expectedCount;
         nlohmann::json libAsJSON;
-        const vector<string> requiredAttrs = {"Track ID", "Track Number", "Year", "Name", "Album Artist", "Album", "Genre", "Date Added"};
-        const vector<string> ucwordsAttrs = {"Album Artist", "Album", "Genre"};
+        nlohmann::json warnings;
+        const set<string> requiredAttrs = {"Track ID", "Track Number", "Year", "Name", "Album Artist", "Album", "Genre", "Date Added"};
+        const set<string> ucwordsAttrs = {"Album Artist", "Album", "Genre"};
         const string xPathExtractQuery = "/plist/dict/key[.='Tracks']/following-sibling::*[1]";
 
         void processFile(string xmlFileLocation) {
@@ -163,21 +162,53 @@ class FeederWorker : public ITNZWorker {
         }
 
         //standardize
-        nlohmann::json* standardizeJSON() {
+        void standardizeJSON() {
             
             emit printLog("Pre-digesting XML file...");
+            
+            this->warnings = {}; 
+            set<string> tracksIdToRemove = {};
+            
+            //through each tracks
+            for(auto track : this->libAsJSON.items()) {
+                
+                set<string> toRemove = {};
+                set<string> foundRequired = {};
 
-            nlohmann::json output = {};
-            nlohmann::json warnings = {};
+                //iterate through properties
+                for(auto prop : track.value().items()) {
+                    string k = prop.key();
+                    string v = prop.value();
+                    
+                    //check presence of required attrs
+                    if (this->requiredAttrs.find(k) == this->requiredAttrs.end()) {
+                        if (k != "Disc Number") toRemove.insert(k); //dont remove optional values !
+                    } else {
+                        foundRequired.insert(k);
+                    }
+                }
 
-            // for(nlohmann::json track : this->libAsJSON) {
-            //     for(nlohmann::json prop : track) {
+                //check required attrs, else go warnings
+                set<string> missingAttrs;
+                set_difference(
+                    this->requiredAttrs.begin(), this->requiredAttrs.end(), 
+                    foundRequired.begin(), foundRequired.end(),
+                    inserter(missingAttrs, missingAttrs.end())
+                );
+                if (missingAttrs.size()) {
+                    this->warnings.push_back({track.value()["Location"], missingAttrs});
+                    tracksIdToRemove.insert(track.key());
+                }
 
-            //     }
-            // }
+                //remove useless props
+                for(auto ktr : toRemove) track.value().erase(ktr);
 
-            //return {output, warnings};
-            //return this->libAsJSON;
+                //set optionnal values default
+                if (track.value()["Disc Number"] == nullptr) track.value()["Disc Number"] = "1";
+            }
+
+            //remove tracks with warnings
+            for(auto idtr : tracksIdToRemove) this->libAsJSON.erase(idtr);
         }
 
         ///

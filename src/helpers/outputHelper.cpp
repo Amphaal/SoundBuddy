@@ -15,11 +15,18 @@ class OutputHelper {
 
             //write outputfile
             static void writeAsJsonFile(nlohmann::json *obj, std::string filePath) {
-                std::fstream streamHandler;
+                
+                //dump as string          
+                std::string result = obj->dump();
+
+                //get all path
                 boost::filesystem::path outP(filePath);
                 outP = boost::filesystem::absolute(outP);
+                boost::filesystem::create_directory(outP.parent_path()); //create dir if not exist
+
+                //save on path
+                std::fstream streamHandler;
                 streamHandler.open(outP.c_str(), std::fstream::out);
-                std::string result = obj->dump();
                 streamHandler << result << std::endl;
                 streamHandler.close();
             }
