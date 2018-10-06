@@ -18,7 +18,7 @@ class StringHelper {
 
         static string ucwords(string input) {
             input[0] = toupper(input[0]);
-            for (int i = 1; i < input.length; i++)
+            for (int i = 1; i < input.length(); i++)
             {   
                 if (input[i - 1] == ' ') input[i] = toupper(input[i]);
                 else tolower(input[i]);
