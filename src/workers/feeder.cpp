@@ -101,7 +101,12 @@ class FeederWorker : public ITNZWorker {
         //upload
         void uploadLibToServer() {
             emit printLog("Let's try to send now !");
-            ohLib.uploadFile();
+            string response = ohLib.uploadFile();
+            if (response != "") {
+                emit printLog("Server responded: " + response);
+            } else {
+                emit printLog("No feedback from the server ? Strange... Please check the targeted host.");
+            }
         }
 
 
