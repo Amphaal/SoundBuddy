@@ -7,7 +7,7 @@
 
 #include "../../helpers/configHelper.cpp"
 #include "TemplateTab.cpp"
-#include "../../workers/shout.cpp"
+#include "../../workers/shout/shout.h"
 
 class ShoutTab : public TemplateTab {
     

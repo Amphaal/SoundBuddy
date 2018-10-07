@@ -60,7 +60,7 @@ class FeederWorker : public ITNZWorker {
             emit printLog("WARNING ! Make sure you activated the XML file sharing in iTunes>Preferences>Advanced.");
 
             try {
-                //this->generateLibJSONFile();
+                this->generateLibJSONFile();
                 this->uploadLibToServer();
             } catch (const std::exception& e) {
                 emit printLog(e.what());
@@ -247,6 +247,13 @@ class FeederWorker : public ITNZWorker {
 
             //remove tracks with warnings
             for(auto idtr : tracksIdToRemove) this->libAsJSON.erase(idtr);
+
+            //remove ids
+            nlohmann::json temp = this->libAsJSON;
+            this->libAsJSON = {};
+            for(auto track : temp.items()) {
+                this->libAsJSON.push_back(track.value());
+            }
         }
 
         ///
