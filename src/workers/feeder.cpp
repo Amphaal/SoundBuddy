@@ -19,13 +19,42 @@ using namespace boost;
 using namespace std;
 using namespace pugi;
 
+///
+/// Exceptions
+///
+
+class FTNZXMLLibFileUnreadableException : public std::exception {      
+    const char * what () const throw ()
+    {
+        return "Cannot read the XML file bound to your library. Are you sure you activated the XML file sharing in iTunes ?";
+    }
+};
+
+class FTNZMissingItunesConfigException : public std::exception {      
+    const char * what () const throw ()
+    {
+        return "An issue happened while fetching iTunes's XML file location. Have you installed iTunes ?";
+    }
+};
+
+class FTNZNoMusicFoundException : public std::exception {      
+    const char * what () const throw ()
+    {
+        return "No music found in your library. Please feed it some.";
+    }
+};
+
+///
+/// End Exceptions
+///
+
 class FeederWorker : public ITNZWorker {
 
     const string outputFileName = "output\\output.json";
     const string warningsFileName = "output\\warnings.json";
 
     public:
-		FeederWorker() {}
+		FeederWorker() : ohLib(this->outputFileName, "uploadLib", "wtnz_file"), ohWrn(this->warningsFileName) {}
 
         void run() override {
             emit printLog("WARNING ! Make sure you activated the XML file sharing in iTunes>Preferences>Advanced.");
@@ -41,26 +70,29 @@ class FeederWorker : public ITNZWorker {
 
     private:
 
+        OutputHelper ohLib;
+        OutputHelper ohWrn;
+
         //generate files
         void generateLibJSONFile() {
             auto itnzLibPath = this->getITunesLibLocation();
             this->processFile(itnzLibPath);
 
             //check warnings
-            auto warningsCount = this->warnings.size();
+            auto warningsCount = this->libWarningsAsJSON.size();
             if (warningsCount) {
                 emit printLog("WARNING ! " + std::to_string(warningsCount)  + 
                 " files in your library are missing important metadata and consequently were removed from the output file ! " + 
                 "Please check the \"" + this->outputFileName + "\" file for more informations.");
 
                 emit printLog("Unmolding \"" + this->warningsFileName + "\"...");
-                OutputHelper::writeAsJsonFile(&this->warnings, this->warningsFileName);
+                this->ohWrn.writeAsJsonFile(&this->libWarningsAsJSON);
             } else {
                 std::remove(this->warningsFileName.c_str());
             }
 
             emit printLog("Unmolding \"" + this->outputFileName + "\"...");
-            OutputHelper::writeAsJsonFile(&this->libAsJSON, this->outputFileName);
+            this->ohLib.writeAsJsonFile(&this->libAsJSON);
 
             emit printLog("OK, output file is ready for breakfast !");
         }
@@ -69,7 +101,7 @@ class FeederWorker : public ITNZWorker {
         //upload
         void uploadLibToServer() {
             emit printLog("Let's try to send now !");
-            
+            ohLib.uploadFile();
         }
 
 
@@ -80,7 +112,7 @@ class FeederWorker : public ITNZWorker {
         size_t recCount;
         size_t expectedCount;
         nlohmann::json libAsJSON;
-        nlohmann::json warnings;
+        nlohmann::json libWarningsAsJSON;
         const set<string> requiredAttrs = {"Track ID", "Track Number", "Year", "Name", "Album Artist", "Album", "Genre", "Date Added"};
         const set<string> ucwordsAttrs = {"Album Artist", "Album", "Genre"};
         const string xPathExtractQuery = "/plist/dict/key[.='Tracks']/following-sibling::*[1]";
@@ -95,7 +127,7 @@ class FeederWorker : public ITNZWorker {
             try {
                 xml_parse_result result = doc.load_file(xmlFileLocation.c_str());
             } catch(...) {
-                throw "Cannot read the XML file bound to your library. Are you sure you activated the XML file sharing in iTunes ?";
+                return throw FTNZXMLLibFileUnreadableException();
             }
 
             xpath_node_set tracks = doc.select_nodes(xPathExtractQuery.c_str());
@@ -114,7 +146,7 @@ class FeederWorker : public ITNZWorker {
             auto target = nodesList->first().node().children();
             this->expectedCount = std::distance(target.begin(), target.end()) / 2;
             if (!this->expectedCount) {
-                throw "No music found in your library. Please feed it some.";
+                return throw FTNZNoMusicFoundException();
             }
 
             //iterate through
@@ -163,7 +195,7 @@ class FeederWorker : public ITNZWorker {
             
             emit printLog("Pre-digesting XML file...");
             
-            this->warnings = {}; 
+            this->libWarningsAsJSON = {}; 
             set<string> tracksIdToRemove = {};
             this->recCount = 0;
             this->expectedCount = this->libAsJSON.size();
@@ -195,7 +227,7 @@ class FeederWorker : public ITNZWorker {
                     inserter(missingAttrs, missingAttrs.end())
                 );
                 if (missingAttrs.size()) {
-                    this->warnings.push_back({track.value()["Location"], missingAttrs});
+                    this->libWarningsAsJSON.push_back({track.value()["Location"], missingAttrs});
                     tracksIdToRemove.insert(track.key());
                 }
 
@@ -240,7 +272,7 @@ class FeederWorker : public ITNZWorker {
 		        Plist::readPlist(pathToPrefs.c_str(), pListAsMap);
                 return pHelper->extractItunesLibLocationFromMap(&pListAsMap);
             } catch (...) {
-                throw "An issue happened while fetching iTunes's XML file location. Have you installed iTunes ?";
+                throw FTNZMissingItunesConfigException();
             }
         }
 

@@ -40,19 +40,27 @@ class TemplateTab : public QWidget {
             this->tButton->setEnabled(false);
             this->tEdit->setPlainText("");
             this->tEdit->setPalette(this->style()->standardPalette());
-
-            this->bThread = this->getWorkerThread();
-            connect(this->bThread, &QThread::finished,
-                    this, &TemplateTab::onThreadEnd);
-            connect(this->bThread, &ITNZWorker::printLog,
-                    this, &TemplateTab::printLog);
-            connect(this->bThread, &ITNZWorker::error,
-                    this, &TemplateTab::colorSwap);
             
-            this->bThread->start();
+            try {
+                
+                this->bThread = this->getWorkerThread();
+                connect(this->bThread, &QThread::finished,
+                        this, &TemplateTab::onThreadEnd);
+                connect(this->bThread, &ITNZWorker::printLog,
+                        this, &TemplateTab::printLog);
+                connect(this->bThread, &ITNZWorker::error,
+                        this, &TemplateTab::colorSwap);
+                
+                this->bThread->start();
+            
+            } catch (const std::exception& e) {
+                this->printLog(e.what());
+                this->colorSwap();
+                this->onThreadEnd();
+            }
         }
 
-        void printLog(const std::string &message, bool replacePreviousLine) {
+        void printLog(const std::string &message, bool replacePreviousLine = false) {
             
             //handle linefeeds in appending
             std::string messages = this->tEdit->toPlainText().toStdString();

@@ -6,6 +6,21 @@
 
 #include "platformHelper/platformHelper.h"
 
+///
+/// Exceptions
+///
+
+class FTNZMissingConfigValuesException : public std::exception {      
+    const char * what () const throw ()
+    {
+        return "Expected configuration values are missing. Please check the configuration file !";
+    }
+};
+
+///
+/// End Exceptions
+///
+
 class ConfigHelper {
     
     const std::string configFile = "config.json";
@@ -21,15 +36,18 @@ class ConfigHelper {
             this->pHelper.openFileInOS(this->configFile);
         }
 
-        void ensureConfigFileIsReadyForUpload() {
+        bool ensureConfigFileIsReadyForUpload() {
             nlohmann::json config = this->accessConfigRaw();
 
             //check required field presence and adds them if missing
             for (auto &rf : this->requiredConfigFields) {  
                 if (config[rf] == nullptr || config[rf] == "") {
-                    throw "Expected configuration values are missing. Please check the configuration file !";
+                    throw FTNZMissingConfigValuesException();
+                    return false;
                 }
             }
+
+            return true;
         }
 
         //get configuration data from file
