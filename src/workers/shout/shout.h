@@ -1,7 +1,10 @@
 #pragma once
-#include "base/ITNZWorker.h"
+#include "../base/ITNZWorker.h"
+#include <exception>
 
-class FeederWorker : public ITNZWorker {
-    bool mustListen = true;
-    void exit();
+class ShoutWorker : public ITNZWorker {
+    public:
+        bool mustListen = true;
+        void exit();
+        void run() override;
 };
