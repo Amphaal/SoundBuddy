@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #include <boost/filesystem.hpp>
 #include "nlohmann/json.hpp"

@@ -29,6 +29,15 @@ class TemplateTab : public QWidget {
                     this, &TemplateTab::startThread);
         }
 
+        bool isWorkerRunning() {
+            return this->bThread->isRunning();
+        }
+
+        void endThread() {
+            this->bThread->exit();
+            this->bThread->wait();
+        }
+
     protected:
         ITNZWorker *bThread;
         QBoxLayout *mainLayout;

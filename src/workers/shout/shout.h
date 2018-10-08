@@ -8,7 +8,7 @@
 
 class ShoutWorker : public ITNZWorker {
     public:
-        void exit();
+        void exit() override;
         void run() override;
         ShoutWorker();
     

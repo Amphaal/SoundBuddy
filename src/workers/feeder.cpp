@@ -68,6 +68,10 @@ class FeederWorker : public ITNZWorker {
             }
         }
 
+        void exit() override {
+
+        }
+
     private:
 
         OutputHelper ohLib;

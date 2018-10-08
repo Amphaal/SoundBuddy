@@ -1,12 +1,10 @@
 #pragma once
 
-#include "QtCore/QThread"
+#include "ITNZThread.h"
 
-class ITNZWorker : public QThread {
+class ITNZWorker : public ITNZThread {
     
-    Q_OBJECT
+    public:
+        virtual void exit() = 0;
 
-    signals:
-        void printLog(const std::string &message, bool replacePreviousLine = false);
-        void error();
 };

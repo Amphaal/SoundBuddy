@@ -52,6 +52,10 @@ void ShoutWorker::shoutToServer(nlohmann::json *incoming) {
     }
 };
 
+void ShoutWorker::exit() {
+    this->mustListen = false;
+}
+
 #ifdef __APPLE__
     #include "shout.mac.cpp"
 #endif

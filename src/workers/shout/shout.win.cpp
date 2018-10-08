@@ -1,9 +1,22 @@
 #include "shout.h"
-#include "../../../libs/itunescom/iTunesCOMInterface.h"
+#include "../../../libs/itunescom/iTunesEventHandler.cpp"
 
-#include <atlbase.h>  
-#include <atlcom.h>  
-#include <stdio.h>  
+#include <windows.h>
+
+class ITunesEventsSink : public iTunesEventHandler {  
+    public:  
+
+        HRESULT OnPlayerPlayEvent(VARIANT iTrack) override {
+            return 0;
+        }  
+        HRESULT OnPlayerStopEvent(VARIANT iTrack) override {
+            return 0;
+        }  
+        HRESULT OnAboutToPromptUserToQuitEvent() override {
+            return 0;
+        } 
+}; 
+
 
 void ShoutWorker::run() {
     emit this->printLog("Waiting for iTunes to launch...");
@@ -12,33 +25,32 @@ void ShoutWorker::run() {
     HRESULT  hRes;
     IiTunes* iITunes;
     
+    //instanciate COM Object
     hRes = ::CoCreateInstance(CLSID_iTunesApp, NULL, CLSCTX_LOCAL_SERVER, IID_IiTunes, (PVOID *)&iITunes);
-    ITunesEventsSink sink;
-
-    // while(this->mustListen) {
-    //     try {
-            
-    //     } catch (const std::exception& e) {
-    //         emit printLog(e.what());
-    //         emit error();
-    //     }
-    // }
     
+    //bind iTunes events to sink
+    ITunesEventsSink *sink = new ITunesEventsSink();
+    DWORD adviseCookie; 
+    IConnectionPoint* iITunesEventsConnectionPoint; 
+    IConnectionPointContainer* iITunesConnectionPointContainer;   
+    iITunes->QueryInterface(IID_IConnectionPointContainer, (void**)&iITunesConnectionPointContainer);   
+    iITunesConnectionPointContainer->FindConnectionPoint(DIID__IiTunesEvents, &iITunesEventsConnectionPoint);   
+    iITunesEventsConnectionPoint->Advise(sink, &adviseCookie);   
+    iITunesConnectionPointContainer->Release();   
+
+    //wait for events to trigger
+    while(this->mustListen) {
+        try {
+            Sleep(1000);
+        } catch (const std::exception& e) {
+            emit printLog(e.what());
+        }
+    }
+
+    //unplug COM
+    iITunesEventsConnectionPoint->Unadvise(adviseCookie);
+    iITunesEventsConnectionPoint->Release();
+    iITunes->Release();
     CoUninitialize();
     emit this->printLog("Stopped listening to iTunes.");
 };
-
-[module(name="EventReceiver")];  
-[event_receiver(com)]  
-class ITunesEventsSink {  
-    public:  
-        HRESULT OnPlayerPlayEvent(VARIANT iTrack) {  // name and signature matches MyEvent1  
-            ...  
-        }  
-        HRESULT OnPlayerStopEvent(VARIANT iTrack) {  // signature doesn't match MyEvent2  
-            ...  
-        }  
-        HRESULT OnAboutToPromptUserToQuitEvent() {  // name doesn't match MyEvent1 (or 2)  
-            ...  
-        }  
-};  

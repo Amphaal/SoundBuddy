@@ -27,7 +27,7 @@ SET(FEEDTNZ_ENTRYPOINT src/feedtnz.cpp)
     
 #platform specfic
 list(APPEND FEEDTNZ_ENTRYPOINT src/helpers/platformHelper/platformHelper.cpp)
-list(APPEND FEEDTNZ_ENTRYPOINT src/workers/base/ITNZWorker.h)
+list(APPEND FEEDTNZ_ENTRYPOINT src/workers/base/ITNZThread.h)
 list(APPEND FEEDTNZ_ENTRYPOINT src/workers/shout/shout.cpp)
 
 #add libs
@@ -48,7 +48,7 @@ if (WIN32)
     list(APPEND FEEDTNZ_ENTRYPOINT 
         libs/itunescom/iTunesCOMInterface_i.c
     )
-
+ 
     #add icon
     SET(FEEDTNZ_ICO_WIN src/resources/resources.rc)
 

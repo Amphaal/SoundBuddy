@@ -9,6 +9,7 @@
 #include "QtWidgets/QMenu"
 #include "QtWidgets/QAction"
 #include "QtWidgets/QSystemTrayIcon"
+#include "QtWidgets/QMessageBox"
 #include "QtGui/QCloseEvent"
 #include "QtGui/QHideEvent"
 #include "QtGui/QIcon"
@@ -38,6 +39,7 @@ class MainWindow : public QMainWindow {
         QFileSystemWatcher *watcher;
         string wtnzUrl;
         PlatformHelper pHelper;
+        ShoutTab *shoutTab;
     
         ///
         ///UI instanciation
@@ -52,7 +54,7 @@ class MainWindow : public QMainWindow {
 
         void _initUITabs() {
             QTabWidget *tabs = new QTabWidget;
-            ShoutTab *shoutTab = new ShoutTab(tabs, &this->helper, this->config);
+            this->shoutTab = new ShoutTab(tabs, &this->helper, this->config);
             FeederTab *feedTab = new FeederTab(tabs);
 
             tabs->addTab(shoutTab, "Shout!");
@@ -189,6 +191,21 @@ class MainWindow : public QMainWindow {
                     return this->trueHide(event);
                 }
             #endif
+
+            //if running shout thread
+            if(this->shoutTab->isWorkerRunning()) {
+                auto msgboxRslt = QMessageBox::warning(this, QString("Shout running !"), 
+                            QString("Shouts are actually been uploaded. Are you sure you want to exit ?"), 
+                            QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+                
+                if(msgboxRslt == QMessageBox::Yes) {
+                    //makes sure to wait for shoutThread to end. Limits COM app retention on Windows
+                    this->shoutTab->endThread();
+                } else {
+                    event->ignore();
+                    return;
+                }
+            }
 
             //hide trayicon on shutdown for Windows, refereshes the UI frames of system tray
             this->trayIcon->hide();
