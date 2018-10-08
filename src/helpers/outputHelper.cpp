@@ -72,6 +72,13 @@ class OutputHelper {
             map<string, string> uploadPostData;
             string uploadFileName;
 
+            //upload response reader
+            static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp)
+            {
+                ((std::string*)userp)->append((char*)contents, size * nmemb);
+                return size * nmemb;
+            }
+
         public:
             OutputHelper(std::string filePath, std::string targetFunction = "", std::string uploadFileName = "") : uploadFileName(uploadFileName), pathToFile(filePath) {
                 
@@ -162,12 +169,5 @@ class OutputHelper {
 
                 curl_global_cleanup(); /* always cleanup */ 
                 return response;
-            }
-
-            //upload response reader
-            static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp)
-            {
-                ((std::string*)userp)->append((char*)contents, size * nmemb);
-                return size * nmemb;
             }
 };
