@@ -30,12 +30,16 @@ void ShoutWorker::run() {
     
     //bind iTunes events to sink
     ITunesEventsSink *sink = new ITunesEventsSink();
-    DWORD adviseCookie; 
+    
     IConnectionPoint* iITunesEventsConnectionPoint; 
     IConnectionPointContainer* iITunesConnectionPointContainer;   
-    iITunes->QueryInterface(IID_IConnectionPointContainer, (void**)&iITunesConnectionPointContainer);   
-    iITunesConnectionPointContainer->FindConnectionPoint(DIID__IiTunesEvents, &iITunesEventsConnectionPoint);   
-    iITunesEventsConnectionPoint->Advise(sink, &adviseCookie);   
+    
+    HRESULT paa = iITunes->QueryInterface(IID_IConnectionPointContainer, (void**)&iITunesConnectionPointContainer);   
+    HRESULT p = iITunesConnectionPointContainer->FindConnectionPoint(DIID__IiTunesEvents, &iITunesEventsConnectionPoint);   
+    
+    DWORD adviseCookie; 
+    HRESULT popo = iITunesEventsConnectionPoint->Advise(sink, &adviseCookie);  
+
     iITunesConnectionPointContainer->Release();   
 
     //wait for events to trigger
