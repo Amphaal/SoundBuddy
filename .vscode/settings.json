@@ -111,6 +111,10 @@
         "qscrollbar": "cpp",
         "*.moc": "cpp",
         "qthread": "cpp",
-        "qstyle": "cpp"
+        "qstyle": "cpp",
+        "qaxbase": "cpp",
+        "qaxobject": "cpp",
+        "qmetaobject": "cpp",
+        "qmetamethod": "cpp"
     }
 }

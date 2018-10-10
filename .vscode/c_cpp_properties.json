@@ -20,7 +20,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${env:HOMEPATH}/.conan/data/**",
-                "${env:SYSTEMDRIVE}/.conan/**"
+                "${env:SYSTEMDRIVE}/.conan/q4kpxl0r/1/include/**",
+                "${env:SYSTEMDRIVE}/.conan/3pxeq5ez/1/include/**"
             ],
             "defines": [
                 "_DEBUG",

@@ -18,6 +18,7 @@ conan_basic_setup(KEEP_RPATHS)
 # Find the QtCore library
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Core REQUIRED)
+SET(QT_LIBS_TO_INCLUDE Qt5::Widgets Qt5::Core)
 
 add_definitions(-DBOOST_ERROR_CODE_HEADER_ONLY)
 
@@ -49,6 +50,14 @@ if (WIN32)
         libs/itunescom/iTunesCOMInterface_i.c
     )
  
+    #COM Qt libs
+    find_package(Qt5AxBase REQUIRED)
+    find_package(Qt5AxContainer REQUIRED)
+    list(APPEND QT_LIBS_TO_INCLUDE 
+        Qt5::AxBase
+        Qt5::AxContainer
+    )
+
     #add icon
     SET(FEEDTNZ_ICO_WIN src/resources/resources.rc)
 
@@ -73,7 +82,7 @@ endif (APPLE)
 add_executable(${PROJECT_NAME} ${FEEDTNZ_BUNDLE_TYPE} ${FEEDTNZ_ENTRYPOINT} ${FEEDTNZ_RES} ${FEEDTNZ_ICO_WIN}) 
 
 #add libs
-target_link_libraries(${PROJECT_NAME} ${CONAN_LIBS} Qt5::Widgets Qt5::Core)
+target_link_libraries(${PROJECT_NAME} ${CONAN_LIBS} ${QT_LIBS_TO_INCLUDE})
 
 
 if (APPLE)

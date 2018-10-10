@@ -8,6 +8,9 @@ libcurl/7.61.1@bincrafters/stable
 [generators]
 cmake
 
+[options]
+Qt:qtactiveqt=True
+
 [imports]
 
 #WINDOWS
