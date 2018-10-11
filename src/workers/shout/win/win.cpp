@@ -93,7 +93,7 @@ void ShoutWorker::run() {
     }
 
     //clear COM usage
-    iITunes->shoutHelper();
+    sink->shoutHelper();
     iITunes->clear(); 
     CoUninitialize();
 
