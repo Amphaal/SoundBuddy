@@ -16,18 +16,18 @@
 #include <QCoreApplication>
 
 void ShoutWorker::run() {
-
-    //prepare for process search...
-    DWORD pid;
-    HWND hWnd = FindWindowA(0, "iTunes.exe");
     
     //start with log
     emit this->printLog("Waiting for iTunes to launch...");
+    HWND iTunesWindowsHandler;
 
     do {
+        
+        //prepare for process search...
+        iTunesWindowsHandler = FindWindowA(0, "iTunes");
+
         //search for iTunes...
-        GetWindowThreadProcessId(hWnd, &pid);
-        if(pid) {
+        if(iTunesWindowsHandler != NULL) {
 
             //initiate COM object
             CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
@@ -53,7 +53,18 @@ void ShoutWorker::run() {
             iITunes->clear(); 
             CoUninitialize();
 
-            if(handler->iTunesShutdownRequested && this->mustListen) {
+            //if iTunes is shutting down...
+            if(this->mustListen && handler->iTunesShutdownRequested) {
+                
+                emit this->printLog("iTunes shutting down !");
+
+                //wait for itunes to finally shutdown
+                do {
+                    iTunesWindowsHandler = FindWindowA(0, "iTunes");
+                    if(iTunesWindowsHandler != NULL) Sleep(1000);
+                } while(this->mustListen && iTunesWindowsHandler != NULL);
+                
+
                 emit this->printLog("Waiting for iTunes to launch again...");
             }
 
@@ -61,7 +72,7 @@ void ShoutWorker::run() {
             //if not found, wait and retry
             Sleep(1000);
         }
-    } while (!pid || this->mustListen);
+    } while (this->mustListen);
 
     //end with log
     emit this->printLog("Stopped listening to iTunes.");

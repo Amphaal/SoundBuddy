@@ -194,8 +194,8 @@ class MainWindow : public QMainWindow {
 
             //if running shout thread
             if(this->shoutTab->isWorkerRunning()) {
-                auto msgboxRslt = QMessageBox::warning(this, QString("Shout running !"), 
-                            QString("Shouts are actually been uploaded. Are you sure you want to exit ?"), 
+                auto msgboxRslt = QMessageBox::warning(this, QString("Shout worker running !"), 
+                            QString("Shout worker is actually running : Are you sure you want to exit ?"), 
                             QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
                 
                 if(msgboxRslt == QMessageBox::Yes) {
