@@ -136,7 +136,7 @@ class MainWindow : public QMainWindow {
             QFileSystemWatcher *watcher = new QFileSystemWatcher(QStringList(f.c_str()), this);
             this->watcher = watcher;
             
-            connect(watcher, &QFileSystemWatcher::fileChanged,
+            QObject::connect(watcher, &QFileSystemWatcher::fileChanged,
                     this, &MainWindow::updateMenuItems);
         }
 

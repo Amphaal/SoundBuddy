@@ -21,6 +21,7 @@ find_package(Qt5Core REQUIRED)
 SET(QT_LIBS_TO_INCLUDE Qt5::Widgets Qt5::Core)
 
 add_definitions(-DBOOST_ERROR_CODE_HEADER_ONLY)
+SET(Q_QDOC TRUE)
 
 #set resrouces 
 SET(FEEDTNZ_RES src/resources/resources.qrc)

@@ -25,7 +25,7 @@ class ShoutTab : public TemplateTab {
             
             this->tButton->setText(QString("Connect to iTunes"));
 
-            connect(this->checkAutoLaunch, &QCheckBox::stateChanged,
+            QObject::connect(this->checkAutoLaunch, &QCheckBox::stateChanged,
             this, &ShoutTab::changeAutoLaunch);
 
             this->mainLayout->addWidget(this->tEdit);

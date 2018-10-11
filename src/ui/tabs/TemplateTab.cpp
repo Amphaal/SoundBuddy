@@ -25,7 +25,7 @@ class TemplateTab : public QWidget {
         tButton(new QPushButton(this)) {
             this->tEdit->setReadOnly(true);
 
-            connect(this->tButton, &QPushButton::clicked,
+            QObject::connect(this->tButton, &QPushButton::clicked,
                     this, &TemplateTab::startThread);
         }
 
@@ -53,11 +53,11 @@ class TemplateTab : public QWidget {
             try {
                 
                 this->bThread = this->getWorkerThread();
-                connect(this->bThread, &QThread::finished,
+                QObject::connect(this->bThread, &QThread::finished,
                         this, &TemplateTab::onThreadEnd);
-                connect(this->bThread, &ITNZWorker::printLog,
+                QObject::connect(this->bThread, &ITNZWorker::printLog,
                         this, &TemplateTab::printLog);
-                connect(this->bThread, &ITNZWorker::error,
+                QObject::connect(this->bThread, &ITNZWorker::error,
                         this, &TemplateTab::colorSwap);
                 
                 this->bThread->start();

@@ -115,6 +115,10 @@
         "qaxbase": "cpp",
         "qaxobject": "cpp",
         "qmetaobject": "cpp",
-        "qmetamethod": "cpp"
+        "qmetamethod": "cpp",
+        "qjsonvalue": "cpp",
+        "qmetaproperty": "cpp",
+        "cstdarg": "cpp",
+        "unordered_set": "cpp"
     }
 }
