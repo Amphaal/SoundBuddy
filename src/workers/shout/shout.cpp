@@ -57,8 +57,8 @@ void ShoutWorker::exit() {
 }
 
 #ifdef __APPLE__
-    #include "shout.mac.cpp"
+    #include "mac/mac.cpp"
 #endif
 #ifdef _WIN32
-    #include "shout.win.cpp"
+    #include "win/win.cpp"
 #endif

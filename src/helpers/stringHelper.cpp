@@ -25,4 +25,8 @@ class StringHelper {
             }
             return input;
         }
+
+        static string boolToString(bool val) {
+             return val ? "true" : "false";
+        }
 };
