@@ -3,7 +3,7 @@
 
 #include "../shout.h" 
 
-class ITunesEventsSink : public QObject {
+class iTunesCOMHandler : public QObject {
  
     Q_OBJECT
     
@@ -18,6 +18,7 @@ class ITunesEventsSink : public QObject {
         void OnPlayerStopEvent(QVariant iTrack);  
 
     public:  
-        ITunesEventsSink(QAxObject *iTunesObj, ShoutWorker *worker);
+        iTunesCOMHandler(QAxObject *iTunesObj, ShoutWorker *worker);
         void shoutHelper(QVariant iTrack = NULL);
+        bool iTunesShutdownRequested = false;
 };

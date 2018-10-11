@@ -48,7 +48,7 @@ if (WIN32)
     #add libs specific to win
     list(APPEND FEEDTNZ_ENTRYPOINT 
         libs/itunescom/iTunesCOMInterface_i.c
-        src/workers/shout/win/iTunesEventsSink.h
+        src/workers/shout/win/iTunesCOMHandler.cpp
     )
  
     #COM Qt libs
