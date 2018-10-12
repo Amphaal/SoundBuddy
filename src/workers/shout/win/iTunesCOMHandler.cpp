@@ -49,7 +49,7 @@ void iTunesCOMHandler::shoutHelper(QVariant iTrack) {
     auto tAlbum = trackObj->property("Album").value<QString>().toStdString();
     auto tArtist = trackObj->property("Artist").value<QString>().toStdString();
     auto tGenre = trackObj->property("Genre").value<QString>().toStdString();
-    auto tDuration = trackObj->property("Duration").value<QString>().toStdString();
+    auto iDuration = trackObj->property("Duration").value<int>();
     auto iPlayerPos = this->iTunesObj->property("PlayerPosition").value<int>();
     auto iPlayerState = this->iTunesObj->property("PlayerState").value<bool>();
 
@@ -60,7 +60,7 @@ void iTunesCOMHandler::shoutHelper(QVariant iTrack) {
     }
 
     //shout !
-    this->worker->shoutFilled(tName, tAlbum, tArtist, tGenre, tDuration, iPlayerPos, iPlayerState);
+    this->worker->shoutFilled(tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState);
     
     //clear
     trackObj->clear();

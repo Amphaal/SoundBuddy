@@ -12,7 +12,7 @@ class ShoutWorker : public ITNZWorker {
         void exit() override;
         void run() override;  
         void shoutEmpty();
-        void shoutFilled(string name, string album, string artist, string genre, string duration, int playerPosition, bool playerState);
+        void shoutFilled(string name, string album, string artist, string genre, int duration, int playerPosition, bool playerState);
         
     private:
         bool mustListen = true;

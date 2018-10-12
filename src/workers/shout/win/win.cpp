@@ -45,7 +45,7 @@ void ShoutWorker::run() {
             //process events
             while(this->mustListen && !handler->iTunesShutdownRequested) {
                 QCoreApplication::processEvents();
-                Sleep(200);
+                this->msleep(200);
             }
 
             //clear COM usage
@@ -61,7 +61,7 @@ void ShoutWorker::run() {
                 //wait for itunes to finally shutdown
                 do {
                     iTunesWindowsHandler = FindWindowA(0, "iTunes");
-                    if(iTunesWindowsHandler != NULL) Sleep(1000);
+                    if(iTunesWindowsHandler != NULL) this->sleep(1);
                 } while(this->mustListen && iTunesWindowsHandler != NULL);
                 
 
@@ -70,7 +70,7 @@ void ShoutWorker::run() {
 
         } else {
             //if not found, wait and retry
-            Sleep(1000);
+            this->sleep(1);
         }
     } while (this->mustListen);
 

@@ -22,7 +22,7 @@ void ShoutWorker::shoutEmpty(){
     this->shoutToServer(&obj);
 };
 
-void ShoutWorker::shoutFilled(string name, string album, string artist, string genre, string duration, int playerPosition, bool playerState) {
+void ShoutWorker::shoutFilled(string name, string album, string artist, string genre, int duration, int playerPosition, bool playerState) {
     
     //fill obj
     nlohmann::json obj = this->createBasicShout();
