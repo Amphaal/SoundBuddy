@@ -1,7 +1,7 @@
 #include <string>
 #include "QtCore/QString"
 
-#include "TemplateTab.cpp"
+#include "base/TemplateTab.cpp"
 #include "../../workers/feeder.cpp"
 
 class FeederTab : public TemplateTab {
@@ -18,7 +18,5 @@ class FeederTab : public TemplateTab {
             this->mainLayout->addWidget(this->tEdit);
             this->mainLayout->addWidget(this->tButton);
         }
-
-    private:
     
 };

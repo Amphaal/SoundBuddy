@@ -48,6 +48,6 @@
             if(b % 2 == 0) rAsString += rAsVector[b];
         }
         return rAsString;
-    }
+    };
 
 #endif

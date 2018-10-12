@@ -6,7 +6,7 @@
 #include "nlohmann/json.hpp"
 
 #include "../../helpers/configHelper.cpp"
-#include "TemplateTab.cpp"
+#include "base/TemplateTab.cpp"
 #include "../../workers/shout/shout.h"
 
 class ShoutTab : public TemplateTab {

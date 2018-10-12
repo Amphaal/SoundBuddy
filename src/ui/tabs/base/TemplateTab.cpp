@@ -9,8 +9,8 @@
 #include "QtWidgets/QScrollBar"
 #include <QStyle>
 
-#include "../../workers/base/ITNZWorker.h"
-#include "../../helpers/stringHelper.cpp"
+#include "../../../workers/base/ITNZWorker.h"
+#include "../../../helpers/stringHelper.cpp"
 
 using namespace std;
 
@@ -30,6 +30,7 @@ class TemplateTab : public QWidget {
         }
 
         bool isWorkerRunning() {
+            if (this->bThread == NULL) return false;
             return this->bThread->isRunning();
         }
 
