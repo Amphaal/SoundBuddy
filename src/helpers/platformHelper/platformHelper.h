@@ -10,6 +10,6 @@ class PlatformHelper
         void openFileInOS(std::string cpURL);
         void openUrlInBrowser(std::string cpURL);
         std::string getITunesPrefFileProbableLocation();
-        std::string getenv(char* variable);
+        std::string getEnvironmentVariable(const char* variable);
         std::string extractItunesLibLocationFromMap(std::map<std::string, boost::any> *pListAsMap);
 };

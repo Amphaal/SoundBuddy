@@ -81,7 +81,7 @@ class OutputHelper {
             }
 
         public:
-            OutputHelper(std::string filePath, std::string targetFunction = "", std::string uploadFileName = "") : uploadFileName(uploadFileName), pathToFile(filePath) {
+            OutputHelper(std::string filePath, std::string targetFunction = "", std::string uploadFileName = "") : pathToFile(filePath), uploadFileName(uploadFileName) {
                 
                 this->pathToFile = boost::filesystem::absolute(this->pathToFile);
                 

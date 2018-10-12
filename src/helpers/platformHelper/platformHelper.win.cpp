@@ -20,7 +20,7 @@
         ShellExecuteA(NULL, "open", cpURL.c_str(), NULL, NULL, SW_SHOWNORMAL);
     };
 
-    string PlatformHelper::getenv(char* variable) {
+    string PlatformHelper::getEnvironmentVariable(const char* variable) {
         char* buf = nullptr;
         size_t sz = 0;
         if (_dupenv_s(&buf, &sz, variable) == 0 && buf != nullptr)
@@ -34,7 +34,7 @@
     };
     
     string PlatformHelper::getITunesPrefFileProbableLocation() {
-        return PlatformHelper::getenv("APPDATA") + string("\\Apple Computer\\Preferences\\com.apple.iTunes.plist");
+        return this->getEnvironmentVariable("APPDATA") + string("\\Apple Computer\\Preferences\\com.apple.iTunes.plist");
     };
 
     string PlatformHelper::extractItunesLibLocationFromMap(map<string, any> *pListAsMap) {

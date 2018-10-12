@@ -134,7 +134,7 @@ class FeederWorker : public ITNZWorker {
             //open file and dig into tracks
             xml_document doc;
             try {
-                xml_parse_result result = doc.load_file(xmlFileLocation.c_str());
+                doc.load_file(xmlFileLocation.c_str());
             } catch(...) {
                 return throw FTNZXMLLibFileUnreadableException();
             }
@@ -160,16 +160,16 @@ class FeederWorker : public ITNZWorker {
 
             //iterate through
             for (xpath_node child : *nodesList) {
-                this->resursiveDict(&child.node());
+                this->resursiveDict(child.node());
             }
         }
 
         //inner recursive
-        string resursiveDict(xml_node *traversedNode, string pathToKey = "") {
+        string resursiveDict(xml_node traversedNode, string pathToKey = "") {
                 
                 //prepare 
-                string name = traversedNode->name();
-                string text = traversedNode->text().as_string();
+                string name = traversedNode.name();
+                string text = traversedNode.text().as_string();
                 
                 if (name == "key") {
                     
@@ -189,8 +189,8 @@ class FeederWorker : public ITNZWorker {
                 }
 
                 //traverse
-                for (xpath_node child : traversedNode->children()) {
-                    pathToKey = this->resursiveDict(&child.node(), pathToKey);
+                for (xpath_node child : traversedNode.children()) {
+                    pathToKey = this->resursiveDict(child.node(), pathToKey);
                 }
 
                 tracksEmitHelper();
