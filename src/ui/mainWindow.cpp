@@ -18,6 +18,7 @@
 #include "../helpers/platformHelper/platformHelper.h"
 #include "./tabs/ShoutTab.cpp"
 #include "./tabs/FeederTab.cpp"
+#include "../localization/i18n.cpp"
 
 class MainWindow : public QMainWindow {
    
@@ -83,17 +84,17 @@ class MainWindow : public QMainWindow {
 
         QMenu* _getMenu() {
 
-            QMenu *fileMenuItem = new QMenu("File");
+            QMenu *fileMenuItem = new QMenu(I18n::tr()->Menu_File());
 
             //monitorAction
-            QAction *monitorAction = new QAction("Open monitor...", fileMenuItem);
+            QAction *monitorAction = new QAction(I18n::tr()->Menu_OpenMonitor(), fileMenuItem);
             QObject::connect(
                 monitorAction, &QAction::triggered,
                 this, &MainWindow::trueShow
             );
 
             //myWTNZAction
-            QAction *myWTNZAction = new QAction("My WTNZ", fileMenuItem);
+            QAction *myWTNZAction = new QAction(I18n::tr()->Menu_MyWTNZ(), fileMenuItem);
             myWTNZAction->setEnabled(false);
             QObject::connect(
                 myWTNZAction, &QAction::triggered,
@@ -102,14 +103,14 @@ class MainWindow : public QMainWindow {
             this->myWTNZActions.push_back(myWTNZAction);
 
             //updateConfigAction
-            QAction *updateConfigAction = new QAction("Update configuration file", fileMenuItem);
+            QAction *updateConfigAction = new QAction(I18n::tr()->Menu_UpdateConfig(), fileMenuItem);
             QObject::connect(
                 updateConfigAction, &QAction::triggered,
                 this, &MainWindow::openConfigFile
             );
 
             //quit
-            QAction *quitAction = new QAction("Quit", fileMenuItem);
+            QAction *quitAction = new QAction(I18n::tr()->Menu_Quit(), fileMenuItem);
             QObject::connect(
                 quitAction, &QAction::triggered,
                 this, &MainWindow::forcedClose
@@ -194,8 +195,8 @@ class MainWindow : public QMainWindow {
 
             //if running shout thread
             if(this->shoutTab->isWorkerRunning()) {
-                auto msgboxRslt = QMessageBox::warning(this, QString("Shout worker running !"), 
-                            QString("Shout worker is actually running : Are you sure you want to exit ?"), 
+                auto msgboxRslt = QMessageBox::warning(this, QString(I18n::tr()->Alert_RunningWorker_Title()), 
+                            QString(I18n::tr()->Alert_RunningWorker_Text()), 
                             QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
                 
                 if(msgboxRslt == QMessageBox::Yes) {

@@ -3,6 +3,7 @@
 
 #include "base/TemplateTab.cpp"
 #include "../../workers/feeder.cpp"
+#include "../../localization/i18n.cpp"
 
 class FeederTab : public TemplateTab {
 
@@ -13,7 +14,7 @@ class FeederTab : public TemplateTab {
     public:
         FeederTab(QWidget *parent) : TemplateTab(parent) {
 
-            this->tButton->setText(QString("Generate Digest and Upload"));
+            this->tButton->setText(QString(I18n::tr()->Feeder_Button()));
 
             this->mainLayout->addWidget(this->tEdit);
             this->mainLayout->addWidget(this->tButton);

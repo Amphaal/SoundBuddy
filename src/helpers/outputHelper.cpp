@@ -6,6 +6,7 @@
 
 #include "platformHelper/platformHelper.h"
 #include "./configHelper.cpp"
+#include "../localization/i18n.cpp"
 
 using namespace std;
 
@@ -22,7 +23,7 @@ class FTNZNoOutputFileException : public std::exception {
     public:
         FTNZNoOutputFileException(std::string outputPathMissing) {
             std::string prepend = "\"";
-            std::string append = "\" does not exist. Please generate JSON before.";
+            std::string append = "\" " + std::string(I18n::tr()->FTNZNoOutputFileException());
 
             this->exceptionMessage = prepend + outputPathMissing + append;
         }
@@ -41,7 +42,7 @@ class FTNZOutputFileUnreadableException : public std::exception {
     public:
         FTNZOutputFileUnreadableException(std::string outputPathMissing) {
             std::string prepend = "\"";
-            std::string append = "\" cannot be read. Please regenerate it.";
+            std::string append = "\" "+ std::string(I18n::tr()->FTNZOutputFileUnreadableException());
             
 
             this->exceptionMessage = prepend + outputPathMissing + append;
@@ -58,7 +59,7 @@ class FTNZErrorUploadingException : public std::exception {
     public:
         const char* what() const throw ()
         {   
-            return "Error communicating with the remote server.";
+            return I18n::tr()->FTNZErrorUploadingException();
         }
 };
 

@@ -14,6 +14,7 @@
 #include "../helpers/platformHelper/platformHelper.h"
 #include "../helpers/stringHelper.cpp"
 #include "../helpers/outputHelper.cpp"
+#include "../localization/i18n.cpp"
 
 using namespace boost;
 using namespace std;
@@ -26,21 +27,21 @@ using namespace pugi;
 class FTNZXMLLibFileUnreadableException : public std::exception {      
     const char * what () const throw ()
     {
-        return "Cannot read the XML file bound to your library. Are you sure you activated the XML file sharing in iTunes ?";
+        return I18n::tr()->FTNZXMLLibFileUnreadableException();
     }
 };
 
 class FTNZMissingItunesConfigException : public std::exception {      
     const char * what () const throw ()
     {
-        return "An issue happened while fetching iTunes's XML file location. Have you installed iTunes ?";
+        return I18n::tr()->FTNZMissingItunesConfigException();
     }
 };
 
 class FTNZNoMusicFoundException : public std::exception {      
     const char * what () const throw ()
     {
-        return "No music found in your library. Please feed it some.";
+        return I18n::tr()->FTNZNoMusicFoundException();
     }
 };
 
@@ -57,7 +58,7 @@ class FeederWorker : public ITNZWorker {
 		FeederWorker() : ohLib(this->outputFileName, "uploadLib", "wtnz_file"), ohWrn(this->warningsFileName) {}
 
         void run() override {
-            emit printLog("WARNING ! Make sure you activated the XML file sharing in iTunes>Preferences>Advanced.");
+            emit printLog(I18n::tr()->Feeder_Warning());
 
             try {
                 this->generateLibJSONFile();
@@ -85,31 +86,29 @@ class FeederWorker : public ITNZWorker {
             //check warnings
             auto warningsCount = this->libWarningsAsJSON.size();
             if (warningsCount) {
-                emit printLog("WARNING ! " + std::to_string(warningsCount)  + 
-                " files in your library are missing important metadata and consequently were removed from the output file ! " + 
-                "Please check the \"" + this->outputFileName + "\" file for more informations.");
+                emit printLog(I18n::tr()->Feeder_Warning(warningsCount, this->outputFileName));
 
-                emit printLog("Unmolding \"" + this->warningsFileName + "\"...");
+                emit printLog(I18n::tr()->Feeder_Unmolding(this->warningsFileName));
                 this->ohWrn.writeAsJsonFile(&this->libWarningsAsJSON);
             } else {
                 std::remove(this->warningsFileName.c_str());
             }
 
-            emit printLog("Unmolding \"" + this->outputFileName + "\"...");
+            emit printLog(I18n::tr()->Feeder_Unmolding(this->outputFileName));
             this->ohLib.writeAsJsonFile(&this->libAsJSON);
 
-            emit printLog("OK, output file is ready for breakfast !");
+            emit printLog(I18n::tr()->Feeder_OutputReady());
         }
 
 
         //upload
         void uploadLibToServer() {
-            emit printLog("Let's try to send now !");
+            emit printLog(I18n::tr()->Feeder_StartSend());
             string response = ohLib.uploadFile();
             if (response != "") {
-                emit printLog("Server responded: " + response);
+                emit printLog(I18n::tr()->HTTP_ServerResponded(response));
             } else {
-                emit printLog("No feedback from the server ? Strange... Please check the targeted host.");
+                emit printLog(I18n::tr()->HTTP_NoResponse());
             }
         }
 
@@ -127,7 +126,7 @@ class FeederWorker : public ITNZWorker {
         const string xPathExtractQuery = "/plist/dict/key[.='Tracks']/following-sibling::*[1]";
 
         void processFile(string xmlFileLocation) {
-            emit printLog("Triming fat...");
+            emit printLog(I18n::tr()->Feeder_TrimingFat());
             this->recCount = 0;
             this->expectedCount = 0;
 
@@ -142,7 +141,7 @@ class FeederWorker : public ITNZWorker {
             xpath_node_set tracks = doc.select_nodes(xPathExtractQuery.c_str());
 
             //format to dict
-            emit printLog("Cooking the JSON file...");
+            emit printLog(I18n::tr()->Feeder_CookingJSON());
             this->generateJSON(&tracks);
             this->standardizeJSON();    
         }
@@ -202,7 +201,7 @@ class FeederWorker : public ITNZWorker {
         //standardize
         void standardizeJSON() {
             
-            emit printLog("Pre-digesting XML file...");
+            emit printLog(I18n::tr()->Feeder_PredigestXML());
             
             this->libWarningsAsJSON = {}; 
             set<string> tracksIdToRemove = {};
@@ -270,14 +269,13 @@ class FeederWorker : public ITNZWorker {
             this->recCount++;
             bool canLog = ((this->recCount % 100) == 0 && this->recCount <= this->expectedCount) || this->recCount == this->expectedCount || !mustReplacePrevious;
             if(canLog) {
-                string log = std::to_string(this->recCount)  + " over " + std::to_string(this->expectedCount) + "...";
-                emit printLog(log, mustReplacePrevious);
+                emit printLog(I18n::tr()->Feeder_LogTrackEmit(this->recCount, this->expectedCount), mustReplacePrevious);
             }
         }
 
         //seek in iTunes preference file the library location
         string getITunesLibLocation() {
-            emit printLog("Getting XML file location...");
+            emit printLog(I18n::tr()->Feeder_GetXMLFileLoc());
 
             PlatformHelper *pHelper = new PlatformHelper;
 

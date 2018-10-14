@@ -89,6 +89,6 @@ target_link_libraries(${PROJECT_NAME} ${CONAN_LIBS} ${QT_LIBS_TO_INCLUDE})
 if (APPLE)
 
     #add highdpi support via plist template
-    set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/build_templates/Info.plist.in)
+    set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/src/build_templates/Info.plist.in)
     
 endif (APPLE)
