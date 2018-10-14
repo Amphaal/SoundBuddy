@@ -25,24 +25,42 @@ using namespace pugi;
 ///
 
 class FTNZXMLLibFileUnreadableException : public std::exception {      
-    const char * what () const throw ()
-    {
-        return I18n::tr()->FTNZXMLLibFileUnreadableException();
-    }
+    private:
+        std::string exceptionMessage;
+
+    public:
+        FTNZXMLLibFileUnreadableException() {
+            this->exceptionMessage = I18n::tr()->FTNZXMLLibFileUnreadableException();
+        }
+        const char * what () const throw () {
+            return this->exceptionMessage.c_str();
+        }
 };
 
-class FTNZMissingItunesConfigException : public std::exception {      
-    const char * what () const throw ()
-    {
-        return I18n::tr()->FTNZMissingItunesConfigException();
-    }
+class FTNZMissingItunesConfigException : public std::exception {
+    private:
+        std::string exceptionMessage;
+    
+    public:
+        FTNZMissingItunesConfigException() {
+            this->exceptionMessage = I18n::tr()->FTNZMissingItunesConfigException();
+        }
+        const char * what () const throw () {
+            return this->exceptionMessage.c_str();
+        }
 };
 
-class FTNZNoMusicFoundException : public std::exception {      
-    const char * what () const throw ()
-    {
-        return I18n::tr()->FTNZNoMusicFoundException();
-    }
+class FTNZNoMusicFoundException : public std::exception {
+    private:
+        std::string exceptionMessage;
+    
+    public:
+        FTNZNoMusicFoundException() {
+            this->exceptionMessage = I18n::tr()->FTNZNoMusicFoundException();
+        }
+        const char * what () const throw () {
+            return this->exceptionMessage.c_str();
+        }
 };
 
 ///
@@ -86,7 +104,7 @@ class FeederWorker : public ITNZWorker {
             //check warnings
             auto warningsCount = this->libWarningsAsJSON.size();
             if (warningsCount) {
-                emit printLog(I18n::tr()->Feeder_Warning(warningsCount, this->outputFileName));
+                emit printLog(I18n::tr()->Feeder_NotifyWarningsExistence(warningsCount, this->outputFileName));
 
                 emit printLog(I18n::tr()->Feeder_Unmolding(this->warningsFileName));
                 this->ohWrn.writeAsJsonFile(&this->libWarningsAsJSON);

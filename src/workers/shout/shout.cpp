@@ -1,4 +1,5 @@
 #include "shout.h"
+#include "../../localization/i18n.cpp"
 
 ShoutWorker::ShoutWorker() : helper(OutputHelper(this->shoutFileName, "uploadShout", "shout_file")) {}
 
@@ -18,7 +19,7 @@ nlohmann::json ShoutWorker::createBasicShout() {
 
 void ShoutWorker::shoutEmpty(){
     nlohmann::json obj = this->createBasicShout();
-    emit this->printLog(obj["date"].get<string>() + ": Shouting -> Nothing");
+    emit this->printLog(I18n::tr()->Shout_Nothing(obj["date"].get<string>()));
     this->shoutToServer(&obj);
 };
 
@@ -35,9 +36,13 @@ void ShoutWorker::shoutFilled(string name, string album, string artist, string g
     obj["playerState"] = playerState;
 
     //log...
-    string pState = obj["playerState"].get<bool>() ? "playing" : "paused";
-    string logMessage = obj["date"].get<string>() + ": Shouting -> " + obj["name"].get<string>() + " - " +
-        obj["album"].get<string>() + " - " + obj["artist"].get<string>() + " (" + pState + ")";
+    string logMessage = I18n::tr()->Shout(
+        obj["date"].get<string>(),
+        obj["name"].get<string>(),
+        obj["album"].get<string>(),
+        obj["artist"].get<string>(),
+        obj["playerState"].get<bool>()
+    );
     emit this->printLog(logMessage);
 
     this->shoutToServer(&obj);

@@ -16,50 +16,41 @@ using namespace std;
 ///
 
 class FTNZNoOutputFileException : public std::exception {
-
     private:
         std::string exceptionMessage;
 
     public:
-        FTNZNoOutputFileException(std::string outputPathMissing) {
-            std::string prepend = "\"";
-            std::string append = "\" " + std::string(I18n::tr()->FTNZNoOutputFileException());
-
-            this->exceptionMessage = prepend + outputPathMissing + append;
+        FTNZNoOutputFileException(std::string outputPath) {
+            this->exceptionMessage = I18n::tr()->FTNZNoOutputFileException(outputPath);
         }
-
-        const char* what() const throw ()
-        {   
+        const char* what() const throw () {   
             return this->exceptionMessage.c_str();
         }
 };
 
 class FTNZOutputFileUnreadableException : public std::exception {
-
     private:
         std::string exceptionMessage;
 
     public:
-        FTNZOutputFileUnreadableException(std::string outputPathMissing) {
-            std::string prepend = "\"";
-            std::string append = "\" "+ std::string(I18n::tr()->FTNZOutputFileUnreadableException());
-            
-
-            this->exceptionMessage = prepend + outputPathMissing + append;
+        FTNZOutputFileUnreadableException(std::string outputPath) {
+            this->exceptionMessage = I18n::tr()->FTNZOutputFileUnreadableException(outputPath);
         }
-
-        const char* what() const throw ()
-        {   
+        const char* what() const throw () {   
             return this->exceptionMessage.c_str();
         }
 };
 
 class FTNZErrorUploadingException : public std::exception {
+    private:
+            std::string exceptionMessage;
 
     public:
-        const char* what() const throw ()
-        {   
-            return I18n::tr()->FTNZErrorUploadingException();
+        FTNZErrorUploadingException() {
+            this->exceptionMessage = I18n::tr()->FTNZErrorUploadingException();
+        }
+        const char* what() const throw () {   
+            return this->exceptionMessage.c_str();
         }
 };
 

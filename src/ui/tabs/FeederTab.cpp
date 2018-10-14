@@ -14,7 +14,7 @@ class FeederTab : public TemplateTab {
     public:
         FeederTab(QWidget *parent) : TemplateTab(parent) {
 
-            this->tButton->setText(QString(I18n::tr()->Feeder_Button()));
+            this->tButton->setText(QString(I18n::tr()->Feeder_Button().c_str()));
 
             this->mainLayout->addWidget(this->tEdit);
             this->mainLayout->addWidget(this->tButton);

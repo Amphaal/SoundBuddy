@@ -84,17 +84,17 @@ class MainWindow : public QMainWindow {
 
         QMenu* _getMenu() {
 
-            QMenu *fileMenuItem = new QMenu(I18n::tr()->Menu_File());
+            QMenu *fileMenuItem = new QMenu(I18n::tr()->Menu_File().c_str());
 
             //monitorAction
-            QAction *monitorAction = new QAction(I18n::tr()->Menu_OpenMonitor(), fileMenuItem);
+            QAction *monitorAction = new QAction(I18n::tr()->Menu_OpenMonitor().c_str(), fileMenuItem);
             QObject::connect(
                 monitorAction, &QAction::triggered,
                 this, &MainWindow::trueShow
             );
 
             //myWTNZAction
-            QAction *myWTNZAction = new QAction(I18n::tr()->Menu_MyWTNZ(), fileMenuItem);
+            QAction *myWTNZAction = new QAction(I18n::tr()->Menu_MyWTNZ().c_str(), fileMenuItem);
             myWTNZAction->setEnabled(false);
             QObject::connect(
                 myWTNZAction, &QAction::triggered,
@@ -103,14 +103,14 @@ class MainWindow : public QMainWindow {
             this->myWTNZActions.push_back(myWTNZAction);
 
             //updateConfigAction
-            QAction *updateConfigAction = new QAction(I18n::tr()->Menu_UpdateConfig(), fileMenuItem);
+            QAction *updateConfigAction = new QAction(I18n::tr()->Menu_UpdateConfig().c_str(), fileMenuItem);
             QObject::connect(
                 updateConfigAction, &QAction::triggered,
                 this, &MainWindow::openConfigFile
             );
 
             //quit
-            QAction *quitAction = new QAction(I18n::tr()->Menu_Quit(), fileMenuItem);
+            QAction *quitAction = new QAction(I18n::tr()->Menu_Quit().c_str(), fileMenuItem);
             QObject::connect(
                 quitAction, &QAction::triggered,
                 this, &MainWindow::forcedClose
@@ -195,8 +195,8 @@ class MainWindow : public QMainWindow {
 
             //if running shout thread
             if(this->shoutTab->isWorkerRunning()) {
-                auto msgboxRslt = QMessageBox::warning(this, QString(I18n::tr()->Alert_RunningWorker_Title()), 
-                            QString(I18n::tr()->Alert_RunningWorker_Text()), 
+                auto msgboxRslt = QMessageBox::warning(this, QString(I18n::tr()->Alert_RunningWorker_Title().c_str()), 
+                            QString(I18n::tr()->Alert_RunningWorker_Text().c_str()), 
                             QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
                 
                 if(msgboxRslt == QMessageBox::Yes) {

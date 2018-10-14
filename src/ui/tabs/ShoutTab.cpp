@@ -20,10 +20,10 @@ class ShoutTab : public TemplateTab {
     public:
         ShoutTab(QWidget *parent, ConfigHelper *helper, nlohmann::json config) : TemplateTab(parent), 
         helper(helper), config(config),
-        checkAutoLaunch(new QCheckBox(I18n::tr()->Shout_Autolaunch(), this))
+        checkAutoLaunch(new QCheckBox(I18n::tr()->Shout_Autolaunch().c_str(), this))
           {
             
-            this->tButton->setText(QString(I18n::tr()->Shout_Button()));
+            this->tButton->setText(QString(I18n::tr()->Shout_Button().c_str()));
 
             QObject::connect(this->checkAutoLaunch, &QCheckBox::stateChanged,
             this, &ShoutTab::changeAutoLaunch);

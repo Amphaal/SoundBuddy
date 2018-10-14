@@ -5,10 +5,11 @@
 
 #include "../shout.h" 
 #include "../../../helpers/stringHelper.cpp"
+#include "../../../localization/i18n.cpp"
 
 void ShoutWorker::run() { 
 
-    emit printLog("Listening to iTunes !");
+    emit printLog(I18n::tr()->Shout_StartListening());
 
     //define applescript to get shout values
     std::string script = 
@@ -90,5 +91,5 @@ void ShoutWorker::run() {
     }
 
     this->shoutEmpty();
-    emit printLog("Stopped listening.");
+    emit printLog(I18n::tr()->Shout_StopListening());
 }

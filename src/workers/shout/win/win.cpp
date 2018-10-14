@@ -1,7 +1,6 @@
 #include <windows.h>
 
-// #include "../../../libs/itunescom/iTunesEventHandler.cpp"
-#include "../../../libs/itunescom/iTunesCOMInterface.h"
+#include "../../../../libs/itunescom/iTunesCOMInterface.h"
 
 #include <ActiveQt/QAxBase>
 #include <ActiveQt/QAxObject>
@@ -9,6 +8,7 @@
 #include "../shout.h" 
 #include "iTunesCOMHandler.h"
 #include "../../../helpers/stringHelper.cpp"
+#include "../../../localization/i18n.cpp"
 
 #include <QMetaObject>
 #include <QMetaMethod>
@@ -18,7 +18,7 @@
 void ShoutWorker::run() {
     
     //start with log
-    emit this->printLog("Waiting for iTunes to launch...");
+    emit this->printLog(I18n::tr()->Shout_WaitITunes());
     HWND iTunesWindowsHandler;
 
     do {
@@ -28,6 +28,9 @@ void ShoutWorker::run() {
 
         //search for iTunes...
         if(iTunesWindowsHandler != NULL) {
+            
+            //log..
+            emit printLog(I18n::tr()->Shout_StartListening());
 
             //initiate COM object
             CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
@@ -56,7 +59,7 @@ void ShoutWorker::run() {
             //if iTunes is shutting down...
             if(this->mustListen && handler->iTunesShutdownRequested) {
                 
-                emit this->printLog("iTunes shutting down !");
+                emit this->printLog(I18n::tr()->Shout_ITunesShutdown());
 
                 //wait for itunes to finally shutdown
                 do {
@@ -65,7 +68,7 @@ void ShoutWorker::run() {
                 } while(this->mustListen && iTunesWindowsHandler != NULL);
                 
 
-                emit this->printLog("Waiting for iTunes to launch again...");
+                emit this->printLog(I18n::tr()->Shout_WaitITunesAgain());
             }
 
         } else {
@@ -75,5 +78,5 @@ void ShoutWorker::run() {
     } while (this->mustListen);
 
     //end with log
-    emit this->printLog("Stopped listening to iTunes.");
+    emit printLog(I18n::tr()->Shout_StopListening());
 };

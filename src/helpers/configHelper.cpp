@@ -5,16 +5,23 @@
 #include "nlohmann/json.hpp"
 
 #include "platformHelper/platformHelper.h"
+#include "../localization/i18n.cpp"
 
 ///
 /// Exceptions
 ///
 
-class FTNZMissingConfigValuesException : public std::exception {      
-    const char * what () const throw ()
-    {
-        return "Expected configuration values are missing. Please check the configuration file !";
-    }
+class FTNZMissingConfigValuesException : public std::exception {    
+    private:
+        std::string exceptionMessage;
+
+    public:
+        FTNZMissingConfigValuesException() {
+            this->exceptionMessage = I18n::tr()->FTNZMissingConfigValuesException();
+        }  
+        const char * what () const throw () {
+            return this->exceptionMessage.c_str();
+        }
 };
 
 ///
