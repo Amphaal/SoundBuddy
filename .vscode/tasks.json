@@ -9,7 +9,12 @@
         {
             "label": "Debug - 0. Create build folder",
             "type": "shell",
-            "command":  "rmdir buildDebug /s; mkdir buildDebug",
+            "windows": {
+                "command": "rm buildDebug -r -fo; mkdir buildDebug",
+            },
+            "osx": {
+                "command": "rm -rf buildDebug; mkdir buildDebug",
+            },
             "group": "test"
         },
         {
@@ -49,7 +54,12 @@
         {
             "label": "Release - 0. Create build folder",
             "type": "shell",
-            "command": "rmdir buildRelease /s; mkdir buildRelease",
+            "windows": {
+                "command": "rm buildRelease -r -fo; mkdir buildRelease",
+            },
+            "osx": {
+                "command": "rm -rf buildRelease; mkdir buildRelease",
+            },
             "group": "build"
         },
         {
