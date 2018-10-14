@@ -8,20 +8,20 @@
             "name": "Launch",
             "windows": {
                 "type": "cppvsdbg",
-                "program": "${workspaceFolder}/build/bin/feedtnz.exe",
+                "program": "${workspaceFolder}/buildDebug/bin/feedtnz.exe",
             },
             "osx": {
                 "MIMode": "lldb",
-                "program": "${workspaceFolder}/build/bin/FeedTNZ.app/Contents/MacOS/feedtnz",
+                "program": "${workspaceFolder}/buildDebug/bin/FeedTNZ.app/Contents/MacOS/feedtnz",
             },
             "type": "cppdbg",
             "request": "launch",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build/bin/",
+            "cwd": "${workspaceFolder}/buildDebug/bin/",
             "environment": [],
             "externalConsole": false,
-            "preLaunchTask": "build",
+            "preLaunchTask": "Debug - 3. Build"
         }
     ]
 }

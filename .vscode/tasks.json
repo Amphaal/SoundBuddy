@@ -3,17 +3,27 @@
     // for the documentation about the tasks.json format
     "version": "2.0.0",
     "options": {
-        "cwd": "${workspaceRoot}/build"
+        "cwd": "${workspaceRoot}"
     },
     "tasks": [
         {
-            "label": "1. Download Dependencies for Debug (conan)",
+            "label": "Debug - 0. Create build folder",
             "type": "shell",
-            "command": "conan install .. -s build_type=Debug --build missing",
+            "command":  "rmdir buildDebug; mkdir buildDebug",
             "group": "test"
         },
         {
-            "label": "2. Generate Project files (cmake)",
+            "label": "Debug - 1. Download Dependencies",
+            "type": "shell",
+            "command": "conan install .. -s build_type=Debug --build missing",
+            "group": "test",
+            "dependsOn" : "Debug - 0. Create build folder",
+            "options": {
+                "cwd": "${workspaceRoot}/buildDebug"
+            }
+        },
+        {
+            "label": "Debug - 2. Generate Project files",
             "type": "shell",
             "windows": {
                 "command": "cmake .. -G 'Visual Studio 15 2017 Win64'",
@@ -21,14 +31,61 @@
             "osx": {
                 "command": "cmake .. -G 'Xcode'",
             },
-            "group": "test"
+            "group": {
+                "isDefault": true,
+                "kind" : "test"
+            },
+            "dependsOn" : "Debug - 1. Download Dependencies",
+            "options": {
+                "cwd": "${workspaceRoot}/buildDebug"
+            }
         },
         {
-            "label": "3. Build for Debug (cmake)",
+            "label": "Debug - 3. Build",
             "type": "shell",
-            "command": "cmake --build . --config Debug",
-            "group": "test",
-            "identifier": "build"
+            "command": "cmake --build ./buildDebug --config Debug"
+        },
+        /*RELEASE*/
+        {
+            "label": "Release - 0. Create build folder",
+            "type": "shell",
+            "command": "rmdir buildRelease; mkdir buildRelease",
+            "group": "build"
+        },
+        {
+            "label": "Release - 1. Download Dependencies",
+            "type": "shell",
+            "command": "conan install .. -s build_type=Release --build missing",
+            "group": "build",
+            "dependsOn" : "Release - 0. Create build folder",
+            "options": {
+                "cwd": "${workspaceRoot}/buildRelease"
+            }
+        },
+        {
+            "label": "Release - 2. Generate Project files",
+            "type": "shell",
+            "windows": {
+                "command": "cmake .. -G 'Visual Studio 15 2017 Win64'",
+            },
+            "osx": {
+                "command": "cmake .. -G 'Xcode'",
+            },
+            "group": "build",
+            "dependsOn" : "Release - 1. Download Dependencies",
+            "options": {
+                "cwd": "${workspaceRoot}/buildRelease"
+            }
+        },
+        {
+            "label": "Release - 3. Build",
+            "type": "shell",
+            "command" : "cmake --build ./buildRelease --config Release",
+            "group": {
+                "isDefault": true,
+                "kind" : "build"
+            },
+            "dependsOn" : "Release - 2. Generate Project files",          
         }
     ]
 }
