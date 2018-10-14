@@ -30,7 +30,7 @@ class TemplateTab : public QWidget {
         }
 
         bool isWorkerRunning() {
-            if (this->bThread == NULL) return false;
+            if (this->bThread == NULL || !this->workerHasRunOnce) return false; //handle bug with QThread::isRunning when has not been run even once 
             return this->bThread->isRunning();
         }
 
@@ -44,6 +44,7 @@ class TemplateTab : public QWidget {
         QBoxLayout *mainLayout;
         QPlainTextEdit *tEdit;
         QPushButton *tButton;
+        bool workerHasRunOnce = false;
         
         void startThread() {
 
@@ -62,6 +63,7 @@ class TemplateTab : public QWidget {
                         this, &TemplateTab::colorSwap);
                 
                 this->bThread->start();
+                this->workerHasRunOnce = true;
             
             } catch (const std::exception& e) {
                 this->printLog(e.what());
