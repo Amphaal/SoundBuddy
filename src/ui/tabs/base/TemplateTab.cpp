@@ -95,8 +95,8 @@ class TemplateTab : public QWidget {
         
         void colorSwap() {
             QPalette p = this->tEdit->palette();
-            p.setColor(QPalette::Active, QPalette::Base, Qt::red);
-            p.setColor(QPalette::Inactive, QPalette::Base, Qt::red);
+            p.setColor(QPalette::Active, QPalette::Text, Qt::red);
+            p.setColor(QPalette::Inactive, QPalette::Text, Qt::red);
 
             this->tEdit->setPalette(p);
         }
