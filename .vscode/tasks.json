@@ -9,7 +9,7 @@
         {
             "label": "Debug - 0. Create build folder",
             "type": "shell",
-            "command":  "rmdir buildDebug; mkdir buildDebug",
+            "command":  "rmdir buildDebug /s; mkdir buildDebug",
             "group": "test"
         },
         {
@@ -49,7 +49,7 @@
         {
             "label": "Release - 0. Create build folder",
             "type": "shell",
-            "command": "rmdir buildRelease; mkdir buildRelease",
+            "command": "rmdir buildRelease /s; mkdir buildRelease",
             "group": "build"
         },
         {
