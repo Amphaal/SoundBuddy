@@ -6,6 +6,7 @@
         "cwd": "${workspaceRoot}"
     },
     "tasks": [
+        /*DEBUG*/
         {
             "label": "Debug - 0. Create build folder",
             "type": "shell",

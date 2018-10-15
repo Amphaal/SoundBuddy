@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>FeedTNZ</Name>
+    <Version>0.1.0</Version>
+    <Title>Install FeedTNZ</Title>
+    <Publisher>WTNZ</Publisher>
+    <StartMenuDir>WTNZ</StartMenuDir>
+    <TargetDir>@HomeDir@/WTNZ</TargetDir>
+</Installer>

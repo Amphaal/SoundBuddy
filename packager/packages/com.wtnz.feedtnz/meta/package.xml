@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>FeedTNZ</DisplayName>
+    <Description></Description>
+    <Version>0.1.0-1</Version>
+    <ReleaseDate>2010-09-21</ReleaseDate>
+    <Licenses>
+        <License name="Very Limited License Agreement" file="license.txt" />
+    </Licenses>
+    <Default>true</Default>
+</Package>
