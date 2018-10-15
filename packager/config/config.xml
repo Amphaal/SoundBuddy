@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Installer>
     <Name>FeedTNZ</Name>
+    <ProductUrl>http://zonme.to2x.ovh/wtnz</ProductUrl>
     <Version>0.1.0</Version>
-    <Title>Install FeedTNZ</Title>
+    <Title>FeedTNZ</Title>
     <Publisher>WTNZ</Publisher>
-    <StartMenuDir>WTNZ</StartMenuDir>
-    <TargetDir>@HomeDir@/WTNZ</TargetDir>
+    <StartMenuDir>FeedTNZ</StartMenuDir>
+    <RunProgramDescription>FeedTNZ</RunProgramDescription>
+    <RunProgram>@TargetDir@/FeedTNZ</RunProgram>
+    <TargetDir>@ApplicationsDirX64@/FeedTNZ</TargetDir>
+    <RemoteRepositories>
+        <Repository>
+            <Url>http://zonme.to2x.ovh/feedtnz/packages/</Url>
+        </Repository>
+    </RemoteRepositories>
 </Installer>

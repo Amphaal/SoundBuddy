@@ -92,11 +92,54 @@
             "label": "Release - 3. Build",
             "type": "shell",
             "command" : "cmake --build ./buildRelease --config Release",
+            "group": "build",
+            "dependsOn" : "Release - 2. Generate Project files",          
+        },
+        {
+            "label": "Release - 4a. Prepare package destination folder",
+            "type": "shell",
+            "windows": {
+                "command": "rm pkgRelease -r -fo; mkdir pkgRelease;",
+            },
+            "osx": {
+                "command": "rm -rf pkgRelease; mkdir pkgRelease;",
+            },
+            "group": "build",
+            "dependsOn" : "Release - 3. Build"
+        },
+        {
+            "label": "Release - 4b. Prepare package source folder",
+            "type": "shell",
+            "windows": {
+                "command": "rm packager/packages/com.wtnz.feedtnz/data -r -fo; mkdir packager/packages/com.wtnz.feedtnz/data;",
+            },
+            "osx": {
+                "command": "rm -rf packager/packages/com.wtnz.feedtnz/data; mkdir packager/packages/com.wtnz.feedtnz/data;",
+            },
+            "group": "build",
+            "dependsOn" : "Release - 4a. Prepare package destination folder"
+        },
+        {
+            "label": "Release - 4c. Move binaries",
+            "type": "shell",
+            "command": "mv buildRelease/bin/* packager/packages/com.wtnz.feedtnz/data",
+            "group": "build",
+            "dependsOn" : "Release - 4b. Prepare package source folder"
+        },
+        {
+            "label": "Release - 4d. Build package",
+            "type": "shell",
+            "windows": {
+                "command": "${env:SYSTEMDRIVE}\\Qt\\QtIFW-3.0.4\\bin\\binarycreator.exe -c ${workspaceRoot}\\packager\\config\\config.xml -p packager\\packages pkgRelease\\FeedTNZSetup.exe"
+            },            
+            "osx": {
+                "command": "${env:HOME}/Qt/QtIFW-3.0.4/bin/binarycreator -c $packager/config/config.xml -p packager/packages pkgRelease/FeedTNZSetup"
+            },
             "group": {
                 "isDefault": true,
                 "kind" : "build"
             },
-            "dependsOn" : "Release - 2. Generate Project files",          
+            // "dependsOn" : "Release - 4c. Move binaries"
         }
     ]
 }
