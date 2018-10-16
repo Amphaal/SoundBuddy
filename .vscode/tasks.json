@@ -139,7 +139,7 @@
                 "isDefault": true,
                 "kind" : "build"
             },
-            // "dependsOn" : "Release - 4c. Move binaries"
+            "dependsOn" : "Release - 4c. Move binaries"
         }
     ]
 }
