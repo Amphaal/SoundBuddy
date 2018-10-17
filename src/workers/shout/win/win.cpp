@@ -52,7 +52,7 @@ void ShoutWorker::run() {
             }
 
             //clear COM usage
-            handler->shoutHelper();
+            this->shoutEmpty();
             iITunes->clear(); 
             CoUninitialize();
 
