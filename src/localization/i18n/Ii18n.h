@@ -41,4 +41,5 @@ class IFeedTNZTranslator {
         virtual string Shout_ITunesShutdown() = 0;
         virtual string Shout_WaitITunesAgain() = 0;
         virtual string FTNZMissingConfigValuesException() = 0;
+        virtual string FTNZErrorProcessingUploadException(long code, string response) = 0;
 };

@@ -5,6 +5,7 @@
 #include <curl/curl.h>
 
 #include "platformHelper/platformHelper.h"
+#include "./stringHelper.cpp"
 #include "./configHelper.cpp"
 #include "../localization/i18n.cpp"
 
@@ -53,6 +54,21 @@ class FTNZErrorUploadingException : public std::exception {
             return this->exceptionMessage.c_str();
         }
 };
+
+class FTNZErrorProcessingUploadException : public std::exception {
+    private:
+            std::string exceptionMessage;
+
+    public:
+        FTNZErrorProcessingUploadException(long code, string response) {
+            StringHelper::replaceFirstOccurrence(response, "\n", "");
+            this->exceptionMessage = I18n::tr()->FTNZErrorProcessingUploadException(code, response);
+        }
+        const char* what() const throw () {   
+            return this->exceptionMessage.c_str();
+        }
+};
+
 
 ///
 /// End Exceptions
@@ -147,13 +163,18 @@ class OutputHelper {
                     CURLcode res = curl_easy_perform(curl); 
                     
                     if(res != CURLE_OK) {
-                        /* Check for errors */ 
                         throw FTNZErrorUploadingException(); 
                         return "";
                     } else {
                         //response code
                         long code;
                         curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &code);
+                        
+                        //if http code is not OK
+                        if(code != 200) {
+                            throw FTNZErrorProcessingUploadException(code, response);
+                            return "";
+                        }
                     }
 
                     curl_easy_cleanup(curl); /* always cleanup */ 

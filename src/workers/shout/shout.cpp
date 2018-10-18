@@ -51,7 +51,7 @@ void ShoutWorker::shoutFilled(string name, string album, string artist, string g
 void ShoutWorker::shoutToServer(nlohmann::json *incoming) {
     try {
         this->helper.writeAsJsonFile(incoming);
-        string response = this->helper.uploadFile();
+        this->helper.uploadFile();
     } catch(const std::exception& e) {
         emit this->printLog(e.what());
     }

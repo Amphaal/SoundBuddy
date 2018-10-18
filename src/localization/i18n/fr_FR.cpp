@@ -55,4 +55,7 @@ class FeedTNZTranslator_FR : public IFeedTNZTranslator {
     string Shout_ITunesShutdown() { return "iTunes s'éteint !"; };
     string Shout_WaitITunesAgain() { return "J'attends qu'iTunes se relance..."; };
     string FTNZMissingConfigValuesException() { return "Des paramètres de configurations sont attendus ! Merci de vérifier le fichier de configuration."; };
+    string FTNZErrorProcessingUploadException(long code, string response) { 
+        return "Le serveur a rencontré une erreur durant le traitement des informations => HTTP Code " + std::to_string(code) + " : " + response;
+    };
 };

@@ -55,4 +55,7 @@ class FeedTNZTranslator_EN : public IFeedTNZTranslator {
     string Shout_ITunesShutdown() { return "iTunes shutting down !"; };
     string Shout_WaitITunesAgain() { return "Waiting for iTunes to launch again..."; };
     string FTNZMissingConfigValuesException() { return "Expected configuration values are missing. Please check the configuration file !"; };
+    string FTNZErrorProcessingUploadException(long code, string response) { 
+        return "The server encountered an error while processing the data => HTTP Code " + std::to_string(code) + " : " + response;
+    };
 };
