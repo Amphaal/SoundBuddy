@@ -140,6 +140,16 @@
                 "kind" : "build"
             },
             "dependsOn" : "Release - 4c. Move binaries"
+        },
+        {
+            "label": "Release - 5. Create remote Repo",
+            "type": "shell",
+            "windows": {
+                "command": "${env:SYSTEMDRIVE}\\Qt\\QtIFW-3.0.4\\bin\\repogen.exe -p packager\\packages pkgRepo"
+            },            
+            "osx": {
+                "command": "${env:HOME}/Qt/QtIFW-3.0.4/bin/repogen -p packager/packages pkgRepo"
+            }
         }
     ]
 }

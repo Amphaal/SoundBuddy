@@ -2,4 +2,5 @@ build
 buildRelease
 buildDebug
 pkgRelease
+pkgRepo
 packager/packages/com.wtnz.feedtnz/data
