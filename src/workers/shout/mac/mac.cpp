@@ -36,9 +36,6 @@ void ShoutWorker::run() {
     QStringList processArguments;
     processArguments << "-l" << "AppleScript" << "-s" << "s";
 
-    //hash
-    size_t lastTrackHash;
-
     while (this->mustListen) {
 
         //get shout results
@@ -50,8 +47,6 @@ void ShoutWorker::run() {
         auto result = p.readAll().toStdString();
         
         //default values and inst
-        const std::string defaultHashComp = "Nothing";
-        std::string hashComp = defaultHashComp;
         std::string tName;
         std::string tAlbum;
         std::string tArtist;
@@ -66,10 +61,9 @@ void ShoutWorker::run() {
         //if has result
         if (result.size()) {
             
-            //cast to array
+            //turn results into array
             result = result.substr(0, result.size()-2);
             result = result.substr(1, result.size()-1);
-
             result = "[" + result + "]";
             
             //cast to json
@@ -87,24 +81,18 @@ void ShoutWorker::run() {
             iRepeatMode = std::string(trackObj[7].GetString()) == "one" ? 1 : 0;
             tDateSkipped = trackObj[8].GetString();
             tDatePlayed = trackObj[9].GetString();
-
-            //alter hash component
-            hashComp = StringHelper::boolToString(iPlayerState) + tName + tAlbum + tArtist + (tDatePlayed >= tDateSkipped ? tDatePlayed : tDateSkipped);
         }
 
-        //calculate hash
-        size_t currHash = std::hash<std::string>{}(hashComp);
-
-        if (lastTrackHash != currHash) {
-            
-            if(hashComp == defaultHashComp) { 
-                this->shoutEmpty(); //if no result
-            }
-            else {
+        //compare with old shout, if equivalent, don't reshout
+        if(this->shouldUpload(iPlayerState, tName, tAlbum, tArtist, tDatePlayed, tDateSkipped)) {
+            if(result.size()) {
+                //shout !
                 this->shoutFilled(tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState);
             }
-            lastTrackHash = currHash;
-        }
+            else {
+                this->shoutEmpty();
+            }
+        } 
 
         //wait before retry
         this->sleep(1);
