@@ -13,6 +13,7 @@ class ShoutWorker : public ITNZWorker {
         void run() override;  
         void shoutEmpty();
         void shoutFilled(string name, string album, string artist, string genre, int duration, int playerPosition, bool playerState);
+        bool shouldUpload(bool iPlayerState, string tName, string tAlbum, string tArtist, string tDatePlayed, string tDateSkipped);
         
     private:
         bool mustListen = true;
@@ -20,4 +21,5 @@ class ShoutWorker : public ITNZWorker {
         OutputHelper helper;
         nlohmann::json createBasicShout();
         void shoutToServer(nlohmann::json *incoming);
+        size_t lastTrackHash;
 };

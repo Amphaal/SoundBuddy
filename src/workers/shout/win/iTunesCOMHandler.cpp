@@ -13,6 +13,7 @@
 #include <QMetaMethod>
 #include <QObject>
 #include <QCoreApplication>
+#include <QDateTime>
 
 iTunesCOMHandler::iTunesCOMHandler(QAxObject *iTunesObj, ShoutWorker *worker) : iTunesObj(iTunesObj), worker(worker) {
     this->shoutHelper();
@@ -45,7 +46,7 @@ void iTunesCOMHandler::shoutHelper(QVariant iTrack) {
     if (trackObj == NULL) return this->worker->shoutEmpty();
 
     //get values for shout
-    auto iRepeatMode = this->iTunesObj->querySubObject("CurrentPlaylist")->property("SongRepeat").value<int>();
+    //auto iRepeatMode = this->iTunesObj->querySubObject("CurrentPlaylist")->property("SongRepeat").value<int>();
     auto tName = trackObj->property("Name").value<QString>().toStdString();
     auto tAlbum = trackObj->property("Album").value<QString>().toStdString();
     auto tArtist = trackObj->property("Artist").value<QString>().toStdString();
@@ -53,17 +54,15 @@ void iTunesCOMHandler::shoutHelper(QVariant iTrack) {
     auto iDuration = trackObj->property("Duration").value<int>();
     auto iPlayerPos = this->iTunesObj->property("PlayerPosition").value<int>();
     auto iPlayerState = this->iTunesObj->property("PlayerState").value<bool>();
+    auto tDatePlayed = trackObj->property("PlayedDate").value<QDateTime>().toString(Qt::ISODate).toStdString();
+    auto tDateSkipped = trackObj->property("SkippedDate").value<QDateTime>().toString(Qt::ISODate).toStdString();
 
-    //compare with old shout, if equivalent, don't reshout
-    size_t currHash = std::hash<std::string>{}(StringHelper::boolToString(iPlayerState) + tName + tAlbum + tArtist);
-    if (this->lastTrackHash == currHash && iRepeatMode != 1) { //if not on single track repeat and last track is identical to previous, skip resend
-        return;
-    }
-
-    //shout !
-    this->worker->shoutFilled(tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState);
-    
     //clear
     trackObj->clear();
-    this->lastTrackHash = currHash;
+
+    //compare with old shout, if equivalent, don't reshout
+    if(this->worker->shouldUpload(iPlayerState, tName, tAlbum, tArtist, tDatePlayed, tDateSkipped)) {
+        //shout !
+        this->worker->shoutFilled(tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState);
+    } 
 };

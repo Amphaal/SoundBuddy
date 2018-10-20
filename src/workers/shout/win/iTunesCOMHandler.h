@@ -10,7 +10,6 @@ class iTunesCOMHandler : public QObject {
     private:
         QAxObject *iTunesObj;
         ShoutWorker *worker;
-        size_t lastTrackHash;
         
     public slots:
         void OnAboutToPromptUserToQuitEvent();

@@ -61,6 +61,17 @@ void ShoutWorker::exit() {
     this->mustListen = false;
 }
 
+//compare with old shout, if equivalent, don't reshout
+bool ShoutWorker::shouldUpload(bool iPlayerState, string tName, string tAlbum, string tArtist, string tDatePlayed, string tDateSkipped) {
+    
+    size_t currHash = std::hash<std::string>{}(StringHelper::boolToString(iPlayerState) + tName + tAlbum + tArtist + (tDatePlayed >= tDateSkipped ? tDatePlayed : tDateSkipped));
+    bool isHashIdentical = this->lastTrackHash == currHash;
+    
+    this->lastTrackHash = currHash;
+
+    return !isHashIdentical;
+}
+
 #ifdef __APPLE__
     #include "mac/mac.cpp"
 #endif

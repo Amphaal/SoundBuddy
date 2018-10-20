@@ -89,7 +89,7 @@ void ShoutWorker::run() {
             tDatePlayed = trackObj[9].GetString();
 
             //alter hash component
-            hashComp = StringHelper::boolToString(iPlayerState) + (tDatePlayed >= tDateSkipped ? tDatePlayed : tDateSkipped);
+            hashComp = StringHelper::boolToString(iPlayerState) + tName + tAlbum + tArtist + (tDatePlayed >= tDateSkipped ? tDatePlayed : tDateSkipped);
         }
 
         //calculate hash
