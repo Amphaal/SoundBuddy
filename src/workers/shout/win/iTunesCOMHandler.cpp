@@ -38,13 +38,14 @@ void iTunesCOMHandler::shoutHelper(QVariant iTrack) {
     //if empty
     if(trackObj->isNull()) {
         //get current track
-        trackObj = iTunesObj->querySubObject("CurrentTrack");
+        trackObj = this->iTunesObj->querySubObject("CurrentTrack");
     }
 
     //if still empty, shout nothing
     if (trackObj == NULL) return this->worker->shoutEmpty();
 
     //get values for shout
+    auto iRepeatMode = this->iTunesObj->querySubObject("CurrentPlaylist")->property("SongRepeat").value<int>();
     auto tName = trackObj->property("Name").value<QString>().toStdString();
     auto tAlbum = trackObj->property("Album").value<QString>().toStdString();
     auto tArtist = trackObj->property("Artist").value<QString>().toStdString();
@@ -55,7 +56,7 @@ void iTunesCOMHandler::shoutHelper(QVariant iTrack) {
 
     //compare with old shout, if equivalent, don't reshout
     size_t currHash = std::hash<std::string>{}(StringHelper::boolToString(iPlayerState) + tName + tAlbum + tArtist);
-    if (this->lastTrackHash == currHash) {
+    if (this->lastTrackHash == currHash && iRepeatMode != 1) { //if not on single track repeat and last track is identical to previous, skip resend
         return;
     }
 

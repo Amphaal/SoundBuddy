@@ -11,7 +11,7 @@ class iTunesCOMHandler : public QObject {
         QAxObject *iTunesObj;
         ShoutWorker *worker;
         size_t lastTrackHash;
-
+        
     public slots:
         void OnAboutToPromptUserToQuitEvent();
         void OnPlayerPlayEvent(QVariant iTrack);
