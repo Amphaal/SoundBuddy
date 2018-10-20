@@ -26,7 +26,6 @@ void ShoutWorker::run() {
     script += "get {name, album, artist, genre, duration} of current track & ";
     script += "player position & ";
     script += "(player state as string) & ";
-    script += "(song repeat as string) & ";
     script += "SkpDt & ";
     script += "PlyDt ";
     script += "\n end tell";
@@ -78,9 +77,8 @@ void ShoutWorker::run() {
             iDuration = trackObj[4].GetFloat();
             iPlayerPos = trackObj[5].GetFloat();
             iPlayerState = std::string(trackObj[6].GetString()) == "paused" ? 0 : 1;
-            iRepeatMode = std::string(trackObj[7].GetString()) == "one" ? 1 : 0;
-            tDateSkipped = trackObj[8].GetString();
-            tDatePlayed = trackObj[9].GetString();
+            tDateSkipped = trackObj[7].GetString();
+            tDatePlayed = trackObj[8].GetString();
         }
 
         //compare with old shout, if equivalent, don't reshout

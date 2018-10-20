@@ -46,7 +46,6 @@ void iTunesCOMHandler::shoutHelper(QVariant iTrack) {
     if (trackObj == NULL) return this->worker->shoutEmpty();
 
     //get values for shout
-    //auto iRepeatMode = this->iTunesObj->querySubObject("CurrentPlaylist")->property("SongRepeat").value<int>();
     auto tName = trackObj->property("Name").value<QString>().toStdString();
     auto tAlbum = trackObj->property("Album").value<QString>().toStdString();
     auto tArtist = trackObj->property("Artist").value<QString>().toStdString();
