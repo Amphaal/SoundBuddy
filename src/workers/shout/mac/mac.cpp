@@ -12,10 +12,24 @@ void ShoutWorker::run() {
     emit printLog(I18n::tr()->Shout_StartListening());
 
     //define applescript to get shout values
-    std::string script = 
-    "tell application \"iTunes\" \n"
-        "get the {name, album, artist, genre, duration} of the current track & {player position} & {player state} \n"
-    "end tell";
+    std::string script = "tell application \"iTunes\" \n ";
+    script += "if skipped date of current track is not missing value then \n "
+              "set SkpDt to skipped date of current track as «class isot» as string \n "
+              "else \n "
+              "set SkpDt to \"\" \n "
+              "end if \n ";
+    script += "if played date of current track is not missing value then \n "
+              "set PlyDt to played date of current track as «class isot» as string \n "
+              "else \n "
+              "set PlyDt to \"\" \n "
+              "end if \n ";
+    script += "get {name, album, artist, genre, duration} of current track & ";
+    script += "player position & ";
+    script += "(player state as string) & ";
+    script += "(song repeat as string) & ";
+    script += "SkpDt & ";
+    script += "PlyDt ";
+    script += "\n end tell";
 
     //prepare script exec
     QString osascript = "/usr/bin/osascript";
@@ -45,6 +59,9 @@ void ShoutWorker::run() {
         int iDuration;
         int iPlayerPos;
         bool iPlayerState;
+        bool iRepeatMode;
+        std::string tDateSkipped;
+        std::string tDatePlayed;
 
         //if has result
         if (result.size()) {
@@ -52,9 +69,7 @@ void ShoutWorker::run() {
             //cast to array
             result = result.substr(0, result.size()-2);
             result = result.substr(1, result.size()-1);
-            size_t found = result.find_last_of(", ");
-            result = result.insert(found+1, "\"");
-            result = result + "\"";
+
             result = "[" + result + "]";
             
             //cast to json
@@ -69,9 +84,12 @@ void ShoutWorker::run() {
             iDuration = trackObj[4].GetFloat();
             iPlayerPos = trackObj[5].GetFloat();
             iPlayerState = std::string(trackObj[6].GetString()) == "paused" ? 0 : 1;
+            iRepeatMode = std::string(trackObj[7].GetString()) == "one" ? 1 : 0;
+            tDateSkipped = trackObj[8].GetString();
+            tDatePlayed = trackObj[9].GetString();
 
             //alter hash component
-            hashComp = StringHelper::boolToString(iPlayerState) + tName + tAlbum + tArtist;
+            hashComp = StringHelper::boolToString(iPlayerState) + (tDatePlayed >= tDateSkipped ? tDatePlayed : tDateSkipped);
         }
 
         //calculate hash
@@ -79,9 +97,12 @@ void ShoutWorker::run() {
 
         if (lastTrackHash != currHash) {
             
-            if(hashComp == defaultHashComp) this->shoutEmpty(); //if no result
-            else this->shoutFilled(tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState);
-
+            if(hashComp == defaultHashComp) { 
+                this->shoutEmpty(); //if no result
+            }
+            else {
+                this->shoutFilled(tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState);
+            }
             lastTrackHash = currHash;
         }
 
