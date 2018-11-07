@@ -4,8 +4,18 @@
 #include "QtWidgets/QStyleFactory"
 #include "ui/mainWindow.cpp"
 
+#include <QDir>
+#include <QLockFile>
+
 int main(int argc, char** argv){
     
+    //prevent multiples instances
+    QString tmpDir = QDir::tempPath();
+    QLockFile lockFile(tmpDir + "/feedtnz.lock");
+    if(!lockFile.tryLock(100)){
+        return 1;
+    }
+
     //setup app
     QString title("FeedTNZ");
     QApplication app(argc, argv);
@@ -13,7 +23,7 @@ int main(int argc, char** argv){
     app.setStyle(QStyleFactory::create("Fusion")); 
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
 
-    //configure threads
+    //configure QThreads to acknowledge specific types for data exchanges
     qRegisterMetaType<std::string>("std::string");
 
     //fetch main window

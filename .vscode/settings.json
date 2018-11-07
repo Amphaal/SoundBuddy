@@ -120,6 +120,7 @@
         "qmetaproperty": "cpp",
         "cstdarg": "cpp",
         "unordered_set": "cpp",
-        "qvariant": "cpp"
+        "qvariant": "cpp",
+        "qdir": "cpp"
     }
 }
