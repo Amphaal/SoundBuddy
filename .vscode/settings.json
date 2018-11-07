@@ -121,6 +121,7 @@
         "cstdarg": "cpp",
         "unordered_set": "cpp",
         "qvariant": "cpp",
-        "qdir": "cpp"
+        "qdir": "cpp",
+        "qstandardpaths": "cpp"
     }
 }

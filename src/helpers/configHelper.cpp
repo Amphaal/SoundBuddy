@@ -7,6 +7,9 @@
 #include "platformHelper/platformHelper.h"
 #include "../localization/i18n.cpp"
 
+#include <QStandardPaths>
+#include <QDir>
+
 ///
 /// Exceptions
 ///
@@ -30,13 +33,20 @@ class FTNZMissingConfigValuesException : public std::exception {
 
 class ConfigHelper {
     
-    const std::string configFile = "config.json";
     const std::vector<std::string> requiredConfigFields{"targetUrl", "user", "password"};
     
     public:
     
         //constructor
-        ConfigHelper() : streamHandler(std::fstream()), pHelper(PlatformHelper()) {}
+        ConfigHelper() : streamHandler(std::fstream()), pHelper(PlatformHelper()) {
+
+            //set definitive location and create path if not exist
+            std::string hostPath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation).toStdString();
+            QDir hostDir(hostPath.c_str());
+            if (!hostDir.exists()) hostDir.mkpath(".");
+            this->configFile = hostPath + "/" + this->configFile;
+
+        }
                 
         //open the configuration file
         void openConfigFile() {
@@ -109,6 +119,7 @@ class ConfigHelper {
         }
 
     private:
+        std::string configFile = "config.json";
         std::fstream streamHandler;
         PlatformHelper pHelper;
 

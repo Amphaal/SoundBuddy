@@ -9,8 +9,10 @@
 #include "./configHelper.cpp"
 #include "../localization/i18n.cpp"
 
-using namespace std;
+#include <QStandardPaths>
+#include <QDir>
 
+using namespace std;
 
 ///
 /// Exceptions
@@ -91,7 +93,11 @@ class OutputHelper {
         public:
             OutputHelper(std::string filePath, std::string targetFunction = "", std::string uploadFileName = "") : pathToFile(filePath), uploadFileName(uploadFileName) {
                 
-                this->pathToFile = boost::filesystem::absolute(this->pathToFile);
+                //set definitive location and create path if not exist
+                std::string hostPath = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation).toStdString();
+                QDir hostDir(hostPath.c_str());
+                if (!hostDir.exists()) hostDir.mkpath(".");
+                this->pathToFile = hostPath + "/" + this->pathToFile.string();
                 
                 if(targetFunction == "" || uploadFileName == "") return;
 
