@@ -27,7 +27,7 @@ class I18n {
         static IFeedTNZTranslator* setTranslator() {
             auto lName = QLocale::system().name().toStdString();
 
-            if (lName == "fr_FR") {
+            if (lName.substr(0,2) == "fr") {
                 return new FeedTNZTranslator_FR();
             } else {
                 return new FeedTNZTranslator_EN();
