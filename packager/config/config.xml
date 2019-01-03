@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Installer>
     <Name>FeedTNZ</Name>
-    <ProductUrl>http://zonme.to2x.ovh/wtnz</ProductUrl>
+    <ProductUrl>https://zonme.to2x.ovh/wtnz</ProductUrl>
     <Version>0.1.0</Version>
     <Title>FeedTNZ</Title>
     <Publisher>WTNZ</Publisher>
@@ -11,7 +11,7 @@
     <TargetDir>@ApplicationsDirX64@/FeedTNZ</TargetDir>
     <RemoteRepositories>
         <Repository>
-            <Url>http://zonme.to2x.ovh/feedtnz/packages/</Url>
+            <Url>https://zonme.to2x.ovh/feedtnz/packages/</Url>
         </Repository>
     </RemoteRepositories>
 </Installer>
