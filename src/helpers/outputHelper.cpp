@@ -1,4 +1,5 @@
 #pragma once
+
 #include <string>
 #include <boost/filesystem.hpp>
 #include "nlohmann/json.hpp"
@@ -114,6 +115,11 @@ class OutputHelper {
             //ensure a file exists
             bool fileExists() {
                 return boost::filesystem::exists(this->pathToFile);
+            }
+
+            //
+            std::string getOutputPath() {
+                return this->pathToFile.generic_string();
             }
 
             //write outputfile

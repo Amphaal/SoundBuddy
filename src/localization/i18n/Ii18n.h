@@ -9,6 +9,7 @@ class IFeedTNZTranslator {
         virtual string Menu_OpenMonitor() = 0;
         virtual string Menu_MyWTNZ() = 0;
         virtual string Menu_UpdateConfig() = 0;
+        virtual string Menu_OpenWarnings() = 0;
         virtual string Menu_Quit() = 0;
         virtual string Alert_RunningWorker_Title() = 0;
         virtual string Alert_RunningWorker_Text() = 0;
@@ -41,5 +42,5 @@ class IFeedTNZTranslator {
         virtual string Shout_ITunesShutdown() = 0;
         virtual string Shout_WaitITunesAgain() = 0;
         virtual string FTNZMissingConfigValuesException() = 0;
-        virtual string FTNZErrorProcessingUploadException(long code, string response) = 0;
+        virtual string FTNZErrorProcessingUploadException(long code, string response) = 0;   
 };

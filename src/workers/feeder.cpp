@@ -116,6 +116,8 @@ class FeederWorker : public ITNZWorker {
             this->ohLib.writeAsJsonFile(&this->libAsJSON);
 
             emit printLog(I18n::tr()->Feeder_OutputReady());
+
+            emit operationFinished(warningsCount);
         }
 
 

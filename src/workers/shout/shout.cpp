@@ -1,7 +1,7 @@
 #include "shout.h"
 #include "../../localization/i18n.cpp"
 
-ShoutWorker::ShoutWorker() : helper(OutputHelper(this->shoutFileName, "uploadShout", "shout_file")) {}
+ShoutWorker::ShoutWorker() : helper(OutputHelper(this->shoutFileName, "uploadShout", "shout_file")) {};
 
 nlohmann::json ShoutWorker::createBasicShout() {
     

@@ -53,6 +53,7 @@ class ConfigHelper {
             this->pHelper.openFileInOS(this->configFile);
         }
 
+        //makes sure mandatory fields for uplaods are filled
         bool ensureConfigFileIsReadyForUpload() {
             nlohmann::json config = this->accessConfigRaw();
 

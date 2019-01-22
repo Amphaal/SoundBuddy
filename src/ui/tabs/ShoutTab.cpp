@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 #include "QtWidgets/QCheckBox"
 #include "QtCore/QString"
@@ -6,7 +8,7 @@
 #include "nlohmann/json.hpp"
 
 #include "../../helpers/configHelper.cpp"
-#include "base/TemplateTab.cpp"
+#include "base/TemplateTab.h"
 #include "../../workers/shout/shout.h"
 
 class ShoutTab : public TemplateTab {

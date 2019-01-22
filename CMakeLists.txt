@@ -30,6 +30,8 @@ SET(FEEDTNZ_ENTRYPOINT src/feedtnz.cpp)
 list(APPEND FEEDTNZ_ENTRYPOINT src/helpers/platformHelper/platformHelper.cpp)
 list(APPEND FEEDTNZ_ENTRYPOINT src/workers/base/ITNZThread.h)
 list(APPEND FEEDTNZ_ENTRYPOINT src/workers/shout/shout.cpp)
+list(APPEND FEEDTNZ_ENTRYPOINT src/ui/mainWindow.cpp)
+list(APPEND FEEDTNZ_ENTRYPOINT src/ui/tabs/base/TemplateTab.cpp)
 
 #add libs
 list(APPEND FEEDTNZ_ENTRYPOINT 

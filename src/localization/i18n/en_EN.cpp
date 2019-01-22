@@ -8,6 +8,7 @@ class FeedTNZTranslator_EN : public IFeedTNZTranslator {
     string Menu_MyWTNZ() { return "My WTNZ"; };
     string Menu_UpdateConfig() { return "Update configuration file"; };
     string Menu_Quit() { return "Quit"; };
+    string Menu_OpenWarnings() { return "Access recent upload warnings"; };
     string Alert_RunningWorker_Title() { return "Shout worker running !"; };
     string Alert_RunningWorker_Text() { return "Shout worker is actually running : Are you sure you want to exit ?"; };
     string Feeder_Button() { return "Generate Digest and Upload"; };

@@ -2,7 +2,7 @@
 #include "QtCore/QString"
 #include "QtWidgets/QApplication"
 #include "QtWidgets/QStyleFactory"
-#include "ui/mainWindow.cpp"
+#include "ui/mainWindow.h"
 
 #include <QDir>
 #include <QLockFile>
@@ -25,6 +25,7 @@ int main(int argc, char** argv){
 
     //configure QThreads to acknowledge specific types for data exchanges
     qRegisterMetaType<std::string>("std::string");
+    qRegisterMetaType<size_t>("size_t");
 
     //fetch main window
     MainWindow mw(&title);

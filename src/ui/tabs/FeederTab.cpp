@@ -1,7 +1,9 @@
+#pragma once
+
 #include <string>
 #include "QtCore/QString"
 
-#include "base/TemplateTab.cpp"
+#include "base/TemplateTab.h"
 #include "../../workers/feeder.cpp"
 #include "../../localization/i18n.cpp"
 

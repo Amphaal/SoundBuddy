@@ -8,6 +8,7 @@ class FeedTNZTranslator_FR : public IFeedTNZTranslator {
     string Menu_MyWTNZ() { return "Mon WTNZ"; };
     string Menu_UpdateConfig() { return "Mettre à jour le fichier de configuration"; };
     string Menu_Quit() { return "Quitter"; };
+    string Menu_OpenWarnings() { return "Visualiser les dernières erreurs d'export"; };
     string Alert_RunningWorker_Title() { return "Shout en cours !"; };
     string Alert_RunningWorker_Text() { return "Les shouts sont actuellement scannés : Voulez-vous vraiment quitter ?"; };
     string Feeder_Button() { return "Générer le fichier et mettre en ligne"; };
