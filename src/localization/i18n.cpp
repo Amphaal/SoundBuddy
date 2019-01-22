@@ -16,6 +16,10 @@ class I18n {
             return m_pInstance;
         }
 
+        static std::string getLocaleName() {
+            return QLocale::system().name().toStdString();
+        }
+
     private:
 
         I18n(){};  // Private so that it can  not be called
@@ -25,7 +29,7 @@ class I18n {
         static inline IFeedTNZTranslator* m_pInstance = nullptr;
 
         static IFeedTNZTranslator* setTranslator() {
-            auto lName = QLocale::system().name().toStdString();
+            auto lName = I18n::getLocaleName();
 
             if (lName.substr(0,2) == "fr") {
                 return new FeedTNZTranslator_FR();
