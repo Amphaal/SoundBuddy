@@ -4,6 +4,7 @@
 #include "nlohmann/json.hpp"
 
 #include "../base/ITNZWorker.h"
+#include "../../helpers/const.cpp"
 #include "../../helpers/outputHelper.cpp"
 
 class ShoutWorker : public ITNZWorker {
@@ -17,7 +18,6 @@ class ShoutWorker : public ITNZWorker {
         
     private:
         bool mustListen = true;
-        const std::string shoutFileName = "output\\shout.json";
         OutputHelper helper;
         nlohmann::json createBasicShout();
         void shoutToServer(nlohmann::json *incoming);

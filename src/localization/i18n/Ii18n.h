@@ -6,11 +6,13 @@ using namespace std;
 class IFeedTNZTranslator {
     public:
         virtual string Menu_File() = 0;
+        virtual string Menu_Options() = 0;
         virtual string Menu_OpenMonitor() = 0;
         virtual string Menu_MyWTNZ() = 0;
         virtual string Menu_UpdateConfig() = 0;
         virtual string Menu_OpenWarnings() = 0;
         virtual string Menu_Quit() = 0;
+        virtual string Menu_AddToStartup() = 0;
         virtual string Alert_RunningWorker_Title() = 0;
         virtual string Alert_RunningWorker_Text() = 0;
         virtual string Feeder_Button() = 0;

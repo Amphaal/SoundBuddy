@@ -5,7 +5,7 @@ MainWindow::MainWindow(QString *title) :
     title(title), 
     helper(ConfigHelper()), 
     pHelper(PlatformHelper()), 
-    owHelper("output\\warnings.json") {     
+    owHelper(WARNINGS_FILE_PATH) {     
     this->updateConfigValues();
     this->setWindowTitle(*title);
     this->_initUI();
@@ -37,23 +37,44 @@ void MainWindow::_initUITabs() {
 
 void MainWindow::_initUIMenu() {
     QMenuBar *menuBar = new QMenuBar;
-    menuBar->addMenu(this->_getMenu());
+    menuBar->addMenu(this->_getFileMenu());
+    menuBar->addMenu(this->_getOptionsMenu());
     this->setMenuWidget(menuBar);
 };
 
 void MainWindow::_initUITray() {
     QSystemTrayIcon *trayIcon = new QSystemTrayIcon;
     this->trayIcon = trayIcon;
-    trayIcon->setIcon(QIcon(":/icons/feedtnz.png"));
+    trayIcon->setIcon(QIcon(LOCAL_ICON_PNG_PATH.c_str()));
     trayIcon->setToolTip(*this->title);
 
     //double it to the tray icon
-    this->trayIcon->setContextMenu(this->_getMenu());
+    this->trayIcon->setContextMenu(this->_getFileMenu());
 
     trayIcon->show();
 };
 
-QMenu* MainWindow::_getMenu() {
+QMenu* MainWindow::_getOptionsMenu() {
+
+    QMenu *optionsMenuItem = new QMenu(I18n::tr()->Menu_Options().c_str());
+
+    //add to system startup Action
+    QAction *atssAction = new QAction(I18n::tr()->Menu_AddToStartup().c_str(), optionsMenuItem);
+    atssAction->setCheckable(true);
+    QObject::connect(
+        atssAction, &QAction::triggered,
+        this, &MainWindow::addToStartupSwitch
+    );
+    if (this->isLaunchingAtStartup()) {
+        atssAction->setChecked(true);
+    }
+
+    optionsMenuItem->addAction(atssAction);
+
+    return optionsMenuItem;
+}
+
+QMenu* MainWindow::_getFileMenu() {
 
     QMenu *fileMenuItem = new QMenu(I18n::tr()->Menu_File().c_str());
 
@@ -167,6 +188,43 @@ void MainWindow::openConfigFile() {
 void MainWindow::openWarnings() {
     this->pHelper.openFileInOS(this->owHelper.getOutputPath());
 };
+
+//change startup
+void MainWindow::addToStartupSwitch(bool checked) {
+
+    #ifdef __APPLE__
+        return;
+    #endif
+
+    #ifdef _WIN32
+
+        QSettings settings(WINDOWS_REG_STARTUP_LAUNCH_PATH.c_str(), QSettings::NativeFormat);
+        auto pathToApp = QCoreApplication::applicationFilePath().replace('/', '\\').toStdString();
+
+        if (!this->isLaunchingAtStartup()) {
+            settings.setValue(APP_NAME.c_str(), pathToApp.c_str());
+        } else {
+            settings.remove(APP_NAME.c_str());
+        }
+
+    #endif
+}
+
+//detect if is launching at startup
+bool MainWindow::isLaunchingAtStartup() {
+    
+    #ifdef __APPLE__
+        return false;
+    #endif
+    
+    #ifdef _WIN32
+        QSettings settings(WINDOWS_REG_STARTUP_LAUNCH_PATH.c_str(), QSettings::NativeFormat);
+        return settings.value(APP_NAME.c_str(), "").toString().toStdString() == 
+            QCoreApplication::applicationFilePath().replace('/', '\\').toStdString();
+    #endif
+
+    return false;
+}
 
 ///
 /// Events handling

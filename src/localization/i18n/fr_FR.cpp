@@ -4,10 +4,12 @@ using namespace std;
 
 class FeedTNZTranslator_FR : public IFeedTNZTranslator {
     string Menu_File() { return "Fichier"; }
+    string Menu_Options() { return "Options"; }
     string Menu_OpenMonitor() {return "Ouvrir le tableau de bord"; }
     string Menu_MyWTNZ() { return "Mon WTNZ"; };
     string Menu_UpdateConfig() { return "Mettre à jour le fichier de configuration"; };
     string Menu_Quit() { return "Quitter"; };
+    string Menu_AddToStartup() { return "Lancer au démarrage système"; };
     string Menu_OpenWarnings() { return "Visualiser les dernières erreurs d'export"; };
     string Alert_RunningWorker_Title() { return "Shout en cours !"; };
     string Alert_RunningWorker_Text() { return "Les shouts sont actuellement scannés : Voulez-vous vraiment quitter ?"; };

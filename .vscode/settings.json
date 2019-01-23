@@ -122,6 +122,8 @@
         "unordered_set": "cpp",
         "qvariant": "cpp",
         "qdir": "cpp",
-        "qstandardpaths": "cpp"
+        "qstandardpaths": "cpp",
+        "qfilesystemwatcher": "cpp",
+        "qmenubar": "cpp"
     }
 }

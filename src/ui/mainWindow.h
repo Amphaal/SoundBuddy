@@ -4,6 +4,8 @@
 #include "QtCore/QSize"
 #include "QtCore/QObject"
 #include "QtCore/QFileSystemWatcher"
+#include "QtCore/QSettings"
+#include "QCoreApplication"
 #include "QtWidgets/QTabWidget"
 #include "QtWidgets/QMainWindow"
 #include "QtWidgets/QWidget"
@@ -16,6 +18,7 @@
 #include "QtGui/QHideEvent"
 #include "QtGui/QIcon"
 
+#include "../helpers/const.cpp"
 #include "../helpers/configHelper.cpp"
 #include "../helpers/platformHelper/platformHelper.h"
 #include "tabs/ShoutTab.cpp"
@@ -51,7 +54,8 @@ class MainWindow : public QMainWindow {
         void _initUIMenu();
         void _initUITray();
 
-        QMenu* _getMenu();
+        QMenu* _getFileMenu();
+        QMenu* _getOptionsMenu();
 
         void updateConfigValues();
         void setupConfigFileWatcher();
@@ -65,6 +69,8 @@ class MainWindow : public QMainWindow {
         void accessWTNZ();
         void openConfigFile();
         void openWarnings();
+        void addToStartupSwitch(bool checked);
+        bool isLaunchingAtStartup();
 
         ///
         /// Events handling

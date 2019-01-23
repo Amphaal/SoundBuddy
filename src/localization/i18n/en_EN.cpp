@@ -4,10 +4,12 @@ using namespace std;
 
 class FeedTNZTranslator_EN : public IFeedTNZTranslator {
     string Menu_File() { return "File"; }
+    string Menu_Options() { return "Options"; }
     string Menu_OpenMonitor() {return "Open monitor..."; }
     string Menu_MyWTNZ() { return "My WTNZ"; };
     string Menu_UpdateConfig() { return "Update configuration file"; };
     string Menu_Quit() { return "Quit"; };
+    string Menu_AddToStartup() { return "Lauch at system boot"; };
     string Menu_OpenWarnings() { return "Access recent upload warnings"; };
     string Alert_RunningWorker_Title() { return "Shout worker running !"; };
     string Alert_RunningWorker_Text() { return "Shout worker is actually running : Are you sure you want to exit ?"; };

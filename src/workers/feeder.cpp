@@ -11,6 +11,7 @@
 #include "../../libs/plistcpp/Plist.hpp"
 
 #include "base/ITNZWorker.h"
+#include "../helpers/const.cpp"
 #include "../helpers/platformHelper/platformHelper.h"
 #include "../helpers/stringHelper.cpp"
 #include "../helpers/outputHelper.cpp"
@@ -69,11 +70,8 @@ class FTNZNoMusicFoundException : public std::exception {
 
 class FeederWorker : public ITNZWorker {
 
-    const string outputFileName = "output\\output.json";
-    const string warningsFileName = "output\\warnings.json";
-
     public:
-		FeederWorker() : ohLib(this->outputFileName, "uploadLib", "wtnz_file"), ohWrn(this->warningsFileName) {}
+		FeederWorker() : ohLib(OUTPUT_FILE_PATH, "uploadLib", "wtnz_file"), ohWrn(WARNINGS_FILE_PATH) {}
 
         void run() override {
             emit printLog(I18n::tr()->Feeder_Warning());
@@ -104,15 +102,15 @@ class FeederWorker : public ITNZWorker {
             //check warnings
             auto warningsCount = this->libWarningsAsJSON.size();
             if (warningsCount) {
-                emit printLog(I18n::tr()->Feeder_NotifyWarningsExistence(warningsCount, this->outputFileName));
+                emit printLog(I18n::tr()->Feeder_NotifyWarningsExistence(warningsCount, OUTPUT_FILE_PATH));
 
-                emit printLog(I18n::tr()->Feeder_Unmolding(this->warningsFileName));
+                emit printLog(I18n::tr()->Feeder_Unmolding(WARNINGS_FILE_PATH));
                 this->ohWrn.writeAsJsonFile(&this->libWarningsAsJSON);
             } else {
-                std::remove(this->warningsFileName.c_str());
+                std::remove(WARNINGS_FILE_PATH.c_str());
             }
 
-            emit printLog(I18n::tr()->Feeder_Unmolding(this->outputFileName));
+            emit printLog(I18n::tr()->Feeder_Unmolding(OUTPUT_FILE_PATH));
             this->ohLib.writeAsJsonFile(&this->libAsJSON);
 
             emit printLog(I18n::tr()->Feeder_OutputReady());

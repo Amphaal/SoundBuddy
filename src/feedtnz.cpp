@@ -4,6 +4,8 @@
 #include "QtWidgets/QStyleFactory"
 #include "ui/mainWindow.h"
 
+#include "helpers/const.cpp"
+
 #include <QDir>
 #include <QLockFile>
 
@@ -17,7 +19,7 @@ int main(int argc, char** argv){
     }
 
     //setup app
-    QString title("FeedTNZ");
+    QString title(APP_NAME.c_str());
     QApplication app(argc, argv);
     app.setApplicationName(title);
     app.setStyle(QStyleFactory::create("Fusion")); 
