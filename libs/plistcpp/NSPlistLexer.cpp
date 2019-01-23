@@ -196,7 +196,7 @@ extern FILE *yyin, *yyout;
 		} \
 	while ( 0 )
 
-#define unput(c) yyunput( c, (yytext_ptr)  )
+//#define unput(c) yyunput( c, (yytext_ptr)  )
 
 #ifndef YY_STRUCT_YY_BUFFER_STATE
 #define YY_STRUCT_YY_BUFFER_STATE
@@ -665,7 +665,7 @@ extern int yywrap (void );
 #endif
 #endif
 
-    static void yyunput (int c,char *buf_ptr  );
+    //static void yyunput (int c,char *buf_ptr  );
     
 #ifndef yytext_ptr
 static void yy_flex_strncpy (char *,yyconst char *,int );
@@ -1354,46 +1354,46 @@ static int yy_get_next_buffer (void)
 	return yy_is_jam ? 0 : yy_current_state;
 }
 
-    static void yyunput (int c,   char * yy_bp )
-{
-	  char *yy_cp;
+//     static void yyunput (int c,   char * yy_bp )
+// {
+// 	  char *yy_cp;
     
-    yy_cp = (yy_c_buf_p);
+//     yy_cp = (yy_c_buf_p);
 
-	/* undo effects of setting up yytext */
-	*yy_cp = (yy_hold_char);
+// 	/* undo effects of setting up yytext */
+// 	*yy_cp = (yy_hold_char);
 
-	if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
-		{ /* need to shift things up to make room */
-		/* +2 for EOB chars. */
-		  yy_size_t number_to_move = (yy_n_chars) + 2;
-		  char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
-					YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
-		  char *source =
-				&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move];
+// 	if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
+// 		{ /* need to shift things up to make room */
+// 		/* +2 for EOB chars. */
+// 		  yy_size_t number_to_move = (yy_n_chars) + 2;
+// 		  char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
+// 					YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
+// 		  char *source =
+// 				&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move];
 
-		while ( source > YY_CURRENT_BUFFER_LVALUE->yy_ch_buf )
-			*--dest = *--source;
+// 		while ( source > YY_CURRENT_BUFFER_LVALUE->yy_ch_buf )
+// 			*--dest = *--source;
 
-		yy_cp += (int) (dest - source);
-		yy_bp += (int) (dest - source);
-		YY_CURRENT_BUFFER_LVALUE->yy_n_chars =
-			(yy_n_chars) = YY_CURRENT_BUFFER_LVALUE->yy_buf_size;
+// 		yy_cp += (int) (dest - source);
+// 		yy_bp += (int) (dest - source);
+// 		YY_CURRENT_BUFFER_LVALUE->yy_n_chars =
+// 			(yy_n_chars) = YY_CURRENT_BUFFER_LVALUE->yy_buf_size;
 
-		if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
-			YY_FATAL_ERROR( "flex scanner push-back overflow" );
-		}
+// 		if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
+// 			YY_FATAL_ERROR( "flex scanner push-back overflow" );
+// 		}
 
-	*--yy_cp = (char) c;
+// 	*--yy_cp = (char) c;
 
-    if ( c == '\n' ){
-        --yylineno;
-    }
+//     if ( c == '\n' ){
+//         --yylineno;
+//     }
 
-	(yytext_ptr) = yy_bp;
-	(yy_hold_char) = *yy_cp;
-	(yy_c_buf_p) = yy_cp;
-}
+// 	(yytext_ptr) = yy_bp;
+// 	(yy_hold_char) = *yy_cp;
+// 	(yy_c_buf_p) = yy_cp;
+// }
 
 #ifndef YY_NO_INPUT
 #ifdef __cplusplus

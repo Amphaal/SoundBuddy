@@ -24,7 +24,7 @@ class I18n {
 
         I18n(){};  // Private so that it can  not be called
         I18n(I18n const&){};             // copy constructor is private
-        I18n& operator=(I18n const&){};  // assignment operator is private
+        //I18n& operator=(I18n const&){};  // assignment operator is private
 
         static inline IFeedTNZTranslator* m_pInstance = nullptr;
 

@@ -52,8 +52,8 @@ void ShoutWorker::run() {
         std::string tGenre;
         int iDuration;
         int iPlayerPos;
-        bool iPlayerState;
-        bool iRepeatMode;
+        bool iPlayerState = false;
+        //bool iRepeatMode;
         std::string tDateSkipped;
         std::string tDatePlayed;
 

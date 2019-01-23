@@ -168,7 +168,6 @@ class OutputHelper {
 
                     //header
                     struct curl_slist *list = NULL;
-                    auto locale = I18n::getLocaleName().c_str();
                     auto localeHeader = string("Accept-Language: ") + I18n::getLocaleName();
                     list = curl_slist_append(list, localeHeader.c_str());
                     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);

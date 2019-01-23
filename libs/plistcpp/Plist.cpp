@@ -368,6 +368,8 @@ NSPlistValue* writeNSNode(const boost::any& obj)
 	}
 	else
 		throw Error((std::string("Plist Error: Can't serialize type ") + objType.name()).c_str());
+
+	return NULL;
 }
 
 void writePlistBinary(std::vector<char>& plist, const boost::any& message)

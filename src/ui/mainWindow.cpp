@@ -47,9 +47,18 @@ void MainWindow::_initUITray() {
     this->trayIcon = trayIcon;
     trayIcon->setIcon(QIcon(LOCAL_ICON_PNG_PATH.c_str()));
     trayIcon->setToolTip(*this->title);
+ 
+    #ifdef _WIN32
+        auto cMenu = this->_getFileMenu();
+    #endif
 
-    //double it to the tray icon
-    this->trayIcon->setContextMenu(this->_getFileMenu());
+    #ifdef __APPLE__
+        auto cMenu = new QMenu("");
+        cMenu->addMenu(this->_getFileMenu());
+        cMenu->addMenu(this->_getOptionsMenu());
+    #endif
+
+    this->trayIcon->setContextMenu(cMenu);
 
     trayIcon->show();
 };
@@ -65,7 +74,7 @@ QMenu* MainWindow::_getOptionsMenu() {
         atssAction, &QAction::triggered,
         this, &MainWindow::addToStartupSwitch
     );
-    if (this->isLaunchingAtStartup()) {
+    if (this->pHelper.isLaunchingAtStartup()) {
         atssAction->setChecked(true);
     }
 
@@ -191,39 +200,7 @@ void MainWindow::openWarnings() {
 
 //change startup
 void MainWindow::addToStartupSwitch(bool checked) {
-
-    #ifdef __APPLE__
-        return;
-    #endif
-
-    #ifdef _WIN32
-
-        QSettings settings(WINDOWS_REG_STARTUP_LAUNCH_PATH.c_str(), QSettings::NativeFormat);
-        auto pathToApp = QCoreApplication::applicationFilePath().replace('/', '\\').toStdString();
-
-        if (!this->isLaunchingAtStartup()) {
-            settings.setValue(APP_NAME.c_str(), pathToApp.c_str());
-        } else {
-            settings.remove(APP_NAME.c_str());
-        }
-
-    #endif
-}
-
-//detect if is launching at startup
-bool MainWindow::isLaunchingAtStartup() {
-    
-    #ifdef __APPLE__
-        return false;
-    #endif
-    
-    #ifdef _WIN32
-        QSettings settings(WINDOWS_REG_STARTUP_LAUNCH_PATH.c_str(), QSettings::NativeFormat);
-        return settings.value(APP_NAME.c_str(), "").toString().toStdString() == 
-            QCoreApplication::applicationFilePath().replace('/', '\\').toStdString();
-    #endif
-
-    return false;
+    this->pHelper.switchStartupLaunch();
 }
 
 ///

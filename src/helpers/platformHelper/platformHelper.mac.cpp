@@ -50,4 +50,38 @@
         return pre + "/iTunes Music Library.xml";
     };
 
+    QSettings* PlatformHelper::getStartupSettingsHandler() {
+        auto cPath = this->getEnvironmentVariable("HOME") + MAC_REG_STARTUP_LAUNCH_PATH; //computed path
+        auto settings = new QSettings(cPath.c_str(), QSettings::NativeFormat);
+        return settings;
+    }
+
+    std::string PlatformHelper::getPathToApp() {
+        return QCoreApplication::applicationFilePath().toStdString();
+    }
+
+    std::string PlatformHelper::getPathToAppFromStartupSettings(QSettings *settings) {
+        QStringList c = settings->value("ProgramArguments").toStringList();
+        if(!c.size()) return ""; //if file not exists
+        return c.takeFirst().toStdString();
+    }
+
+    void PlatformHelper::switchStartupLaunch() {
+
+        auto settings = this->getStartupSettingsHandler();
+
+        if (!this->isLaunchingAtStartup()) {
+            settings->setValue("Label", APP_NAME.c_str());
+            settings->setValue("ProcessType", "Interactive");
+            settings->setValue("ExitTimeOut", 0);
+            settings->setValue("RunAtLoad", true);
+            settings->setValue("LimitLoadToSessionType", "Aqua");
+            QStringList args(this->getPathToApp().c_str());
+            settings->setValue("ProgramArguments", args);
+        } else {
+            auto cPath = this->getEnvironmentVariable("HOME") + MAC_REG_STARTUP_LAUNCH_PATH; //computed path
+            remove(cPath.c_str());
+        }
+    }
+
 #endif

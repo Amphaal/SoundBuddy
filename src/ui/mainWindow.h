@@ -4,8 +4,6 @@
 #include "QtCore/QSize"
 #include "QtCore/QObject"
 #include "QtCore/QFileSystemWatcher"
-#include "QtCore/QSettings"
-#include "QCoreApplication"
 #include "QtWidgets/QTabWidget"
 #include "QtWidgets/QMainWindow"
 #include "QtWidgets/QWidget"
@@ -70,7 +68,6 @@ class MainWindow : public QMainWindow {
         void openConfigFile();
         void openWarnings();
         void addToStartupSwitch(bool checked);
-        bool isLaunchingAtStartup();
 
         ///
         /// Events handling

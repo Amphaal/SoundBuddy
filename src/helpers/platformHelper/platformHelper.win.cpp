@@ -50,4 +50,28 @@
         return rAsString;
     };
 
+    QSettings* PlatformHelper::getStartupSettingsHandler() {
+        auto settings = new QSettings(WINDOWS_REG_STARTUP_LAUNCH_PATH.c_str(), QSettings::NativeFormat);
+        return settings;
+    }
+
+    std::string PlatformHelper::getPathToApp() {
+        return QCoreApplication::applicationFilePath().replace('/', '\\').toStdString();
+    }
+
+    std::string PlatformHelper::getPathToAppFromStartupSettings(QSettings *settings) {
+        return settings->value(APP_NAME.c_str(), "").toString().toStdString();
+    }
+
+    void PlatformHelper::switchStartupLaunch() {
+
+        auto settings = this->getStartupSettingsHandler();
+
+        if (!this->isLaunchingAtStartup()) {
+            settings->setValue(APP_NAME.c_str(), this->getPathToApp());
+        } else {
+            settings->remove(APP_NAME.c_str());
+        }
+    }
+
 #endif
