@@ -68,7 +68,7 @@
         auto settings = this->getStartupSettingsHandler();
 
         if (!this->isLaunchingAtStartup()) {
-            settings->setValue(APP_NAME.c_str(), this->getPathToApp());
+            settings->setValue(APP_NAME.c_str(), this->getPathToApp().c_str());
         } else {
             settings->remove(APP_NAME.c_str());
         }
