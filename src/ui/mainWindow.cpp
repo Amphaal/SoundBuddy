@@ -6,11 +6,14 @@ MainWindow::MainWindow(QString *title) :
     helper(ConfigHelper()), 
     pHelper(PlatformHelper()), 
     owHelper(WARNINGS_FILE_PATH) {     
+    
     this->updateConfigValues();
     this->setWindowTitle(*title);
     this->_initUI();
     this->setupConfigFileWatcher();
     this->updateWarningsMenuItem();
+    this->setupAutoUpdate();
+    
 };
 
 void MainWindow::informWarningPresence() {
@@ -78,7 +81,15 @@ QMenu* MainWindow::_getOptionsMenu() {
         atssAction->setChecked(true);
     }
 
+    //for checking the upgrades available
+    QAction *cfugAction = new QAction(I18n::tr()->Menu_CheckForUpgrades().c_str(), optionsMenuItem);
+        QObject::connect(
+        cfugAction, &QAction::triggered,
+        this, &MainWindow::requireUpdateCheckFromUser
+    );
+    
     optionsMenuItem->addAction(atssAction);
+    optionsMenuItem->addAction(cfugAction);
 
     return optionsMenuItem;
 }
@@ -255,3 +266,55 @@ void MainWindow::forcedClose() {
     this->forceQuitOnMacOS = true;
     this->close();
 };
+
+void MainWindow::setupAutoUpdate() {
+
+    this->updater = new QtAutoUpdater::Updater(this);
+
+	QObject::connect(this->updater, &QtAutoUpdater::Updater::checkUpdatesDone, 
+                     this, &MainWindow::onUpdateChecked);
+
+    //start the update check
+    this->updater->checkForUpdates();
+}
+
+void MainWindow::onUpdateChecked(bool hasUpdate, bool hasError) {
+
+    if(this->userNotificationOnUpdateCheck) {
+        this->userNotificationOnUpdateCheck = false;
+
+        auto logMsg = QString(this->updater->errorLog().toStdString().c_str());
+
+        if(!hasUpdate && !hasError) {
+            QMessageBox::information(this, 
+                QString(I18n::tr()->Menu_CheckForUpgrades().c_str()), 
+                logMsg, 
+                QMessageBox::Ok, QMessageBox::Ok);
+        } else if (hasError) {
+            QMessageBox::warning(this, 
+                QString(I18n::tr()->Menu_CheckForUpgrades().c_str()), 
+                logMsg, 
+                QMessageBox::Ok, QMessageBox::Ok);
+        }
+    }
+
+    if(!hasUpdate) return;
+
+    auto msgboxRslt = QMessageBox::information(this, QString(I18n::tr()->Alert_UpdateAvailable_Title().c_str()), 
+                QString(I18n::tr()->Alert_UpdateAvailable_Text().c_str()), 
+                QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+    
+    if(msgboxRslt == QMessageBox::Yes) {
+        this->updater->runUpdaterOnExit();
+        this->forcedClose();
+    }
+}
+
+void MainWindow::requireUpdateCheckFromUser() {
+
+    this->userNotificationOnUpdateCheck = true;
+
+    if (!this->updater->isRunning()) {
+        this->updater->checkForUpdates();
+    }
+}

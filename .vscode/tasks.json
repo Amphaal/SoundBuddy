@@ -29,7 +29,7 @@
             }
         },
         {
-            "label": "Debug - 2. Generate Project files",
+            "label": "Debug - 2a. Generate Project files",
             "type": "shell",
             "windows": {
                 "command": "cmake .. -G 'Visual Studio 15 2017 Win64'",
@@ -37,13 +37,28 @@
             "osx": {
                 "command": "cmake .. -G 'Xcode'",
             },
-            "group": {
-                "isDefault": true,
-                "kind" : "test"
-            },
             "dependsOn" : "Debug - 1. Download Dependencies",
             "options": {
                 "cwd": "${workspaceRoot}/buildDebug"
+            },
+            "group": "test"
+        },
+        {
+            "label": "Debug - 2b. Move maintenancetool",
+            "type": "shell",
+            "dependsOn" : "Debug - 2a. Generate Project files",
+            "windows": {
+                "command": "copy C:/Qt/maintenancetool.exe /bin/",
+            },
+            "osx": {
+                "command": "mkdir bin; cp -R /Qt/maintenancetool.app ./bin",
+            },
+            "options": {
+                "cwd": "${workspaceRoot}/buildDebug"
+            },
+            "group": {
+                "isDefault": true,
+                "kind" : "test"
             }
         },
         {
@@ -133,12 +148,9 @@
                 "command": "${env:SYSTEMDRIVE}\\Qt\\QtIFW-3.0.4\\bin\\binarycreator.exe -c ${workspaceRoot}\\packager\\config\\config.xml -p packager\\packages pkgRelease\\FeedTNZSetup.exe"
             },            
             "osx": {
-                "command": "${env:HOME}/Qt/QtIFW-3.0.4/bin/binarycreator -c ${workspaceRoot}/packager/config/config.xml -p packager/packages pkgRelease/FeedTNZSetup"
+                "command": "${env:SYSTEMDRIVE}/Qt/QtIFW-3.0.4/bin/binarycreator -c ${workspaceRoot}/packager/config/config.xml -p packager/packages pkgRelease/FeedTNZSetup"
             },
-            "group": {
-                "isDefault": true,
-                "kind" : "build"
-            },
+            "group": "build",
             "dependsOn" : "Release - 4c. Move binaries"
         },
         {
@@ -148,8 +160,13 @@
                 "command": "${env:SYSTEMDRIVE}\\Qt\\QtIFW-3.0.4\\bin\\repogen.exe -p packager\\packages pkgRepo"
             },            
             "osx": {
-                "command": "${env:HOME}/Qt/QtIFW-3.0.4/bin/repogen -p packager/packages pkgRepo"
-            }
+                "command": "${env:SYSTEMDRIVE}/Qt/QtIFW-3.0.4/bin/repogen -p packager/packages pkgRepo"
+            },
+            "group": {
+                "isDefault": true,
+                "kind" : "build"
+            },
+            "dependsOn" : "Release - 4d. Build package"
         }
     ]
 }

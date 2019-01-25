@@ -11,7 +11,7 @@
     <TargetDir>@ApplicationsDirX64@/FeedTNZ</TargetDir>
     <RemoteRepositories>
         <Repository>
-            <Url>https://zonme.to2x.ovh/feedtnz/packages/</Url>
+            <Url>https://zonme.to2x.ovh/feedtnz/packages</Url>
         </Repository>
     </RemoteRepositories>
 </Installer>

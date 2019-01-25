@@ -11,8 +11,11 @@ class FeedTNZTranslator_EN : public IFeedTNZTranslator {
     string Menu_Quit() { return "Quit"; };
     string Menu_AddToStartup() { return "Lauch at system boot"; };
     string Menu_OpenWarnings() { return "Access recent upload warnings"; };
+    string Menu_CheckForUpgrades() { return "Check for upgrades"; };
     string Alert_RunningWorker_Title() { return "Shout worker running !"; };
     string Alert_RunningWorker_Text() { return "Shout worker is actually running : Are you sure you want to exit ?"; };
+    string Alert_UpdateAvailable_Title() { return "Update Available"; };
+    string Alert_UpdateAvailable_Text() { return "An update is available for " + APP_NAME + ". Would you like to install it now ?"; };
     string Feeder_Button() { return "Generate Digest and Upload"; };
     string Shout_Button() { return "Connect to iTunes"; };
     string Shout_Autolaunch() { return "Autostart at launch"; };

@@ -25,13 +25,6 @@ add_definitions(-DBOOST_ERROR_CODE_HEADER_ONLY)
 #set resrouces 
 SET(FEEDTNZ_RES src/resources/resources.qrc)
 SET(FEEDTNZ_ENTRYPOINT src/feedtnz.cpp)
-    
-#platform specfic
-list(APPEND FEEDTNZ_ENTRYPOINT src/helpers/platformHelper/platformHelper.cpp)
-list(APPEND FEEDTNZ_ENTRYPOINT src/workers/base/ITNZThread.h)
-list(APPEND FEEDTNZ_ENTRYPOINT src/workers/shout/shout.cpp)
-list(APPEND FEEDTNZ_ENTRYPOINT src/ui/mainWindow.cpp)
-list(APPEND FEEDTNZ_ENTRYPOINT src/ui/tabs/base/TemplateTab.cpp)
 
 #add libs
 list(APPEND FEEDTNZ_ENTRYPOINT 
@@ -41,6 +34,24 @@ list(APPEND FEEDTNZ_ENTRYPOINT
     libs/plistcpp/NSPlistParser.cpp
     libs/plistcpp/NSPlistLexer.cpp
 )
+
+list(APPEND FEEDTNZ_ENTRYPOINT 
+    libs/qtautoupdater/autoupdatercore/adminauthoriser.h
+    libs/qtautoupdater/autoupdatercore/qtautoupdatercore_global.h
+    libs/qtautoupdater/autoupdatercore/simplescheduler_p.h
+    libs/qtautoupdater/autoupdatercore/updater.h
+    libs/qtautoupdater/autoupdatercore/updater_p.h
+    libs/qtautoupdater/autoupdatercore/simplescheduler.cpp
+    libs/qtautoupdater/autoupdatercore/updater.cpp
+    libs/qtautoupdater/autoupdatercore/updater_p.cpp
+)
+
+#platform specfic
+list(APPEND FEEDTNZ_ENTRYPOINT src/helpers/platformHelper/platformHelper.cpp)
+list(APPEND FEEDTNZ_ENTRYPOINT src/workers/base/ITNZThread.h)
+list(APPEND FEEDTNZ_ENTRYPOINT src/workers/shout/shout.cpp)
+list(APPEND FEEDTNZ_ENTRYPOINT src/ui/mainWindow.cpp)
+list(APPEND FEEDTNZ_ENTRYPOINT src/ui/tabs/base/TemplateTab.cpp)
 
 if (WIN32)
 

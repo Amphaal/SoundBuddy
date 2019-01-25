@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 
+#include "../../helpers/const.cpp"
+
 using namespace std;
 
 class IFeedTNZTranslator {
@@ -12,9 +14,12 @@ class IFeedTNZTranslator {
         virtual string Menu_UpdateConfig() = 0;
         virtual string Menu_OpenWarnings() = 0;
         virtual string Menu_Quit() = 0;
+        virtual string Menu_CheckForUpgrades() = 0;
         virtual string Menu_AddToStartup() = 0;
         virtual string Alert_RunningWorker_Title() = 0;
         virtual string Alert_RunningWorker_Text() = 0;
+        virtual string Alert_UpdateAvailable_Title() = 0;
+        virtual string Alert_UpdateAvailable_Text() = 0;
         virtual string Feeder_Button() = 0;
         virtual string Shout_Button() = 0;
         virtual string Shout_Autolaunch() = 0;

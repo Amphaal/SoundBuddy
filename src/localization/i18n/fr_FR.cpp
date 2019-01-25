@@ -11,8 +11,11 @@ class FeedTNZTranslator_FR : public IFeedTNZTranslator {
     string Menu_Quit() { return "Quitter"; };
     string Menu_AddToStartup() { return "Lancer au démarrage système"; };
     string Menu_OpenWarnings() { return "Visualiser les dernières erreurs d'export"; };
+    string Menu_CheckForUpgrades() { return "Vérifier les mises à jour"; };
     string Alert_RunningWorker_Title() { return "Shout en cours !"; };
     string Alert_RunningWorker_Text() { return "Les shouts sont actuellement scannés : Voulez-vous vraiment quitter ?"; };
+    string Alert_UpdateAvailable_Title() { return "Mise à jour disponible"; };
+    string Alert_UpdateAvailable_Text() { return "Une mise à jour a été trouvé pour " + APP_NAME + ". Voulez-vous l'installer maintenant ?"; };
     string Feeder_Button() { return "Générer le fichier et mettre en ligne"; };
     string Shout_Button() { return "Se connecter à iTunes"; };
     string Shout_Autolaunch() { return "Démarrage automatique"; };

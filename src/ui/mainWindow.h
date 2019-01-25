@@ -23,6 +23,8 @@
 #include "tabs/FeederTab.cpp"
 #include "../localization/i18n.cpp"
 
+#include "../../libs/qtautoupdater/autoupdatercore/updater.h"
+
 class MainWindow : public QMainWindow {
    
     public:
@@ -31,17 +33,19 @@ class MainWindow : public QMainWindow {
 
     private:
         bool forceQuitOnMacOS = false;
+        bool userNotificationOnUpdateCheck = false;
         QString *title;
         QSystemTrayIcon *trayIcon;
         QFileSystemWatcher *configWatcher;
         vector<QAction*> myWTNZActions;
         vector<QAction*> warningsfileActions;
+        ConfigHelper helper;
         PlatformHelper pHelper;
         OutputHelper owHelper;
-        ConfigHelper helper;
         nlohmann::json config;
         string wtnzUrl;
         ShoutTab *shoutTab;
+        QtAutoUpdater::Updater *updater;
     
         ///
         ///UI instanciation
@@ -79,4 +83,9 @@ class MainWindow : public QMainWindow {
         void trueShow();
         void trueHide(QEvent* event);
         void forcedClose();
+
+        //update handling
+        void setupAutoUpdate();
+        void onUpdateChecked(bool hasUpdate, bool hasError);
+        void requireUpdateCheckFromUser();
 };
