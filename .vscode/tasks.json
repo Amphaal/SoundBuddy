@@ -148,7 +148,7 @@
                 "command": "${env:SYSTEMDRIVE}\\Qt\\QtIFW-3.0.4\\bin\\binarycreator.exe -c ${workspaceRoot}\\packager\\config\\config.xml -p packager\\packages pkgRelease\\FeedTNZSetup.exe"
             },            
             "osx": {
-                "command": "${env:SYSTEMDRIVE}/Qt/QtIFW-3.0.4/bin/binarycreator -c ${workspaceRoot}/packager/config/config.xml -p packager/packages pkgRelease/FeedTNZSetup"
+                "command": "${env:SYSTEMDRIVE}/Qt/QtIFW-3.0.4/bin/binarycreator -c ${workspaceRoot}/packager/config/config.xml -p packager/packages pkgRelease/FeedTNZSetup.dmg"
             },
             "group": "build",
             "dependsOn" : "Release - 4c. Move binaries"
