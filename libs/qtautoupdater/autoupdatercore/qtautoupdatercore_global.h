@@ -3,6 +3,7 @@
 
 #include <QtCore/qglobal.h>
 
+#define QT_BUILD_AUTOUPDATERCORE_LIB //patch for Win32 compilation
 #if defined(QT_BUILD_AUTOUPDATERCORE_LIB)
 #	define Q_AUTOUPDATERCORE_EXPORT Q_DECL_EXPORT
 #else

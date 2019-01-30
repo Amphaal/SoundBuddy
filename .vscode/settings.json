@@ -124,6 +124,16 @@
         "qdir": "cpp",
         "qstandardpaths": "cpp",
         "qfilesystemwatcher": "cpp",
-        "qmenubar": "cpp"
+        "qmenubar": "cpp",
+        "qstringlist": "cpp",
+        "qtconcurrentrun": "cpp",
+        "qpair": "cpp",
+        "qhash": "cpp",
+        "qtimerevent": "cpp",
+        "qfileinfo": "cpp",
+        "qprocess": "cpp",
+        "qloggingcategory": "cpp",
+        "qexception": "cpp",
+        "qdatetime": "cpp"
     }
 }

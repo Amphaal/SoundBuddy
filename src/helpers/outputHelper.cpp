@@ -177,7 +177,7 @@ class OutputHelper {
                     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
                     /* try use of SSL for this */
-                    //curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0); // issue with libcurl's Conan package forcing unsecure SSL
+                    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0); // issue with libcurl's Conan package forcing unsecure SSL
                     curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_TRY);
 
                     //url and execute

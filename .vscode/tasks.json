@@ -48,7 +48,7 @@
             "type": "shell",
             "dependsOn" : "Debug - 2a. Generate Project files",
             "windows": {
-                "command": "copy C:/Qt/maintenancetool.exe /bin/",
+                "command": "copy C:/Qt/maintenancetool.exe bin/maintenancetool.exe",
             },
             "osx": {
                 "command": "mkdir bin; cp -R /Qt/maintenancetool.app ./bin",

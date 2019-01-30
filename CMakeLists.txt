@@ -10,6 +10,8 @@ cmake_minimum_required(VERSION 3.1.0)
 set(CMAKE_CXX_STANDARD 17)
 if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
 endif(MSVC)
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
@@ -36,11 +38,6 @@ list(APPEND FEEDTNZ_ENTRYPOINT
 )
 
 list(APPEND FEEDTNZ_ENTRYPOINT 
-    libs/qtautoupdater/autoupdatercore/adminauthoriser.h
-    libs/qtautoupdater/autoupdatercore/qtautoupdatercore_global.h
-    libs/qtautoupdater/autoupdatercore/simplescheduler_p.h
-    libs/qtautoupdater/autoupdatercore/updater.h
-    libs/qtautoupdater/autoupdatercore/updater_p.h
     libs/qtautoupdater/autoupdatercore/simplescheduler.cpp
     libs/qtautoupdater/autoupdatercore/updater.cpp
     libs/qtautoupdater/autoupdatercore/updater_p.cpp
