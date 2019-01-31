@@ -7,6 +7,6 @@
     <Default>true</Default>
     <ForcedInstallation>true</ForcedInstallation>
     <Essential>true</Essential>
-    <Version>0.1.0-1</Version>
-    <ReleaseDate>2018-10-15</ReleaseDate>
+    <Version>${CURRENT_VERSION}</Version>
+    <ReleaseDate>${CURRENT_DATE_YYYY_MM_DD}</ReleaseDate>
 </Package>

@@ -141,6 +141,7 @@
                     "${workspaceRoot}\\packager\\config\\config.xml",
                     "-p",
                     "packager\\packages",
+                    "-v",
                     "\\\\192.168.0.12\\www\\feedtnz\\downloads\\win\\FeedTNZSetup.exe"
                 ]
             },            
@@ -167,18 +168,18 @@
                 "command": "${env:SYSTEMDRIVE}\\Qt\\QtIFW-3.0.6\\bin\\repogen.exe",
                 "args": [
                     "-p",
-                    //"--update-new-components",
                     "packager\\packages",
-                    "\\\\192.168.0.12\\www\\feedtnz\\packages"
+                    "--update-new-components",
+                    "\\\\192.168.0.12\\www\\feedtnz\\packages\\win"
                 ]
             },            
             "osx": {
                 "command": "${env:SYSTEMDRIVE}/Qt/QtIFW-3.0.6/bin/repogen",
                 "args": [
                     "-p",
-                    //"--update-new-components",
                     "packager/packages",
-                    "/volumes/www/feedtnz/packages"
+                    "--update-new-components",
+                    "/volumes/www/feedtnz/packages/osx"
                 ]
             }
         }

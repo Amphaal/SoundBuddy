@@ -10,7 +10,10 @@ rapidjson/1.1.0@bincrafters/stable
 cmake
 
 [options]
-Qt:qtactiveqt=True
+qt:qtactiveqt=True
+
+#conflict with libcurl on Windows
+qt:openssl=False
 
 [imports]
 

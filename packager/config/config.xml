@@ -2,7 +2,7 @@
 <Installer>
     <Name>FeedTNZ</Name>
     <ProductUrl>https://zonme.to2x.ovh/wtnz</ProductUrl>
-    <Version>0.1.0</Version>
+    <Version>${CURRENT_VERSION}</Version>
     <Title>FeedTNZ</Title>
     <Publisher>LVWL</Publisher>
     <StartMenuDir>FeedTNZ</StartMenuDir>
@@ -14,7 +14,7 @@
     <Logo>logo.png</Logo>
     <RemoteRepositories>
         <Repository>
-            <Url>https://zonme.to2x.ovh/feedtnz/packages</Url>
+            <Url>https://zonme.to2x.ovh/feedtnz/packages/${CURRENT_PLATFORM_TARGET_REPO}/</Url>
         </Repository>
     </RemoteRepositories>
 </Installer>
