@@ -76,6 +76,9 @@ endif (WIN32)
 
 if (APPLE)
 
+    #forcing target due to a bug from Qt5.12.0, fixed in 5.12.1
+    set(CMAKE_OSX_DEPLOYMENT_TARGET 10.12)
+
     #set bundle type
     SET(FEEDTNZ_BUNDLE_TYPE MACOSX_BUNDLE)
 
