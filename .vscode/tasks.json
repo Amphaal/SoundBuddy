@@ -151,7 +151,7 @@
                     "${workspaceRoot}/packager/config/config.xml",
                     "-p",
                     "packager/packages",
-                    "smb://192.168.0.12/www/feedtnz/downloads/osx/FeedTNZSetup.dmg"
+                    "/volumes/www/feedtnz/downloads/osx/FeedTNZSetup.dmg"
                 ]
             }
         },
@@ -167,6 +167,7 @@
                 "command": "${env:SYSTEMDRIVE}\\Qt\\QtIFW-3.0.6\\bin\\repogen.exe",
                 "args": [
                     "-p",
+                    //"--update-new-components",
                     "packager\\packages",
                     "\\\\192.168.0.12\\www\\feedtnz\\packages"
                 ]
@@ -175,8 +176,9 @@
                 "command": "${env:SYSTEMDRIVE}/Qt/QtIFW-3.0.6/bin/repogen",
                 "args": [
                     "-p",
+                    //"--update-new-components",
                     "packager/packages",
-                    "smb://192.168.0.12/www/feedtnz/packages"
+                    "/volumes/www/feedtnz/packages"
                 ]
             }
         }
