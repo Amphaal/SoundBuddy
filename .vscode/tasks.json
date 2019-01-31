@@ -9,27 +9,29 @@
         /*DEBUG*/
         {
             "label": "Debug - 0. Create build folder",
+            "group": "test",
             "type": "shell",
             "windows": {
                 "command": "rm buildDebug -r -fo; mkdir buildDebug",
             },
             "osx": {
                 "command": "rm -rf buildDebug; mkdir buildDebug",
-            },
-            "group": "test"
+            }
         },
         {
             "label": "Debug - 1. Download Dependencies",
+            "dependsOn" : "Debug - 0. Create build folder",
+            "group": "test",
             "type": "shell",
             "command": "conan install .. -s build_type=Debug --build missing",
-            "group": "test",
-            "dependsOn" : "Debug - 0. Create build folder",
             "options": {
                 "cwd": "${workspaceRoot}/buildDebug"
             }
         },
         {
             "label": "Debug - 2a. Generate Project files",
+            "dependsOn" : "Debug - 1. Download Dependencies",
+            "group": "test",
             "type": "shell",
             "windows": {
                 "command": "cmake .. -G 'Visual Studio 15 2017 Win64'",
@@ -37,16 +39,18 @@
             "osx": {
                 "command": "cmake .. -G 'Xcode'",
             },
-            "dependsOn" : "Debug - 1. Download Dependencies",
             "options": {
                 "cwd": "${workspaceRoot}/buildDebug"
-            },
-            "group": "test"
+            }
         },
         {
             "label": "Debug - 2b. Move maintenancetool",
-            "type": "shell",
             "dependsOn" : "Debug - 2a. Generate Project files",
+            "group": {
+                "isDefault": true,
+                "kind" : "test"
+            },
+            "type": "shell",
             "windows": {
                 "command": "copy C:/Qt/maintenancetool.exe bin/maintenancetool.exe",
             },
@@ -55,10 +59,6 @@
             },
             "options": {
                 "cwd": "${workspaceRoot}/buildDebug"
-            },
-            "group": {
-                "isDefault": true,
-                "kind" : "test"
             }
         },
         {
@@ -69,27 +69,29 @@
         /*RELEASE*/
         {
             "label": "Release - 0. Create build folder",
+            "group": "build",
             "type": "shell",
             "windows": {
                 "command": "rm buildRelease -r -fo; mkdir buildRelease",
             },
             "osx": {
                 "command": "rm -rf buildRelease; mkdir buildRelease",
-            },
-            "group": "build"
+            }
         },
         {
             "label": "Release - 1. Download Dependencies",
+            "dependsOn" : "Release - 0. Create build folder",
+            "group": "build",
             "type": "shell",
             "command": "conan install .. -s build_type=Release --build missing",
-            "group": "build",
-            "dependsOn" : "Release - 0. Create build folder",
             "options": {
                 "cwd": "${workspaceRoot}/buildRelease"
             }
         },
         {
             "label": "Release - 2. Generate Project files",
+            "dependsOn" : "Release - 1. Download Dependencies",
+            "group": "build",
             "type": "shell",
             "windows": {
                 "command": "cmake .. -G 'Visual Studio 15 2017 Win64'",
@@ -97,76 +99,86 @@
             "osx": {
                 "command": "cmake .. -G 'Xcode'",
             },
-            "group": "build",
-            "dependsOn" : "Release - 1. Download Dependencies",
             "options": {
                 "cwd": "${workspaceRoot}/buildRelease"
             }
         },
         {
             "label": "Release - 3. Build",
-            "type": "shell",
-            "command" : "cmake --build ./buildRelease --config Release",
+            "dependsOn" : "Release - 2. Generate Project files",   
             "group": "build",
-            "dependsOn" : "Release - 2. Generate Project files",          
-        },
-        {
-            "label": "Release - 4a. Prepare package destination folder",
             "type": "shell",
-            "windows": {
-                "command": "rm pkgRelease -r -fo; mkdir pkgRelease;",
-            },
-            "osx": {
-                "command": "rm -rf pkgRelease; mkdir pkgRelease;",
-            },
-            "group": "build",
-            "dependsOn" : "Release - 3. Build"
+            "command" : "cmake --build ./buildRelease --config Release"
         },
         {
             "label": "Release - 4b. Prepare package source folder",
+            "dependsOn" : "Release - 3. Build",
+            "group": "build",
             "type": "shell",
             "windows": {
-                "command": "rm packager/packages/com.wtnz.feedtnz/data -r -fo; mkdir packager/packages/com.wtnz.feedtnz/data;",
+                "command": "rm packager/packages/com.lvwl.feedtnz.core/data -r -fo; mkdir packager/packages/com.lvwl.feedtnz.core/data;",
             },
             "osx": {
-                "command": "rm -rf packager/packages/com.wtnz.feedtnz/data; mkdir packager/packages/com.wtnz.feedtnz/data;",
-            },
-            "group": "build",
-            "dependsOn" : "Release - 4a. Prepare package destination folder"
+                "command": "rm -rf packager/packages/com.lvwl.feedtnz.core/data; mkdir packager/packages/com.lvwl.feedtnz.core/data;",
+            }
         },
         {
             "label": "Release - 4c. Move binaries",
-            "type": "shell",
-            "command": "mv buildRelease/bin/* packager/packages/com.wtnz.feedtnz/data",
+            "dependsOn" : "Release - 4b. Prepare package source folder",
             "group": "build",
-            "dependsOn" : "Release - 4b. Prepare package source folder"
+            "type": "shell",
+            "command": "mv buildRelease/bin/* packager/packages/com.lvwl.feedtnz.core/data"
         },
         {
             "label": "Release - 4d. Build package",
+            "dependsOn" : "Release - 4c. Move binaries",
+            "group": "build",
             "type": "shell",
             "windows": {
-                "command": "${env:SYSTEMDRIVE}\\Qt\\QtIFW-3.0.4\\bin\\binarycreator.exe -c ${workspaceRoot}\\packager\\config\\config.xml -p packager\\packages pkgRelease\\FeedTNZSetup.exe"
+                "command": "${env:SYSTEMDRIVE}\\Qt\\QtIFW-3.0.6\\bin\\binarycreator.exe",
+                "args": [
+                    "-c",
+                    "${workspaceRoot}\\packager\\config\\config.xml",
+                    "-p",
+                    "packager\\packages",
+                    "\\\\192.168.0.12\\www\\feedtnz\\downloads\\win\\FeedTNZSetup.exe"
+                ]
             },            
             "osx": {
-                "command": "${env:SYSTEMDRIVE}/Qt/QtIFW-3.0.4/bin/binarycreator -c ${workspaceRoot}/packager/config/config.xml -p packager/packages pkgRelease/FeedTNZSetup.dmg"
-            },
-            "group": "build",
-            "dependsOn" : "Release - 4c. Move binaries"
+                "command": "${env:SYSTEMDRIVE}/Qt/QtIFW-3.0.6/bin/binarycreator",
+                "args": [
+                    "-c",
+                    "${workspaceRoot}/packager/config/config.xml",
+                    "-p",
+                    "packager/packages",
+                    "smb://192.168.0.12/www/feedtnz/downloads/osx/FeedTNZSetup.dmg"
+                ]
+            }
         },
         {
             "label": "Release - 5. Create remote Repo",
-            "type": "shell",
-            "windows": {
-                "command": "${env:SYSTEMDRIVE}\\Qt\\QtIFW-3.0.4\\bin\\repogen.exe -p packager\\packages pkgRepo"
-            },            
-            "osx": {
-                "command": "${env:SYSTEMDRIVE}/Qt/QtIFW-3.0.4/bin/repogen -p packager/packages pkgRepo"
-            },
+            "dependsOn" : "Release - 4d. Build package",
             "group": {
                 "isDefault": true,
                 "kind" : "build"
             },
-            "dependsOn" : "Release - 4d. Build package"
+            "type": "shell",
+            "windows": {
+                "command": "${env:SYSTEMDRIVE}\\Qt\\QtIFW-3.0.6\\bin\\repogen.exe",
+                "args": [
+                    "-p",
+                    "packager\\packages",
+                    "\\\\192.168.0.12\\www\\feedtnz\\packages"
+                ]
+            },            
+            "osx": {
+                "command": "${env:SYSTEMDRIVE}/Qt/QtIFW-3.0.6/bin/repogen",
+                "args": [
+                    "-p",
+                    "packager/packages",
+                    "smb://192.168.0.12/www/feedtnz/packages"
+                ]
+            }
         }
     ]
 }

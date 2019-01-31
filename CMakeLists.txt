@@ -25,7 +25,7 @@ SET(QT_LIBS_TO_INCLUDE Qt5::Widgets Qt5::Core)
 add_definitions(-DBOOST_ERROR_CODE_HEADER_ONLY)
 
 #set resrouces 
-SET(FEEDTNZ_RES src/resources/resources.qrc)
+SET(FEEDTNZ_RES resources/resources.qrc)
 SET(FEEDTNZ_ENTRYPOINT src/feedtnz.cpp)
 
 #add libs
@@ -70,7 +70,7 @@ if (WIN32)
     )
 
     #add icon
-    SET(FEEDTNZ_ICO_WIN src/resources/resources.rc)
+    SET(FEEDTNZ_ICO_WIN resources/resources.rc)
 
 endif (WIN32)
 
@@ -85,7 +85,7 @@ if (APPLE)
 
     #add icon
     set(MACOSX_BUNDLE_ICON_FILE feedtnz.icns)
-    set(FEEDTNZ_ICO_WIN src/resources/icons/feedtnz.icns)
+    set(FEEDTNZ_ICO_WIN resources/icons/feedtnz.icns)
     set_source_files_properties(${FEEDTNZ_ICO_WIN} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 
 endif (APPLE)
@@ -99,6 +99,6 @@ target_link_libraries(${PROJECT_NAME} ${CONAN_LIBS} ${QT_LIBS_TO_INCLUDE})
 if (APPLE)
 
     #add highdpi support via plist template
-    set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/src/build_templates/Info.plist.in)
+    set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/build_templates/Info.plist.in)
     
 endif (APPLE)

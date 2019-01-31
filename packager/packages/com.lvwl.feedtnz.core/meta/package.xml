@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>FeedTNZ</DisplayName>
+    <Description>Companion app for WTNZ</Description>
+    <Description xml:lang="fr_fr">Logiciel compagnon de WTNZ</Description>
+    <Name>com.lvwl.feedtnz.core</Name>
+    <Default>true</Default>
+    <ForcedInstallation>true</ForcedInstallation>
+    <Essential>true</Essential>
+    <Version>0.1.0-1</Version>
+    <ReleaseDate>2018-10-15</ReleaseDate>
+</Package>

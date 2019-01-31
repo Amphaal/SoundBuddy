@@ -3,4 +3,4 @@ buildRelease
 buildDebug
 pkgRelease
 pkgRepo
-packager/packages/com.wtnz.feedtnz/data
+packager/packages/com.lvwl.feedtnz.core/data

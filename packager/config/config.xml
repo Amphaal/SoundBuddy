@@ -4,11 +4,14 @@
     <ProductUrl>https://zonme.to2x.ovh/wtnz</ProductUrl>
     <Version>0.1.0</Version>
     <Title>FeedTNZ</Title>
-    <Publisher>WTNZ</Publisher>
+    <Publisher>LVWL</Publisher>
     <StartMenuDir>FeedTNZ</StartMenuDir>
     <RunProgramDescription>FeedTNZ</RunProgramDescription>
     <RunProgram>@TargetDir@/FeedTNZ</RunProgram>
     <TargetDir>@ApplicationsDirX64@/FeedTNZ</TargetDir>
+    <InstallerWindowIcon>installericon</InstallerWindowIcon>
+    <InstallerApplicationIcon>installericon</InstallerApplicationIcon>
+    <Logo>logo.png</Logo>
     <RemoteRepositories>
         <Repository>
             <Url>https://zonme.to2x.ovh/feedtnz/packages</Url>
