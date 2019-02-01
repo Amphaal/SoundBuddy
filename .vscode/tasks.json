@@ -106,82 +106,85 @@
         {
             "label": "Release - 3. Build",
             "dependsOn" : "Release - 2. Generate Project files",   
-            "group": "build",
-            "type": "shell",
-            "command" : "cmake --build ./buildRelease --config Release"
-        },
-        {
-            "label": "Release - 4b. Prepare package source folder",
-            "dependsOn" : "Release - 3. Build",
-            "group": "build",
-            "type": "shell",
-            "windows": {
-                "command": "rm packager/packages/com.lvwl.feedtnz.core/data -r -fo; mkdir packager/packages/com.lvwl.feedtnz.core/data;",
-            },
-            "osx": {
-                "command": "rm -rf packager/packages/com.lvwl.feedtnz.core/data; mkdir packager/packages/com.lvwl.feedtnz.core/data;",
-            }
-        },
-        {
-            "label": "Release - 4c. Move binaries",
-            "dependsOn" : "Release - 4b. Prepare package source folder",
-            "group": "build",
-            "type": "shell",
-            "command": "mv buildRelease/bin/* packager/packages/com.lvwl.feedtnz.core/data"
-        },
-        {
-            "label": "Release - 4d. Build package",
-            "dependsOn" : "Release - 4c. Move binaries",
-            "group": "build",
-            "type": "shell",
-            "windows": {
-                "command": "${env:SYSTEMDRIVE}\\Qt\\QtIFW-3.0.6\\bin\\binarycreator.exe",
-                "args": [
-                    "-c",
-                    "${workspaceRoot}\\packager\\config\\config.xml",
-                    "-p",
-                    "packager\\packages",
-                    "-v",
-                    "\\\\192.168.0.12\\www\\feedtnz\\downloads\\win\\FeedTNZSetup.exe"
-                ]
-            },            
-            "osx": {
-                "command": "${env:SYSTEMDRIVE}/Qt/QtIFW-3.0.6/bin/binarycreator",
-                "args": [
-                    "-c",
-                    "${workspaceRoot}/packager/config/config.xml",
-                    "-p",
-                    "packager/packages",
-                    "/volumes/www/feedtnz/downloads/osx/FeedTNZSetup.dmg"
-                ]
-            }
-        },
-        {
-            "label": "Release - 5. Create remote Repo",
-            "dependsOn" : "Release - 4d. Build package",
             "group": {
                 "isDefault": true,
                 "kind" : "build"
             },
             "type": "shell",
-            "windows": {
-                "command": "${env:SYSTEMDRIVE}\\Qt\\QtIFW-3.0.6\\bin\\repogen.exe",
-                "args": [
-                    "-p",
-                    "packager\\packages",
-                    "--update-new-components",
-                    "\\\\192.168.0.12\\www\\feedtnz\\packages\\win"
-                ]
-            },            
-            "osx": {
-                "command": "${env:SYSTEMDRIVE}/Qt/QtIFW-3.0.6/bin/repogen",
-                "args": [
-                    "-p",
-                    "packager/packages",
-                    "--update-new-components",
-                    "/volumes/www/feedtnz/packages/osx"
-                ]
-            }
+            "command" : "cmake --build ./buildRelease --config Release --target PACKAGE"
         }
+        // {
+        //     "label": "Release - 4b. Prepare package source folder",
+        //     "dependsOn" : "Release - 3. Build",
+        //     "group": "build",
+        //     "type": "shell",
+        //     "windows": {
+        //         "command": "rm packager/packages/com.lvwl.feedtnz.core/data -r -fo; mkdir packager/packages/com.lvwl.feedtnz.core/data;",
+        //     },
+        //     "osx": {
+        //         "command": "rm -rf packager/packages/com.lvwl.feedtnz.core/data; mkdir packager/packages/com.lvwl.feedtnz.core/data;",
+        //     }
+        // },
+        // {
+        //     "label": "Release - 4c. Move binaries",
+        //     "dependsOn" : "Release - 4b. Prepare package source folder",
+        //     "group": "build",
+        //     "type": "shell",
+        //     "command": "mv buildRelease/bin/* packager/packages/com.lvwl.feedtnz.core/data"
+        // },
+        // {
+        //     "label": "Release - 4d. Build package",
+        //     "dependsOn" : "Release - 4c. Move binaries",
+        //     "group": "build",
+        //     "type": "shell",
+        //     "windows": {
+        //         "command": "${env:SYSTEMDRIVE}\\Qt\\QtIFW-3.0.6\\bin\\binarycreator.exe",
+        //         "args": [
+        //             "-c",
+        //             "${workspaceRoot}\\packager\\config\\config.xml",
+        //             "-p",
+        //             "packager\\packages",
+        //             "-v",
+        //             "\\\\192.168.0.12\\www\\feedtnz\\downloads\\win\\FeedTNZSetup.exe"
+        //         ]
+        //     },            
+        //     "osx": {
+        //         "command": "${env:SYSTEMDRIVE}/Qt/QtIFW-3.0.6/bin/binarycreator",
+        //         "args": [
+        //             "-c",
+        //             "${workspaceRoot}/packager/config/config.xml",
+        //             "-p",
+        //             "packager/packages",
+        //             "/volumes/www/feedtnz/downloads/osx/FeedTNZSetup.dmg"
+        //         ]
+        //     }
+        // },
+        // {
+        //     "label": "Release - 5. Create remote Repo",
+        //     "dependsOn" : "Release - 4d. Build package",
+        //     "group": {
+        //         "isDefault": true,
+        //         "kind" : "build"
+        //     },
+        //     "type": "shell",
+        //     "windows": {
+        //         "command": "${env:SYSTEMDRIVE}\\Qt\\QtIFW-3.0.6\\bin\\repogen.exe",
+        //         "args": [
+        //             "-p",
+        //             "packager\\packages",
+        //             "--update-new-components",
+        //             "\\\\192.168.0.12\\www\\feedtnz\\packages\\win"
+        //         ]
+        //     },            
+        //     "osx": {
+        //         "command": "${env:SYSTEMDRIVE}/Qt/QtIFW-3.0.6/bin/repogen",
+        //         "args": [
+        //             "-p",
+        //             "packager/packages",
+        //             "--update-new-components",
+        //             "/volumes/www/feedtnz/packages/osx"
+        //         ]
+        //     }
+        // }
     ]
 }

@@ -47,7 +47,7 @@ list(APPEND FEEDTNZ_ENTRYPOINT
 
 #platform specfic
 list(APPEND FEEDTNZ_ENTRYPOINT 
-    src/helpers/platformHelper/platformHelper.cpp)
+    src/helpers/platformHelper/platformHelper.cpp
     src/workers/base/ITNZThread.h
     src/workers/shout/shout.cpp
     src/ui/mainWindow.cpp
@@ -98,16 +98,65 @@ if (APPLE)
 endif (APPLE)
 
 add_executable(${PROJECT_NAME} ${FEEDTNZ_BUNDLE_TYPE} ${FEEDTNZ_ENTRYPOINT} ${FEEDTNZ_RES} ${FEEDTNZ_ICO_WIN}) 
-
-#add libs
 target_link_libraries(${PROJECT_NAME} ${CONAN_LIBS} ${QT_LIBS_TO_INCLUDE})
 
-
 if (APPLE)
-
     #add highdpi support via plist template
     set_target_properties(${PROJECT_NAME} PROPERTIES 
         MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/build_templates/Info.plist.in
-    )
-    
+    ) 
 endif (APPLE)
+
+############################
+### CPACK CONFIG + Qt ITW ##
+############################
+
+    INSTALL(FILES bin DESTINATION feedtnz)
+    SET(CPACK_MONOLITHIC_INSTALL 1)
+
+    SET(CPACK_PACKAGE_VERSION_MAJOR 0)
+    SET(CPACK_PACKAGE_VERSION_MINOR 1)
+    SET(CPACK_PACKAGE_VERSION_PATCH 0)
+
+    SET(FEEDTNZ_DESCRIPTION "Companion app for WTNZ")
+    SET(FEEDTNZ_DESCRIPTION_LOCALIZED ${FEEDTNZ_DESCRIPTION}
+        fr "Logiciel compagnon pour WTNZ"
+    )
+
+    SET(CPACK_IFW_PACKAGE_PUBLISHER "LVWL")
+    SET(CPACK_IFW_PRODUCT_URL "https://zonme.to2x.ovh/wtnz")
+    SET(CPACK_IFW_TARGET_DIRECTORY "@ApplicationsDirX64@/FeedTNZ")
+
+  
+    if (APPLE)
+        SET(CPACK_IFW_ROOT "/Qt/QtIFW-3.0.6")
+    endif (APPLE)
+
+    if (WIN32)
+        SET(CPACK_IFW_ROOT "C:/Qt/QtIFW-3.0.6")
+    endif (WIN32)
+
+    SET(CPACK_GENERATOR IFW)
+    INCLUDE(CPack REQUIRED)
+    INCLUDE(CPackIFW REQUIRED)
+
+    cpack_add_component(feedtnz
+                        DISPLAY_NAME "FeedTNZ"
+                        DESCRIPTION ${FEEDTNZ_DESCRIPTION}
+                        REQUIRED
+    )
+
+    cpack_ifw_configure_component(feedtnz ESSENTIAL
+                        FORCED_INSTALLATION
+                        NAME "com.lvwl.feedtnz.core"
+                        DESCRIPTION ${FEEDTNZ_DESCRIPTION_LOCALIZED}
+                        DEFAULT TRUE
+    )
+  
+    if (APPLE)
+        cpack_ifw_add_repository(coreRepo URL "https://zonme.to2x.ovh/feedtnz/packages/osx")
+    endif (APPLE)
+
+    if (WIN32)
+        cpack_ifw_add_repository(coreRepo URL "https://zonme.to2x.ovh/feedtnz/packages/win")
+    endif (WIN32)
