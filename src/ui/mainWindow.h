@@ -26,6 +26,7 @@
 #include "../localization/i18n.cpp"
 
 #include "../../libs/qtautoupdater/autoupdatercore/updater.h"
+#include "../version.h"
 
 class MainWindow : public QMainWindow {
    

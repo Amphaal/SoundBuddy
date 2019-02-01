@@ -88,8 +88,13 @@ QMenu* MainWindow::_getOptionsMenu() {
         this, &MainWindow::requireUpdateCheckFromUser
     );
     
+    QAction *versionAction = new QAction(APP_FULL_DENOM, optionsMenuItem);
+    versionAction->setEnabled(false);
+
     optionsMenuItem->addAction(atssAction);
     optionsMenuItem->addAction(cfugAction);
+    optionsMenuItem->addSeparator();
+    optionsMenuItem->addAction(versionAction);
 
     return optionsMenuItem;
 }
