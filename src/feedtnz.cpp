@@ -21,6 +21,7 @@ int main(int argc, char** argv){
     //setup app
     QString title(APP_NAME.c_str());
     QApplication app(argc, argv);
+    app.setQuitOnLastWindowClosed(false);
     app.setApplicationName(title);
     app.setStyle(QStyleFactory::create("Fusion")); 
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);

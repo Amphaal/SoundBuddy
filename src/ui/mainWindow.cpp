@@ -249,6 +249,7 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 
     //hide trayicon on shutdown for Windows, refereshes the UI frames of system tray
     this->trayIcon->hide();
+    QCoreApplication::quit();
 };
 
 void MainWindow::trueShow() {

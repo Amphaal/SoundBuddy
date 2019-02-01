@@ -55,7 +55,7 @@
                 "command": "copy C:/Qt/maintenancetool.exe bin/maintenancetool.exe",
             },
             "osx": {
-                "command": "mkdir bin; cp -R /Qt/maintenancetool.app ./bin",
+                "command": "mkdir bin; cp -R /Qt/maintenancetool.app ./bin; cp -R /Qt/maintenancetool.dat ./bin;",
             },
             "options": {
                 "cwd": "${workspaceRoot}/buildDebug"

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <QCoreApplication>
+
 #include "QtCore/QString"
 #include "QtCore/QSize"
 #include "QtCore/QObject"
