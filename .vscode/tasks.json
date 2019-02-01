@@ -111,7 +111,7 @@
                 "kind" : "build"
             },
             "type": "shell",
-            "command" : "cmake --build ./buildRelease --config Release --target package"
+            "command" : "cmake --build ./buildRelease --target publishPackage"
         }
     ]
 }
