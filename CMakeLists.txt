@@ -4,6 +4,11 @@ cmake_minimum_required(VERSION 3.1.0)
 SET(CMAKE_CXX_STANDARD 17)
 SET(CMAKE_INCLUDE_CURRENT_DIR YES)
 
+if (APPLE)
+    #forcing target due to a bug from Qt5.12.0, fixed in 5.12.1
+    SET(CMAKE_OSX_DEPLOYMENT_TARGET 10.12)
+endif (APPLE)
+
 #Qt specifics
 SET(CMAKE_AUTOMOC ON)
 SET(CMAKE_AUTORCC ON)
@@ -80,9 +85,6 @@ endif (WIN32)
 
 if (APPLE)
 
-    #forcing target due to a bug from Qt5.12.0, fixed in 5.12.1
-    SET(CMAKE_OSX_DEPLOYMENT_TARGET 10.12)
-
     #set bundle type
     SET(FEEDTNZ_BUNDLE_TYPE MACOSX_BUNDLE)
 
@@ -111,52 +113,61 @@ endif (APPLE)
 ### CPACK CONFIG + Qt ITW ##
 ############################
 
-    INSTALL(FILES bin DESTINATION feedtnz)
-    SET(CPACK_MONOLITHIC_INSTALL 1)
+if (APPLE)
+    INSTALL(TARGETS ${PROJECT_NAME} DESTINATION .)
+endif (APPLE)
 
-    SET(CPACK_PACKAGE_VERSION_MAJOR 0)
-    SET(CPACK_PACKAGE_VERSION_MINOR 1)
-    SET(CPACK_PACKAGE_VERSION_PATCH 0)
+if (WIN32)
+    INSTALL(DIRECTORY ${CMAKE_BINARY_DIR}/bin/ DESTINATION .)
+endif (WIN32)
 
-    SET(FEEDTNZ_DESCRIPTION "Companion app for WTNZ")
-    SET(FEEDTNZ_DESCRIPTION_LOCALIZED ${FEEDTNZ_DESCRIPTION}
-        fr "Logiciel compagnon pour WTNZ"
-    )
+SET(CPACK_MONOLITHIC_INSTALL 1)
 
-    SET(CPACK_IFW_PACKAGE_PUBLISHER "LVWL")
-    SET(CPACK_IFW_PRODUCT_URL "https://zonme.to2x.ovh/wtnz")
-    SET(CPACK_IFW_TARGET_DIRECTORY "@ApplicationsDirX64@/FeedTNZ")
+SET(CPACK_PACKAGE_VERSION_MAJOR 0)
+SET(CPACK_PACKAGE_VERSION_MINOR 1)
+SET(CPACK_PACKAGE_VERSION_PATCH 0)
 
-  
-    if (APPLE)
-        SET(CPACK_IFW_ROOT "/Qt/QtIFW-3.0.6")
-    endif (APPLE)
+SET(FEEDTNZ_DESCRIPTION "Companion app for WTNZ")
+SET(FEEDTNZ_DESCRIPTION_LOCALIZED ${FEEDTNZ_DESCRIPTION}
+    fr "Logiciel compagnon pour WTNZ"
+)
 
-    if (WIN32)
-        SET(CPACK_IFW_ROOT "C:/Qt/QtIFW-3.0.6")
-    endif (WIN32)
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY ${FEEDTNZ_DESCRIPTION})
+SET(CPACK_IFW_PACKAGE_PUBLISHER "LVWL")
+SET(CPACK_IFW_PRODUCT_URL "https://zonme.to2x.ovh/wtnz")
+SET(CPACK_IFW_TARGET_DIRECTORY "@ApplicationsDirX64@/FeedTNZ")
 
-    SET(CPACK_GENERATOR IFW)
-    INCLUDE(CPack REQUIRED)
-    INCLUDE(CPackIFW REQUIRED)
 
-    cpack_add_component(feedtnz
-                        DISPLAY_NAME "FeedTNZ"
-                        DESCRIPTION ${FEEDTNZ_DESCRIPTION}
-                        REQUIRED
-    )
+if (APPLE)
+    SET(CPACK_IFW_ROOT "/Qt/QtIFW-3.0.6")
+endif (APPLE)
 
-    cpack_ifw_configure_component(feedtnz ESSENTIAL
-                        FORCED_INSTALLATION
-                        NAME "com.lvwl.feedtnz.core"
-                        DESCRIPTION ${FEEDTNZ_DESCRIPTION_LOCALIZED}
-                        DEFAULT TRUE
-    )
-  
-    if (APPLE)
-        cpack_ifw_add_repository(coreRepo URL "https://zonme.to2x.ovh/feedtnz/packages/osx")
-    endif (APPLE)
+if (WIN32)
+    SET(CPACK_IFW_ROOT "C:/Qt/QtIFW-3.0.6")
+endif (WIN32)
 
-    if (WIN32)
-        cpack_ifw_add_repository(coreRepo URL "https://zonme.to2x.ovh/feedtnz/packages/win")
-    endif (WIN32)
+SET(CPACK_GENERATOR IFW)
+INCLUDE(CPack)
+INCLUDE(CPackIFW)
+
+cpack_add_component(feedtnz
+                    DISPLAY_NAME "FeedTNZ"
+                    DESCRIPTION ${FEEDTNZ_DESCRIPTION}
+                    REQUIRED
+)
+
+cpack_ifw_configure_component(feedtnz 
+                    ESSENTIAL
+                    FORCED_INSTALLATION
+                    NAME "com.lvwl.feedtnz.core"
+                    DESCRIPTION ${FEEDTNZ_DESCRIPTION_LOCALIZED}
+                    DEFAULT TRUE
+)
+
+if (APPLE)
+    cpack_ifw_add_repository(coreRepo URL "https://zonme.to2x.ovh/feedtnz/packages/osx")
+endif (APPLE)
+
+if (WIN32)
+    cpack_ifw_add_repository(coreRepo URL "https://zonme.to2x.ovh/feedtnz/packages/win")
+endif (WIN32)
