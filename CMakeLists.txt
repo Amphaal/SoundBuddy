@@ -121,6 +121,7 @@ if (WIN32)
     INSTALL(DIRECTORY ${CMAKE_BINARY_DIR}/bin/ DESTINATION .)
 endif (WIN32)
 
+
 SET(CPACK_MONOLITHIC_INSTALL 1)
 
 SET(CPACK_PACKAGE_VERSION_MAJOR 0)
@@ -140,23 +141,34 @@ SET(CPACK_IFW_TARGET_DIRECTORY "@ApplicationsDirX64@/FeedTNZ")
 
 if (APPLE)
     SET(CPACK_IFW_ROOT "/Qt/QtIFW-3.0.6")
+    SET(FEEDTNZ_REMOTE_SERVER_PATH "/Volumes/www/feedtnz")
+    SET(FEEDTNZ_REMOTE_SERVER_PLATFORM_FOLDER "osx")
+    SET(FEEDTNZ_INSTALLER_EXTENSION ".dmg")
+    SET(MOVE_COMMAND "move")
 endif (APPLE)
 
 if (WIN32)
     SET(CPACK_IFW_ROOT "C:/Qt/QtIFW-3.0.6")
+    SET(FEEDTNZ_REMOTE_SERVER_PATH "//192.168.0.12/www/feedtnz")
+    SET(FEEDTNZ_REMOTE_SERVER_PLATFORM_FOLDER "win")
+    SET(FEEDTNZ_INSTALLER_EXTENSION ".exe")
+    SET(MOVE_COMMAND "mv")
 endif (WIN32)
+
+SET(FEEDTNZ_REMOTE_SERVER_DOWNLOAD_PATH ${FEEDTNZ_REMOTE_SERVER_PATH}/downloads/${FEEDTNZ_REMOTE_SERVER_PLATFORM_FOLDER})
+SET(FEEDTNZ_REMOTE_SERVER_PACKAGES_PATH ${FEEDTNZ_REMOTE_SERVER_PATH}/packages/${FEEDTNZ_REMOTE_SERVER_PLATFORM_FOLDER})
 
 SET(CPACK_GENERATOR IFW)
 INCLUDE(CPack)
 INCLUDE(CPackIFW)
 
-cpack_add_component(feedtnz
+cpack_add_component(${PROJECT_NAME}
                     DISPLAY_NAME "FeedTNZ"
                     DESCRIPTION ${FEEDTNZ_DESCRIPTION}
                     REQUIRED
 )
 
-cpack_ifw_configure_component(feedtnz 
+cpack_ifw_configure_component(${PROJECT_NAME} 
                     ESSENTIAL
                     FORCED_INSTALLATION
                     NAME "com.lvwl.feedtnz.core"
@@ -164,10 +176,21 @@ cpack_ifw_configure_component(feedtnz
                     DEFAULT TRUE
 )
 
-if (APPLE)
-    cpack_ifw_add_repository(coreRepo URL "https://zonme.to2x.ovh/feedtnz/packages/osx")
-endif (APPLE)
+cpack_ifw_add_repository(coreRepo URL "https://zonme.to2x.ovh/feedtnz/packages/${FEEDTNZ_REMOTE_SERVER_PLATFORM_FOLDER}")
 
-if (WIN32)
-    cpack_ifw_add_repository(coreRepo URL "https://zonme.to2x.ovh/feedtnz/packages/win")
-endif (WIN32)
+#############
+## Publish ## 
+#############
+
+SET(FEEDTNZ_PACKAGED_PATH "${CMAKE_BINARY_DIR}/_CPack_Packages/${CPACK_TOPLEVEL_TAG}/IFW/${CPACK_PACKAGE_FILE_NAME}")
+SET(FEEDTNZ_PACKAGED_INSTALLER_PATH "${FEEDTNZ_PACKAGED_PATH}/${CPACK_PACKAGE_FILE_NAME}${FEEDTNZ_INSTALLER_EXTENSION}")
+SET(FEEDTNZ_PACKAGED_REPOSITORY_PATH "${FEEDTNZ_PACKAGED_PATH}/repository")
+
+#install CoreUtils for Win32 if mv missing
+add_custom_target(publish 
+    DEPENDS ${PROJECT_NAME} 
+    COMMAND mv ${FEEDTNZ_PACKAGED_INSTALLER_PATH} ${FEEDTNZ_REMOTE_SERVER_DOWNLOAD_PATH}
+    COMMAND mv ${FEEDTNZ_PACKAGED_REPOSITORY_PATH}/* ${FEEDTNZ_REMOTE_SERVER_PACKAGES_PATH}
+)
+
+INSTALL(TARGETS publish DESTINATION .)
