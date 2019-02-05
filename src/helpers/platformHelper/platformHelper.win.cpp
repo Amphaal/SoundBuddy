@@ -8,6 +8,7 @@
     #include <map>
     #include <boost/any.hpp>
     #include <boost/locale.hpp>
+	#include <vector>
 
     using namespace boost;
     using namespace std;

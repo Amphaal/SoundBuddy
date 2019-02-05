@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 static const std::string LOCAL_ICON_PNG_PATH = ":/icons/feedtnz.png";
 static const std::string WARNINGS_FILE_PATH = "output\\warnings.json";
