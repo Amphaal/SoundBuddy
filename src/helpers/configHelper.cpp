@@ -6,6 +6,7 @@
 
 #include "platformHelper/platformHelper.h"
 #include "../localization/i18n.cpp"
+#include "const.cpp"
 
 #include <QStandardPaths>
 #include <QDir>
@@ -33,8 +34,6 @@ class FTNZMissingConfigValuesException : public std::exception {
 
 class ConfigHelper {
     
-    const std::vector<std::string> requiredConfigFields{"targetUrl", "user", "password"};
-    
     public:
     
         //constructor
@@ -44,7 +43,7 @@ class ConfigHelper {
             std::string hostPath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation).toStdString();
             QDir hostDir(hostPath.c_str());
             if (!hostDir.exists()) hostDir.mkpath(".");
-            this->configFile = hostPath + "/" + this->configFile;
+            this->configFile = hostPath + "/" + CONFIG_FILE_PATH;
 
         }
                 
@@ -58,7 +57,7 @@ class ConfigHelper {
             nlohmann::json config = this->accessConfigRaw();
 
             //check required field presence and adds them if missing
-            for (auto &rf : this->requiredConfigFields) {  
+            for (auto &rf : REQUIRED_CONFIG_FIELDS) {  
                 if (config[rf] == nullptr || config[rf] == "") {
                     throw FTNZMissingConfigValuesException();
                     return false;
@@ -81,7 +80,7 @@ class ConfigHelper {
 
             //check required field presence and adds them if missing
             bool mustWrite = false;
-            for (auto &rf : this->requiredConfigFields) {
+            for (auto &rf : REQUIRED_CONFIG_FIELDS) {
                 if (config.find(rf) == config.end()) {
                     config[rf] = nullptr;
                     mustWrite = true;
@@ -120,7 +119,7 @@ class ConfigHelper {
         }
 
     private:
-        std::string configFile = "config.json";
+        std::string configFile;
         std::fstream streamHandler;
         PlatformHelper pHelper;
 
