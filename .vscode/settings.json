@@ -134,6 +134,7 @@
         "qprocess": "cpp",
         "qloggingcategory": "cpp",
         "qexception": "cpp",
-        "qdatetime": "cpp"
+        "qdatetime": "cpp",
+        "any": "cpp"
     }
 }

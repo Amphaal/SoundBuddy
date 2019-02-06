@@ -275,7 +275,13 @@ void MainWindow::forcedClose() {
 
 void MainWindow::setupAutoUpdate() {
 
-    this->updater = new QtAutoUpdater::Updater(this);
+    if(MAINTENANCE_TOOL_LOCATION == "") {
+        this->updater = new QtAutoUpdater::Updater(this);
+    }
+    else {
+         this->updater = new QtAutoUpdater::Updater(MAINTENANCE_TOOL_LOCATION, this);
+    }
+    
 
 	QObject::connect(this->updater, &QtAutoUpdater::Updater::checkUpdatesDone, 
                      this, &MainWindow::onUpdateChecked);

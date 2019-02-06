@@ -17,7 +17,6 @@
 #include "../helpers/outputHelper.cpp"
 #include "../localization/i18n.cpp"
 
-using namespace boost;
 using namespace std;
 using namespace pugi;
 

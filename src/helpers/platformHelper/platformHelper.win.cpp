@@ -6,11 +6,8 @@
     #include "platformHelper.h"
     #include <string>
     #include <map>
-    #include <boost/any.hpp>
-    #include <boost/locale.hpp>
 	#include <vector>
 
-    using namespace boost;
     using namespace std;
 
     void PlatformHelper::openFileInOS(string cpURL) {

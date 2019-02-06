@@ -1,6 +1,5 @@
 [requires]
 qt/5.12.0@bincrafters/stable
-boost/1.69.0@conan/stable
 jsonformoderncpp/3.5.0@vthiery/stable
 pugixml/1.9@bincrafters/stable
 libcurl/7.61.1@bincrafters/stable
@@ -8,6 +7,8 @@ rapidjson/1.1.0@bincrafters/stable
 
 [generators]
 cmake
+cmake_find_package
+cmake_paths
 
 [options]
 qt:qtactiveqt=True
@@ -15,16 +16,16 @@ qt:qtactiveqt=True
 #conflict with libcurl on Windows
 qt:openssl=False
 
-[imports]
+#[imports]
 
 #WINDOWS
-plugins/platforms, qwindows*.dll -> ./bin/platforms
-bin, Qt5Widgets*.dll -> ./bin 
-bin, Qt5Core*.dll -> ./bin 
-bin, Qt5Gui*.dll -> ./bin 
+#plugins/platforms, qwindows*.dll -> ./bin/platforms
+#bin, Qt5Widgets*.dll -> ./bin 
+#bin, Qt5Core*.dll -> ./bin 
+#bin, Qt5Gui*.dll -> ./bin 
 
 #MAC
-plugins/platforms, libqcocoa*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
-lib, libQt5Widgets*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
-lib, libQt5Core*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
-lib, libQt5Gui*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
+#plugins/platforms, libqcocoa*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
+#lib, libQt5Widgets*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
+#lib, libQt5Core*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
+#lib, libQt5Gui*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/

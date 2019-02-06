@@ -31,31 +31,16 @@
         {
             "label": "Debug - 2a. Generate Project files",
             "dependsOn" : "Debug - 1. Download Dependencies",
-            "group": "test",
-            "type": "shell",
-            "windows": {
-                "command": "cmake .. -G 'Visual Studio 15 2017 Win64'",
-            },
-            "osx": {
-                "command": "cmake .. -G 'Xcode'",
-            },
-            "options": {
-                "cwd": "${workspaceRoot}/buildDebug"
-            }
-        },
-        {
-            "label": "Debug - 2b. Move maintenancetool",
-            "dependsOn" : "Debug - 2a. Generate Project files",
             "group": {
                 "isDefault": true,
                 "kind" : "test"
             },
             "type": "shell",
             "windows": {
-                "command": "copy C:/Qt/maintenancetool.exe bin/maintenancetool.exe",
+                "command": "cmake .. -G 'Visual Studio 15 2017 Win64'",
             },
             "osx": {
-                "command": "mkdir bin; cp -R /Qt/maintenancetool.app ./bin; cp -R /Qt/maintenancetool.dat ./bin;",
+                "command": "cmake .. -G 'Xcode'",
             },
             "options": {
                 "cwd": "${workspaceRoot}/buildDebug"

@@ -1,7 +1,0 @@
-#ifdef __APPLE__
-    #include <QAbstractEventDispatcher>
-    #include "mac/nativeEvents.h"
-
-    MainWindowEventFilter *ntevFilter = new MainWindowEventFilter(this);
-    QAbstractEventDispatcher::instance()->installNativeEventFilter(ntevFilter);
-#endif
