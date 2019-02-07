@@ -35,9 +35,9 @@
         return this->getEnvironmentVariable("APPDATA") + string("\\Apple Computer\\Preferences\\com.apple.iTunes.plist");
     };
 
-    string PlatformHelper::extractItunesLibLocationFromMap(map<string, any> *pListAsMap) {
+    string PlatformHelper::extractItunesLibLocationFromMap(map<string, boost::any> *pListAsMap) {
         auto rAsAny = pListAsMap->at("LXML:1:iTunes Library XML Location");
-        auto rAsVector = any_cast<vector<char>>(rAsAny);
+        auto rAsVector = boost::any_cast<vector<char>>(rAsAny);
         
         //reformat for source UTF-16
         string rAsString;
