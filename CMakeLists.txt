@@ -74,16 +74,6 @@ if (APPLE)
     #add icons
     SET(MACOSX_BUNDLE_ICON_FILE feedtnz.icns)
     SET(FEEDTNZ_ICO resources/icons/feedtnz.icns)
-    
-    #defines icns localization into the package
-    set_source_files_properties(${FEEDTNZ_ICO} PROPERTIES 
-        MACOSX_PACKAGE_LOCATION "Resources"                                                    
-    )
-
-    #add highdpi support / menu behavior via plist template
-    set_target_properties(${PROJECT_NAME} PROPERTIES 
-        MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/build_templates/Info.plist.in     
-    ) 
 
 endif (APPLE)
 
@@ -93,9 +83,9 @@ SET(SOURCES
     ${FEEDTNZ_ICO}
 )
 
-#########################
-# Executable Generation #
-#########################
+####################
+# Code compilation #
+####################
 
 # Define required linked QT libs
 find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
@@ -104,18 +94,10 @@ SET(EXT_LIBS
     Qt5::Core
 )
 
-#add local libs to generation
-list(APPEND SOURCES 
-    libs/plistcpp/Plist.cpp 
-    libs/plistcpp/PlistDate.cpp
-    libs/plistcpp/NSPlist.cpp
-    libs/plistcpp/NSPlistParser.cpp
-    libs/plistcpp/NSPlistLexer.cpp
-)
-list(APPEND SOURCES 
-    libs/qtautoupdater/autoupdatercore/simplescheduler.cpp
-    libs/qtautoupdater/autoupdatercore/updater.cpp
-    libs/qtautoupdater/autoupdatercore/updater_p.cpp
+#private libs
+file(GLOB_RECURSE INT_LIBS
+    "libs/*.c"
+    "libs/*.cpp"
 )
 
 #mandatory explicit generation
@@ -130,7 +112,7 @@ list(APPEND SOURCES
 
 #win specifics
 if (WIN32)
-
+    
     #COM iTunes libs
     list(APPEND SOURCES 
         libs/itunescom/iTunesCOMInterface_i.c
@@ -146,12 +128,35 @@ if (WIN32)
 
 endif (WIN32)
 
+#########################
+# Executable Generation #
+#########################
+
 # Create executable
-add_executable(${PROJECT_NAME} ${BUNDLE_TYPE} ${SOURCES}) 
+add_executable(${PROJECT_NAME} ${BUNDLE_TYPE} ${SOURCES} ${INT_LIBS}) 
+
+if (WIN32)    
+    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/ignore:4099") #debug target, ignore missing .pdb on conan imported libs
+endif (WIN32)
+
+if(APPLE)
+
+    #defines icns localization into the package
+    set_source_files_properties(${FEEDTNZ_ICO} PROPERTIES 
+        MACOSX_PACKAGE_LOCATION "Resources"                                                    
+    )
+
+    #add highdpi support / menu behavior via plist template
+    set_target_properties(${PROJECT_NAME} PROPERTIES 
+        MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/build_templates/Info.plist.in     
+    ) 
+
+endif(APPLE)
+
 
 # Bind ext libs
 conan_target_link_libraries(${PROJECT_NAME})
-#target_link_libraries(${PROJECT_NAME} ${EXT_LIBS})
+target_link_libraries(${PROJECT_NAME} ${EXT_LIBS})
 
 
 ######################

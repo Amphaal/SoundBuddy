@@ -16,16 +16,16 @@ qt:qtactiveqt=True
 #conflict with libcurl on Windows
 qt:openssl=False
 
-#[imports]
+[imports]
 
 #WINDOWS
-#plugins/platforms, qwindows*.dll -> ./bin/platforms
-#bin, Qt5Widgets*.dll -> ./bin 
-#bin, Qt5Core*.dll -> ./bin 
-#bin, Qt5Gui*.dll -> ./bin 
+plugins/platforms, qwindows*.dll -> ./bin/platforms
+bin, Qt5Widgets*.dll -> ./bin 
+bin, Qt5Core*.dll -> ./bin 
+bin, Qt5Gui*.dll -> ./bin 
 
 #MAC
-#plugins/platforms, libqcocoa*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
-#lib, libQt5Widgets*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
-#lib, libQt5Core*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
-#lib, libQt5Gui*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
+plugins/platforms, libqcocoa*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
+lib, libQt5Widgets*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
+lib, libQt5Core*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
+lib, libQt5Gui*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/

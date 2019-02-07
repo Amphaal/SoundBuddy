@@ -23,8 +23,6 @@
 //   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //   THE SOFTWARE.
 
-//caca
-
 #include "Plist.hpp"
 #include <locale>
 #include <codecvt>
@@ -1226,8 +1224,8 @@ std::string parseBinaryUnicode(const PlistHelperData& d, int headerPosition)
 		}
 	}
 
-	std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> conv16;
-	return conv16.to_bytes((char16_t*)characterBytes.data());
+	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> conv16;
+	return conv16.to_bytes((wchar_t*)characterBytes.data());
 }
 
 int64_t parseBinaryInt(const PlistHelperData& d, int headerPosition, int& intByteCount)
