@@ -19,9 +19,7 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${env:HOMEPATH}/.conan/data/**",
-                "${env:SYSTEMDRIVE}/.conan/2skn30ps/1/include/**",
-                "${env:SYSTEMDRIVE}/.conan/o0fpce66/1/include/**"
+                "${env:HOMEPATH}/.conan/data/**"
             ],
             "defines": [
                 "_DEBUG",
@@ -29,7 +27,7 @@
                 "_UNICODE"
             ],
             "windowsSdkVersion": "10.0.17134.0",
-            "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/VC/Tools/MSVC/14.15.26726/bin/Hostx64/x64/cl.exe",
+            "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.16.27023/bin/Hostx64/x64/cl.exe",
             "cStandard": "c11",
             "cppStandard": "c++17",
             "intelliSenseMode": "msvc-x64",

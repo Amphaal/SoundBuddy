@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QtCore/QThread"
+#include <QtCore/QThread>
 
 class ITNZThread : public QThread {
     

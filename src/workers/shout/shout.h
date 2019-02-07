@@ -1,7 +1,7 @@
 #pragma once
 #include <exception>
 #include <string>
-#include "nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 
 #include "../base/ITNZWorker.h"
 #include "../../helpers/const.cpp"

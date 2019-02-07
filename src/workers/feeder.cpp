@@ -4,9 +4,9 @@
 #include <map>
 #include <set>
 #include <pugixml.hpp>
-#include "nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 
-#include "QtWidgets/QWidget"
+#include <QtWidgets/QWidget>
 
 #include "../../libs/plistcpp/Plist.hpp"
 

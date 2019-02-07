@@ -2,21 +2,21 @@
 
 #include <QCoreApplication>
 
-#include "QtCore/QString"
-#include "QtCore/QSize"
-#include "QtCore/QObject"
-#include "QtCore/QFileSystemWatcher"
-#include "QtWidgets/QTabWidget"
-#include "QtWidgets/QMainWindow"
-#include "QtWidgets/QWidget"
-#include "QtWidgets/QMenuBar"
-#include "QtWidgets/QMenu"
-#include "QtWidgets/QAction"
-#include "QtWidgets/QSystemTrayIcon"
-#include "QtWidgets/QMessageBox"
-#include "QtGui/QCloseEvent"
-#include "QtGui/QHideEvent"
-#include "QtGui/QIcon"
+#include <QtCore/QString>
+#include <QtCore/QSize>
+#include <QtCore/QObject>
+#include <QtCore/QFileSystemWatcher>
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QMenuBar>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QSystemTrayIcon>
+#include <QtWidgets/QMessageBox>
+#include <QtGui/QCloseEvent>
+#include <QtGui/QHideEvent>
+#include <QtGui/QIcon>
 
 #include "../helpers/const.cpp"
 #include "../helpers/configHelper.cpp"
@@ -26,7 +26,7 @@
 #include "../localization/i18n.cpp"
 
 #include "../../libs/qtautoupdater/autoupdatercore/updater.h"
-#include <version.h>
+#include "../version.h"
 
 class MainWindow : public QMainWindow {
    

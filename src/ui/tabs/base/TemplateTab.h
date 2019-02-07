@@ -1,12 +1,12 @@
 #pragma once
 
-#include "QtCore/QString"
-#include "QtCore/QThread"
-#include "QtWidgets/QWidget"
-#include "QtWidgets/QPlainTextEdit"
-#include "QtWidgets/QBoxLayout"
-#include "QtWidgets/QPushButton"
-#include "QtWidgets/QScrollBar"
+#include <QtCore/QString>
+#include <QtCore/QThread>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QPlainTextEdit>
+#include <QtWidgets/QBoxLayout>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QScrollBar>
 #include <QStyle>
 
 #include "../../../workers/base/ITNZWorker.h"

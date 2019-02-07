@@ -2,7 +2,7 @@
 
 #include <exception>
 #include <filesystem>
-#include "nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 
 #include "platformHelper/platformHelper.h"
 #include "../localization/i18n.cpp"

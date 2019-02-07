@@ -1,11 +1,11 @@
 #pragma once
 
 #include <string>
-#include "QtWidgets/QCheckBox"
-#include "QtCore/QString"
+#include <QtWidgets/QCheckBox>
+#include <QtCore/QString>
 #include <Qt>
 
-#include "nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 
 #include "../../helpers/configHelper.cpp"
 #include "base/TemplateTab.h"

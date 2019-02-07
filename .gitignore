@@ -1,6 +1,3 @@
-build
 buildRelease
 buildDebug
-pkgRelease
-pkgRepo
-packager/packages/com.lvwl.feedtnz.core/data
+src/version.h

@@ -22,7 +22,7 @@ ENDIF()
 
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/build_templates/version.h.in 
-    ${CMAKE_BINARY_DIR}/version.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/version.h
 )
 
 ##################
@@ -99,11 +99,9 @@ SET(SOURCES
 
 # Define required linked QT libs
 find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
-find_package(Pugixml REQUIRED)
 SET(EXT_LIBS 
     Qt5::Widgets 
     Qt5::Core
-    pugixml
 )
 
 #add local libs to generation
@@ -152,7 +150,8 @@ endif (WIN32)
 add_executable(${PROJECT_NAME} ${BUNDLE_TYPE} ${SOURCES}) 
 
 # Bind ext libs
-target_link_libraries(${PROJECT_NAME} ${EXT_LIBS})
+conan_target_link_libraries(${PROJECT_NAME})
+#target_link_libraries(${PROJECT_NAME} ${EXT_LIBS})
 
 
 ######################

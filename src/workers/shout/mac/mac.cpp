@@ -1,7 +1,7 @@
 #include <unistd.h>
 #include <QProcess>
 
-#include "rapidjson/document.h"
+#include <rapidjson/document.h>
 
 #include "../shout.h" 
 #include "../../../helpers/stringHelper.cpp"

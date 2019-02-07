@@ -5,8 +5,8 @@
 #include <any>
 
 #include "../const.cpp"
-#include "QtCore/QSettings"
-#include "QCoreApplication"
+#include <QtCore/QSettings>
+#include <QCoreApplication>
 
 class PlatformHelper
 {

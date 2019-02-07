@@ -2,7 +2,7 @@
 
 #include <string>
 #include <filesystem>
-#include "nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 #include <curl/curl.h>
 
 #include "platformHelper/platformHelper.h"
