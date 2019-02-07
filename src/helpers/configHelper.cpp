@@ -1,7 +1,7 @@
 #pragma once
 
 #include <exception>
-#include <filesystem>
+#include <boost/filesystem.hpp>
 #include <nlohmann/json.hpp>
 
 #include "platformHelper/platformHelper.h"
@@ -108,14 +108,14 @@ class ConfigHelper {
 
         //ensure a file exists
         bool fileExists(std::string outputFileName) {
-            std::filesystem::path confP(outputFileName);
-            confP = std::filesystem::absolute(confP);
-            return std::filesystem::exists(confP);
+            boost::filesystem::path confP(outputFileName);
+            confP = boost::filesystem::absolute(confP);
+            return boost::filesystem::exists(confP);
         }
 
         std::string getConfigFileFullPath() {
-            std::filesystem::path confP(this->configFile);
-            return std::filesystem::absolute(confP).string();
+            boost::filesystem::path confP(this->configFile);
+            return boost::filesystem::absolute(confP).string();
         }
 
     private:

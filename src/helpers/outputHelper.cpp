@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <filesystem>
+#include <boost/filesystem.hpp>
 #include <nlohmann/json.hpp>
 #include <curl/curl.h>
 
@@ -79,7 +79,7 @@ class FTNZErrorProcessingUploadException : public std::exception {
 
 class OutputHelper {
         private:
-            std::filesystem::path pathToFile;
+            boost::filesystem::path pathToFile;
             string uploadTargetUrl;
             map<string, string> uploadPostData;
             string uploadFileName;
@@ -114,7 +114,7 @@ class OutputHelper {
 
             //ensure a file exists
             bool fileExists() {
-                return std::filesystem::exists(this->pathToFile);
+                return boost::filesystem::exists(this->pathToFile);
             }
 
             //
@@ -126,7 +126,7 @@ class OutputHelper {
             void writeAsJsonFile(nlohmann::json *obj) {
 
                 //get all path
-                std::filesystem::create_directory(this->pathToFile.parent_path()); //create dir if not exist
+                boost::filesystem::create_directory(this->pathToFile.parent_path()); //create dir if not exist
 
                 //save on path
                 std::fstream streamHandler;

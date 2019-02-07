@@ -7,7 +7,7 @@
 #include <nlohmann/json.hpp>
 
 #include <QtWidgets/QWidget>
-
+#include <boost/any.hpp>
 #include "../../libs/plistcpp/Plist.hpp"
 
 #include "base/ITNZWorker.h"
@@ -298,7 +298,7 @@ class FeederWorker : public ITNZWorker {
 
             string pathToPrefs = pHelper->getITunesPrefFileProbableLocation();
             
-            map<string, any> pListAsMap; 
+            map<string, boost::any> pListAsMap; 
             try {
 		        Plist::readPlist(pathToPrefs.c_str(), pListAsMap);
                 return pHelper->extractItunesLibLocationFromMap(&pListAsMap);
