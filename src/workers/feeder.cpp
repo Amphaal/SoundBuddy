@@ -4,7 +4,7 @@
 #include <map>
 #include <set>
 #include <pugixml.hpp>
-#include <nlohmann/json.hpp>
+#include <rapidjson/document.h>
 
 #include <QtWidgets/QWidget>
 #include <boost/any.hpp>

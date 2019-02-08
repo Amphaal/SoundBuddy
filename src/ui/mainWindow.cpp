@@ -172,20 +172,24 @@ void MainWindow::setupConfigFileWatcher() {
 void MainWindow::updateMenuItemsFromConfigValues(const QString &path) {
     this->updateConfigValues();
 
-    bool WTNZUrlAvailable = this->config["targetUrl"] != "" && this->config["user"] != "";
+    auto targetUrl = this->cHelper.getParamValue(this->config, "targetUrl");
+    auto user = this->cHelper.getParamValue(this->config, "user");
+
+    bool WTNZUrlAvailable = targetUrl != "" && user != "";
+    bool shouldActivateLink = false;
     if (WTNZUrlAvailable) {
         
         //set new WTNZ Url
-        this->wtnzUrl = this->config["targetUrl"].GetString();
+        this->wtnzUrl = targetUrl;
         this->wtnzUrl += "/";
-        this->wtnzUrl += this->config["user"].GetString();
-
-        //update action state
-        for (QAction *action: this->myWTNZActions){action->setEnabled(true);}
-    } else {
-        //update action state
-        for (QAction *action: this->myWTNZActions){action->setEnabled(false);}
+        this->wtnzUrl += user;
+        QUrl url(this->wtnzUrl.c_str(), QUrl::StrictMode);
+        if(url.isValid()) shouldActivateLink = true;
     }
+
+    //update action state
+    for (QAction *action: this->myWTNZActions){action->setEnabled(shouldActivateLink);}
+    
 }; 
 
 void MainWindow::updateWarningsMenuItem() {    

@@ -102,7 +102,7 @@ class ConfigHelper {
 
         std::string getParamValue(rapidjson::Document &config, std::string param) {
             createParamIfNotExist(config, param);
-            return config[param.c_str()].GetString();
+            return !config[param.c_str()].IsString() ? "" : config[param.c_str()].GetString();
         }
 
         std::string getFullPath() {
@@ -155,7 +155,7 @@ class ConfigHelper {
         void onMissingRequiredMember(rapidjson::Document &config, std::function<void(std::string)> cb) {
             for (auto &rf : REQUIRED_CONFIG_FIELDS) {
                 auto mem = config.FindMember(rf.c_str());
-                if(mem == config.MemberEnd() || !mem->value.IsString()) {
+                if(mem == config.MemberEnd()) {
                     cb(rf);
                 }
             }
@@ -164,7 +164,7 @@ class ConfigHelper {
        void onEmptyRequiredValue(rapidjson::Document &config, std::function<void()> cb) {
             for (auto &rf : REQUIRED_CONFIG_FIELDS) {
                 auto mem = config.FindMember(rf.c_str());
-                if(mem == config.MemberEnd() || mem->value.GetString() == "") {
+                if(mem == config.MemberEnd() || !mem->value.IsString() || mem->value.GetString() == "") {
                     cb();
                 }
             }
