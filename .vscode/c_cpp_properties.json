@@ -4,7 +4,8 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${env:HOME}/.conan/data/**"
+                "${env:HOME}/.conan/data/**",
+                "/Users/Amphaal/.conan/data/rapidjson/1.1.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include"
             ],
             "defines": [],
             "macFrameworkPath": [
@@ -15,7 +16,8 @@
             "cStandard": "c11",
             "cppStandard": "c++17",
             "intelliSenseMode": "clang-x64"
-        },{
+        },
+        {
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",

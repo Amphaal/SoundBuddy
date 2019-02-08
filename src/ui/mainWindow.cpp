@@ -29,7 +29,7 @@ void MainWindow::_initUI() {
 
 void MainWindow::_initUITabs() {
     QTabWidget *tabs = new QTabWidget;
-    this->shoutTab = new ShoutTab(tabs, &this->helper, this->config);
+    this->shoutTab = new ShoutTab(tabs, &this->helper);
     FeederTab *feedTab = new FeederTab(tabs);
 
     tabs->addTab(shoutTab, "Shout!");
@@ -172,13 +172,13 @@ void MainWindow::setupConfigFileWatcher() {
 void MainWindow::updateMenuItemsFromConfigValues(const QString &path) {
     this->updateConfigValues();
 
-    bool WTNZUrlAvailable = !this->config["targetUrl"].empty() && !this->config["user"].empty();
+    bool WTNZUrlAvailable = this->config["targetUrl"] != "" && this->config["user"] != "";
     if (WTNZUrlAvailable) {
         
         //set new WTNZ Url
-        this->wtnzUrl = this->config["targetUrl"].get<std::string>();
+        this->wtnzUrl = this->config["targetUrl"].GetString();
         this->wtnzUrl += "/";
-        this->wtnzUrl += this->config["user"].get<std::string>();
+        this->wtnzUrl += this->config["user"].GetString();
 
         //update action state
         for (QAction *action: this->myWTNZActions){action->setEnabled(true);}

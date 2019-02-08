@@ -18,6 +18,8 @@
 #include <QtGui/QHideEvent>
 #include <QtGui/QIcon>
 
+#include <rapidjson/document.h>
+
 #include "../helpers/const.cpp"
 #include "../helpers/configHelper.cpp"
 #include "../helpers/platformHelper/platformHelper.h"
@@ -45,7 +47,7 @@ class MainWindow : public QMainWindow {
         ConfigHelper helper;
         PlatformHelper pHelper;
         OutputHelper owHelper;
-        nlohmann::json config;
+        rapidjson::Document config;
         string wtnzUrl;
         ShoutTab *shoutTab;
         QtAutoUpdater::Updater *updater;
