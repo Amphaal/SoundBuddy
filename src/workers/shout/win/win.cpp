@@ -1,3 +1,5 @@
+#ifdef _WIN32
+
 #include <windows.h>
 
 #include "../../../../libs/itunescom/iTunesCOMInterface.h"
@@ -87,6 +89,6 @@ void ShoutWorker::run() {
     //end with log
     emit printLog(I18n::tr()->Shout_StopListening());
 
-
-
 };
+
+#endif

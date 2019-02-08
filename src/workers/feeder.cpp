@@ -147,6 +147,10 @@ class FeederWorker : public ITNZWorker {
             this->recCount = 0;
             this->expectedCount = 0;
 
+            //map<string, boost::any> pListAsMap; 
+            //Plist::readPlist(xmlFileLocation.c_str(), pListAsMap);
+            //auto rAsString = boost::any_cast<map<string, boost::any>>(pListAsMap.at("Tracks"));
+
             //open file and dig into tracks
             xml_document doc;
             try {

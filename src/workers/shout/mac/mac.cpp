@@ -1,3 +1,5 @@
+#ifdef __APPLE__
+
 #include <unistd.h>
 #include <QProcess>
 
@@ -100,3 +102,4 @@ void ShoutWorker::run() {
     this->shoutEmpty();
     emit printLog(I18n::tr()->Shout_StopListening());
 }
+#endif
