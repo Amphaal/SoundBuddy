@@ -1,12 +1,15 @@
+#include <rapidjson/document.h>
+#include <rapidjson/pointer.h>
+
 #include <string>
 #include <fstream>
 #include <exception>
 #include <map>
 #include <set>
 #include <pugixml.hpp>
-#include <rapidjson/document.h>
 
 #include <QtWidgets/QWidget>
+#include <boost/algorithm/string/join.hpp>
 #include <boost/any.hpp>
 #include "../../libs/plistcpp/Plist.hpp"
 
@@ -16,9 +19,6 @@
 #include "../helpers/stringHelper.cpp"
 #include "../helpers/outputHelper.cpp"
 #include "../localization/i18n.cpp"
-
-using namespace std;
-using namespace pugi;
 
 ///
 /// Exceptions
@@ -99,18 +99,18 @@ class FeederWorker : public ITNZWorker {
             this->processFile(itnzLibPath);
 
             //check warnings
-            auto warningsCount = this->libWarningsAsJSON.size();
+            auto warningsCount = this->libWarningsAsJSON.MemberCount();
             if (warningsCount) {
                 emit printLog(I18n::tr()->Feeder_NotifyWarningsExistence(warningsCount, OUTPUT_FILE_PATH));
 
                 emit printLog(I18n::tr()->Feeder_Unmolding(WARNINGS_FILE_PATH));
-                this->ohWrn.writeAsJsonFile(&this->libWarningsAsJSON);
+                this->ohWrn.writeAsJsonFile(this->libWarningsAsJSON, true);
             } else {
                 std::remove(WARNINGS_FILE_PATH.c_str());
             }
 
             emit printLog(I18n::tr()->Feeder_Unmolding(OUTPUT_FILE_PATH));
-            this->ohLib.writeAsJsonFile(&this->libAsJSON);
+            this->ohLib.writeAsJsonFile(this->libAsJSON);
 
             emit printLog(I18n::tr()->Feeder_OutputReady());
 
@@ -136,8 +136,9 @@ class FeederWorker : public ITNZWorker {
 
         size_t recCount;
         size_t expectedCount;
-        nlohmann::json libAsJSON;
-        nlohmann::json libWarningsAsJSON;
+        rapidjson::Document workingJSON;
+        rapidjson::Document libAsJSON;
+        rapidjson::Document libWarningsAsJSON;
         const set<string> requiredAttrs = {"Track ID", "Track Number", "Year", "Name", "Album Artist", "Album", "Genre", "Date Added"};
         const set<string> ucwordsAttrs = {"Album Artist", "Album", "Genre"};
         const string xPathExtractQuery = "/plist/dict/key[.='Tracks']/following-sibling::*[1]";
@@ -147,19 +148,15 @@ class FeederWorker : public ITNZWorker {
             this->recCount = 0;
             this->expectedCount = 0;
 
-            //map<string, boost::any> pListAsMap; 
-            //Plist::readPlist(xmlFileLocation.c_str(), pListAsMap);
-            //auto rAsString = boost::any_cast<map<string, boost::any>>(pListAsMap.at("Tracks"));
-
             //open file and dig into tracks
-            xml_document doc;
+            pugi::xml_document doc;
             try {
                 doc.load_file(xmlFileLocation.c_str());
             } catch(...) {
                 return throw FTNZXMLLibFileUnreadableException();
             }
 
-            xpath_node_set tracks = doc.select_nodes(xPathExtractQuery.c_str());
+            pugi::xpath_node_set tracks = doc.select_nodes(xPathExtractQuery.c_str());
 
             //format to dict
             emit printLog(I18n::tr()->Feeder_CookingJSON());
@@ -169,7 +166,6 @@ class FeederWorker : public ITNZWorker {
 
         //navigate through XML and generate object
         void generateJSON(pugi::xpath_node_set *nodesList) {
-            this->libAsJSON = {};
 
             //set target 
             auto target = nodesList->first().node().children();
@@ -179,13 +175,13 @@ class FeederWorker : public ITNZWorker {
             }
 
             //iterate through
-            for (xpath_node child : *nodesList) {
+            for (pugi::xpath_node child : *nodesList) {
                 this->resursiveDict(child.node());
             }
         }
 
         //inner recursive
-        string resursiveDict(xml_node traversedNode, string pathToKey = "") {
+        string resursiveDict(pugi::xml_node traversedNode, string pathToKey = "") {
                 
                 //prepare 
                 string name = traversedNode.name();
@@ -200,8 +196,7 @@ class FeederWorker : public ITNZWorker {
                 } else if (text != "" && name != "") {
                     
                     //if contain a type and actual value, insert at path location
-                    nlohmann::json::json_pointer p0(pathToKey.c_str());
-                    this->libAsJSON[p0] = text;
+                    rapidjson::Pointer(pathToKey.c_str()).Set(this->workingJSON, text.c_str());
 
                     //truncate path to key because key has been consumed by value
                     return StringHelper::splitPath(pathToKey);
@@ -209,7 +204,7 @@ class FeederWorker : public ITNZWorker {
                 }
 
                 //traverse
-                for (xpath_node child : traversedNode.children()) {
+                for (pugi::xpath_node child : traversedNode.children()) {
                     pathToKey = this->resursiveDict(child.node(), pathToKey);
                 }
 
@@ -224,21 +219,20 @@ class FeederWorker : public ITNZWorker {
             
             emit printLog(I18n::tr()->Feeder_PredigestXML());
             
-            this->libWarningsAsJSON = {}; 
             set<string> tracksIdToRemove = {};
             this->recCount = 0;
-            this->expectedCount = this->libAsJSON.size();
+            this->expectedCount = this->workingJSON.MemberCount();
             
             //through each tracks
-            for(auto track : this->libAsJSON.items()) {
+            for (auto& track = this->workingJSON.MemberBegin(); track != this->workingJSON.MemberEnd(); ++track) {
                 
                 set<string> toRemove = {};
                 set<string> foundRequired = {};
 
                 //iterate through properties
-                for(auto prop : track.value().items()) {
-                    string k = prop.key();
-                    string v = prop.value();
+                for (auto& prop = track->value.MemberBegin(); prop != track->value.MemberEnd(); ++prop) {
+                    string k = prop->name.GetString();
+                    string v = prop->value.GetString();
                     
                     //check presence of required attrs
                     if (this->requiredAttrs.find(k) == this->requiredAttrs.end()) {
@@ -256,27 +250,27 @@ class FeederWorker : public ITNZWorker {
                     inserter(missingAttrs, missingAttrs.end())
                 );
                 if (missingAttrs.size()) {
-                    this->libWarningsAsJSON.push_back({track.value()["Location"], missingAttrs});
-                    tracksIdToRemove.insert(track.key());
+                    rapidjson::Value key(track->value["Location"].GetString(), this->libWarningsAsJSON.GetAllocator());
+                    rapidjson::Value val(boost::algorithm::join(missingAttrs, ", ").c_str(), this->libWarningsAsJSON.GetAllocator());
+                    this->libWarningsAsJSON.AddMember(key, val, this->libWarningsAsJSON.GetAllocator());
+                    tracksIdToRemove.insert(track->name.GetString());
                 }
 
                 //remove useless props
-                for(auto ktr : toRemove) track.value().erase(ktr);
+                for(auto ktr : toRemove) track->value.RemoveMember(ktr.c_str());
 
                 //set optionnal values default
-                if (track.value()["Disc Number"] == nullptr) track.value()["Disc Number"] = "1";
+                if (!track->value.HasMember("Disc Number")) track->value.AddMember("Disc Number","1", this->workingJSON.GetAllocator());
 
                 tracksEmitHelper();
             }
 
             //remove tracks with warnings
-            for(auto idtr : tracksIdToRemove) this->libAsJSON.erase(idtr);
+            for(auto idtr : tracksIdToRemove) this->workingJSON.RemoveMember(idtr.c_str());
 
             //remove ids
-            nlohmann::json temp = this->libAsJSON;
-            this->libAsJSON = {};
-            for(auto track : temp.items()) {
-                this->libAsJSON.push_back(track.value());
+            for (auto& track = this->workingJSON.MemberBegin(); track != this->workingJSON.MemberEnd(); ++track) {
+                this->libAsJSON.PushBack(track->value);
             }
         }
 

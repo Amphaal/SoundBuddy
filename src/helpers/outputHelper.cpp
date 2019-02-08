@@ -3,7 +3,7 @@
 #include <string>
 #include <boost/filesystem.hpp>
 #include <rapidjson/document.h>
-#include <nlohmann/json.hpp>
+#include <rapidjson/prettywriter.h>
 #include <curl/curl.h>
 
 #include "platformHelper/platformHelper.h"
@@ -120,16 +120,25 @@ class OutputHelper {
             }
 
             //write outputfile
-            void writeAsJsonFile(nlohmann::json *obj) {
+            void writeAsJsonFile(rapidjson::Document &obj, bool mustPrettyPrint = false) {
 
                 //get all path
                 boost::filesystem::create_directory(this->pathToFile.parent_path()); //create dir if not exist
 
                 //save on path
-                std::fstream streamHandler;
-                streamHandler.open(this->pathToFile.c_str(), std::fstream::out);
-                streamHandler << obj->dump() << std::endl;
-                streamHandler.close();
+                auto fp = fopen(this->pathToFile.string().c_str(), "w");
+                char writeBuffer[65536];
+                rapidjson::FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
+
+                rapidjson::Document d;
+                if(mustPrettyPrint) {
+                    rapidjson::PrettyWriter<rapidjson::FileWriteStream> writer(os);
+                    d.Accept(writer);
+                } else {
+                    rapidjson::Writer<rapidjson::FileWriteStream> writer(os);
+                    d.Accept(writer);
+                }    
+                fclose(fp);
             }
 
             std::string uploadFile() {

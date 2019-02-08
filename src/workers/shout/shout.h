@@ -1,7 +1,7 @@
 #pragma once
 #include <exception>
 #include <string>
-#include <nlohmann/json.hpp>
+#include <rapidjson/document.h>
 
 #include "../base/ITNZWorker.h"
 #include "../../helpers/const.cpp"
@@ -19,7 +19,8 @@ class ShoutWorker : public ITNZWorker {
     private:
         bool mustListen = true;
         OutputHelper helper;
-        nlohmann::json createBasicShout();
-        void shoutToServer(nlohmann::json *incoming);
         size_t lastTrackHash;
+
+        rapidjson::Document createBasicShout();
+        void shoutToServer(rapidjson::Document &incoming);
 };

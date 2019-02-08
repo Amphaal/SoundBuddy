@@ -3,7 +3,7 @@
 
 ShoutWorker::ShoutWorker() : helper(OutputHelper(SHOUT_FILE_PATH, "uploadShout", "shout_file")) {};
 
-nlohmann::json ShoutWorker::createBasicShout() {
+rapidjson::Document ShoutWorker::createBasicShout() {
     
     //get iso date
     time_t now;
@@ -12,43 +12,50 @@ nlohmann::json ShoutWorker::createBasicShout() {
     strftime(buf, sizeof buf, "%FT%TZ", gmtime(&now));
     
     //return json obj
-    nlohmann::json obj = {};
-    obj["date"] = buf;
+    rapidjson::Document obj;
+    obj.AddMember("date", rapidjson::Value(buf, obj.GetAllocator()), obj.GetAllocator());
     return obj;
 };
 
 void ShoutWorker::shoutEmpty(){
-    nlohmann::json obj = this->createBasicShout();
-    emit this->printLog(I18n::tr()->Shout_Nothing(obj["date"].get<string>()));
-    this->shoutToServer(&obj);
+    auto obj = this->createBasicShout();
+    emit this->printLog(I18n::tr()->Shout_Nothing(obj["date"].GetString()));
+    this->shoutToServer(obj);
 };
 
 void ShoutWorker::shoutFilled(string name, string album, string artist, string genre, int duration, int playerPosition, bool playerState) {
     
     //fill obj
-    nlohmann::json obj = this->createBasicShout();
-    obj["name"] = name;
-    obj["album"] = album;
-    obj["artist"] = artist;
-    obj["genre"] = genre;
-    obj["duration"] = duration;
-    obj["playerPosition"] = playerPosition;
-    obj["playerState"] = playerState;
+    auto obj = this->createBasicShout();
+
+    //factory for value generation
+    std::function<rapidjson::Value(std::string)> valGen = [&obj](std::string defVal) {
+        rapidjson::Value p(defVal.c_str(), obj.GetAllocator());
+        return p;
+    };
+
+    obj.AddMember("name", valGen(name), obj.GetAllocator());
+    obj.AddMember("album", valGen(album), obj.GetAllocator());
+    obj.AddMember("artist", valGen(artist), obj.GetAllocator());
+    obj.AddMember("genre", valGen(genre), obj.GetAllocator());
+    obj.AddMember("duration", duration, obj.GetAllocator());
+    obj.AddMember("playerPosition", playerPosition, obj.GetAllocator());
+    obj.AddMember("playerState", playerState, obj.GetAllocator());
 
     //log...
     string logMessage = I18n::tr()->Shout(
-        obj["date"].get<string>(),
-        obj["name"].get<string>(),
-        obj["album"].get<string>(),
-        obj["artist"].get<string>(),
-        obj["playerState"].get<bool>()
+        obj["date"].GetString(),
+        obj["name"].GetString(),
+        obj["album"].GetString(),
+        obj["artist"].GetString(),
+        obj["playerState"].GetBool()
     );
     emit this->printLog(logMessage);
 
-    this->shoutToServer(&obj);
+    this->shoutToServer(obj);
 };
 
-void ShoutWorker::shoutToServer(nlohmann::json *incoming) {
+void ShoutWorker::shoutToServer(rapidjson::Document &incoming) {
     try {
         this->helper.writeAsJsonFile(incoming);
         this->helper.uploadFile();

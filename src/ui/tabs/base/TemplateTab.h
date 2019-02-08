@@ -12,8 +12,6 @@
 #include "../../../workers/base/ITNZWorker.h"
 #include "../../../helpers/stringHelper.cpp"
 
-using namespace std;
-
 class MainWindow; //Forward Declaration 
 
 class TemplateTab : public QWidget {
