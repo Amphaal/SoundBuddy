@@ -2,6 +2,7 @@
 
 #include <string>
 #include <boost/filesystem.hpp>
+#include <rapidjson/document.h>
 #include <nlohmann/json.hpp>
 #include <curl/curl.h>
 
@@ -104,11 +105,11 @@ class OutputHelper {
 
                 ConfigHelper helper;
                 helper.ensureConfigFileIsReadyForUpload();
-                nlohmann::json config = helper.accessConfig();
+                auto config = helper.accessConfig();
 
-                this->uploadTargetUrl = config["targetUrl"].get<string>() + "/" + config["user"].get<string>() + "/" + targetFunction.c_str();
+                this->uploadTargetUrl = (std::string)config["targetUrl"].GetString() + "/" + config["user"].GetString() + "/" + targetFunction;
                 
-                this->uploadPostData.insert(pair<string, string>("password", config["password"].get<string>()));
+                this->uploadPostData.insert(pair<string, string>("password", config["password"].GetString()));
                 this->uploadPostData.insert(pair<string, string>("headless", "1"));
             }
 

@@ -5,7 +5,7 @@
 #include <QtCore/QString>
 #include <Qt>
 
-#include <nlohmann/json.hpp>
+#include <rapidjson/document.h>
 
 #include "../../helpers/configHelper.cpp"
 #include "base/TemplateTab.h"
@@ -20,8 +20,8 @@ class ShoutTab : public TemplateTab {
     }
     
     public:
-        ShoutTab(QWidget *parent, ConfigHelper *helper, nlohmann::json config) : TemplateTab(parent), 
-        helper(helper), config(config),
+        ShoutTab(QWidget *parent, ConfigHelper *helper) : TemplateTab(parent), 
+        helper(helper),
         checkAutoLaunch(new QCheckBox(I18n::tr()->Shout_Autolaunch().c_str(), this))
           {
             
@@ -34,7 +34,7 @@ class ShoutTab : public TemplateTab {
             this->mainLayout->addWidget(this->tButton);
             this->mainLayout->addWidget(this->checkAutoLaunch);
 
-            if (this->config[this->autoLaunchConfigParam] == "true") {
+            if (this->helper->accessConfig()[this->autoLaunchConfigParam.c_str()] == "true") {
                 this->checkAutoLaunch->setCheckState(Qt::CheckState::Checked);
                 this->startThread();
             }
@@ -42,7 +42,6 @@ class ShoutTab : public TemplateTab {
 
     private:
         ConfigHelper *helper;
-        nlohmann::json config;
         QCheckBox *checkAutoLaunch;
 
         void changeAutoLaunch(bool isChecked) {

@@ -2,7 +2,11 @@
 
 #include <exception>
 #include <boost/filesystem.hpp>
-#include <nlohmann/json.hpp>
+
+#include <rapidjson/document.h>
+#include <rapidjson/filereadstream.h>
+#include <rapidjson/filewritestream.h>
+#include <rapidjson/prettywriter.h>
 
 #include "platformHelper/platformHelper.h"
 #include "../localization/i18n.cpp"
@@ -35,15 +39,21 @@ class FTNZMissingConfigValuesException : public std::exception {
 class ConfigHelper {
     
     public:
-    
-        //constructor
-        ConfigHelper() : streamHandler(std::fstream()), pHelper(PlatformHelper()) {
+        ConfigHelper() : pHelper(PlatformHelper()) {
 
             //set definitive location and create path if not exist
             std::string hostPath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation).toStdString();
             QDir hostDir(hostPath.c_str());
             if (!hostDir.exists()) hostDir.mkpath(".");
             this->configFile = hostPath + "/" + CONFIG_FILE_PATH;
+
+            //check if exists, if not create valid json file
+            if(!this->fileExists(this->configFile)) {
+                std::fstream streamHandler;
+                streamHandler.open(this->configFile, std::fstream::out);
+                streamHandler << "{}";
+                streamHandler.close();
+            }
 
         }
                 
@@ -54,42 +64,33 @@ class ConfigHelper {
 
         //makes sure mandatory fields for uplaods are filled
         bool ensureConfigFileIsReadyForUpload() {
-            nlohmann::json config = this->accessConfigRaw();
+            auto config = this->accessConfigRaw();
 
-            //check required field presence and adds them if missing
-            for (auto &rf : REQUIRED_CONFIG_FIELDS) {  
-                if (config[rf] == nullptr || config[rf] == "") {
-                    throw FTNZMissingConfigValuesException();
-                    return false;
-                }
-            }
+            //check required field presence
+            bool mustThrow = false;
+            this->onEmptyValues(config, [&mustThrow](){
+                    mustThrow = true;
+            });
+            if(mustThrow) throw FTNZMissingConfigValuesException();
 
             return true;
         }
 
         //get configuration data from file
-        nlohmann::json accessConfig() {
+        rapidjson::Document accessConfig() {
             
-            //check if exists, if not create file
-            if(!this->fileExists(this->configFile)) {
-                this->streamHandler.open(this->configFile, std::fstream::out);
-                this->streamHandler.close();
-            }
-            
-            nlohmann::json config = this->accessConfigRaw();
+            auto config = this->accessConfigRaw();
 
             //check required field presence and adds them if missing
             bool mustWrite = false;
-            for (auto &rf : REQUIRED_CONFIG_FIELDS) {
-                if (config.find(rf) == config.end()) {
-                    config[rf] = nullptr;
+            this->onMissingMember(config, [&mustWrite, &config](std::string rf){
+                    config[rf.c_str()] = "";
                     mustWrite = true;
-                }
-            }
+            });
 
             //re-write as formated string
             if(mustWrite) {
-                this->writeFormatedFileFromObj(&config);
+                this->writeFormatedFileFromObj(config);
             }
             
             //return values
@@ -98,12 +99,9 @@ class ConfigHelper {
 
         //update the current config file
         void updateConfigFile(std::string paramToUpdate, std::string value) {
-            this->streamHandler.open(this->configFile, std::fstream::in);
-                nlohmann::json config;
-                this->streamHandler >> config;
-                config[paramToUpdate] = value;
-            this->streamHandler.close();
-            this->writeFormatedFileFromObj(&config);
+            auto config = this->accessConfigRaw();
+            config[paramToUpdate.c_str()] = value;
+            this->writeFormatedFileFromObj(config);
         }
 
         //ensure a file exists
@@ -120,28 +118,44 @@ class ConfigHelper {
 
     private:
         std::string configFile;
-        std::fstream streamHandler;
         PlatformHelper pHelper;
 
-        //write
-        std::string writeFormatedFileFromObj(nlohmann::json *obj) {
-            this->streamHandler.open(this->configFile, std::fstream::out);
-            std::string result = obj->dump(4);
-            this->streamHandler << result << std::endl;
-            this->streamHandler.close();
-            return result;
+        //write pretty printed document into file
+        void writeFormatedFileFromObj(rapidjson::Document &d) {
+            auto fp = fopen(this->configFile.c_str(), "w");
+            char writeBuffer[65536];
+            rapidjson::FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
+            rapidjson::PrettyWriter<rapidjson::FileWriteStream> writer(os);    
+            d.Accept(writer);
+            fclose(fp);
         }
         
         //get the config file and parse file content to variable
-        nlohmann::json accessConfigRaw() {
-            nlohmann::json config;
-            this->streamHandler.open(this->configFile, std::fstream::in);
-                try {
-                    this->streamHandler >> config;
-                } catch(const std::exception&) {
-                    config = {};
+        rapidjson::Document accessConfigRaw() {
+            auto fp = fopen(this->configFile.c_str(), "r");
+            char readBuffer[65536];
+            rapidjson::FileReadStream is(fp, readBuffer, sizeof(readBuffer));
+            rapidjson::Document d;
+            d.ParseStream(is);
+            fclose(fp);
+            return d;
+        }
+
+        void onMissingMember(rapidjson::Document &config, std::function<void(std::string)> cb) {
+            for (auto &rf : REQUIRED_CONFIG_FIELDS) {
+                auto mem = config.FindMember(rf.c_str());
+                if(mem == config.MemberEnd() || !mem->value.IsString()) {
+                    cb(rf);
                 }
-            this->streamHandler.close();
-            return config;
+            }
+        }
+
+       void onEmptyValues(rapidjson::Document &config, std::function<void()> cb) {
+            for (auto &rf : REQUIRED_CONFIG_FIELDS) {
+                auto mem = config.FindMember(rf.c_str());
+                if(mem == config.MemberEnd() || mem->value == "") {
+                    cb();
+                }
+            }
         }
 };
