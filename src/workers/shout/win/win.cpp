@@ -41,9 +41,9 @@ void ShoutWorker::run() {
             iTunesCOMHandler *handler = new iTunesCOMHandler(iITunes, this);
 
             //bind events to sink handler
-            bool oatputqe = QObject::connect(iITunes, iITunes->metaObject()->method(5), handler, handler->metaObject()->method(5));
-            bool oppe = QObject::connect(iITunes, iITunes->metaObject()->method(9), handler, handler->metaObject()->method(6));
-            bool opse = QObject::connect(iITunes, iITunes->metaObject()->method(11), handler, handler->metaObject()->method(7));
+            auto oatputqe = QObject::connect(iITunes, iITunes->metaObject()->method(5), handler, handler->metaObject()->method(5));
+            auto oppe = QObject::connect(iITunes, iITunes->metaObject()->method(9), handler, handler->metaObject()->method(6));
+            auto opse = QObject::connect(iITunes, iITunes->metaObject()->method(11), handler, handler->metaObject()->method(7));
 
             //process events
             while(this->mustListen && !handler->iTunesShutdownRequested) {
@@ -71,6 +71,13 @@ void ShoutWorker::run() {
                 emit this->printLog(I18n::tr()->Shout_WaitITunesAgain());
             }
 
+            //free
+            QObject::disconnect(oatputqe);
+            QObject::disconnect(oppe);
+            QObject::disconnect(opse);
+            delete handler;
+            delete iITunes;
+
         } else {
             //if not found, wait and retry
             this->sleep(1);
@@ -79,4 +86,7 @@ void ShoutWorker::run() {
 
     //end with log
     emit printLog(I18n::tr()->Shout_StopListening());
+
+
+
 };

@@ -148,5 +148,6 @@
         "__tree": "cpp",
         "__tuple": "cpp",
         "cwctype": "cpp"
-    }
+    },
+    "C_Cpp.intelliSenseEngineFallback": "Disabled"
 }

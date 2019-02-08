@@ -58,6 +58,7 @@ void iTunesCOMHandler::shoutHelper(QVariant iTrack) {
 
     //clear
     trackObj->clear();
+    delete trackObj;
 
     //compare with old shout, if equivalent, don't reshout
     if(this->worker->shouldUpload(iPlayerState, tName, tAlbum, tArtist, tDatePlayed, tDateSkipped)) {

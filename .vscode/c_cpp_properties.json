@@ -15,11 +15,15 @@
             "cStandard": "c11",
             "cppStandard": "c++17",
             "intelliSenseMode": "clang-x64"
-        },{
+        },
+        {
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${env:HOMEPATH}/.conan/data/**"
+                "${env:HOMEPATH}/.conan/data/**",
+                "C:/.conan/78jzm88i/1/include/QtCore",
+                "C:/.conan/78jzm88i/1/include",
+                "C:/.conan/bet56sv3/1/include"
             ],
             "defines": [
                 "_DEBUG",

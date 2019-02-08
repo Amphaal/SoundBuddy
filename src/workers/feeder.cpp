@@ -294,14 +294,14 @@ class FeederWorker : public ITNZWorker {
         string getITunesLibLocation() {
             emit printLog(I18n::tr()->Feeder_GetXMLFileLoc());
 
-            PlatformHelper *pHelper = new PlatformHelper;
+            PlatformHelper pHelper;
 
-            string pathToPrefs = pHelper->getITunesPrefFileProbableLocation();
+            string pathToPrefs = pHelper.getITunesPrefFileProbableLocation();
             
             map<string, boost::any> pListAsMap; 
             try {
 		        Plist::readPlist(pathToPrefs.c_str(), pListAsMap);
-                return pHelper->extractItunesLibLocationFromMap(&pListAsMap);
+                return pHelper.extractItunesLibLocationFromMap(&pListAsMap);
             } catch (...) {
                 throw FTNZMissingItunesConfigException();
             }
