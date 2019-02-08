@@ -24,7 +24,8 @@
                 "${env:HOMEPATH}/.conan/data/**",
                 "C:/.conan/78jzm88i/1/include/QtCore",
                 "C:/.conan/78jzm88i/1/include",
-                "C:/.conan/bet56sv3/1/include"
+                "C:/.conan/bet56sv3/1/include",
+                "C:/.conan/78jzm88i/1/include/QtWidgets"
             ],
             "defines": [
                 "_DEBUG",

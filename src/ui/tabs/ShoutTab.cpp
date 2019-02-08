@@ -20,8 +20,8 @@ class ShoutTab : public TemplateTab {
     }
     
     public:
-        ShoutTab(QWidget *parent, ConfigHelper *helper) : TemplateTab(parent), 
-        helper(helper),
+        ShoutTab(QWidget *parent, ConfigHelper *cHelper) : TemplateTab(parent), 
+        cHelper(cHelper),
         checkAutoLaunch(new QCheckBox(I18n::tr()->Shout_Autolaunch().c_str(), this))
           {
             
@@ -34,17 +34,18 @@ class ShoutTab : public TemplateTab {
             this->mainLayout->addWidget(this->tButton);
             this->mainLayout->addWidget(this->checkAutoLaunch);
 
-            if (this->helper->accessConfig()[this->autoLaunchConfigParam.c_str()] == "true") {
+            auto config = this->cHelper->accessConfig();
+            if (this->cHelper->getParamValue(config, this->autoLaunchConfigParam) == "true") {
                 this->checkAutoLaunch->setCheckState(Qt::CheckState::Checked);
                 this->startThread();
             }
         }
 
     private:
-        ConfigHelper *helper;
+        ConfigHelper *cHelper;
         QCheckBox *checkAutoLaunch;
 
         void changeAutoLaunch(bool isChecked) {
-            this->helper->updateConfigFile(this->autoLaunchConfigParam, isChecked ? "true" : "false");
+            this->cHelper->updateParamValue(this->autoLaunchConfigParam, isChecked ? "true" : "false");
         }
 };

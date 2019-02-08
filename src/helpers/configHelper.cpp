@@ -43,18 +43,13 @@ class ConfigHelper {
 
             //set definitive location and create path if not exist
             std::string hostPath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation).toStdString();
-            QDir hostDir(hostPath.c_str());
-            if (!hostDir.exists()) hostDir.mkpath(".");
+            this->hostDir = new QDir(hostPath.c_str());
             this->configFile = hostPath + "/" + CONFIG_FILE_PATH;
 
-            //check if exists, if not create valid json file
-            if(!this->fileExists(this->configFile)) {
-                std::fstream streamHandler;
-                streamHandler.open(this->configFile, std::fstream::out);
-                streamHandler << "{}";
-                streamHandler.close();
-            }
+        }
 
+        ~ConfigHelper() {
+            delete this->hostDir;
         }
                 
         //open the configuration file
@@ -68,7 +63,7 @@ class ConfigHelper {
 
             //check required field presence
             bool mustThrow = false;
-            this->onEmptyValues(config, [&mustThrow](){
+            this->onEmptyRequiredValue(config, [&mustThrow](){
                     mustThrow = true;
             });
             if(mustThrow) throw FTNZMissingConfigValuesException();
@@ -83,8 +78,9 @@ class ConfigHelper {
 
             //check required field presence and adds them if missing
             bool mustWrite = false;
-            this->onMissingMember(config, [&mustWrite, &config](std::string rf){
-                    config[rf.c_str()] = "";
+            this->onMissingRequiredMember(config, [&mustWrite, &config](std::string rf){
+                    rapidjson::Value n(rf.c_str(), config.GetAllocator());
+                    config.AddMember(n, "", config.GetAllocator());
                     mustWrite = true;
             });
 
@@ -98,20 +94,18 @@ class ConfigHelper {
         }
 
         //update the current config file
-        void updateConfigFile(std::string paramToUpdate, std::string value) {
+        void updateParamValue(std::string paramToUpdate, std::string value) {
             auto config = this->accessConfigRaw();
-            config[paramToUpdate.c_str()] = value;
+            this->createParamIfNotExist(config, paramToUpdate, value);
             this->writeFormatedFileFromObj(config);
         }
 
-        //ensure a file exists
-        bool fileExists(std::string outputFileName) {
-            boost::filesystem::path confP(outputFileName);
-            confP = boost::filesystem::absolute(confP);
-            return boost::filesystem::exists(confP);
+        std::string getParamValue(rapidjson::Document &config, std::string param) {
+            createParamIfNotExist(config, param);
+            return config[param.c_str()].GetString();
         }
 
-        std::string getConfigFileFullPath() {
+        std::string getFullPath() {
             boost::filesystem::path confP(this->configFile);
             return boost::filesystem::absolute(confP).string();
         }
@@ -119,6 +113,7 @@ class ConfigHelper {
     private:
         std::string configFile;
         PlatformHelper pHelper;
+        QDir *hostDir;
 
         //write pretty printed document into file
         void writeFormatedFileFromObj(rapidjson::Document &d) {
@@ -132,16 +127,32 @@ class ConfigHelper {
         
         //get the config file and parse file content to variable
         rapidjson::Document accessConfigRaw() {
+
+            //create path if not exist
+            if (!hostDir->exists()) hostDir->mkpath(".");
+
+            //check if exists, if not create valid json file
+            if(!this->pHelper.fileExists(this->configFile)) {
+                this->writeNewConfig();
+            }
+
+            //open file
             auto fp = fopen(this->configFile.c_str(), "r");
             char readBuffer[65536];
             rapidjson::FileReadStream is(fp, readBuffer, sizeof(readBuffer));
             rapidjson::Document d;
-            d.ParseStream(is);
+            rapidjson::ParseResult s = d.ParseStream(is);
             fclose(fp);
+
+            if(s.IsError()) {
+                this->writeNewConfig();
+                return this->accessConfigRaw();
+            }
+
             return d;
         }
 
-        void onMissingMember(rapidjson::Document &config, std::function<void(std::string)> cb) {
+        void onMissingRequiredMember(rapidjson::Document &config, std::function<void(std::string)> cb) {
             for (auto &rf : REQUIRED_CONFIG_FIELDS) {
                 auto mem = config.FindMember(rf.c_str());
                 if(mem == config.MemberEnd() || !mem->value.IsString()) {
@@ -150,12 +161,28 @@ class ConfigHelper {
             }
         }
 
-       void onEmptyValues(rapidjson::Document &config, std::function<void()> cb) {
+       void onEmptyRequiredValue(rapidjson::Document &config, std::function<void()> cb) {
             for (auto &rf : REQUIRED_CONFIG_FIELDS) {
                 auto mem = config.FindMember(rf.c_str());
-                if(mem == config.MemberEnd() || mem->value == "") {
+                if(mem == config.MemberEnd() || mem->value.GetString() == "") {
                     cb();
                 }
             }
+        }
+
+        void writeNewConfig() {
+            std::fstream streamHandler;
+            streamHandler.open(this->configFile, std::fstream::out);
+            streamHandler << "{}";
+            streamHandler.close();
+        }
+
+        void createParamIfNotExist(rapidjson::Document &config, std::string paramToFind, std::string defVal = "") {
+            auto mem = config.FindMember(paramToFind.c_str());
+                if(mem == config.MemberEnd()) {
+                    rapidjson::Value param(paramToFind.c_str(), config.GetAllocator());
+                    rapidjson::Value val(defVal.c_str(), config.GetAllocator());
+                    config.AddMember(param, val, config.GetAllocator());
+                }
         }
 };

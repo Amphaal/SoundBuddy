@@ -48,6 +48,7 @@ if(MSVC)
     add_definitions(-D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
     add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
+    add_definitions(-D_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING) #rapidjson
 endif(MSVC)
 
 #########################
@@ -136,7 +137,7 @@ endif (WIN32)
 add_executable(${PROJECT_NAME} ${BUNDLE_TYPE} ${SOURCES} ${INT_LIBS}) 
 
 if (WIN32)    
-    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/ignore:4099") #debug target, ignore missing .pdb on conan imported libs
+    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/ignore:4099 /ignore:4267 /ignore:4244 /ignore:4715")
 endif (WIN32)
 
 if(APPLE)

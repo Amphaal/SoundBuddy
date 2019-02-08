@@ -103,22 +103,18 @@ class OutputHelper {
                 
                 if(targetFunction == "" || uploadFileName == "") return;
 
-                ConfigHelper helper;
-                helper.ensureConfigFileIsReadyForUpload();
-                auto config = helper.accessConfig();
+                ConfigHelper cHelper;
+                cHelper.ensureConfigFileIsReadyForUpload();
+                auto config = cHelper.accessConfig();
+                auto targetUrl = cHelper.getParamValue(config, "targetUrl");
+                auto user = cHelper.getParamValue(config, "user");
+                auto password = cHelper.getParamValue(config, "password");
 
-                this->uploadTargetUrl = (std::string)config["targetUrl"].GetString() + "/" + config["user"].GetString() + "/" + targetFunction;
-                
-                this->uploadPostData.insert(pair<string, string>("password", config["password"].GetString()));
+                this->uploadTargetUrl = targetUrl + "/" + user + "/" + targetFunction;
+                this->uploadPostData.insert(pair<string, string>("password", password));
                 this->uploadPostData.insert(pair<string, string>("headless", "1"));
             }
 
-            //ensure a file exists
-            bool fileExists() {
-                return boost::filesystem::exists(this->pathToFile);
-            }
-
-            //
             std::string getOutputPath() {
                 return this->pathToFile.generic_string();
             }

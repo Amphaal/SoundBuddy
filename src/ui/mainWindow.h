@@ -44,7 +44,7 @@ class MainWindow : public QMainWindow {
         QFileSystemWatcher *configWatcher;
         vector<QAction*> myWTNZActions;
         vector<QAction*> warningsfileActions;
-        ConfigHelper helper;
+        ConfigHelper cHelper;
         PlatformHelper pHelper;
         OutputHelper owHelper;
         rapidjson::Document config;

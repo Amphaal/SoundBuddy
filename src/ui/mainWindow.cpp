@@ -3,7 +3,7 @@
 
 MainWindow::MainWindow(QString *title) : 
     title(title), 
-    helper(ConfigHelper()), 
+    cHelper(ConfigHelper()), 
     pHelper(PlatformHelper()), 
     owHelper(WARNINGS_FILE_PATH) {     
     
@@ -29,7 +29,7 @@ void MainWindow::_initUI() {
 
 void MainWindow::_initUITabs() {
     QTabWidget *tabs = new QTabWidget;
-    this->shoutTab = new ShoutTab(tabs, &this->helper);
+    this->shoutTab = new ShoutTab(tabs, &this->cHelper);
     FeederTab *feedTab = new FeederTab(tabs);
 
     tabs->addTab(shoutTab, "Shout!");
@@ -154,14 +154,14 @@ QMenu* MainWindow::_getFileMenu() {
 };
 
 void MainWindow::updateConfigValues() {
-    this->config = this->helper.accessConfig();
+    this->config = this->cHelper.accessConfig();
 };
 
 //set watcher on config file
 void MainWindow::setupConfigFileWatcher() {
     this->updateMenuItemsFromConfigValues();
 
-    std::string f = this->helper.getConfigFileFullPath();
+    std::string f = this->cHelper.getFullPath();
     this->configWatcher = new QFileSystemWatcher(QStringList(f.c_str()), this);
     
     QObject::connect(this->configWatcher, &QFileSystemWatcher::fileChanged,
@@ -189,7 +189,7 @@ void MainWindow::updateMenuItemsFromConfigValues(const QString &path) {
 }; 
 
 void MainWindow::updateWarningsMenuItem() {    
-    bool doEnable = this->helper.fileExists(this->owHelper.getOutputPath());
+    bool doEnable = this->pHelper.fileExists(this->owHelper.getOutputPath());
 
     for (QAction *action: this->warningsfileActions){action->setEnabled(doEnable);}
 };
@@ -205,7 +205,7 @@ void MainWindow::accessWTNZ() {
 
 //open the config file into the OS browser
 void MainWindow::openConfigFile() {
-    this->helper.openConfigFile();
+    this->cHelper.openConfigFile();
 };
 
 

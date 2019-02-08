@@ -3,6 +3,7 @@
 #include <fstream>
 #include <map>
 #include <boost/any.hpp>
+#include <boost/filesystem.hpp>
 
 #include "../const.cpp"
 #include <QtCore/QSettings>
@@ -18,6 +19,7 @@ class PlatformHelper
         std::string extractItunesLibLocationFromMap(std::map<std::string, boost::any> *pListAsMap);
         bool isLaunchingAtStartup();
         void switchStartupLaunch();
+        bool fileExists(std::string filename);
 
     private:
         QSettings* getStartupSettingsHandler();
