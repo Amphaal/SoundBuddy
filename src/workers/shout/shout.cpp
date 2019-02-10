@@ -13,7 +13,9 @@ rapidjson::Document ShoutWorker::createBasicShout() {
     
     //return json obj
     rapidjson::Document obj;
-    obj.AddMember("date", rapidjson::Value(buf, obj.GetAllocator()), obj.GetAllocator());
+    rapidjson::Document::AllocatorType &alloc = obj.GetAllocator();
+    auto dateAsJSONVal = rapidjson::Value(buf, alloc);
+    obj.AddMember("date", dateAsJSONVal, alloc);
     return obj;
 };
 
@@ -27,20 +29,21 @@ void ShoutWorker::shoutFilled(string name, string album, string artist, string g
     
     //fill obj
     auto obj = this->createBasicShout();
+    rapidjson::Document::AllocatorType &alloc = obj.GetAllocator();
 
     //factory for value generation
-    std::function<rapidjson::Value(std::string)> valGen = [&obj](std::string defVal) {
-        rapidjson::Value p(defVal.c_str(), obj.GetAllocator());
+    std::function<rapidjson::Value(std::string)> valGen = [&obj, &alloc](std::string defVal) {
+        rapidjson::Value p(defVal.c_str(), alloc);
         return p;
     };
 
-    obj.AddMember("name", valGen(name), obj.GetAllocator());
-    obj.AddMember("album", valGen(album), obj.GetAllocator());
-    obj.AddMember("artist", valGen(artist), obj.GetAllocator());
-    obj.AddMember("genre", valGen(genre), obj.GetAllocator());
-    obj.AddMember("duration", duration, obj.GetAllocator());
-    obj.AddMember("playerPosition", playerPosition, obj.GetAllocator());
-    obj.AddMember("playerState", playerState, obj.GetAllocator());
+    obj.AddMember("name", valGen(name), alloc);
+    obj.AddMember("album", valGen(album), alloc);
+    obj.AddMember("artist", valGen(artist), alloc);
+    obj.AddMember("genre", valGen(genre), alloc);
+    obj.AddMember("duration", duration, alloc);
+    obj.AddMember("playerPosition", playerPosition, alloc);
+    obj.AddMember("playerState", playerState, alloc);
 
     //log...
     string logMessage = I18n::tr()->Shout(

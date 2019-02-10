@@ -51,8 +51,8 @@ class FTNZErrorUploadingException : public std::exception {
             std::string exceptionMessage;
 
     public:
-        FTNZErrorUploadingException() {
-            this->exceptionMessage = I18n::tr()->FTNZErrorUploadingException();
+        FTNZErrorUploadingException(string errorMessage) {
+            this->exceptionMessage = I18n::tr()->FTNZErrorUploadingException(errorMessage);
         }
         const char* what() const throw () {   
             return this->exceptionMessage.c_str();
@@ -191,7 +191,8 @@ class OutputHelper {
                     CURLcode res = curl_easy_perform(curl); 
                     
                     if(res != CURLE_OK) {
-                        throw FTNZErrorUploadingException(); 
+                        auto descr = curl_easy_strerror(res);
+                        throw FTNZErrorUploadingException(descr); 
                         return "";
                     } else {
                         //response code

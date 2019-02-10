@@ -148,6 +148,11 @@ class FeederWorker : public ITNZWorker {
             this->recCount = 0;
             this->expectedCount = 0;
 
+            //set default
+            this->libWarningsAsJSON.Parse("{}");
+            this->workingJSON.Parse("{}");
+            this->libAsJSON.Parse("[]");
+
             //open file and dig into tracks
             pugi::xml_document doc;
             try {
@@ -219,18 +224,24 @@ class FeederWorker : public ITNZWorker {
             
             emit printLog(I18n::tr()->Feeder_PredigestXML());
             
+            //declare allocators
+            rapidjson::Document::AllocatorType &lajAlloc = this->libAsJSON.GetAllocator();
+            rapidjson::Document::AllocatorType &lwajAlloc = this->libWarningsAsJSON.GetAllocator();
+            rapidjson::Document::AllocatorType &wjAlloc = this->workingJSON.GetAllocator();
+
+            //prepare
             set<string> tracksIdToRemove = {};
             this->recCount = 0;
             this->expectedCount = this->workingJSON.MemberCount();
             
             //through each tracks
-            for (auto& track = this->workingJSON.MemberBegin(); track != this->workingJSON.MemberEnd(); ++track) {
+            for (auto track = this->workingJSON.MemberBegin(); track != this->workingJSON.MemberEnd(); ++track) {
                 
                 set<string> toRemove = {};
                 set<string> foundRequired = {};
 
                 //iterate through properties
-                for (auto& prop = track->value.MemberBegin(); prop != track->value.MemberEnd(); ++prop) {
+                for (auto prop = track->value.MemberBegin(); prop != track->value.MemberEnd(); ++prop) {
                     string k = prop->name.GetString();
                     string v = prop->value.GetString();
                     
@@ -250,9 +261,9 @@ class FeederWorker : public ITNZWorker {
                     inserter(missingAttrs, missingAttrs.end())
                 );
                 if (missingAttrs.size()) {
-                    rapidjson::Value key(track->value["Location"].GetString(), this->libWarningsAsJSON.GetAllocator());
-                    rapidjson::Value val(boost::algorithm::join(missingAttrs, ", ").c_str(), this->libWarningsAsJSON.GetAllocator());
-                    this->libWarningsAsJSON.AddMember(key, val, this->libWarningsAsJSON.GetAllocator());
+                    rapidjson::Value key(track->value["Location"].GetString(), lwajAlloc);
+                    rapidjson::Value val(boost::algorithm::join(missingAttrs, ", ").c_str(), lwajAlloc);
+                    this->libWarningsAsJSON.AddMember(key, val, lwajAlloc);
                     tracksIdToRemove.insert(track->name.GetString());
                 }
 
@@ -260,7 +271,7 @@ class FeederWorker : public ITNZWorker {
                 for(auto ktr : toRemove) track->value.RemoveMember(ktr.c_str());
 
                 //set optionnal values default
-                if (!track->value.HasMember("Disc Number")) track->value.AddMember("Disc Number","1", this->workingJSON.GetAllocator());
+                if (!track->value.HasMember("Disc Number")) track->value.AddMember("Disc Number","1", wjAlloc);
 
                 tracksEmitHelper();
             }
@@ -269,8 +280,8 @@ class FeederWorker : public ITNZWorker {
             for(auto idtr : tracksIdToRemove) this->workingJSON.RemoveMember(idtr.c_str());
 
             //remove ids
-            for (auto& track = this->workingJSON.MemberBegin(); track != this->workingJSON.MemberEnd(); ++track) {
-                this->libAsJSON.PushBack(track->value);
+            for (auto track = this->workingJSON.MemberBegin(); track != this->workingJSON.MemberEnd(); ++track) {
+                this->libAsJSON.PushBack(track->value.GetObject(), lajAlloc);
             }
         }
 

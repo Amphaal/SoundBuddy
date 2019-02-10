@@ -25,7 +25,7 @@ class IFeedTNZTranslator {
         virtual string Shout_Autolaunch() = 0;
         virtual string FTNZNoOutputFileException(string outputPath) = 0;
         virtual string FTNZOutputFileUnreadableException(string outputPath) = 0;
-        virtual string FTNZErrorUploadingException() = 0;
+        virtual string FTNZErrorUploadingException(string errorMessage) = 0;
         virtual string FTNZXMLLibFileUnreadableException() = 0;
         virtual string FTNZMissingItunesConfigException() = 0;
         virtual string FTNZNoMusicFoundException() = 0;

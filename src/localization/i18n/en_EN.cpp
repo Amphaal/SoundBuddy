@@ -21,7 +21,7 @@ class FeedTNZTranslator_EN : public IFeedTNZTranslator {
     string Shout_Autolaunch() { return "Autostart at launch"; };
     string FTNZNoOutputFileException(string outputPath) { return "\"" + outputPath  + "\" does not exist. Please generate JSON before."; };
     string FTNZOutputFileUnreadableException(string outputPath) {return "\"" + outputPath + "\" cannot be read. Please regenerate it."; };
-    string FTNZErrorUploadingException() { return "Error communicating with the remote server."; };
+    string FTNZErrorUploadingException(string errorMessage) { return "Error communicating with the remote server : \"" + errorMessage + (string)"\"."; };
     string FTNZXMLLibFileUnreadableException() { return "Cannot read the XML file bound to your library. Are you sure you activated the XML file sharing in iTunes ?"; };
     string FTNZMissingItunesConfigException() { return "An issue happened while fetching iTunes's XML file location. Have you installed iTunes ?"; };
     string FTNZNoMusicFoundException() { return "No music found in your library. Please feed it some."; };

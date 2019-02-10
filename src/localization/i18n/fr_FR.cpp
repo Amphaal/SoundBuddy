@@ -21,7 +21,7 @@ class FeedTNZTranslator_FR : public IFeedTNZTranslator {
     string Shout_Autolaunch() { return "Démarrage automatique"; };
     string FTNZNoOutputFileException(string outputPath) { return "\"" + outputPath  + "\" n'existe pas. Merci de générer le fichier JSON dans un premier temps."; };
     string FTNZOutputFileUnreadableException(string outputPath) {return "\"" + outputPath + "\" ne peut pas être lu. Merci de le re-générer."; };
-    string FTNZErrorUploadingException() { return "Problème durant la communication avec le serveur"; };
+    string FTNZErrorUploadingException(string errorMessage) { return "Problème durant la communication avec le serveur : \"" + errorMessage + (string)"\"."; };
     string FTNZXMLLibFileUnreadableException() { return "Impossible de lire le fichier XML lié à votre bibliothèque. Assurez-vous que le partage du fichier XML de la bibliothèque est bien activé dans iTunes>Préférences>Avancées"; };
     string FTNZMissingItunesConfigException() { return "Un problème est survenu durant la recherche de l'emplacement de la bibliothèque. Etes-vous sûr d'avoir installé iTunes ?"; };
     string FTNZNoMusicFoundException() { return "Aucunes musiques trouvée dans iTunes. Merci de lui en fournir quelques unes !"; };

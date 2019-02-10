@@ -78,9 +78,10 @@ class ConfigHelper {
 
             //check required field presence and adds them if missing
             bool mustWrite = false;
-            this->onMissingRequiredMember(config, [&mustWrite, &config](std::string rf){
-                    rapidjson::Value n(rf.c_str(), config.GetAllocator());
-                    config.AddMember(n, "", config.GetAllocator());
+            rapidjson::Document::AllocatorType &alloc = config.GetAllocator();
+            this->onMissingRequiredMember(config, [&mustWrite, &config, &alloc](std::string rf){
+                    rapidjson::Value n(rf.c_str(), alloc);
+                    config.AddMember(n, "", alloc);
                     mustWrite = true;
             });
 
@@ -178,11 +179,14 @@ class ConfigHelper {
         }
 
         void createParamIfNotExist(rapidjson::Document &config, std::string paramToFind, std::string defVal = "") {
+            
             auto mem = config.FindMember(paramToFind.c_str());
+            rapidjson::Document::AllocatorType &alloc = config.GetAllocator();
+
                 if(mem == config.MemberEnd()) {
-                    rapidjson::Value param(paramToFind.c_str(), config.GetAllocator());
-                    rapidjson::Value val(defVal.c_str(), config.GetAllocator());
-                    config.AddMember(param, val, config.GetAllocator());
+                    rapidjson::Value param(paramToFind.c_str(), alloc);
+                    rapidjson::Value val(defVal.c_str(), alloc);
+                    config.AddMember(param, val, alloc);
                 }
         }
 };

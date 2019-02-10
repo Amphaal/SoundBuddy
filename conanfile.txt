@@ -1,6 +1,5 @@
 [requires]
 qt/5.12.0@bincrafters/stable
-jsonformoderncpp/3.5.0@vthiery/stable
 pugixml/1.9@bincrafters/stable
 libcurl/7.61.1@bincrafters/stable
 rapidjson/1.1.0@bincrafters/stable
