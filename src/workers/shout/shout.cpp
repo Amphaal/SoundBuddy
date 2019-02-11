@@ -32,7 +32,7 @@ void ShoutWorker::shoutFilled(string name, string album, string artist, string g
     rapidjson::Document::AllocatorType &alloc = obj.GetAllocator();
 
     //factory for value generation
-    std::function<rapidjson::Value(std::string)> valGen = [&obj, &alloc](std::string defVal) {
+    std::function<rapidjson::Value(std::string)> valGen = [&alloc](std::string defVal) {
         rapidjson::Value p(defVal.c_str(), alloc);
         return p;
     };

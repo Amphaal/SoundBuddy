@@ -165,7 +165,7 @@ class ConfigHelper {
        void onEmptyRequiredValue(rapidjson::Document &config, std::function<void()> cb) {
             for (auto &rf : REQUIRED_CONFIG_FIELDS) {
                 auto mem = config.FindMember(rf.c_str());
-                if(mem == config.MemberEnd() || !mem->value.IsString() || mem->value.GetString() == "") {
+                if(mem == config.MemberEnd() || !mem->value.IsString() || ((std::string)mem->value.GetString() == "")) {
                     cb();
                 }
             }

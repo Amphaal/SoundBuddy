@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-static const std::string LOCAL_ICON_PNG_PATH = ":/icons/feedtnz.png";
+static const std::string LOCAL_ICON_PNG_PATH = ":/icons/feedtnz_reverse.png";
 static const std::string WARNINGS_FILE_PATH = "output\\warnings.json";
 static const std::string OUTPUT_FILE_PATH = "output\\output.json";
 static const std::string SHOUT_FILE_PATH = "output\\shout.json";

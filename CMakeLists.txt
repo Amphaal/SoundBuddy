@@ -66,7 +66,7 @@ SET(CMAKE_AUTORCC ON)
 
 if (WIN32)
     SET(BUNDLE_TYPE WIN32) #set bundle type
-    SET(FEEDTNZ_ICO resources/resources.rc) #add icon
+    SET(FEEDTNZ_ICO ${CMAKE_CURRENT_SOURCE_DIR}/resources/resources.rc) #add icon
 endif (WIN32)
 
 if (APPLE)
@@ -74,7 +74,7 @@ if (APPLE)
 
     #add icons
     SET(MACOSX_BUNDLE_ICON_FILE feedtnz.icns)
-    SET(FEEDTNZ_ICO resources/icons/feedtnz.icns)
+    SET(FEEDTNZ_ICO ${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/feedtnz.icns)
 
 endif (APPLE)
 
