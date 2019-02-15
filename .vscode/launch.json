@@ -8,7 +8,7 @@
             "name": "Launch",
             "windows": {
                 "type": "cppvsdbg",
-                "program": "${workspaceFolder}/buildDebug/bin/feedtnz.exe",
+                "program": "feedtnz.exe",
             },
             "osx": {
                 "MIMode": "lldb",

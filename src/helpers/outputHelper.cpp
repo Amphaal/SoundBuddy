@@ -127,16 +127,16 @@ class OutputHelper {
 
                 //save on path
                 auto fp = fopen(this->pathToFile.string().c_str(), "w");
+
                 char writeBuffer[65536];
                 rapidjson::FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
 
-                rapidjson::Document d;
                 if(mustPrettyPrint) {
                     rapidjson::PrettyWriter<rapidjson::FileWriteStream> writer(os);
-                    d.Accept(writer);
+                    obj.Accept(writer);
                 } else {
                     rapidjson::Writer<rapidjson::FileWriteStream> writer(os);
-                    d.Accept(writer);
+                    obj.Accept(writer);
                 }    
                 fclose(fp);
             }

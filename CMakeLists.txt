@@ -11,7 +11,13 @@ SET(CMAKE_PROJECT_VERSION_PATCH 2)
 
 #set default maintenance tool path
 SET(MAINTENANCE_TOOL_LOCATION "")
+SET(IS_DEBUG_APP OFF)
+
+
 IF(${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR}/buildDebug)
+
+    SET(IS_DEBUG_APP ON)
+
     if (APPLE)
         SET(MAINTENANCE_TOOL_LOCATION "/Qt/MaintenanceTool")
     endif(APPLE)
@@ -80,8 +86,8 @@ endif (APPLE)
 
 #default source contains
 SET(SOURCES
-    resources/resources.qrc
     ${FEEDTNZ_ICO}
+    resources/resources.qrc
 )
 
 ####################
@@ -103,8 +109,9 @@ file(GLOB_RECURSE INT_LIBS
 
 #mandatory explicit generation
 list(APPEND SOURCES
-    src/feedtnz.cpp
+    src/main.cpp
     src/helpers/platformHelper/platformHelper.cpp
+    src/helpers/iTunesLibParser/iTunesLibParser.cpp
     src/workers/base/ITNZThread.h
     src/workers/shout/shout.cpp
     src/ui/mainWindow.cpp

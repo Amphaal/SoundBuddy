@@ -5,7 +5,8 @@
 #include <boost/any.hpp>
 #include <boost/filesystem.hpp>
 
-#include "../const.cpp"
+#include "../_const.cpp"
+#include "../../version.h"
 #include <QtCore/QSettings>
 #include <QCoreApplication>
 

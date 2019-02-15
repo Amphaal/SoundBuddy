@@ -10,7 +10,7 @@
 
 #include "platformHelper/platformHelper.h"
 #include "../localization/i18n.cpp"
-#include "const.cpp"
+#include "_const.cpp"
 
 #include <QStandardPaths>
 #include <QDir>

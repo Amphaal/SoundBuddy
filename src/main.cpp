@@ -4,7 +4,7 @@
 #include <QtWidgets/QStyleFactory>
 #include "ui/mainWindow.h"
 
-#include "helpers/const.cpp"
+#include "helpers/_const.cpp"
 
 #include <QDir>
 #include <QLockFile>
@@ -18,8 +18,12 @@ int main(int argc, char** argv){
         return 1;
     }
 
+    //define app title
+    std::string stdTitle = APP_NAME;
+    if(IS_DEBUG_APP) stdTitle = "DEBUG - " + stdTitle;
+    QString title(stdTitle.c_str());
+
     //setup app
-    QString title(APP_NAME.c_str());
     QApplication app(argc, argv);
     app.setQuitOnLastWindowClosed(false);
     app.setApplicationName(title);

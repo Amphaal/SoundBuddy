@@ -5,6 +5,7 @@
 #include <QtCore/QString>
 #include <QtCore/QSize>
 #include <QtCore/QObject>
+#include <QtCore/QDebug>
 #include <QtCore/QFileSystemWatcher>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QMainWindow>
@@ -20,7 +21,7 @@
 
 #include <rapidjson/document.h>
 
-#include "../helpers/const.cpp"
+#include "../helpers/_const.cpp"
 #include "../helpers/configHelper.cpp"
 #include "../helpers/platformHelper/platformHelper.h"
 #include "tabs/ShoutTab.cpp"

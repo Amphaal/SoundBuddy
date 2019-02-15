@@ -4,7 +4,7 @@
 #include <rapidjson/document.h>
 
 #include "../base/ITNZWorker.h"
-#include "../../helpers/const.cpp"
+#include "../../helpers/_const.cpp"
 #include "../../helpers/outputHelper.cpp"
 
 class ShoutWorker : public ITNZWorker {

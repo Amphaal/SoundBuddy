@@ -22,6 +22,7 @@ void MainWindow::informWarningPresence() {
 
 void MainWindow::_initUI() {
     this->setMinimumSize(QSize(480, 400));
+    this->setWindowIcon(QIcon(LOCAL_ICON_PNG_PATH.c_str()));
     this->_initUITabs();
     this->_initUITray();
     this->_initUIMenu();
@@ -48,7 +49,7 @@ void MainWindow::_initUIMenu() {
 void MainWindow::_initUITray() {
     QSystemTrayIcon *trayIcon = new QSystemTrayIcon;
     this->trayIcon = trayIcon;
-    trayIcon->setIcon(QIcon(LOCAL_ICON_PNG_PATH.c_str()));
+    trayIcon->setIcon(QIcon(LOCAL_REVERSE_ICON_PNG_PATH.c_str()));
     trayIcon->setToolTip(*this->title);
  
     #ifdef _WIN32
@@ -296,29 +297,38 @@ void MainWindow::setupAutoUpdate() {
 
 void MainWindow::onUpdateChecked(bool hasUpdate, bool hasError) {
 
+    //if the user asks directly to check updates
     if(this->userNotificationOnUpdateCheck) {
         this->userNotificationOnUpdateCheck = false;
-
-        auto logMsg = QString(this->updater->errorLog().toStdString().c_str());
+        
+        std::string title = (std::string)APP_NAME + " - " + I18n::tr()->Menu_CheckForUpgrades();
+        std::string content = this->updater->errorLog().toStdString();
 
         if(!hasUpdate && !hasError) {
             QMessageBox::information(this, 
-                QString(I18n::tr()->Menu_CheckForUpgrades().c_str()), 
-                logMsg, 
+                QString(title.c_str()), 
+                QString(content.c_str()), 
                 QMessageBox::Ok, QMessageBox::Ok);
         } else if (hasError) {
             QMessageBox::warning(this, 
-                QString(I18n::tr()->Menu_CheckForUpgrades().c_str()), 
-                logMsg, 
+                QString(title.c_str()), 
+                QString(content.c_str()), 
                 QMessageBox::Ok, QMessageBox::Ok);
         }
     }
 
+    //no update, no go
     if(!hasUpdate) return;
 
-    auto msgboxRslt = QMessageBox::information(this, QString(I18n::tr()->Alert_UpdateAvailable_Title().c_str()), 
-                QString(I18n::tr()->Alert_UpdateAvailable_Text().c_str()), 
-                QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+    //if has update
+    std::string title = (std::string)APP_NAME + " - " + I18n::tr()->Alert_UpdateAvailable_Title();
+    std::string content = I18n::tr()->Alert_UpdateAvailable_Text();
+
+    auto msgboxRslt = QMessageBox::information(this, 
+                QString(title.c_str()), 
+                QString(content.c_str()), 
+                QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes
+    );
     
     if(msgboxRslt == QMessageBox::Yes) {
         this->updater->runUpdaterOnExit();

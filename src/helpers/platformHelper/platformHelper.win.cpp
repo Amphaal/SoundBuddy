@@ -58,7 +58,7 @@
     }
 
     std::string PlatformHelper::getPathToAppFromStartupSettings(QSettings *settings) {
-        return settings->value(APP_NAME.c_str(), "").toString().toStdString();
+        return settings->value(APP_NAME, "").toString().toStdString();
     }
 
     void PlatformHelper::switchStartupLaunch() {
@@ -66,9 +66,9 @@
         auto settings = this->getStartupSettingsHandler();
 
         if (!this->isLaunchingAtStartup()) {
-            settings->setValue(APP_NAME.c_str(), this->getPathToApp().c_str());
+            settings->setValue(APP_NAME, this->getPathToApp().c_str());
         } else {
-            settings->remove(APP_NAME.c_str());
+            settings->remove(APP_NAME);
         }
     }
 

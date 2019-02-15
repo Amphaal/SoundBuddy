@@ -6,7 +6,7 @@
 #include <exception>
 #include <map>
 #include <set>
-#include <pugixml.hpp>
+#include <boost/filesystem.hpp>
 
 #include <QtWidgets/QWidget>
 #include <boost/algorithm/string/join.hpp>
@@ -14,11 +14,12 @@
 #include "../../libs/plistcpp/Plist.hpp"
 
 #include "base/ITNZWorker.h"
-#include "../helpers/const.cpp"
+#include "../helpers/_const.cpp"
 #include "../helpers/platformHelper/platformHelper.h"
 #include "../helpers/stringHelper.cpp"
 #include "../helpers/outputHelper.cpp"
 #include "../localization/i18n.cpp"
+#include "../helpers/iTunesLibParser/iTunesLibParser.h"
 
 ///
 /// Exceptions
@@ -72,15 +73,16 @@ class FeederWorker : public ITNZWorker {
     public:
 		FeederWorker() : ohLib(OUTPUT_FILE_PATH, "uploadLib", "wtnz_file"), ohWrn(WARNINGS_FILE_PATH) {}
 
+
         void run() override {
-            emit printLog(I18n::tr()->Feeder_Warning());
+            emit printLog(I18n::tr()->Feeder_Warning());  //EMIT
 
             try {
                 this->generateLibJSONFile();
                 this->uploadLibToServer();
             } catch (const std::exception& e) {
-                emit printLog(e.what());
-                emit error();
+                emit printLog(e.what());  //EMIT
+                emit error();  //EMIT
             }
         }
 
@@ -101,31 +103,35 @@ class FeederWorker : public ITNZWorker {
             //check warnings
             auto warningsCount = this->libWarningsAsJSON.MemberCount();
             if (warningsCount) {
-                emit printLog(I18n::tr()->Feeder_NotifyWarningsExistence(warningsCount, OUTPUT_FILE_PATH));
+                //create warning file
+                emit printLog(I18n::tr()->Feeder_NotifyWarningsExistence(warningsCount, OUTPUT_FILE_PATH));  //EMIT
 
-                emit printLog(I18n::tr()->Feeder_Unmolding(WARNINGS_FILE_PATH));
+                emit printLog(I18n::tr()->Feeder_Unmolding(WARNINGS_FILE_PATH));  //EMIT
                 this->ohWrn.writeAsJsonFile(this->libWarningsAsJSON, true);
             } else {
-                std::remove(WARNINGS_FILE_PATH.c_str());
+                //remove old warning file
+                auto pToRem = this->ohWrn.getOutputPath().c_str();
+                std::remove(pToRem);
             }
 
-            emit printLog(I18n::tr()->Feeder_Unmolding(OUTPUT_FILE_PATH));
+            emit printLog(I18n::tr()->Feeder_Unmolding(OUTPUT_FILE_PATH));  //EMIT
+
             this->ohLib.writeAsJsonFile(this->libAsJSON);
 
-            emit printLog(I18n::tr()->Feeder_OutputReady());
+            emit printLog(I18n::tr()->Feeder_OutputReady());  //EMIT
 
-            emit operationFinished(warningsCount);
+            emit operationFinished(warningsCount);  //EMIT
         }
 
 
         //upload
         void uploadLibToServer() {
-            emit printLog(I18n::tr()->Feeder_StartSend());
+            emit printLog(I18n::tr()->Feeder_StartSend());  //EMIT
             string response = ohLib.uploadFile();
             if (response != "") {
-                emit printLog(I18n::tr()->HTTP_ServerResponded(response));
+                emit printLog(I18n::tr()->HTTP_ServerResponded(response));  //EMIT
             } else {
-                emit printLog(I18n::tr()->HTTP_NoResponse());
+                emit printLog(I18n::tr()->HTTP_NoResponse());  //EMIT
             }
         }
 
@@ -141,10 +147,8 @@ class FeederWorker : public ITNZWorker {
         rapidjson::Document libWarningsAsJSON;
         const set<string> requiredAttrs = {"Track ID", "Track Number", "Year", "Name", "Album Artist", "Album", "Genre", "Date Added"};
         const set<string> ucwordsAttrs = {"Album Artist", "Album", "Genre"};
-        const string xPathExtractQuery = "/plist/dict/key[.='Tracks']/following-sibling::*[1]";
 
         void processFile(string xmlFileLocation) {
-            emit printLog(I18n::tr()->Feeder_TrimingFat());
             this->recCount = 0;
             this->expectedCount = 0;
 
@@ -153,77 +157,50 @@ class FeederWorker : public ITNZWorker {
             this->workingJSON.Parse("{}");
             this->libAsJSON.Parse("[]");
 
-            //open file and dig into tracks
-            pugi::xml_document doc;
-            try {
-                doc.load_file(xmlFileLocation.c_str());
-            } catch(...) {
-                return throw FTNZXMLLibFileUnreadableException();
-            }
-
-            pugi::xpath_node_set tracks = doc.select_nodes(xPathExtractQuery.c_str());
-
             //format to dict
-            emit printLog(I18n::tr()->Feeder_CookingJSON());
-            this->generateJSON(&tracks);
+            this->generateJSON(xmlFileLocation);
             this->standardizeJSON();    
         }
 
         //navigate through XML and generate object
-        void generateJSON(pugi::xpath_node_set *nodesList) {
+        void generateJSON(string xmlFileLocation) {
+            
+            emit printLog(I18n::tr()->Feeder_PredigestXML()); //EMIT
+            
+            //read xml as string
+            iTunesLibParser *doc;
+            try {
+                doc = new iTunesLibParser(xmlFileLocation.c_str());
+            } catch(...) {
+                return throw FTNZXMLLibFileUnreadableException();
+            }
+            auto xmlAsJSONString = doc->ToJSON();
+            delete doc;
 
-            //set target 
-            auto target = nodesList->first().node().children();
-            this->expectedCount = std::distance(target.begin(), target.end()) / 2;
+            //try parse to temp JSON
+            rapidjson::Document d;
+            rapidjson::ParseResult s = d.Parse(xmlAsJSONString.c_str());
+            if(s.IsError()) {
+                return throw FTNZXMLLibFileUnreadableException();
+            }
+
+            emit printLog(I18n::tr()->Feeder_TrimingFat());  //EMIT
+            
+            //retrieve tracks and pass to workingJSON
+            auto v = rapidjson::Pointer("/Tracks").Get(d);
+            this->expectedCount = v->MemberCount();
             if (!this->expectedCount) {
                 return throw FTNZNoMusicFoundException();
             }
-
-            //iterate through
-            for (pugi::xpath_node child : *nodesList) {
-                this->resursiveDict(child.node());
-            }
-        }
-
-        //inner recursive
-        string resursiveDict(pugi::xml_node traversedNode, string pathToKey = "") {
-                
-                //prepare 
-                string name = traversedNode.name();
-                string text = traversedNode.text().as_string();
-                
-                if (name == "key") {
-                    
-                    //add key to path for subsequent insertions
-                    string prefix = (StringHelper::has_only_digits(text) ? "~1" : ""); //escape keys consisting of numbers
-                    return pathToKey += "/" + prefix + text;
-
-                } else if (text != "" && name != "") {
-                    
-                    //if contain a type and actual value, insert at path location
-                    rapidjson::Pointer(pathToKey.c_str()).Set(this->workingJSON, text.c_str());
-
-                    //truncate path to key because key has been consumed by value
-                    return StringHelper::splitPath(pathToKey);
-
-                }
-
-                //traverse
-                for (pugi::xpath_node child : traversedNode.children()) {
-                    pathToKey = this->resursiveDict(child.node(), pathToKey);
-                }
-
-                tracksEmitHelper();
-
-                //return
-                return StringHelper::splitPath(pathToKey);
+            this->workingJSON.CopyFrom(d["Tracks"], this->workingJSON.GetAllocator());
+            
         }
 
         //standardize
         void standardizeJSON() {
             
-            emit printLog(I18n::tr()->Feeder_PredigestXML());
-            
+            emit printLog(I18n::tr()->Feeder_CookingJSON());  //EMIT
+
             //declare allocators
             rapidjson::Document::AllocatorType &lajAlloc = this->libAsJSON.GetAllocator();
             rapidjson::Document::AllocatorType &lwajAlloc = this->libWarningsAsJSON.GetAllocator();
@@ -243,7 +220,6 @@ class FeederWorker : public ITNZWorker {
                 //iterate through properties
                 for (auto prop = track->value.MemberBegin(); prop != track->value.MemberEnd(); ++prop) {
                     string k = prop->name.GetString();
-                    string v = prop->value.GetString();
                     
                     //check presence of required attrs
                     if (this->requiredAttrs.find(k) == this->requiredAttrs.end()) {
@@ -268,10 +244,14 @@ class FeederWorker : public ITNZWorker {
                 }
 
                 //remove useless props
-                for(auto ktr : toRemove) track->value.RemoveMember(ktr.c_str());
+                for(auto ktr : toRemove) {
+                    track->value.RemoveMember(ktr.c_str());
+                }
 
                 //set optionnal values default
-                if (!track->value.HasMember("Disc Number")) track->value.AddMember("Disc Number","1", wjAlloc);
+                if (!track->value.HasMember("Disc Number")) {
+                    track->value.AddMember("Disc Number","1", wjAlloc);
+                }
 
                 tracksEmitHelper();
             }
@@ -279,9 +259,9 @@ class FeederWorker : public ITNZWorker {
             //remove tracks with warnings
             for(auto idtr : tracksIdToRemove) this->workingJSON.RemoveMember(idtr.c_str());
 
-            //remove ids
+            //turn obect based container into an array one
             for (auto track = this->workingJSON.MemberBegin(); track != this->workingJSON.MemberEnd(); ++track) {
-                this->libAsJSON.PushBack(track->value.GetObject(), lajAlloc);
+                this->libAsJSON.PushBack(track->value, lajAlloc);
             }
         }
 
@@ -295,13 +275,13 @@ class FeederWorker : public ITNZWorker {
             this->recCount++;
             bool canLog = ((this->recCount % 100) == 0 && this->recCount <= this->expectedCount) || this->recCount == this->expectedCount || !mustReplacePrevious;
             if(canLog) {
-                emit printLog(I18n::tr()->Feeder_LogTrackEmit(this->recCount, this->expectedCount), mustReplacePrevious);
+                emit printLog(I18n::tr()->Feeder_LogTrackEmit(this->recCount, this->expectedCount), mustReplacePrevious);  //EMIT
             }
         }
 
         //seek in iTunes preference file the library location
         string getITunesLibLocation() {
-            emit printLog(I18n::tr()->Feeder_GetXMLFileLoc());
+            emit printLog(I18n::tr()->Feeder_GetXMLFileLoc());  //EMIT
 
             PlatformHelper pHelper;
 
