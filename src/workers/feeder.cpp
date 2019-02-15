@@ -110,8 +110,8 @@ class FeederWorker : public ITNZWorker {
                 this->ohWrn.writeAsJsonFile(this->libWarningsAsJSON, true);
             } else {
                 //remove old warning file
-                auto pToRem = this->ohWrn.getOutputPath().c_str();
-                std::remove(pToRem);
+                auto pToRem = this->ohWrn.getOutputPath();
+                auto result = boost::filesystem::remove(pToRem.c_str());
             }
 
             emit printLog(I18n::tr()->Feeder_Unmolding(OUTPUT_FILE_PATH));  //EMIT
