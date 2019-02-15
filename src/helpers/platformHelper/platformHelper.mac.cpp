@@ -73,7 +73,7 @@
         auto settings = this->getStartupSettingsHandler();
 
         if (!this->isLaunchingAtStartup()) {
-            settings->setValue("Label", APP_NAME.c_str());
+            settings->setValue("Label", APP_NAME);
             settings->setValue("ProcessType", "Interactive");
             settings->setValue("ExitTimeOut", 0);
             settings->setValue("RunAtLoad", true);
