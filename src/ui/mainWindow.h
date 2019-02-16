@@ -89,6 +89,7 @@ class MainWindow : public QMainWindow {
         void trueShow();
         void trueHide(QEvent* event);
         void forcedClose();
+        void iconActivated(QSystemTrayIcon::ActivationReason reason);
 
         //update handling
         void setupAutoUpdate();

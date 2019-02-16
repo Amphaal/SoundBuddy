@@ -51,7 +51,12 @@ void MainWindow::_initUITray() {
     this->trayIcon = trayIcon;
     trayIcon->setIcon(QIcon(LOCAL_REVERSE_ICON_PNG_PATH.c_str()));
     trayIcon->setToolTip(*this->title);
- 
+    
+    QObject::connect(
+        this->trayIcon, &QSystemTrayIcon::activated,
+        this, &MainWindow::iconActivated
+    );
+
     #ifdef _WIN32
         auto cMenu = this->_getFileMenu();
     #endif
@@ -156,6 +161,14 @@ QMenu* MainWindow::_getFileMenu() {
 
 void MainWindow::updateConfigValues() {
     this->config = this->cHelper.accessConfig();
+};
+
+void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason) {
+    switch (reason) {
+    case QSystemTrayIcon::DoubleClick:
+        this->trueShow();
+        break;
+    }
 };
 
 //set watcher on config file
