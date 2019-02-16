@@ -13,6 +13,7 @@ rapidjson::Document ShoutWorker::createBasicShout() {
     
     //return json obj
     rapidjson::Document obj;
+    obj.Parse("{}");
     rapidjson::Document::AllocatorType &alloc = obj.GetAllocator();
     auto dateAsJSONVal = rapidjson::Value(buf, alloc);
     obj.AddMember("date", dateAsJSONVal, alloc);
