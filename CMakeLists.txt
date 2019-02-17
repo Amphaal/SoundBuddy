@@ -56,6 +56,8 @@ if(MSVC)
     add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
     add_definitions(-D_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING) #rapidjson
     add_definitions(-DNOMINMAX) #rapidjson
+    add_definitions(-D_SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING) #socketio
+    add_definitions(-D_SILENCE_CXX17_RESULT_OF_DEPRECATION_WARNING) #socketio
 endif(MSVC)
 
 #########################

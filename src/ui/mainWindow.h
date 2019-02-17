@@ -19,6 +19,7 @@
 #include <QtGui/QHideEvent>
 #include <QtGui/QIcon>
 
+#include "../../libs/socketiocpp_custom/sio_client.h"
 #include <rapidjson/document.h>
 
 #include "../helpers/_const.cpp"
@@ -40,7 +41,6 @@ class MainWindow : public QMainWindow {
     private:
         bool forceQuitOnMacOS = false;
         bool userNotificationOnUpdateCheck = false;
-        QString *title;
         QSystemTrayIcon *trayIcon;
         QFileSystemWatcher *configWatcher;
         vector<QAction*> myWTNZActions;
@@ -52,6 +52,7 @@ class MainWindow : public QMainWindow {
         string wtnzUrl;
         ShoutTab *shoutTab;
         QtAutoUpdater::Updater *updater;
+        //sio::client sioClient;
     
         ///
         ///UI instanciation
