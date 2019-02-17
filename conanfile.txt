@@ -4,6 +4,8 @@ pugixml/1.9@bincrafters/stable
 libcurl/7.61.1@bincrafters/stable
 rapidjson/1.1.0@bincrafters/stable
 boost/1.69.0@conan/stable
+websocketpp/0.8.1@bincrafters/stable
+OpenSSL/1.1.1a@conan/stable
 
 [generators]
 cmake
@@ -13,8 +15,10 @@ cmake_paths
 [options]
 qt:qtactiveqt=True
 
-#conflict with libcurl on Windows
+#disable old prerequisites from packages linked to OpenSSL/boost
+libcurl:with_openssl=False
 qt:openssl=False
+websocketpp:asio=standalone
 
 [imports]
 

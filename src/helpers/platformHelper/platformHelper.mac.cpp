@@ -9,7 +9,6 @@
     #include "../stringHelper.cpp"
 
     #include <boost/filesystem.hpp>
-    #include <boost/any.hpp>
 
     void PlatformHelper::openFileInOS(std::string cpURL) {
         std::string command = "open " + cpURL;
@@ -36,13 +35,13 @@
         return this->getEnvironmentVariable("HOME") + std::string("/Library/Preferences/com.apple.iTunes.plist");
     };
 
-    std::string PlatformHelper::extractItunesLibLocationFromMap(std::map<std::string, boost::any> *pListAsMap) {
+    std::string PlatformHelper::extractItunesLibLocation(std::string pathToParamFile) {
         //get path to iTunes as string
-        auto rAsAny = pListAsMap->at("NSNavLastRootDirectory");
-        auto rAsString = boost::any_cast<std::string>(rAsAny);
+        QSettings plist(pathToParamFile.c_str(), QSettings::NativeFormat);
+        auto pathToLib = plist.getValue("NSNavLastRootDirectory").toStdString();
 
         //get parent directory
-        boost::filesystem::path mapP(rAsString);
+        boost::filesystem::path mapP(pathToLib);
         mapP = mapP.parent_path();
         auto pre = mapP.string();
 

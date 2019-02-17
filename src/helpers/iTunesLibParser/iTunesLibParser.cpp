@@ -40,7 +40,7 @@ void iTunesLibParser::processFile() {
 
            }
            else if (!isIgnoredChar(c)){ 
-               if(c == *C_OPEN_STR) {
+               if(c == *C_OPEN_STR || c == '\\') {
                    _output += "\\";
                 }
                _output += c;
@@ -101,7 +101,8 @@ void iTunesLibParser::attrToJSON(std::string &attr) {
 
     //apply parsing
     if(_attr_IsNoPairAttr) {
-        _output += attr + c_next;
+        if(_attr_IsEnclosingAttr) _output += (std::string)c_open + c_close + c_next;
+        else _output += attr + c_next;
     } else if (_attr_IsEnclosingAttr) {
         if (_attr_IsClosingAttr) { 
             removeVirgula();

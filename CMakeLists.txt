@@ -55,6 +55,7 @@ if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
     add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
     add_definitions(-D_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING) #rapidjson
+    add_definitions(-DNOMINMAX) #rapidjson
 endif(MSVC)
 
 #########################
@@ -105,6 +106,7 @@ SET(EXT_LIBS
 file(GLOB_RECURSE INT_LIBS
     "libs/*.c"
     "libs/*.cpp"
+    "libs/*.hpp"
 )
 
 #mandatory explicit generation
@@ -123,7 +125,6 @@ if (WIN32)
     
     #COM iTunes libs
     list(APPEND SOURCES 
-        libs/itunescom/iTunesCOMInterface_i.c
         src/workers/shout/win/iTunesCOMHandler.cpp
     )
  

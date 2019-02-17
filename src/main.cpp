@@ -18,15 +18,10 @@ int main(int argc, char** argv){
         return 1;
     }
 
-    //define app title
-    std::string stdTitle = APP_NAME;
-    if(IS_DEBUG_APP) stdTitle = "DEBUG - " + stdTitle;
-    QString title(stdTitle.c_str());
-
     //setup app
     QApplication app(argc, argv);
     app.setQuitOnLastWindowClosed(false);
-    app.setApplicationName(title);
+    app.setApplicationName(QString(APP_NAME));
     app.setStyle(QStyleFactory::create("Fusion")); 
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
 
@@ -35,7 +30,7 @@ int main(int argc, char** argv){
     qRegisterMetaType<size_t>("size_t");
 
     //fetch main window
-    MainWindow mw(&title);
+    MainWindow mw;
 
     //wait for the app to close
     return app.exec();

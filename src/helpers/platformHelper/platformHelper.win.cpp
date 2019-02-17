@@ -1,5 +1,4 @@
 #ifdef _WIN32
-
     #include <windows.h>
     #include <stdlib.h>  
 
@@ -7,6 +6,9 @@
     #include <string>
     #include <map>
 	#include <vector>
+    #include <QStandardPaths>
+    #include "../../helpers/iTunesLibParser/iTunesLibParser.h"
+    #include "../../../libs/base64/base64.h"
 
     using namespace std;
 
@@ -35,15 +37,31 @@
         return this->getEnvironmentVariable("APPDATA") + string("\\Apple Computer\\Preferences\\com.apple.iTunes.plist");
     };
 
-    string PlatformHelper::extractItunesLibLocationFromMap(map<string, boost::any> *pListAsMap) {
-        auto rAsAny = pListAsMap->at("LXML:1:iTunes Library XML Location");
-        auto rAsVector = boost::any_cast<vector<char>>(rAsAny);
+    string PlatformHelper::extractItunesLibLocation(std::string pathToParamFile) {
+
+        //get a copy of converted binary plist 
+        auto pathTo_plutil = this->getEnvironmentVariable("PROGRAMFILES") + string("\\Common Files\\Apple\\Apple Application Support\\plutil.exe");
+        auto destPath = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation).toStdString() + "/temp.plist";
+        std::string command = "-convert xml1 -o ";
+                    command += "\"" + destPath +"\" ";
+                    command +="\"" + pathToParamFile  +"\"";
+        ShellExecuteA(NULL, "open", pathTo_plutil.c_str(), command.c_str(), NULL, SW_HIDE);
+
+        //read it into JSON obj
+        iTunesLibParser iTunesParams(destPath.c_str());
+        auto xmlAsJSONString = iTunesParams.ToJSON();
+        rapidjson::Document d;
+        d.Parse(xmlAsJSONString.c_str());
+
+        //decode path
+        auto encodedPath = (std::string)d["LXML:1:iTunes Library XML Location"].GetString();
+        std::vector<BYTE> decodedData = base64_decode(encodedPath);
         
-        //reformat for source UTF-16
+        //reformat from source UTF-16
         string rAsString;
-        for (int b = 0; b < rAsVector.size() ; b++)
+        for (int b = 0; b < decodedData.size() ; b++)
         {
-            if(b % 2 == 0) rAsString += rAsVector[b];
+            if(b % 2 == 0) rAsString += decodedData[b];
         }
         return rAsString;
     };

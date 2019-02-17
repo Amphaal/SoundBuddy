@@ -34,7 +34,7 @@
 class MainWindow : public QMainWindow {
    
     public:
-        MainWindow(QString *title);
+        MainWindow();
         void informWarningPresence();
 
     private:

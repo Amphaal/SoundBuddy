@@ -1,14 +1,16 @@
 #define _HAS_STD_BYTE 0 //prevent build error on mac (byte type overriding)
 #include "mainWindow.h"
 
-MainWindow::MainWindow(QString *title) : 
-    title(title), 
+MainWindow::MainWindow() : 
     cHelper(ConfigHelper()), 
     pHelper(PlatformHelper()), 
     owHelper(WARNINGS_FILE_PATH) {     
     
     this->updateConfigValues();
-    this->setWindowTitle(*title);
+
+    std::string stdTitle = IS_DEBUG_APP ? (std::string)"DEBUG - " + APP_NAME : APP_NAME;
+
+    this->setWindowTitle(QString(stdTitle.c_str()));
     this->_initUI();
     this->setupConfigFileWatcher();
     this->updateWarningsMenuItem();
@@ -50,7 +52,7 @@ void MainWindow::_initUITray() {
     QSystemTrayIcon *trayIcon = new QSystemTrayIcon;
     this->trayIcon = trayIcon;
     trayIcon->setIcon(QIcon(LOCAL_REVERSE_ICON_PNG_PATH.c_str()));
-    trayIcon->setToolTip(*this->title);
+    trayIcon->setToolTip(this->windowTitle());
     
     QObject::connect(
         this->trayIcon, &QSystemTrayIcon::activated,

@@ -10,8 +10,6 @@
 
 #include <QtWidgets/QWidget>
 #include <boost/algorithm/string/join.hpp>
-#include <boost/any.hpp>
-#include "../../libs/plistcpp/Plist.hpp"
 
 #include "base/ITNZWorker.h"
 #include "../helpers/_const.cpp"
@@ -284,16 +282,14 @@ class FeederWorker : public ITNZWorker {
             emit printLog(I18n::tr()->Feeder_GetXMLFileLoc());  //EMIT
 
             PlatformHelper pHelper;
-
             string pathToPrefs = pHelper.getITunesPrefFileProbableLocation();
             
-            map<string, boost::any> pListAsMap; 
             try {
-		        Plist::readPlist(pathToPrefs.c_str(), pListAsMap);
-                return pHelper.extractItunesLibLocationFromMap(&pListAsMap);
-            } catch (...) {
+                return pHelper.extractItunesLibLocation(pathToPrefs);
+            } catch(...) {
                 throw FTNZMissingItunesConfigException();
             }
+            
         }
 
 };

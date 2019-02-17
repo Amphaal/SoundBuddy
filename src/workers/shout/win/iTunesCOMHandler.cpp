@@ -1,7 +1,5 @@
 #include <windows.h>
 
-#include "../../../libs/itunescom/iTunesCOMInterface.h"
-
 #include <ActiveQt/QAxBase>
 #include <ActiveQt/QAxObject>
 
