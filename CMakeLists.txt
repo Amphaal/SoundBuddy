@@ -1,10 +1,12 @@
 project(FeedTNZ)
 cmake_minimum_required(VERSION 3.13.3)
 
-
 #download cacert for windows mostly
-file(DOWNLOAD ${CACERT_URL_SOURCE} "${CMAKE_BINARY_DIR}/cacert.pem")
-SET(CACERT_URL_SOURCE "https://curl.haxx.se/ca/cacert.pem")
+##too heavy, prefer specific intermediate local 
+#SET(CACERT_URL_SOURCE "https://curl.haxx.se/ca/cacert.pem")
+##DST Root CA X3 only, from Firefox's "https://ccadb-public.secure.force.com/mozilla/IncludedCACertificateReport"
+SET(CACERT_URL_SOURCE "https://crt.sh/?d=0687260331A72403D909F105E69BCF0D32E1BD2493FFC6D9206D11BCD6770739") 
+file(DOWNLOAD ${CACERT_URL_SOURCE} ${CMAKE_BINARY_DIR}/bin/cacert.pem)
 
 ########################
 ## VERSION.H HANDLING ##
