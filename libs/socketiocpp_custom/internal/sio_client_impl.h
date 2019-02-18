@@ -1,7 +1,13 @@
 #ifndef SIO_CLIENT_IMPL_H
 #define SIO_CLIENT_IMPL_H
 
+#define SIO_TLS 1
+
 #include <cstdint>
+#include <memory>
+#include <map>
+#include <thread>
+
 #ifdef _WIN32
 #define _WEBSOCKETPP_CPP11_THREAD_
 //#define _WEBSOCKETPP_CPP11_RANDOM_DEVICE_
@@ -38,9 +44,7 @@ typedef websocketpp::config::asio_client client_config;
 #include <asio/error_code.hpp>
 #include <asio/io_service.hpp>
 
-#include <memory>
-#include <map>
-#include <thread>
+
 #include "../sio_client.h"
 #include "sio_packet.h"
 

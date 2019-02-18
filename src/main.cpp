@@ -1,5 +1,4 @@
 #define _HAS_STD_BYTE 0 //prevent build error on mac (byte type overriding)
-#define SIO_TLS 1
 
 #include <QtCore/QString>
 #include <QtWidgets/QApplication>
