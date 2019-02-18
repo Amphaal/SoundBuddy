@@ -40,12 +40,12 @@ void ShoutWorker::run() {
     while (this->mustListen) {
 
         //get shout results
-        QProcess p;
-        p.start(osascript, processArguments);
-        p.write(QString::fromStdString(script).toUtf8());
-        p.closeWriteChannel();
-        p.waitForReadyRead();
-        auto result = p.readAll().toStdString();
+        auto p = new QProcess;
+        p->start(osascript, processArguments);
+        p->write(QString::fromStdString(script).toUtf8());
+        p->closeWriteChannel();
+        p->waitForReadyRead();
+        auto result = p->readAll().toStdString();
         
         //default values and inst
         std::string tName;
@@ -95,8 +95,9 @@ void ShoutWorker::run() {
         } 
 
         //wait before retry
-        this->sleep(1);
-
+       p->waitForFinished();
+       delete p;
+       this->sleep(1);
     }
 
     this->shoutEmpty();
