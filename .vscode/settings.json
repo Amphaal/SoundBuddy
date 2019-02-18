@@ -150,7 +150,8 @@
         "cwctype": "cpp",
         "queue": "cpp",
         "csignal": "cpp",
-        "strstream": "cpp"
+        "strstream": "cpp",
+        "shared_mutex": "cpp"
     },
     "C_Cpp.intelliSenseEngineFallback": "Disabled"
 }

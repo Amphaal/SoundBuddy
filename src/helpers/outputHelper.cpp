@@ -103,14 +103,17 @@ class OutputHelper {
                 
                 if(targetFunction == "" || uploadFileName == "") return;
 
+                //check config file
                 ConfigHelper cHelper;
-                cHelper.ensureConfigFileIsReadyForUpload();
                 auto config = cHelper.accessConfig();
-                auto targetUrl = cHelper.getParamValue(config, "targetUrl");
-                auto user = cHelper.getParamValue(config, "user");
+                cHelper.ensureConfigFileIsReadyForUpload(config);
+
+                //harvest values
+                auto userUrl = cHelper.getUsersHomeUrl(config);
                 auto password = cHelper.getParamValue(config, "password");
 
-                this->uploadTargetUrl = targetUrl + "/" + user + "/" + targetFunction;
+                //define them
+                this->uploadTargetUrl = userUrl + "/" + targetFunction;
                 this->uploadPostData.insert(pair<string, string>("password", password));
                 this->uploadPostData.insert(pair<string, string>("headless", "1"));
             }

@@ -19,7 +19,7 @@ SET(FEEDTNZ_DESCRIPTION_LOCALIZED ${FEEDTNZ_DESCRIPTION}
 
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY ${FEEDTNZ_DESCRIPTION})
 SET(CPACK_IFW_PACKAGE_PUBLISHER "LVWL")
-SET(CPACK_IFW_PRODUCT_URL "https://zonme.to2x.ovh/wtnz")
+SET(CPACK_IFW_PRODUCT_URL ${APP_MAIN_URL})
 SET(CPACK_IFW_TARGET_DIRECTORY "@ApplicationsDirX64@/FeedTNZ")
 SET(CPACK_PACKAGE_ICON ${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/feedtnz.png)
 SET(CPACK_IFW_PACKAGE_LOGO ${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/feedtnz.png)
@@ -46,7 +46,7 @@ INCLUDE(CPack)
 INCLUDE(CPackIFW)
 
 cpack_add_component(${PROJECT_NAME}
-                    DISPLAY_NAME "FeedTNZ"
+                    DISPLAY_NAME ${PROJECT_NAME}
                     DESCRIPTION ${FEEDTNZ_DESCRIPTION}
                     REQUIRED
 )
@@ -59,7 +59,7 @@ cpack_ifw_configure_component(${PROJECT_NAME}
                     DEFAULT TRUE
 )
 
-cpack_ifw_add_repository(coreRepo URL "https://zonme.to2x.ovh/feedtnz/packages/${FEEDTNZ_REMOTE_SERVER_PLATFORM_FOLDER}")
+cpack_ifw_add_repository(coreRepo URL ${APP_ROOT_URL}/feedtnz/packages/${FEEDTNZ_REMOTE_SERVER_PLATFORM_FOLDER})
 
 #############
 ## Publish ## 

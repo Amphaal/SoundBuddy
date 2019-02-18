@@ -1,5 +1,7 @@
 project(FeedTNZ)
 cmake_minimum_required(VERSION 3.13.3)
+SET(APP_ROOT_URL "https://zonme.to2x.ovh")
+SET(APP_MAIN_URL ${APP_ROOT_URL}/wtnz)
 
 ######################
 ## VERSION HANDLING ##
@@ -12,7 +14,6 @@ SET(CMAKE_PROJECT_VERSION_PATCH 2)
 #set default maintenance tool path
 SET(MAINTENANCE_TOOL_LOCATION "")
 SET(IS_DEBUG_APP OFF)
-
 
 IF(${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR}/buildDebug)
 

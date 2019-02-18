@@ -5,7 +5,7 @@ libcurl/7.61.1@bincrafters/stable
 rapidjson/1.1.0@bincrafters/stable
 boost/1.69.0@conan/stable
 websocketpp/0.8.1@bincrafters/stable
-OpenSSL/1.1.1a@conan/stable
+OpenSSL/1.0.2o@conan/stable
 
 [generators]
 cmake
@@ -16,7 +16,6 @@ cmake_paths
 qt:qtactiveqt=True
 
 #disable old prerequisites from packages linked to OpenSSL/boost
-libcurl:with_openssl=False
 qt:openssl=False
 websocketpp:asio=standalone
 

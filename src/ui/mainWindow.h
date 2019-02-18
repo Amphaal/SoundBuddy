@@ -52,7 +52,7 @@ class MainWindow : public QMainWindow {
         string wtnzUrl;
         ShoutTab *shoutTab;
         QtAutoUpdater::Updater *updater;
-        //sio::client sioClient;
+        sio::client sioClient;
     
         ///
         ///UI instanciation

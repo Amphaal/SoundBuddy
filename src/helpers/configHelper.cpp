@@ -11,8 +11,10 @@
 #include "platformHelper/platformHelper.h"
 #include "../localization/i18n.cpp"
 #include "_const.cpp"
+#include "../version.h"
 
 #include <QStandardPaths>
+#include <QUrl>
 #include <QDir>
 
 ///
@@ -57,9 +59,46 @@ class ConfigHelper {
             this->pHelper.openFileInOS(this->configFile);
         }
 
+        std::string getUsersHomeUrl(rapidjson::Document &config) {
+            
+            //try to get users name
+            auto tUser = this->getParamValue(config, "username");
+            if (tUser == "") return ""; //no user, no URL
+
+            //no target ? no url
+            auto tUrl = this->getTargetUrl(config);
+            if (tUrl == NULL) return "";
+            
+            //add user part to url
+            auto newP = tUrl->toString().toStdString() + "/" + tUser;
+            QUrl ret(newP.c_str());
+            delete tUrl;
+
+            //check validity
+            if(!ret.isValid()) return "";
+            return ret.toString().toStdString();
+        }
+
+        //get the targeted platform url
+        QUrl* getTargetUrl(rapidjson::Document &config) {
+            
+            //get parameterized targetUrl
+            auto tUrl = this->getParamValue(config, "targetUrl");
+            if (tUrl == "") tUrl = APP_DEFAULT_URL;
+            
+            //check validity
+            auto rlObj = new QUrl(tUrl.c_str(), QUrl::TolerantMode);
+            if(rlObj->isValid()) {
+                return rlObj;
+            }
+            else {
+                delete rlObj;
+                return NULL;
+            }
+        }
+
         //makes sure mandatory fields for uplaods are filled
-        bool ensureConfigFileIsReadyForUpload() {
-            auto config = this->accessConfigRaw();
+        bool ensureConfigFileIsReadyForUpload(rapidjson::Document &config) {
 
             //check required field presence
             bool mustThrow = false;
@@ -101,11 +140,14 @@ class ConfigHelper {
             this->writeFormatedFileFromObj(config);
         }
 
+        //get the param value
         std::string getParamValue(rapidjson::Document &config, std::string param) {
-            createParamIfNotExist(config, param);
+            auto mem = config.FindMember(param.c_str());
+            if(mem == config.MemberEnd()) return "";
             return !config[param.c_str()].IsString() ? "" : config[param.c_str()].GetString();
         }
 
+        //get full path of the config file
         std::string getFullPath() {
             boost::filesystem::path confP(this->configFile);
             return boost::filesystem::absolute(confP).string();
@@ -162,6 +204,7 @@ class ConfigHelper {
             }
         }
 
+       //helper
        void onEmptyRequiredValue(rapidjson::Document &config, std::function<void()> cb) {
             for (auto &rf : REQUIRED_CONFIG_FIELDS) {
                 auto mem = config.FindMember(rf.c_str());
@@ -171,6 +214,7 @@ class ConfigHelper {
             }
         }
 
+        //rewrite config file
         void writeNewConfig() {
             std::fstream streamHandler;
             streamHandler.open(this->configFile, std::fstream::out);
@@ -178,6 +222,7 @@ class ConfigHelper {
             streamHandler.close();
         }
 
+        //create a parameter into the config file if it doesnt exist
         void createParamIfNotExist(rapidjson::Document &config, std::string paramToFind, std::string defVal = "") {
             
             auto mem = config.FindMember(paramToFind.c_str());

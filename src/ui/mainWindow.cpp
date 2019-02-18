@@ -186,23 +186,27 @@ void MainWindow::setupConfigFileWatcher() {
 
 //updates the menu depending on the config values filled or not
 void MainWindow::updateMenuItemsFromConfigValues(const QString &path) {
+    
+    //update config state from file
     this->updateConfigValues();
 
-    auto targetUrl = this->cHelper.getParamValue(this->config, "targetUrl");
-    auto user = this->cHelper.getParamValue(this->config, "user");
-
-    bool WTNZUrlAvailable = targetUrl != "" && user != "";
-    bool shouldActivateLink = false;
-    if (WTNZUrlAvailable) {
-        
-        //set new WTNZ Url
-        this->wtnzUrl = targetUrl;
-        this->wtnzUrl += "/";
-        this->wtnzUrl += user;
-        QUrl url(this->wtnzUrl.c_str(), QUrl::StrictMode);
-        if(url.isValid()) shouldActivateLink = true;
+    //check then save
+    auto myWtnzUrl = this->cHelper.getUsersHomeUrl(this->config);
+    bool shouldActivateLink = (myWtnzUrl != "");
+    if(shouldActivateLink) {
+        this->wtnzUrl = myWtnzUrl;
+        auto t_qurl = this->cHelper.getTargetUrl(this->config);
+        t_qurl->setPort(SIO_PORT);
+        auto turl = t_qurl->toString(QUrl::RemovePath).toStdString();
+        delete t_qurl;
+        this->sioClient.connect(turl);
+        auto c = this->sioClient.opened();
+        this->sioClient.socket("/login")->emit_socket("checkCredentials", (std::string)"caca");
+        this->sioClient.socket("/login")->on("credentialsChecked", [&](sio::event& ev) {
+            auto caca = true;
+        });
     }
-
+    
     //update action state
     for (QAction *action: this->myWTNZActions){action->setEnabled(shouldActivateLink);}
     

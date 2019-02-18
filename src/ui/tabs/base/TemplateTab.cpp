@@ -94,5 +94,5 @@ void TemplateTab::onOperationFinished(size_t warningsCount) {
 
 void TemplateTab::onThreadEnd() {
     this->tButton->setEnabled(true);
-    delete this->bThread;
+    if(this->workerHasRunOnce) delete this->bThread;
 };
