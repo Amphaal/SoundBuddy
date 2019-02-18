@@ -195,16 +195,7 @@ void MainWindow::updateMenuItemsFromConfigValues(const QString &path) {
     bool shouldActivateLink = (myWtnzUrl != "");
     if(shouldActivateLink) {
         this->wtnzUrl = myWtnzUrl;
-        auto t_qurl = this->cHelper.getTargetUrl(this->config);
-        t_qurl->setPort(SIO_PORT);
-        auto turl = t_qurl->toString(QUrl::RemovePath).toStdString();
-        delete t_qurl;
-        this->sioClient.connect(turl);
-        auto c = this->sioClient.opened();
-        this->sioClient.socket("/login")->emit_socket("checkCredentials", (std::string)"caca");
-        this->sioClient.socket("/login")->on("credentialsChecked", [&](sio::event& ev) {
-            auto caca = true;
-        });
+        this->startupWS();
     }
     
     //update action state
@@ -363,3 +354,19 @@ void MainWindow::requireUpdateCheckFromUser() {
         this->updater->checkForUpdates();
     }
 }
+
+void MainWindow::startupWS() {
+        auto t_qurl = this->cHelper.getTargetUrl(this->config);
+        t_qurl->setPort(SIO_PORT);
+        auto turl = t_qurl->toString(QUrl::RemovePath).toStdString();
+        delete t_qurl;
+        this->sioClient.connect(turl);
+        auto c = this->sioClient.opened();
+        this->sioClient.socket("/login")->emit_socket("checkCredentials", (std::string)"caca");
+        this->sioClient.socket("/shout")->on("newShout", [&](sio::event& ev) {
+            auto caca = true;
+        });
+        this->sioClient.socket("/login")->on("credentialsChecked", [&](sio::event& ev) {
+            auto caca = true;
+        });
+} 

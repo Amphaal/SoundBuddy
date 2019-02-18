@@ -4,6 +4,8 @@
     #include <stdlib.h>
     #include <map>
     #include <pwd.h>
+    #include <QtCore/QSettings>
+    #include <QtCore/QCoreApplication>
 
     #include "platformHelper.h"
     #include "../stringHelper.cpp"
@@ -38,7 +40,7 @@
     std::string PlatformHelper::extractItunesLibLocation(std::string pathToParamFile) {
         //get path to iTunes as string
         QSettings plist(pathToParamFile.c_str(), QSettings::NativeFormat);
-        auto pathToLib = plist.getValue("NSNavLastRootDirectory").toStdString();
+        auto pathToLib = plist.value("NSNavLastRootDirectory").toString().toStdString();
 
         //get parent directory
         boost::filesystem::path mapP(pathToLib);

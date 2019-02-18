@@ -21,8 +21,6 @@ class iTunesLibParser {
         bool _attr_IsClosingAttr = false;
         bool _attr_IsNoPairAttr = false;
         bool _attr_IsEnclosingAttr = false;
-        bool _attr_IsNumberAttr = false;
-
 
         bool isIgnoredChar(char &toIgnore);
         bool isChevronStart(char &toCheck);

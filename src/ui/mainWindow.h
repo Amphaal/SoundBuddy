@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QCoreApplication>
+#include <QtCore/QCoreApplication>
 
 #include <QtCore/QString>
 #include <QtCore/QSize>
@@ -96,4 +96,6 @@ class MainWindow : public QMainWindow {
         void setupAutoUpdate();
         void onUpdateChecked(bool hasUpdate, bool hasError);
         void requireUpdateCheckFromUser();
+
+        void startupWS();
 };

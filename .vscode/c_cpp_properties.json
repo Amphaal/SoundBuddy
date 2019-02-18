@@ -20,7 +20,9 @@
             "includePath": [
                 "${default}",
                 "/Users/Amphaal/.conan/data/boost/1.69.0/conan/stable/package/35bffc1c1953a7504313b3cb1d811c81d56c162c/include",
-                "/Users/Amphaal/.conan/data/qt/5.12.0/bincrafters/stable/package/138b8c71da7be5db2d40f44590f8f19701928790/include"
+                "/Users/Amphaal/.conan/data/qt/5.12.0/bincrafters/stable/package/138b8c71da7be5db2d40f44590f8f19701928790/include",
+                "/Users/Amphaal/.conan/data/qt/5.12.0/bincrafters/stable/source/qt5/qt3d/src/3rdparty/assimp/contrib/rapidjson/include",
+                "/Users/Amphaal/.conan/data/qt/5.12.0/bincrafters/stable/package/138b8c71da7be5db2d40f44590f8f19701928790/include/QtCore"
             ]
         },
         {
