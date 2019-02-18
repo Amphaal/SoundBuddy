@@ -1,15 +1,24 @@
 project(FeedTNZ)
 cmake_minimum_required(VERSION 3.13.3)
+
+
+#download cacert for windows mostly
+file(DOWNLOAD ${CACERT_URL_SOURCE} "${CMAKE_BINARY_DIR}/cacert.pem")
+SET(CACERT_URL_SOURCE "https://curl.haxx.se/ca/cacert.pem")
+
+########################
+## VERSION.H HANDLING ##
+########################
+
+#app dest path
 SET(APP_ROOT_URL "https://zonme.to2x.ovh")
 SET(APP_MAIN_URL ${APP_ROOT_URL}/wtnz)
 
-######################
-## VERSION HANDLING ##
-######################
-
+#version
 SET(CMAKE_PROJECT_VERSION_MAJOR 0)
 SET(CMAKE_PROJECT_VERSION_MINOR 1)
 SET(CMAKE_PROJECT_VERSION_PATCH 2)
+
 
 #set default maintenance tool path
 SET(MAINTENANCE_TOOL_LOCATION "")

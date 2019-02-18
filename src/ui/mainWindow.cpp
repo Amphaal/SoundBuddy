@@ -195,7 +195,7 @@ void MainWindow::updateMenuItemsFromConfigValues(const QString &path) {
     bool shouldActivateLink = (myWtnzUrl != "");
     if(shouldActivateLink) {
         this->wtnzUrl = myWtnzUrl;
-        this->startupWS();
+        //this->startupWS();
     }
     
     //update action state

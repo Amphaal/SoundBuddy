@@ -186,8 +186,8 @@ class OutputHelper {
                     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
                     /* try use of SSL for this */
-                    //curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0); // issue with libcurl's Conan package forcing unsecure SSL
-                    curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL); //CURLUSESSL_TRY);
+                    curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
+                    curl_easy_setopt(curl, CURLOPT_CAINFO, "cacert.pem");
 
                     //url and execute
                     curl_easy_setopt(curl, CURLOPT_URL, this->uploadTargetUrl.c_str()); 
