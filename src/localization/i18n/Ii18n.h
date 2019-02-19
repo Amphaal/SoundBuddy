@@ -50,5 +50,11 @@ class IFeedTNZTranslator {
         virtual string Shout_ITunesShutdown() = 0;
         virtual string Shout_WaitITunesAgain() = 0;
         virtual string FTNZMissingConfigValuesException() = 0;
-        virtual string FTNZErrorProcessingUploadException(long code, string response) = 0;   
+        virtual string FTNZErrorProcessingUploadException(long code, string response) = 0;  
+        virtual string SIOWaitingConnection() = 0;
+        virtual string SIOWaitingCredentials() = 0;
+        virtual string SIOReconnecting() = 0;
+        virtual string SIOAskingCredentialValidation() = 0;
+        virtual string SIOLoggedAs(string username) = 0;
+        virtual string SIOErrorOnValidation(string errorCode) = 0;
 };

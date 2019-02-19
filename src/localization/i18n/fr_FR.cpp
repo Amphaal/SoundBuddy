@@ -64,4 +64,26 @@ class FeedTNZTranslator_FR : public IFeedTNZTranslator {
     string FTNZErrorProcessingUploadException(long code, string response) { 
         return "Le serveur a rencontré une erreur durant le traitement des informations => HTTP Code " + std::to_string(code) + " : " + response;
     };
+    string SIOWaitingConnection() { return "Connexion au serveur...";};
+    string SIOWaitingCredentials() { return "En attente d'identifiants appropriés.";};
+    string SIOReconnecting() { return "Reconnexion au serveur...";};
+    string SIOAskingCredentialValidation() { return "Demande de validation des identifiants...";};
+    string SIOLoggedAs(string username) { return (string)"Connecté en tant que \"" + username + "\"";};
+    string SIOErrorOnValidation(string errorCode) { 
+        string part;
+        if(errorCode == "cdm") {
+           part = "Données manquantes pour l'identification";
+        } else if(errorCode == "eud") {
+            part = "Base de données utilisateur vide";
+        } else if(errorCode == "unfid") {
+            part = "Utilisateur introuvable dans la base de données";
+        } else if(errorCode == "nopass") {
+            part = "Mot de passe de l'utilisateur introuvable";
+        } else if(errorCode == "pmiss") {
+            part = "Mot de passe incorrect";
+        } else {
+            return "Erreur inconnue suite à la tentative de validation";
+        }
+        return (string)"Reponse serveur : \"" + part + "\"";
+    };
 };

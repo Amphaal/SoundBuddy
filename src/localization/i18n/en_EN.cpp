@@ -64,4 +64,26 @@ class FeedTNZTranslator_EN : public IFeedTNZTranslator {
     string FTNZErrorProcessingUploadException(long code, string response) { 
         return "The server encountered an error while processing the data => HTTP Code " + std::to_string(code) + " : " + response;
     };
+    string SIOWaitingConnection() { return "Connecting to server...";};
+    string SIOWaitingCredentials() { return "Waiting for appropriate credentials.";};
+    string SIOReconnecting() { return "Reconnecting to server...";};
+    string SIOAskingCredentialValidation() { return "Asking for credentials validation...";};
+    string SIOLoggedAs(string username) { return (string)"Logged as \"" + username + "\"";};
+    string SIOErrorOnValidation(string errorCode) { 
+        string part;
+        if(errorCode == "cdm") {
+           part = "Credential data missing";
+        } else if(errorCode == "eud") {
+            part = "Empty users database";
+        } else if(errorCode == "unfid") {
+            part = "Username not found in database";
+        } else if(errorCode == "nopass") {
+            part = "Password for the user not found in database";
+        } else if(errorCode == "pmiss") {
+            part = "Password missmatch";
+        } else {
+            return "Unknown error from the validation request";
+        }
+        return (string)"Server responded with : \"" + part + "\"";
+    };
 };
