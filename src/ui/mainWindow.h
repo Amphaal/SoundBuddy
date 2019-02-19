@@ -65,6 +65,7 @@ class MainWindow : public QMainWindow {
         void _initUITabs();
         void _initUIMenu();
         void _initUITray();
+        void _initTraficLight();
 
         QMenu* _getFileMenu();
         QMenu* _getOptionsMenu();

@@ -28,6 +28,7 @@ void MainWindow::_initUI() {
     this->_initUITabs();
     this->_initUITray();
     this->_initUIMenu();
+    this->_initTraficLight();
 };
 
 void MainWindow::_initUITabs() {
@@ -46,12 +47,15 @@ void MainWindow::_initUIMenu() {
     menuBar->addMenu(this->_getFileMenu());
     menuBar->addMenu(this->_getOptionsMenu());
     this->setMenuWidget(menuBar);
-
-    auto statusBar = new QStatusBar;
-    statusBar->showMessage("ccaca");
-    this->setStatusBar(statusBar);
-
 };
+
+void MainWindow::_initTraficLight() {
+    auto statusBar = new QStatusBar;
+    //statusBar->showMessage("Waiting for connection............................................");
+    auto traficlight = new TrafficLightWidget;
+    statusBar->addPermanentWidget(traficlight);
+    this->setStatusBar(statusBar);
+}
 
 void MainWindow::_initUITray() {
     auto trayIcon = new QSystemTrayIcon;

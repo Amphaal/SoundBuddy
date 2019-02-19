@@ -51,7 +51,9 @@
                 "C:/Users/Amphaal/.conan/data/libcurl/7.61.1/bincrafters/stable/package/8f5289d9807917ac37fa3752916c824d2a8061ad/include",
                 "C:/.conan/4cfvfbcs/1/qt5/qtbase/include/QtWidgets",
                 "C:/Users/Amphaal/.conan/data/websocketpp/0.8.1/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
-                "C:/Users/Amphaal/.conan/data/asio/1.12.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include"
+                "C:/Users/Amphaal/.conan/data/asio/1.12.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
+                "${workspaceFolder}/buildDebug/FeedTNZ_autogen/include_Debug",
+                "${workspaceFolder}/buildDebug/FeedTNZ_autogen/include_Debug"
             ]
         }
     ],

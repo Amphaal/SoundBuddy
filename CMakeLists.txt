@@ -79,6 +79,7 @@ endif(MSVC)
 #Qt
 SET(CMAKE_AUTOMOC ON)
 SET(CMAKE_AUTORCC ON)
+SET(CMAKE_INCLUDE_CURRENT_DIR ON) #for moc auto 
 
 
 ##########################
@@ -131,7 +132,8 @@ list(APPEND SOURCES
     src/workers/base/ITNZThread.h
     src/workers/shout/shout.cpp
     src/ui/mainWindow.cpp
-    src/ui/tabs/base/TemplateTab.cpp
+    src/ui/tabs/base/TemplateTab.cpp 
+    src/ui/widgets/LightWidget.cpp
 )
 
 #win specifics
