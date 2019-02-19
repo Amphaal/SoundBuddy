@@ -26,5 +26,5 @@ void LightWidget::paintEvent(QPaintEvent *)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setBrush(m_color);
-    painter.drawEllipse(0, 0, height()*.75, height()*.75);
+    painter.drawEllipse(0, 0, height(), height());
 };

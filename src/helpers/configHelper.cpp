@@ -98,16 +98,16 @@ class ConfigHelper {
         }
 
         //makes sure mandatory fields for uplaods are filled
-        bool ensureConfigFileIsReadyForUpload(rapidjson::Document &config) {
+        bool ensureConfigFileIsReadyForUpload(rapidjson::Document &config, bool throwable = true) {
 
             //check required field presence
-            bool mustThrow = false;
-            this->onEmptyRequiredValue(config, [&mustThrow](){
-                    mustThrow = true;
+            bool isReady = true;
+            this->onEmptyRequiredValue(config, [&isReady](){
+                    isReady = false;
             });
-            if(mustThrow) throw FTNZMissingConfigValuesException();
+            if(!isReady && throwable) throw FTNZMissingConfigValuesException();
 
-            return true;
+            return isReady;
         }
 
         //get configuration data from file

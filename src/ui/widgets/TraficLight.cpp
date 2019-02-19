@@ -19,6 +19,7 @@ class TrafficLightWidget : public QWidget {
             pal.setColor(QPalette::Background, Qt::black);
             setPalette(pal);
             setAutoFillBackground(true);
+            this->setLayout(sbox);
         }
 
         LightWidget *redLight() const

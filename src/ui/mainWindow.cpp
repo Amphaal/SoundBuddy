@@ -28,7 +28,8 @@ void MainWindow::_initUI() {
     this->_initUITabs();
     this->_initUITray();
     this->_initUIMenu();
-    this->_initTraficLight();
+    this->_initStatusBar();
+    this->startupWS();
 };
 
 void MainWindow::_initUITabs() {
@@ -49,12 +50,25 @@ void MainWindow::_initUIMenu() {
     this->setMenuWidget(menuBar);
 };
 
-void MainWindow::_initTraficLight() {
+void MainWindow::_initStatusBar() {
+    
+    //this->statusLight = new LightWidget(Qt::red);
+    this->statusLabel = new QLabel;
+
+    //auto sb_layout = new QHBoxLayout;
+    //sb_layout->addWidget(this->statusLight, 0);
+    //sb_layout->addWidget(this->statusLabel, 0);
+
+    //auto sb_widget = new QWidget;
+    //sb_widget->setLayout(sb_layout);
+
     auto statusBar = new QStatusBar;
-    //statusBar->showMessage("Waiting for connection............................................");
-    auto traficlight = new TrafficLightWidget;
-    statusBar->addPermanentWidget(traficlight);
+    //statusBar->addWidget(sb_widget, 1);
+    statusBar->addPermanentWidget(this->statusLabel, 1);
     this->setStatusBar(statusBar);
+
+    //declare waiting for connection
+    this->updateSIOStatus(I18n::tr()->SIOWaitingConnection());
 }
 
 void MainWindow::_initUITray() {
@@ -200,12 +214,15 @@ void MainWindow::updateMenuItemsFromConfigValues(const QString &path) {
     //update config state from file
     this->updateConfigValues();
 
+    // force rechecking credentials
+    this->sio_loggedInUser = "";
+    this->checkCredentials(true);
+
     //check then save
     auto myWtnzUrl = this->cHelper.getUsersHomeUrl(this->config);
     bool shouldActivateLink = (myWtnzUrl != "");
     if(shouldActivateLink) {
         this->wtnzUrl = myWtnzUrl;
-        this->startupWS();
     }
     
     //update action state
@@ -373,24 +390,88 @@ void MainWindow::startupWS() {
         auto turl = t_qurl->toString(QUrl::RemovePath).toStdString();
         delete t_qurl;
         
-        //define event handlers...
-        this->sioClient.socket("/login")->on("credentialsChecked", [&](sio::event& ev) {
-            auto response = ev.get_messages()[0]->get_map();
-            auto isOk = response["isLoginOk"]->get_bool();
-            auto isErrorNull = response["error"]->get_flag() == sio::message::flag_null;
-            std::string error = isErrorNull ? "" : response["error"]->get_string();
+        ////////////////////
+        // Event Handlers //
+        ////////////////////
+
+        //tell sio is trying to reconnect
+        this->sioClient.set_reconnect_listener([&](unsigned int a, unsigned int b) {
+            this->updateSIOStatus(I18n::tr()->SIOReconnecting());
         });
 
-        this->sioClient.socket("/login")->on("databaseUpdated", [&](sio::event& ev) {
-            auto test = true;
+        //on connect, check credentials
+        this->sioClient.set_open_listener([&]() {
+            checkCredentials();
         });
+
+        //once server checked the credentials
+        this->sioClient.socket("/login")->on("credentialsChecked", [&](sio::event& ev) {
+            
+            //extract response
+            auto response = ev.get_messages()[0]->get_map();
+            auto isOk = response["isLoginOk"]->get_bool();
+            std::string accomp = response["accomp"]->get_string();
+
+            if(isOk) {
+                this->sio_loggedInUser = accomp;
+                this->updateSIOStatus(I18n::tr()->SIOLoggedAs(accomp));
+            } else {
+                this->updateSIOStatus(I18n::tr()->SIOErrorOnValidation(accomp));
+            }
+
+            //toggle flag
+            this->sio_requestOngoing = false;
+        });
+
+        //when server tell us the database has been updated, ask for revalidation
+        this->sioClient.socket("/login")->on("databaseUpdated", [&](sio::event& ev) {
+            checkCredentials(true);
+        });
+
+        ////////////////////////
+        // End Event Handlers //
+        ////////////////////////
 
         //connect...
         this->sioClient.connect(turl);
+    
+}
+
+void MainWindow::updateSIOStatus(std::string newMessage) {
+    this->statusBar()->clearMessage();
+    this->statusLabel->setText(QString(newMessage.c_str()));
+}
+
+//ask credentials
+void MainWindow::checkCredentials(bool forceRecheck) {
+    
+    if(forceRecheck) {
+        this->sio_requestOngoing = false;
+    }
+
+    if(this->sio_loggedInUser != "" && !forceRecheck) {
+        this->updateSIOStatus(I18n::tr()->SIOLoggedAs(this->sio_loggedInUser));
+        return;
+    }
+
+    auto prerequisitesOK = this->cHelper.ensureConfigFileIsReadyForUpload(this->config, false);
+    
+    if (!prerequisitesOK) {
+        this->updateSIOStatus(I18n::tr()->SIOWaitingCredentials());
+    }
+    else if(prerequisitesOK && !this->sio_requestOngoing) {
         
-        //ask credentials
+        //start check
+        this->sio_requestOngoing = true;
+        this->updateSIOStatus(I18n::tr()->SIOAskingCredentialValidation());
+        
         sio::message::list p;
-        p.push(sio::string_message::create("amphaal"));
-        p.push(sio::string_message::create("aih90zsq"));
+        auto username = this->cHelper.getParamValue(this->config, "username");
+        auto password = this->cHelper.getParamValue(this->config, "password");
+
+        p.push(sio::string_message::create(username.c_str()));
+        p.push(sio::string_message::create(password.c_str()));
         this->sioClient.socket("/login")->emit_socket("checkCredentials", p);
-} 
+        
+    }
+}

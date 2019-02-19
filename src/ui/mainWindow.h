@@ -55,8 +55,13 @@ class MainWindow : public QMainWindow {
         string wtnzUrl;
         ShoutTab *shoutTab;
         QtAutoUpdater::Updater *updater;
+        
         sio::client sioClient;
-    
+        string sio_loggedInUser = "";
+        bool sio_requestOngoing = false;
+        QLabel *statusLabel;
+        LightWidget *statusLight;
+
         ///
         ///UI instanciation
         ///
@@ -65,7 +70,7 @@ class MainWindow : public QMainWindow {
         void _initUITabs();
         void _initUIMenu();
         void _initUITray();
-        void _initTraficLight();
+        void _initStatusBar();
 
         QMenu* _getFileMenu();
         QMenu* _getOptionsMenu();
@@ -101,5 +106,8 @@ class MainWindow : public QMainWindow {
         void onUpdateChecked(bool hasUpdate, bool hasError);
         void requireUpdateCheckFromUser();
 
+        //sio
         void startupWS();
+        void checkCredentials(bool forceRecheck = false);
+        void updateSIOStatus(std::string newMessage);
 };
