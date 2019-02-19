@@ -31,9 +31,9 @@ void MainWindow::_initUI() {
 };
 
 void MainWindow::_initUITabs() {
-    QTabWidget *tabs = new QTabWidget;
+    auto tabs = new QTabWidget;
     this->shoutTab = new ShoutTab(tabs, &this->cHelper);
-    FeederTab *feedTab = new FeederTab(tabs);
+    auto feedTab = new FeederTab(tabs);
 
     tabs->addTab(shoutTab, "Shout!");
     tabs->addTab(feedTab, "Feeder");
@@ -42,14 +42,19 @@ void MainWindow::_initUITabs() {
 };
 
 void MainWindow::_initUIMenu() {
-    QMenuBar *menuBar = new QMenuBar;
+    auto menuBar = new QMenuBar;
     menuBar->addMenu(this->_getFileMenu());
     menuBar->addMenu(this->_getOptionsMenu());
     this->setMenuWidget(menuBar);
+
+    auto statusBar = new QStatusBar;
+    statusBar->showMessage("ccaca");
+    this->setStatusBar(statusBar);
+
 };
 
 void MainWindow::_initUITray() {
-    QSystemTrayIcon *trayIcon = new QSystemTrayIcon;
+    auto trayIcon = new QSystemTrayIcon;
     this->trayIcon = trayIcon;
     trayIcon->setIcon(QIcon(LOCAL_REVERSE_ICON_PNG_PATH.c_str()));
     trayIcon->setToolTip(this->windowTitle());
@@ -79,7 +84,7 @@ QMenu* MainWindow::_getOptionsMenu() {
     QMenu *optionsMenuItem = new QMenu(I18n::tr()->Menu_Options().c_str());
 
     //add to system startup Action
-    QAction *atssAction = new QAction(I18n::tr()->Menu_AddToStartup().c_str(), optionsMenuItem);
+    auto atssAction = new QAction(I18n::tr()->Menu_AddToStartup().c_str(), optionsMenuItem);
     atssAction->setCheckable(true);
     QObject::connect(
         atssAction, &QAction::triggered,
@@ -90,13 +95,13 @@ QMenu* MainWindow::_getOptionsMenu() {
     }
 
     //for checking the upgrades available
-    QAction *cfugAction = new QAction(I18n::tr()->Menu_CheckForUpgrades().c_str(), optionsMenuItem);
+    auto cfugAction = new QAction(I18n::tr()->Menu_CheckForUpgrades().c_str(), optionsMenuItem);
         QObject::connect(
         cfugAction, &QAction::triggered,
         this, &MainWindow::requireUpdateCheckFromUser
     );
     
-    QAction *versionAction = new QAction(APP_FULL_DENOM, optionsMenuItem);
+    auto versionAction = new QAction(APP_FULL_DENOM, optionsMenuItem);
     versionAction->setEnabled(false);
 
     optionsMenuItem->addAction(atssAction);
@@ -109,17 +114,17 @@ QMenu* MainWindow::_getOptionsMenu() {
 
 QMenu* MainWindow::_getFileMenu() {
 
-    QMenu *fileMenuItem = new QMenu(I18n::tr()->Menu_File().c_str());
+    auto fileMenuItem = new QMenu(I18n::tr()->Menu_File().c_str());
 
     //monitorAction
-    QAction *monitorAction = new QAction(I18n::tr()->Menu_OpenMonitor().c_str(), fileMenuItem);
+    auto monitorAction = new QAction(I18n::tr()->Menu_OpenMonitor().c_str(), fileMenuItem);
     QObject::connect(
         monitorAction, &QAction::triggered,
         this, &MainWindow::trueShow
     );
 
     //myWTNZAction
-    QAction *myWTNZAction = new QAction(I18n::tr()->Menu_MyWTNZ().c_str(), fileMenuItem);
+    auto myWTNZAction = new QAction(I18n::tr()->Menu_MyWTNZ().c_str(), fileMenuItem);
     myWTNZAction->setEnabled(false);
     QObject::connect(
         myWTNZAction, &QAction::triggered,
@@ -128,14 +133,14 @@ QMenu* MainWindow::_getFileMenu() {
     this->myWTNZActions.push_back(myWTNZAction);
 
     //updateConfigAction
-    QAction *updateConfigAction = new QAction(I18n::tr()->Menu_UpdateConfig().c_str(), fileMenuItem);
+    auto updateConfigAction = new QAction(I18n::tr()->Menu_UpdateConfig().c_str(), fileMenuItem);
     QObject::connect(
         updateConfigAction, &QAction::triggered,
         this, &MainWindow::openConfigFile
     );
 
     //openWarningsAction
-    QAction *openWarningsAction = new QAction(I18n::tr()->Menu_OpenWarnings().c_str(), fileMenuItem);
+    auto openWarningsAction = new QAction(I18n::tr()->Menu_OpenWarnings().c_str(), fileMenuItem);
     openWarningsAction->setEnabled(false);
     QObject::connect(
         openWarningsAction, &QAction::triggered,
@@ -144,7 +149,7 @@ QMenu* MainWindow::_getFileMenu() {
     this->warningsfileActions.push_back(openWarningsAction);
 
     //quit
-    QAction *quitAction = new QAction(I18n::tr()->Menu_Quit().c_str(), fileMenuItem);
+    auto quitAction = new QAction(I18n::tr()->Menu_Quit().c_str(), fileMenuItem);
     QObject::connect(
         quitAction, &QAction::triggered,
         this, &MainWindow::forcedClose
@@ -177,8 +182,9 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason) {
 void MainWindow::setupConfigFileWatcher() {
     this->updateMenuItemsFromConfigValues();
 
-    std::string f = this->cHelper.getFullPath();
-    this->configWatcher = new QFileSystemWatcher(QStringList(f.c_str()), this);
+    auto configFilePath = this->cHelper.getFullPath();
+    auto filesToWatch = QStringList(configFilePath.c_str());
+    this->configWatcher = new QFileSystemWatcher(filesToWatch);
     
     QObject::connect(this->configWatcher, &QFileSystemWatcher::fileChanged,
             this, &MainWindow::updateMenuItemsFromConfigValues);
@@ -199,14 +205,14 @@ void MainWindow::updateMenuItemsFromConfigValues(const QString &path) {
     }
     
     //update action state
-    for (QAction *action: this->myWTNZActions){action->setEnabled(shouldActivateLink);}
+    for (auto action: this->myWTNZActions){action->setEnabled(shouldActivateLink);}
     
 }; 
 
 void MainWindow::updateWarningsMenuItem() {    
     bool doEnable = this->pHelper.fileExists(this->owHelper.getOutputPath());
 
-    for (QAction *action: this->warningsfileActions){action->setEnabled(doEnable);}
+    for (auto action: this->warningsfileActions){action->setEnabled(doEnable);}
 };
 
 ///

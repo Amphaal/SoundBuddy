@@ -18,6 +18,7 @@
 #include <QtGui/QCloseEvent>
 #include <QtGui/QHideEvent>
 #include <QtGui/QIcon>
+#include <QtWidgets/QStatusBar>
 
 #include "../../libs/socketiocpp_custom/sio_client.h"
 #include <rapidjson/document.h>
@@ -28,6 +29,8 @@
 #include "tabs/ShoutTab.cpp"
 #include "tabs/FeederTab.cpp"
 #include "../localization/i18n.cpp"
+
+#include "./widgets/TraficLight.cpp"
 
 #include "../../libs/qtautoupdater/autoupdatercore/updater.h"
 #include "../version.h"

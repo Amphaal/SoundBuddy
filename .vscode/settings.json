@@ -152,7 +152,8 @@
         "csignal": "cpp",
         "strstream": "cpp",
         "shared_mutex": "cpp",
-        "tool_setup.h": "c"
+        "tool_setup.h": "c",
+        "qmessagebox": "cpp"
     },
     "C_Cpp.intelliSenseEngineFallback": "Disabled"
 }
