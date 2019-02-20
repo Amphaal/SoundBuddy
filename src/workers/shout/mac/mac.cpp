@@ -78,11 +78,12 @@ void ShoutWorker::run() {
             tArtist = trackObj[2].GetString();
             tGenre = trackObj[3].GetString();
             iDuration = trackObj[4].GetFloat();
-            iPlayerPos = trackObj[5].GetFloat();
-            iPlayerState = std::string(trackObj[6].GetString()) == "paused" ? 0 : 1;
-            tDateSkipped = trackObj[7].GetString();
-            tDatePlayed = trackObj[8].GetString();
-            tYear = trackObj[9].GetFloat();
+            tYear = trackObj[5].GetFloat();
+            iPlayerPos = trackObj[6].GetFloat();
+            iPlayerState = std::string(trackObj[7].GetString()) == "paused" ? 0 : 1;
+            tDateSkipped = trackObj[8].GetString();
+            tDatePlayed = trackObj[9].GetString();
+            
         }
 
         //compare with old shout, if equivalent, don't reshout
