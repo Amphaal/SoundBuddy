@@ -25,7 +25,7 @@ void ShoutWorker::run() {
               "else \n "
               "set PlyDt to \"\" \n "
               "end if \n ";
-    script += "get {name, album, artist, genre, duration} of current track & ";
+    script += "get {name, album, artist, genre, duration, year} of current track & ";
     script += "player position & ";
     script += "(player state as string) & ";
     script += "SkpDt & ";
@@ -58,6 +58,7 @@ void ShoutWorker::run() {
         //bool iRepeatMode;
         std::string tDateSkipped;
         std::string tDatePlayed;
+        int tYear;
 
         //if has result
         if (result.size()) {
@@ -81,13 +82,14 @@ void ShoutWorker::run() {
             iPlayerState = std::string(trackObj[6].GetString()) == "paused" ? 0 : 1;
             tDateSkipped = trackObj[7].GetString();
             tDatePlayed = trackObj[8].GetString();
+            tYear = trackObj[9].GetFloat();
         }
 
         //compare with old shout, if equivalent, don't reshout
         if(this->shouldUpload(iPlayerState, tName, tAlbum, tArtist, tDatePlayed, tDateSkipped)) {
             if(result.size()) {
                 //shout !
-                this->shoutFilled(tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState);
+                this->shoutFilled(tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState, tYear);
             }
             else {
                 this->shoutEmpty();

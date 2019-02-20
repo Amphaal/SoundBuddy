@@ -53,6 +53,7 @@ void iTunesCOMHandler::shoutHelper(QVariant iTrack) {
     auto iPlayerState = this->iTunesObj->property("PlayerState").value<bool>();
     auto tDatePlayed = trackObj->property("PlayedDate").value<QDateTime>().toString(Qt::ISODate).toStdString();
     auto tDateSkipped = trackObj->property("SkippedDate").value<QDateTime>().toString(Qt::ISODate).toStdString();
+    auto tYear = trackObj->property("Year").value<int>();
 
     //clear
     trackObj->clear();
@@ -61,6 +62,6 @@ void iTunesCOMHandler::shoutHelper(QVariant iTrack) {
     //compare with old shout, if equivalent, don't reshout
     if(this->worker->shouldUpload(iPlayerState, tName, tAlbum, tArtist, tDatePlayed, tDateSkipped)) {
         //shout !
-        this->worker->shoutFilled(tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState);
+        this->worker->shoutFilled(tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState, tYear);
     } 
 };

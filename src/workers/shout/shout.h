@@ -13,7 +13,7 @@ class ShoutWorker : public ITNZWorker {
         void exit() override;
         void run() override;  
         void shoutEmpty();
-        void shoutFilled(string name, string album, string artist, string genre, int duration, int playerPosition, bool playerState);
+        void shoutFilled(string name, string album, string artist, string genre, int duration, int playerPosition, bool playerState, int year);
         bool shouldUpload(bool iPlayerState, string tName, string tAlbum, string tArtist, string tDatePlayed, string tDateSkipped);
         
     private:

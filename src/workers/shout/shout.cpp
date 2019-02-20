@@ -26,7 +26,7 @@ void ShoutWorker::shoutEmpty(){
     this->shoutToServer(obj);
 };
 
-void ShoutWorker::shoutFilled(string name, string album, string artist, string genre, int duration, int playerPosition, bool playerState) {
+void ShoutWorker::shoutFilled(string name, string album, string artist, string genre, int duration, int playerPosition, bool playerState, int year) {
     
     //fill obj
     auto obj = this->createBasicShout();
@@ -45,6 +45,7 @@ void ShoutWorker::shoutFilled(string name, string album, string artist, string g
     obj.AddMember("duration", duration, alloc);
     obj.AddMember("playerPosition", playerPosition, alloc);
     obj.AddMember("playerState", playerState, alloc);
+    obj.AddMember("year", year, alloc);
 
     //log...
     string logMessage = I18n::tr()->Shout(
