@@ -286,9 +286,10 @@ namespace sio
     {
         if(ec || m_con.expired())
         {
-            if (ec != asio::error::operation_aborted)
+            if (ec != asio::error::operation_aborted){
                 LOG("ping exit,con is expired?"<<m_con.expired()<<",ec:"<<ec.message()<<endl);
-            return;
+                return;
+            }
         }
         packet p(packet::frame_ping);
         m_packet_mgr.encode(p, [&](bool /*isBin*/,shared_ptr<const string> payload)
@@ -501,7 +502,9 @@ namespace sio
             m_ping_timer.reset(new asio::steady_timer(m_client.get_io_service()));
             asio::error_code ec;
             m_ping_timer->expires_from_now(milliseconds(m_ping_interval), ec);
-            if(ec)LOG("ec:"<<ec.message()<<endl);
+            if(ec) {
+                LOG("ec:"<<ec.message()<<endl);
+            }
             m_ping_timer->async_wait(std::bind(&client_impl::ping,this, std::placeholders::_1));
             LOG("On handshake,sid:"<<m_sid<<",ping interval:"<<m_ping_interval<<",ping timeout"<<m_ping_timeout<<endl);
             return;
