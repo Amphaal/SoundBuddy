@@ -18,8 +18,8 @@ class FeederTab : public TemplateTab {
 
             this->tButton->setText(QString(I18n::tr()->Feeder_Button().c_str()));
 
-            this->mainLayout->addWidget(this->tEdit);
-            this->mainLayout->addWidget(this->tButton);
+            this->layout()->addWidget(this->scrollArea);
+            this->layout()->addWidget(this->tButton);
         }
     
 };

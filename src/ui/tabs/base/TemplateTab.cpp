@@ -7,16 +7,22 @@ ITNZWorker* TemplateTab::getWorkerThread() {
     return nullptr; 
 };
 
-TemplateTab::TemplateTab(QWidget *parent) : QWidget(parent), 
-    mainLayout(new QBoxLayout(QBoxLayout::TopToBottom, this)),
-    tEdit(new QPlainTextEdit(this)),
+TemplateTab::TemplateTab(QWidget *parent) : QWidget(parent),
+    scrollArea(new QScrollArea(this)),
     tButton(new QPushButton(this)) {
         
-        this->tEdit->setReadOnly(true);
+        this->setLayout(new QBoxLayout(QBoxLayout::TopToBottom, this));
+        this->scrollArea->setWidgetResizable(true);
 
         QObject::connect(this->tButton, &QPushButton::clicked,
                 this, &TemplateTab::startThread);
 };
+
+void TemplateTab::createNewLog() {
+    if(this->lsv != nullptr) delete this->lsv;
+    this->lsv = new LogScrollView(nullptr);
+    this->scrollArea->setWidget(this->lsv);
+}
 
 bool TemplateTab::isWorkerRunning() {
     if (this->bThread == NULL || !this->workerHasRunOnce) return false; //handle bug with QThread::isRunning when has not been run even once 
@@ -35,8 +41,7 @@ MainWindow* TemplateTab::getMainWindow() {
 void TemplateTab::startThread() {
 
     this->tButton->setEnabled(false);
-    this->tEdit->setPlainText("");
-    this->tEdit->setPalette(this->style()->standardPalette());
+    this->createNewLog();
     
     try {
         
@@ -47,45 +52,29 @@ void TemplateTab::startThread() {
                 this, &TemplateTab::printLog);
         QObject::connect(this->bThread, &ITNZWorker::operationFinished,
                 this, &TemplateTab::onOperationFinished);
-        QObject::connect(this->bThread, &ITNZWorker::error,
-                this, &TemplateTab::colorSwap);
 
         this->bThread->start();
         this->workerHasRunOnce = true;
     
     } catch (const std::exception& e) {
-        this->printLog(e.what());
-        this->colorSwap();
+        this->printLog(e.what(), false, true);
         this->onThreadEnd();
     }
 };
 
-void TemplateTab::printLog(const std::string &message, bool replacePreviousLine) {
+void TemplateTab::printLog(const std::string &message, const bool replacePreviousLine, const bool isError) {
     
-    //handle linefeeds in appending
-    std::string messages = this->tEdit->toPlainText().toStdString();
-    if (replacePreviousLine) messages = StringHelper::splitPath(messages, "\n");
-    if(messages != "") {
-        messages += '\r';
+    if(replacePreviousLine) {
+        this->lsv->updateLatestMessage(message);
+    } else {
+        this->lsv->addMessage(message, isError);
     }
-    messages += message;
-
-    //update the Text Edit
-    this->tEdit->setPlainText(QString::fromStdString(messages));
 
     //check if main is hidden to perform heavy CPU consuming action
     if (!this->getMainWindow()->isHidden()) {
-        QScrollBar *tabScrollBar = this->tEdit->verticalScrollBar();
+        auto tabScrollBar = this->scrollArea->verticalScrollBar();
         tabScrollBar->setValue(tabScrollBar->maximum());
     }
-};
-
-void TemplateTab::colorSwap() {
-    QPalette p = this->tEdit->palette();
-    p.setColor(QPalette::Active, QPalette::Text, Qt::red);
-    p.setColor(QPalette::Inactive, QPalette::Text, Qt::red);
-
-    this->tEdit->setPalette(p);
 };
 
 void TemplateTab::onOperationFinished(size_t warningsCount) {

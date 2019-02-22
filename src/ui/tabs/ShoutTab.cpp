@@ -30,9 +30,9 @@ class ShoutTab : public TemplateTab {
             QObject::connect(this->checkAutoLaunch, &QCheckBox::stateChanged,
             this, &ShoutTab::changeAutoLaunch);
 
-            this->mainLayout->addWidget(this->tEdit);
-            this->mainLayout->addWidget(this->tButton);
-            this->mainLayout->addWidget(this->checkAutoLaunch);
+            this->layout()->addWidget(this->scrollArea);
+            this->layout()->addWidget(this->tButton);
+            this->layout()->addWidget(this->checkAutoLaunch);
 
             auto config = this->cHelper->accessConfig();
             if (this->cHelper->getParamValue(config, this->autoLaunchConfigParam) == "true") {

@@ -7,7 +7,6 @@ class ITNZThread : public QThread {
     Q_OBJECT
         
     signals:
-        void printLog(const std::string &message, bool replacePreviousLine = false);
+        void printLog(const std::string &message, const bool replacePreviousLine = false, const bool isError = false);
         void operationFinished(size_t warningsCount);
-        void error();
 };

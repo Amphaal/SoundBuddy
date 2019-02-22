@@ -1,9 +1,6 @@
 #pragma once
 
-#include <QtCore/QString>
-#include <QtCore/QThread>
 #include <QtWidgets/QWidget>
-#include <QtWidgets/QPlainTextEdit>
 #include <QtWidgets/QBoxLayout>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QScrollBar>
@@ -11,6 +8,8 @@
 
 #include "../../../workers/base/ITNZWorker.h"
 #include "../../../helpers/stringHelper.cpp"
+#include "LogScrollView.cpp"
+#include <QtWidgets/QScrollArea>
 
 class MainWindow; //Forward Declaration 
 
@@ -25,16 +24,16 @@ class TemplateTab : public QWidget {
 
     protected:
         ITNZWorker *bThread;
-        QBoxLayout *mainLayout;
-        QPlainTextEdit *tEdit;
+        LogScrollView *lsv;
+        QScrollArea *scrollArea;
         QPushButton *tButton;
         bool workerHasRunOnce = false;
         
         MainWindow* getMainWindow();
 
+        void createNewLog();
         void startThread();
-        void printLog(const std::string &message, bool replacePreviousLine = false);
-        void colorSwap();
+        void printLog(const std::string &message, const bool replacePreviousLine = false, const bool isError = false);
 
         void onOperationFinished(size_t warningsCount);
         void onThreadEnd();

@@ -65,7 +65,7 @@ void ShoutWorker::shoutToServer(rapidjson::Document &incoming) {
         this->helper.writeAsJsonFile(incoming);
         this->helper.uploadFile();
     } catch(const std::exception& e) {
-        emit this->printLog(e.what());
+        emit this->printLog(e.what(), false, true);
     }
 };
 

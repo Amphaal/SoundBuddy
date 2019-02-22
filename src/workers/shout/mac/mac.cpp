@@ -46,7 +46,9 @@ void ShoutWorker::run() {
         p->closeWriteChannel();
         p->waitForReadyRead();
         auto result = p->readAll().toStdString();
-        
+        p->waitForFinished();
+        delete p;
+
         //default values and inst
         std::string tName;
         std::string tAlbum;
@@ -97,9 +99,6 @@ void ShoutWorker::run() {
             }
         } 
 
-        //wait before retry
-       p->waitForFinished();
-       delete p;
        this->sleep(1);
     }
 

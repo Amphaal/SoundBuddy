@@ -154,7 +154,9 @@
         "shared_mutex": "cpp",
         "tool_setup.h": "c",
         "qmessagebox": "cpp",
-        "qtwidgets": "cpp"
+        "qtwidgets": "cpp",
+        "qscrollarea": "cpp",
+        "qvboxlayout": "cpp"
     },
     "C_Cpp.intelliSenseEngineFallback": "Disabled"
 }

@@ -79,8 +79,7 @@ class FeederWorker : public ITNZWorker {
                 this->generateLibJSONFile();
                 this->uploadLibToServer();
             } catch (const std::exception& e) {
-                emit printLog(e.what());  //EMIT
-                emit error();  //EMIT
+                emit printLog(e.what(), false, true);  //EMIT
             }
         }
 
@@ -109,7 +108,7 @@ class FeederWorker : public ITNZWorker {
             } else {
                 //remove old warning file
                 auto pToRem = this->ohWrn.getOutputPath();
-                auto result = boost::filesystem::remove(pToRem.c_str());
+                boost::filesystem::remove(pToRem.c_str());
             }
 
             emit printLog(I18n::tr()->Feeder_Unmolding(OUTPUT_FILE_PATH));  //EMIT
