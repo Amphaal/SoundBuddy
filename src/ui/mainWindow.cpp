@@ -393,7 +393,7 @@ void MainWindow::startupWS() {
         ////////////////////
         // Event Handlers //
         ////////////////////
-
+        
         //tell sio is trying to reconnect
         this->sioClient.set_reconnect_listener([&](unsigned int a, unsigned int b) {
             this->updateSIOStatus(I18n::tr()->SIOReconnecting());
@@ -434,7 +434,6 @@ void MainWindow::startupWS() {
 
         //connect...
         this->sioClient.connect(turl);
-    
 }
 
 void MainWindow::updateSIOStatus(std::string newMessage) {

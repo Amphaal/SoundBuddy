@@ -188,6 +188,7 @@ class OutputHelper {
                     /* try use of SSL for this */
                     curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
                     curl_easy_setopt(curl, CURLOPT_CAINFO, "cacert.pem");
+                    curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT_MS, 1000L);
 
                     //url and execute
                     curl_easy_setopt(curl, CURLOPT_URL, this->uploadTargetUrl.c_str()); 
