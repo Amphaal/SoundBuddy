@@ -17,7 +17,7 @@
 class TemplateTab : public QWidget {
 
     public:
-        TemplateTab(QWidget *parent);
+        TemplateTab(QWidget *parent = 0);
         QPushButton *tButton = 0;
         void bindWithWorker(ITNZWorker *bThread);
 

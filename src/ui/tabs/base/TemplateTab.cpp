@@ -2,9 +2,9 @@
 
 #include "TemplateTab.h"
 
-TemplateTab::TemplateTab(QWidget *parent = 0) : QWidget(parent),
-    scrollArea(new QScrollArea(this)),
-    tButton(new QPushButton(this)) {
+TemplateTab::TemplateTab(QWidget *parent) : QWidget(parent),
+    tButton(new QPushButton(this)),
+    scrollArea(new QScrollArea(this)) {
         
         this->setLayout(new QBoxLayout(QBoxLayout::TopToBottom, this));
         this->scrollArea->setWidgetResizable(true);
