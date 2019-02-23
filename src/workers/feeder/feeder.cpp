@@ -71,7 +71,6 @@ class FeederWorker : public ITNZWorker {
     public:
 		FeederWorker() : ohLib(OUTPUT_FILE_PATH, "uploadLib", "wtnz_file"), ohWrn(WARNINGS_FILE_PATH) {}
 
-
         void run() override {
             emit printLog(I18n::tr()->Feeder_Warning());  //EMIT
 

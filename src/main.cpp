@@ -29,6 +29,7 @@ int main(int argc, char** argv){
     //configure QThreads to acknowledge specific types for data exchanges
     qRegisterMetaType<std::string>("std::string");
     qRegisterMetaType<size_t>("size_t");
+    qRegisterMetaType<TLW_Colors>("TLW_Colors");
 
     //fetch main window
     MainWindow mw;

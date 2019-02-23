@@ -6,6 +6,11 @@ TemplateTab::TemplateTab(QWidget *parent) : QWidget(parent),
     tButton(new QPushButton(this)),
     scrollArea(new QScrollArea(this)) {
         
+        QObject::connect(
+            this->scrollArea->verticalScrollBar(), &QScrollBar::rangeChanged,
+            this, &TemplateTab::scrollUpdate
+        );
+
         this->setLayout(new QBoxLayout(QBoxLayout::TopToBottom, this));
         this->scrollArea->setWidgetResizable(true);
 };
@@ -23,13 +28,13 @@ void TemplateTab::printLog(const std::string &message, const bool replacePreviou
     } else {
         this->lsv->addMessage(message, isError);
     }
-
-    //to perform heavy CPU consuming action
-    if (this->parentWidget()->isHidden()) {
-        auto tabScrollBar = this->scrollArea->verticalScrollBar();
-        tabScrollBar->setValue(tabScrollBar->maximum());
-    }
 };
+
+void TemplateTab::scrollUpdate(int min, int max) {
+    //to perform heavy CPU consuming action
+    auto tabScrollBar = this->scrollArea->verticalScrollBar();
+    tabScrollBar->setValue(tabScrollBar->maximum());
+}
 
 void TemplateTab::onThreadEnd() {
     this->tButton->setEnabled(true);
@@ -47,4 +52,8 @@ void TemplateTab::bindWithWorker(ITNZWorker *bThread) {
             this, &TemplateTab::onThreadStart);
     QObject::connect(bThread, &QThread::finished,
             this, &TemplateTab::onThreadEnd);
+}
+
+void TemplateTab::mustForceScrolltoBottom(bool mustForceScrollPosition) {
+    this->_mustForceScrollPosition = mustForceScrollPosition;
 }

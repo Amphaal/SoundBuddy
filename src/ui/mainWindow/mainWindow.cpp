@@ -6,7 +6,7 @@ MainWindow::MainWindow() : aHelper(), cHelper(), owHelper(WARNINGS_FILE_PATH) {
     //generate the UI
     this->_initUI();
 
-    this->startupWS();
+    this->startupConnectivityWorker();
     this->setupConfigFileWatcher();
     this->updateWarningsMenuItem();
     this->setupAutoUpdate();
@@ -34,8 +34,7 @@ void MainWindow::setupConfigFileWatcher() {
 void MainWindow::updateMenuItemsFromConfigValues(const QString &path) {
 
     // force rechecking credentials
-    this->sio_loggedInUser = "";
-    this->checkCredentials(true);
+    this->cw->askCheckCredentials();
 
     //check then save
     auto myWtnzUrl = this->aHelper.getUsersHomeUrl();
@@ -78,7 +77,7 @@ void MainWindow::openWarnings() {
 //change startup
 void MainWindow::addToStartupSwitch(bool checked) {
     PlatformHelper::switchStartupLaunch();
-}
+};
 
 
 void MainWindow::setupAutoUpdate() {
@@ -95,7 +94,7 @@ void MainWindow::setupAutoUpdate() {
 
     //start the update check
     this->updater->checkForUpdates();
-}
+};
 
 void MainWindow::onUpdateChecked(bool hasUpdate, bool hasError) {
 
@@ -136,7 +135,7 @@ void MainWindow::onUpdateChecked(bool hasUpdate, bool hasError) {
         this->updater->runUpdaterOnExit();
         this->forcedClose();
     }
-}
+};
 
 void MainWindow::requireUpdateCheckFromUser() {
 
@@ -145,101 +144,47 @@ void MainWindow::requireUpdateCheckFromUser() {
     if (!this->updater->isRunning()) {
         this->updater->checkForUpdates();
     }
+};
+
+void MainWindow::updateStatusBar(const std::string &message, const TLW_Colors &color) {
+    this->statusLabel->setText(QString(message.c_str()));
+    this->statusLight->setCurrentIndex(color);
 }
 
-void MainWindow::startupWS() {
+void MainWindow::startupConnectivityWorker() {
 
-        //extract destination url for sio connection
-        auto t_qurl = this->aHelper.getTargetUrl();
-        t_qurl->setPort(SIO_PORT);
-        auto turl = t_qurl->toString(QUrl::RemovePath).toStdString();
-        delete t_qurl;
-        
-        ////////////////////
-        // Event Handlers //
-        ////////////////////
+    this->cw = new ConnectivityWorker(&this->aHelper);
+    QObject::connect(
+        this->cw, &IConnectivityWorker::updateSIOStatus,
+        this, &MainWindow::updateStatusBar
+    );
+    this->cw->start();
+};
 
-        //tell sio is trying to reconnect
-        this->sioClient.set_reconnect_listener([&](unsigned int a, unsigned int b) {
-            this->updateSIOStatus(I18n::tr()->SIOReconnecting(), TLW_Colors::YELLOW);
-        });
+void MainWindow::startupShoutWorker() {
+    this->sw = new ShoutWorker;
+    this->st->bindWithWorker(this->sw);
 
-        //on connect, check credentials
-        this->sioClient.set_open_listener([&]() {
-            checkCredentials();
-        });
+    QObject::connect(this->sw, &QThread::finished,
+    this, [this]() {
+        delete this->sw;
+    });
 
-        //once server checked the credentials
-        this->sioClient.socket("/login")->on("credentialsChecked", [&](sio::event& ev) {
-            
-            //extract response
-            auto response = ev.get_messages()[0]->get_map();
-            auto isOk = response["isLoginOk"]->get_bool();
-            std::string accomp = response["accomp"]->get_string();
-
-            if(isOk) {
-                this->sio_loggedInUser = accomp;
-                this->updateSIOStatus(I18n::tr()->SIOLoggedAs(accomp), TLW_Colors::GREEN);
-            } else {
-                this->updateSIOStatus(I18n::tr()->SIOErrorOnValidation(accomp), TLW_Colors::RED);
-            }
-
-            //toggle flag
-            this->sio_requestOngoing = false;
-        });
-
-        //when server tell us the database has been updated, ask for revalidation
-        this->sioClient.socket("/login")->on("databaseUpdated", [&](sio::event& ev) {
-            checkCredentials(true);
-        });
-
-        ////////////////////////
-        // End Event Handlers //
-        ////////////////////////
-
-        
-        //declare waiting for connection
-        this->updateSIOStatus(I18n::tr()->SIOWaitingConnection(), TLW_Colors::YELLOW);
-        
-        //connect...
-        this->sioClient.connect(turl);
+    this->sw->start();
 }
 
-void MainWindow::updateSIOStatus(std::string newMessage, TLW_Colors colorToApply) {
-    this->statusLabel->setText(QString(newMessage.c_str()));
-    this->statusLight->setCurrentIndex(colorToApply);
-}
 
-//ask credentials
-void MainWindow::checkCredentials(bool forceRecheck) {
-    
-    if(forceRecheck) {
-        this->sio_requestOngoing = false;
-    }
+void MainWindow::startupFeederWorker() {
+    this->fw = new FeederWorker;
+    this->ft->bindWithWorker(this->fw);
 
-    if(this->sio_loggedInUser != "" && !forceRecheck) {
-        this->updateSIOStatus(I18n::tr()->SIOLoggedAs(this->sio_loggedInUser), TLW_Colors::GREEN);
-        return;
-    }
+    QObject::connect(this->fw, &ITNZWorker::operationFinished,
+            this, &MainWindow::updateWarningsMenuItem);
 
-    auto prerequisitesOK = this->aHelper.ensureConfigFileIsReadyForUpload(false);
-    
-    if (!prerequisitesOK) {
-        this->updateSIOStatus(I18n::tr()->SIOWaitingCredentials(), TLW_Colors::RED);
-    }
-    else if(prerequisitesOK && !this->sio_requestOngoing) {
-        
-        //start check
-        this->sio_requestOngoing = true;
-        this->updateSIOStatus(I18n::tr()->SIOAskingCredentialValidation(), TLW_Colors::YELLOW);
-        
-        sio::message::list p;
-        auto username = this->aHelper.getParamValue("username");
-        auto password = this->aHelper.getParamValue("password");
+    QObject::connect(this->fw, &QThread::finished,
+        this, [this]() {
+            delete this->fw;
+        });
 
-        p.push(sio::string_message::create(username.c_str()));
-        p.push(sio::string_message::create(password.c_str()));
-        this->sioClient.socket("/login")->emit_socket("checkCredentials", p);
-        
-    }
+    this->fw->start();
 }

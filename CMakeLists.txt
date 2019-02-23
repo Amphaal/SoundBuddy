@@ -129,6 +129,8 @@ list(APPEND SOURCES
     src/helpers/platformHelper/platformHelper.cpp
     src/helpers/iTunesLibParser/iTunesLibParser.cpp
     src/workers/base/ITNZThread.h
+    src/workers/base/IConnectivityWorker.h
+    src/workers/connectivity/sio.cpp
     src/workers/shout/shout.cpp
     src/ui/tabs/base/TemplateTab.cpp 
     src/ui/widgets/LightWidget.cpp

@@ -3,10 +3,25 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QVBoxLayout>
 #include <QtCore/QList>
+#include "src/helpers/_const.cpp"
 
 class LogScrollView : public QWidget {
     
+    private:
+        int _maxLogMessages = MAX_LOG_MESSAGES;
+
+        void limitLogSize() {
+            if(this->layout()->count() > this->_maxLogMessages) {
+                auto qli = this->layout()->takeAt(0);
+                auto ltr = (QLabel*)qli->widget();
+                ltr->setParent(nullptr);
+                delete ltr;
+                delete qli;
+            }
+        }
+
     public:
+    
        LogScrollView(QWidget *parent) : QWidget(parent) {
             this->setLayout(new QVBoxLayout);
             this->layout()->setAlignment(Qt::AlignTop);
@@ -27,6 +42,8 @@ class LogScrollView : public QWidget {
                 palette.setColor(label->foregroundRole(), Qt::red);
                 label->setPalette(palette);
             }
+
+            this->limitLogSize();
 
             this->layout()->addWidget(label);
         }

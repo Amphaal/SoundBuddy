@@ -157,7 +157,9 @@
         "qtwidgets": "cpp",
         "qscrollarea": "cpp",
         "qvboxlayout": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "qlist": "cpp",
+        "qwindow": "cpp"
     },
     "C_Cpp.intelliSenseEngineFallback": "Disabled"
 }

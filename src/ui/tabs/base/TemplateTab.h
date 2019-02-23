@@ -26,7 +26,7 @@ class TemplateTab : public QWidget {
         LogScrollView *lsv = 0;
         QScrollArea *scrollArea = 0;
         
-        bool mustForceScrollPosition = false;
+        void scrollUpdate(int min, int max);
 
         void createNewLog();
         void printLog(const std::string &message, const bool replacePreviousLine = false, const bool isError = false);

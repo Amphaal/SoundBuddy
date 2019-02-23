@@ -69,39 +69,26 @@ void MainWindow::_initStatusBar() {
 
 void MainWindow::_initUITabs() {
     auto tabs = new QTabWidget;
-
-    auto st = new ShoutTab(this); //"this" is important !
-    auto ft = new FeederTab(this); //"this" is important !
+    this->st = new ShoutTab;
+    this->ft = new FeederTab; 
 
     QObject::connect(
-        st->tButton, &QPushButton::clicked, [&st, this]() {
-
-            if(this->sw) delete this->sw;
-            this->sw = new ShoutWorker;
-            st->bindWithWorker(this->sw);
-            this->sw->start();
-        }
+        this->st->tButton, &QPushButton::clicked, 
+        this, &MainWindow::startupShoutWorker
     );
 
     QObject::connect(
-        ft->tButton, &QPushButton::clicked, [&ft, this]() {
-
-            if(this->fw) delete this->fw;
-            this->fw = new FeederWorker;
-            ft->bindWithWorker(this->fw);
-            QObject::connect(this->fw, &ITNZWorker::operationFinished,
-                    this, &MainWindow::updateWarningsMenuItem);
-            this->fw->start();
-        }
+        this->ft->tButton, &QPushButton::clicked, 
+        this, &MainWindow::startupFeederWorker
     );
 
-    tabs->addTab(st, "Shout!");
-    tabs->addTab(ft, "Feeder");
+    tabs->addTab(this->st, "Shout!");
+    tabs->addTab(this->ft, "Feeder");
     this->setCentralWidget(tabs);
 
-
+    //autostart
     if (this->cHelper.getParamValue(AUTO_RUN_SHOUT_PARAM_NAME) == "true") {
-        st->tButton->click();
+        this->st->tButton->click();
     }
 
 };
@@ -217,7 +204,7 @@ QMenu* MainWindow::_getFileMenu() {
 //////////////////////
 
 void MainWindow::closeEvent(QCloseEvent *event) {
-    
+
     //apple specific behaviour, prevent closing
     #ifdef __APPLE__
         if(!this->forceQuitOnMacOS) {

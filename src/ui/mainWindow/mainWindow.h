@@ -25,7 +25,6 @@
 #include "src/version.h"
 #include "src/localization/i18n.cpp"
 
-#include "libs/socketiocpp_custom/sio_client.h"
 #include "libs/qtautoupdater/autoupdatercore/updater.h"
 
 #include "src/helpers/_const.cpp"
@@ -34,6 +33,7 @@
 
 #include "src/ui/tabs/ShoutTab.cpp"
 #include "src/ui/tabs/FeederTab.cpp"
+#include "src/workers/connectivity/sio.cpp"
 
 #include "src/ui/widgets/TraficLight.cpp"
 
@@ -57,24 +57,20 @@ class MainWindow : public QMainWindow {
         string wtnzUrl;
         QtAutoUpdater::Updater *updater;
         
-        sio::client sioClient;
-        string sio_loggedInUser = "";
-        bool sio_requestOngoing = false;
+        //statusbar
+        void _initStatusBar();
+        void updateStatusBar(const std::string &message, const TLW_Colors &color);
         QLabel *statusLabel;
         TrafficLightWidget *statusLight;
 
-        ShoutWorker *sw = 0;
-        FeederWorker *fw = 0;
 
         ///
         ///UI instanciation
         ///
 
         void _initUI();
-        void _initUITabs();
         void _initUIMenu();
         void _initUITray();
-        void _initStatusBar();
 
         QMenu* _getFileMenu();
         QMenu* _getOptionsMenu();
@@ -96,7 +92,7 @@ class MainWindow : public QMainWindow {
         /// Events handling
         ///
 
-        //hide window on minimize, only triggered on windows
+        //visibility
         void hideEvent(QHideEvent *event);
         void closeEvent(QCloseEvent *event);
         void trueShow();
@@ -109,8 +105,16 @@ class MainWindow : public QMainWindow {
         void onUpdateChecked(bool hasUpdate, bool hasError);
         void requireUpdateCheckFromUser();
 
-        //sio
-        void startupWS();
-        void checkCredentials(bool forceRecheck = false);
-        void updateSIOStatus(std::string newMessage, TLW_Colors colorToApply = TLW_Colors::RED);
+        //tabs
+        ShoutTab *st = 0; 
+        FeederTab *ft = 0;
+        void _initUITabs();
+
+        //workers
+        ShoutWorker *sw = 0;
+        FeederWorker *fw = 0;
+        ConnectivityWorker *cw = 0;
+        void startupConnectivityWorker();
+        void startupShoutWorker();
+        void startupFeederWorker();
 };

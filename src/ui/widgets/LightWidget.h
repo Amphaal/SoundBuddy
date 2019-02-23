@@ -2,6 +2,12 @@
 
 #include <QtWidgets>
 
+enum TLW_Colors {
+    RED = 0,
+    YELLOW = 1,
+    GREEN = 2
+};
+
 class LightWidget : public QWidget
 {
     Q_OBJECT
