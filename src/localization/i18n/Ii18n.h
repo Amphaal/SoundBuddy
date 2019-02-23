@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
 
-#include "../../helpers/_const.cpp"
-#include "../../version.h"
+#include "src/helpers/_const.cpp"
+#include "src/version.h"
 
 using namespace std;
 

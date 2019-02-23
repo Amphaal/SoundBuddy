@@ -3,9 +3,9 @@
 #include <string>
 #include <rapidjson/document.h>
 
-#include "../base/ITNZWorker.h"
-#include "../../helpers/_const.cpp"
-#include "../../helpers/outputHelper.cpp"
+#include "src/workers/base/ITNZWorker.h"
+#include "src/helpers/_const.cpp"
+#include "src/helpers/outputHelper/outputHelper.cpp"
 
 class ShoutWorker : public ITNZWorker {
     public:

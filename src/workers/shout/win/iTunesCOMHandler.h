@@ -1,7 +1,7 @@
 #include <ActiveQt/QAxObject>
 #include <QVariant>
 
-#include "../shout.h" 
+#include "src/workers/shout/shout.h" 
 
 class iTunesCOMHandler : public QObject {
  

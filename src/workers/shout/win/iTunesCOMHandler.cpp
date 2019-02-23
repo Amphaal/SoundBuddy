@@ -3,9 +3,9 @@
 #include <ActiveQt/QAxBase>
 #include <ActiveQt/QAxObject>
 
-#include "../shout.h" 
+#include "src/workers/shout/shout.h" 
 #include "iTunesCOMHandler.h"
-#include "../../../helpers/stringHelper.cpp"
+#include "src/helpers/stringHelper/stringHelper.cpp"
 
 #include <QMetaObject>
 #include <QMetaMethod>

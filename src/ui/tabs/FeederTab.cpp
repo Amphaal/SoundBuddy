@@ -4,8 +4,8 @@
 #include <QtCore/QString>
 
 #include "base/TemplateTab.h"
-#include "../../workers/feeder.cpp"
-#include "../../localization/i18n.cpp"
+#include "src/workers/feeder/feeder.cpp"
+#include "src/localization/i18n.cpp"
 
 class FeederTab : public TemplateTab {
     public:

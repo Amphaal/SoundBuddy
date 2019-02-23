@@ -8,8 +8,8 @@
 #include <QtGui/QWindow>
 #include <QStyle>
 
-#include "../../../workers/base/ITNZWorker.h"
-#include "../../../helpers/stringHelper.cpp"
+#include "src/workers/base/ITNZWorker.h"
+#include "src/helpers/stringHelper/stringHelper.cpp"
 
 #include "LogScrollView.cpp"
 

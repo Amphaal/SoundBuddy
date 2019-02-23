@@ -5,9 +5,9 @@
 
 #include <rapidjson/document.h>
 
-#include "../shout.h" 
-#include "../../../helpers/stringHelper.cpp"
-#include "../../../localization/i18n.cpp"
+#include "src/workers/shout/shout.h" 
+#include "src/helpers/stringHelper/stringHelper.cpp"
+#include "src/localization/i18n.cpp"
 
 void ShoutWorker::run() { 
 

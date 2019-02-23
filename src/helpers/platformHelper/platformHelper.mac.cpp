@@ -8,7 +8,7 @@
     #include <QtCore/QCoreApplication>
 
     #include "platformHelper.h"
-    #include "../stringHelper.cpp"
+    #include "src/helpers/stringHelper/stringHelper.cpp"
 
     #include <boost/filesystem.hpp>
 

@@ -5,8 +5,8 @@
 #include <boost/filesystem.hpp>
 #include <rapidjson/document.h>
 
-#include "../_const.cpp"
-#include "../../version.h"
+#include "src/helpers/_const.cpp"
+#include "src/version.h"
 #include <QtCore/QSettings>
 #include <QCoreApplication>
 

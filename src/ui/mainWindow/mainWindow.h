@@ -22,20 +22,20 @@
 
 #include <rapidjson/document.h>
 
-#include "../../version.h"
-#include "../../localization/i18n.cpp"
+#include "src/version.h"
+#include "src/localization/i18n.cpp"
 
-#include "../../../libs/socketiocpp_custom/sio_client.h"
-#include "../../../libs/qtautoupdater/autoupdatercore/updater.h"
+#include "libs/socketiocpp_custom/sio_client.h"
+#include "libs/qtautoupdater/autoupdatercore/updater.h"
 
-#include "../../helpers/_const.cpp"
-#include "../../helpers/configHelper/authHelper.cpp"
-#include "../../helpers/platformHelper/platformHelper.h"
+#include "src/helpers/_const.cpp"
+#include "src/helpers/configHelper/authHelper.cpp"
+#include "src/helpers/platformHelper/platformHelper.h"
 
-#include "../tabs/ShoutTab.cpp"
-#include "../tabs/FeederTab.cpp"
+#include "src/ui/tabs/ShoutTab.cpp"
+#include "src/ui/tabs/FeederTab.cpp"
 
-#include "../widgets/TraficLight.cpp"
+#include "src/ui/widgets/TraficLight.cpp"
 
 
 class MainWindow : public QMainWindow {

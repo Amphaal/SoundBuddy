@@ -8,10 +8,10 @@
 #include <rapidjson/filewritestream.h>
 #include <rapidjson/prettywriter.h>
 
-#include "../platformHelper/platformHelper.h"
-#include "../../localization/i18n.cpp"
-#include "../_const.cpp"
-#include "../../version.h"
+#include "src/helpers/platformHelper/platformHelper.h"
+#include "src/localization/i18n.cpp"
+#include "src/helpers/_const.cpp"
+#include "src/version.h"
 
 #include <QStandardPaths>
 #include <QUrl>
@@ -43,7 +43,7 @@ class ConfigHelper {
     public:
         ConfigHelper(
             const std::string rPathToConfigFile = APP_CONFIG_FILE_PATH, 
-            const std::vector<std::string> requiredFields = {}
+            const std::vector<std::string> requiredFields = {AUTO_RUN_SHOUT_PARAM_NAME}
         ) : _requiredFields(requiredFields) {
 
             //set definitive location and create path if not exist
@@ -65,7 +65,8 @@ class ConfigHelper {
         //update the current config file
         void updateParamValue(const std::string paramToUpdate, const std::string value) {
             auto config = this->accessConfig();
-            this->createParamIfNotExist(config, paramToUpdate, value);
+            this->defineParamValue(config, paramToUpdate, value);
+
             this->writeFormatedFileFromObj(config);
         }
 
@@ -90,10 +91,9 @@ class ConfigHelper {
 
 
         //prepare data presentation for user to see
-        void includeRequiredMembers(rapidjson::Document &config) {
+        void includeRequiredMembers(rapidjson::Document &config, bool mustWrite = false) {
 
             //check required field presence and adds them if missing
-            bool mustWrite = false;
             rapidjson::Document::AllocatorType &alloc = config.GetAllocator();
             this->onMissingRequiredMember(config, [&mustWrite, &config, &alloc](std::string rf){
                     rapidjson::Value n(rf.c_str(), alloc);
@@ -148,7 +148,7 @@ class ConfigHelper {
 
 
         void onMissingRequiredMember(rapidjson::Document &config, std::function<void(std::string)> cb) {
-            for (auto &rf : _requiredFields) {
+            for (auto &rf : this->_requiredFields) {
                 auto mem = config.FindMember(rf.c_str());
                 if(mem == config.MemberEnd()) {
                     cb(rf);
@@ -160,11 +160,11 @@ class ConfigHelper {
         void writeNewConfig() {
             rapidjson::Document d;
             d.Parse("{}");
-            includeRequiredMembers(d);
+            includeRequiredMembers(d, true); //force writing
         }
 
-        //create a parameter into the config file if it doesnt exist
-        void createParamIfNotExist(rapidjson::Document &config, std::string paramToFind, std::string defVal = "") {
+        //create a parameter into the config file if it doesnt exist, else define its value
+        void defineParamValue(rapidjson::Document &config, std::string paramToFind, std::string defVal = "") {
             
             auto mem = config.FindMember(paramToFind.c_str());
             rapidjson::Document::AllocatorType &alloc = config.GetAllocator();
@@ -173,6 +173,8 @@ class ConfigHelper {
                     rapidjson::Value param(paramToFind.c_str(), alloc);
                     rapidjson::Value val(defVal.c_str(), alloc);
                     config.AddMember(param, val, alloc);
+                } else {
+                    mem->value.SetString(defVal.c_str(), alloc);
                 }
         }
 };

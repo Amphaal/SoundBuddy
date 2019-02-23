@@ -11,13 +11,13 @@
 #include <QtWidgets/QWidget>
 #include <boost/algorithm/string/join.hpp>
 
-#include "base/ITNZWorker.h"
-#include "../helpers/_const.cpp"
-#include "../helpers/platformHelper/platformHelper.h"
-#include "../helpers/stringHelper.cpp"
-#include "../helpers/outputHelper.cpp"
-#include "../localization/i18n.cpp"
-#include "../helpers/iTunesLibParser/iTunesLibParser.h"
+#include "src/workers/base/ITNZWorker.h"
+#include "src/helpers/_const.cpp"
+#include "src/helpers/platformHelper/platformHelper.h"
+#include "src/helpers/stringHelper/stringHelper.cpp"
+#include "src/helpers/outputHelper/outputHelper.cpp"
+#include "src/localization/i18n.cpp"
+#include "src/helpers/iTunesLibParser/iTunesLibParser.h"
 
 ///
 /// Exceptions
@@ -117,7 +117,7 @@ class FeederWorker : public ITNZWorker {
 
             emit printLog(I18n::tr()->Feeder_OutputReady());  //EMIT
 
-            emit operationFinished(warningsCount);  //EMIT
+            emit operationFinished();  //EMIT
         }
 
 

@@ -7,10 +7,10 @@
 
 #include <rapidjson/document.h>
 
-#include "../../helpers/configHelper/configHelper.cpp"
-#include "base/TemplateTab.h"
-#include "../../workers/shout/shout.h"
-#include "../../helpers/_const.cpp"
+#include "src/helpers/configHelper/configHelper.cpp"
+#include "./base/TemplateTab.h"
+#include "src/workers/shout/shout.h"
+#include "src/helpers/_const.cpp"
 
 class ShoutTab : public TemplateTab {
     

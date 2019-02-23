@@ -6,10 +6,10 @@
 #include <rapidjson/prettywriter.h>
 #include <curl/curl.h>
 
-#include "platformHelper/platformHelper.h"
-#include "./stringHelper.cpp"
-#include "configHelper/authHelper.cpp"
-#include "../localization/i18n.cpp"
+#include "src/helpers/platformHelper/platformHelper.h"
+#include "src/helpers/stringHelper/stringHelper.cpp"
+#include "src/helpers/configHelper/authHelper.cpp"
+#include "src/localization/i18n.cpp"
 
 #include <QStandardPaths>
 #include <QDir>

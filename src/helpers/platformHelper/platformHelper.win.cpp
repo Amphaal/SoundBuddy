@@ -7,8 +7,8 @@
     #include <map>
 	#include <vector>
     #include <QStandardPaths>
-    #include "../../helpers/iTunesLibParser/iTunesLibParser.h"
-    #include "../../../libs/base64/base64.h"
+    #include "src/helpers/iTunesLibParser/iTunesLibParser.h"
+    #include "libs/base64/base64.h"
 
     using namespace std;
 

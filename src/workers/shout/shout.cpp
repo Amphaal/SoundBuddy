@@ -1,5 +1,5 @@
 #include "shout.h"
-#include "../../localization/i18n.cpp"
+#include "src/localization/i18n.cpp"
 
 ShoutWorker::ShoutWorker() : helper(OutputHelper(SHOUT_FILE_PATH, "uploadShout", "shout_file")) {};
 

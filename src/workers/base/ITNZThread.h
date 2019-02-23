@@ -8,5 +8,5 @@ class ITNZThread : public QThread {
         
     signals:
         void printLog(const std::string &message, const bool replacePreviousLine = false, const bool isError = false);
-        void operationFinished(size_t warningsCount);
+        void operationFinished();
 };

@@ -1,5 +1,5 @@
 #define _HAS_STD_BYTE 0 //prevent build error on mac (byte type overriding)
-#include "../mainWindow.h"
+#include "src/ui/mainWindow/mainWindow.h"
 
 //main initialization
 void MainWindow::_initUI() {
