@@ -46,7 +46,7 @@ void ShoutWorker::run() {
         p->closeWriteChannel();
         p->waitForReadyRead();
         auto result = p->readAll().toStdString();
-        p->waitForFinished();
+        p->waitForFinished(-1);
         delete p;
 
         //default values and inst

@@ -37,11 +37,10 @@ class LogScrollView : public QWidget {
             auto label = new QLabel(msg);
             label->setWordWrap(true);
             
-            if(isError) {
-                QPalette palette = label->palette();
-                palette.setColor(label->foregroundRole(), Qt::red);
-                label->setPalette(palette);
-            }
+            QPalette palette = label->palette();
+            auto color = isError ? Qt::red : Qt::black;
+            palette.setColor(label->foregroundRole(), color);
+            label->setPalette(palette);
 
             this->limitLogSize();
 
