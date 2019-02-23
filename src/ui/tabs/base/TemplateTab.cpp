@@ -53,7 +53,3 @@ void TemplateTab::bindWithWorker(ITNZWorker *bThread) {
     QObject::connect(bThread, &QThread::finished,
             this, &TemplateTab::onThreadEnd);
 }
-
-void TemplateTab::mustForceScrolltoBottom(bool mustForceScrollPosition) {
-    this->_mustForceScrollPosition = mustForceScrollPosition;
-}

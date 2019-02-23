@@ -33,7 +33,7 @@ void ShoutWorker::run() {
             emit printLog(I18n::tr()->Shout_StartListening());
 
             //initiate COM object
-            CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+            CoInitializeEx(NULL, COINIT_MULTITHREADED);
             wchar_t* wch = nullptr;
 
             //iTunes IID extracted from Apple API
