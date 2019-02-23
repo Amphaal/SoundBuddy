@@ -6,8 +6,8 @@
 #endif
 
 bool PlatformHelper::isLaunchingAtStartup() {
-    auto settings = this->getStartupSettingsHandler();
-    return this->getPathToApp() == this->getPathToAppFromStartupSettings(settings); //compare paths
+    auto settings = PlatformHelper::getStartupSettingsHandler();
+    return PlatformHelper::getPathToApp() == PlatformHelper::getPathToAppFromStartupSettings(settings); //compare paths
 }
 
 //ensure a file exists

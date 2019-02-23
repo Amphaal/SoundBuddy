@@ -1,36 +1,22 @@
 #pragma once
 
-#include <QtWidgets>
+#include <QStackedWidget>
 #include "./LightWidget.h"
 
-class TrafficLightWidget : public QWidget {
+enum TLW_Colors {
+    RED = 0,
+    YELLOW = 1,
+    GREEN = 2
+};
+
+class TrafficLightWidget : public QStackedWidget {
     public:
         TrafficLightWidget(QWidget *parent = 0)
-            : QWidget(parent)
+            : QStackedWidget(parent)
         {
-            auto sbox = new QStackedLayout(this);
-            m_red = new LightWidget(Qt::red);
-            sbox->addWidget(m_red);
-            m_yellow = new LightWidget(Qt::yellow);
-            sbox->addWidget(m_yellow);
-            m_green = new LightWidget(Qt::green);
-            sbox->addWidget(m_green);
-            QPalette pal = palette();
-            pal.setColor(QPalette::Background, Qt::black);
-            setPalette(pal);
-            setAutoFillBackground(true);
-            this->setLayout(sbox);
+            this->addWidget(new LightWidget(Qt::red));
+            this->addWidget(new LightWidget(Qt::yellow));
+            this->addWidget(new LightWidget(Qt::green));
         }
-
-        LightWidget *redLight() const
-            { return m_red; }
-        LightWidget *yellowLight() const
-            { return m_yellow; }
-        LightWidget *greenLight() const
-            { return m_green; }
-
-    private:
-        LightWidget *m_red;
-        LightWidget *m_yellow;
-        LightWidget *m_green;
 };
+

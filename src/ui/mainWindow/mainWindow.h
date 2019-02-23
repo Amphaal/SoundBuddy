@@ -20,20 +20,23 @@
 #include <QtGui/QIcon>
 #include <QtWidgets/QStatusBar>
 
-#include "../../libs/socketiocpp_custom/sio_client.h"
 #include <rapidjson/document.h>
 
-#include "../helpers/_const.cpp"
-#include "../helpers/configHelper.cpp"
-#include "../helpers/platformHelper/platformHelper.h"
-#include "tabs/ShoutTab.cpp"
-#include "tabs/FeederTab.cpp"
-#include "../localization/i18n.cpp"
+#include "../../version.h"
+#include "../../localization/i18n.cpp"
 
-#include "./widgets/TraficLight.cpp"
+#include "../../../libs/socketiocpp_custom/sio_client.h"
+#include "../../../libs/qtautoupdater/autoupdatercore/updater.h"
 
-#include "../../libs/qtautoupdater/autoupdatercore/updater.h"
-#include "../version.h"
+#include "../../helpers/_const.cpp"
+#include "../../helpers/configHelper/authHelper.cpp"
+#include "../../helpers/platformHelper/platformHelper.h"
+
+#include "../tabs/ShoutTab.cpp"
+#include "../tabs/FeederTab.cpp"
+
+#include "../widgets/TraficLight.cpp"
+
 
 class MainWindow : public QMainWindow {
    
@@ -48,19 +51,20 @@ class MainWindow : public QMainWindow {
         QFileSystemWatcher *configWatcher;
         vector<QAction*> myWTNZActions;
         vector<QAction*> warningsfileActions;
+        AuthHelper aHelper;
         ConfigHelper cHelper;
-        PlatformHelper pHelper;
         OutputHelper owHelper;
-        rapidjson::Document config;
         string wtnzUrl;
-        ShoutTab *shoutTab;
         QtAutoUpdater::Updater *updater;
         
         sio::client sioClient;
         string sio_loggedInUser = "";
         bool sio_requestOngoing = false;
         QLabel *statusLabel;
-        LightWidget *statusLight;
+        TrafficLightWidget *statusLight;
+
+        ShoutWorker *sw = 0;
+        FeederWorker *fw = 0;
 
         ///
         ///UI instanciation
@@ -75,7 +79,6 @@ class MainWindow : public QMainWindow {
         QMenu* _getFileMenu();
         QMenu* _getOptionsMenu();
 
-        void updateConfigValues();
         void setupConfigFileWatcher();
         void updateMenuItemsFromConfigValues(const QString &path = NULL);
         void updateWarningsMenuItem();
@@ -109,5 +112,5 @@ class MainWindow : public QMainWindow {
         //sio
         void startupWS();
         void checkCredentials(bool forceRecheck = false);
-        void updateSIOStatus(std::string newMessage);
+        void updateSIOStatus(std::string newMessage, TLW_Colors colorToApply = TLW_Colors::RED);
 };

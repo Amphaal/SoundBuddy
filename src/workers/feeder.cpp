@@ -280,11 +280,10 @@ class FeederWorker : public ITNZWorker {
         string getITunesLibLocation() {
             emit printLog(I18n::tr()->Feeder_GetXMLFileLoc());  //EMIT
 
-            PlatformHelper pHelper;
-            string pathToPrefs = pHelper.getITunesPrefFileProbableLocation();
+            string pathToPrefs = PlatformHelper::getITunesPrefFileProbableLocation();
             
             try {
-                return pHelper.extractItunesLibLocation(pathToPrefs);
+                return PlatformHelper::extractItunesLibLocation(pathToPrefs);
             } catch(...) {
                 throw FTNZMissingItunesConfigException();
             }

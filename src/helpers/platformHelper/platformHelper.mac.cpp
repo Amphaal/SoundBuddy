@@ -18,7 +18,7 @@
     };
 
     void PlatformHelper::openUrlInBrowser(std::string cpURL) {
-        this->openFileInOS(cpURL);
+        PlatformHelper::openFileInOS(cpURL);
     };
 
     std::string PlatformHelper::getEnvironmentVariable(const char* variable) {
@@ -34,7 +34,7 @@
     };
 
     std::string PlatformHelper::getITunesPrefFileProbableLocation() {
-        return this->getEnvironmentVariable("HOME") + std::string("/Library/Preferences/com.apple.iTunes.plist");
+        return PlatformHelper::getEnvironmentVariable("HOME") + std::string("/Library/Preferences/com.apple.iTunes.plist");
     };
 
     std::string PlatformHelper::extractItunesLibLocation(std::string pathToParamFile) {
@@ -48,13 +48,13 @@
         auto pre = mapP.string();
 
         //replace tilda with full path
-        StringHelper::replaceFirstOccurrence(pre, "~", this->getEnvironmentVariable("HOME"));
+        StringHelper::replaceFirstOccurrence(pre, "~", PlatformHelper::getEnvironmentVariable("HOME"));
 
         return pre + "/iTunes Music Library.xml";
     };
 
     QSettings* PlatformHelper::getStartupSettingsHandler() {
-        auto cPath = this->getEnvironmentVariable("HOME") + MAC_REG_STARTUP_LAUNCH_PATH; //computed path
+        auto cPath = PlatformHelper::getEnvironmentVariable("HOME") + MAC_REG_STARTUP_LAUNCH_PATH; //computed path
         auto settings = new QSettings(cPath.c_str(), QSettings::NativeFormat);
         return settings;
     }
@@ -71,18 +71,18 @@
 
     void PlatformHelper::switchStartupLaunch() {
 
-        auto settings = this->getStartupSettingsHandler();
+        auto settings = PlatformHelper::getStartupSettingsHandler();
 
-        if (!this->isLaunchingAtStartup()) {
+        if (!PlatformHelper::isLaunchingAtStartup()) {
             settings->setValue("Label", APP_NAME);
             settings->setValue("ProcessType", "Interactive");
             settings->setValue("ExitTimeOut", 0);
             settings->setValue("RunAtLoad", true);
             settings->setValue("LimitLoadToSessionType", "Aqua");
-            QStringList args(this->getPathToApp().c_str());
+            QStringList args(PlatformHelper::getPathToApp().c_str());
             settings->setValue("ProgramArguments", args);
         } else {
-            auto cPath = this->getEnvironmentVariable("HOME") + MAC_REG_STARTUP_LAUNCH_PATH; //computed path
+            auto cPath = PlatformHelper::getEnvironmentVariable("HOME") + MAC_REG_STARTUP_LAUNCH_PATH; //computed path
             remove(cPath.c_str());
         }
     }

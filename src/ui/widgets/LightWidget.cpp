@@ -3,7 +3,10 @@
 #include "LightWidget.h"
 
 LightWidget::LightWidget(const QColor &color, QWidget *parent)
-    : QWidget(parent), m_color(color), m_on(true) {};
+    : QWidget(parent), m_color(color), m_on(true) {
+        this->setLayout(new QHBoxLayout);
+        this->layout()->setAlignment(Qt::AlignBottom);
+    };
 
 bool LightWidget::isOn() const
     { return m_on; };
@@ -26,5 +29,5 @@ void LightWidget::paintEvent(QPaintEvent *)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setBrush(m_color);
-    painter.drawEllipse(0, 0, height(), height());
+    painter.drawEllipse(height()*.25, height()*.25, height() * .75, height() * .75);
 };

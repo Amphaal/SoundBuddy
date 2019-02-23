@@ -4,37 +4,32 @@
 #include <QtWidgets/QBoxLayout>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QScrollBar>
+#include <QtWidgets/QScrollArea>
+#include <QtGui/QWindow>
 #include <QStyle>
 
 #include "../../../workers/base/ITNZWorker.h"
 #include "../../../helpers/stringHelper.cpp"
-#include "LogScrollView.cpp"
-#include <QtWidgets/QScrollArea>
 
-class MainWindow; //Forward Declaration 
+#include "LogScrollView.cpp"
+
 
 class TemplateTab : public QWidget {
 
-    virtual ITNZWorker* getWorkerThread();
-
     public:
         TemplateTab(QWidget *parent);
-        bool isWorkerRunning();
-        void endThread();
+        QPushButton *tButton = 0;
+        void bindWithWorker(ITNZWorker *bThread);
 
     protected:
-        ITNZWorker *bThread;
-        LogScrollView *lsv;
-        QScrollArea *scrollArea;
-        QPushButton *tButton;
-        bool workerHasRunOnce = false;
+        ITNZWorker *bThread = 0;
+        LogScrollView *lsv = 0;
+        QScrollArea *scrollArea = 0;
         
-        MainWindow* getMainWindow();
+        bool mustForceScrollPosition = false;
 
         void createNewLog();
-        void startThread();
         void printLog(const std::string &message, const bool replacePreviousLine = false, const bool isError = false);
-
-        void onOperationFinished(size_t warningsCount);
         void onThreadEnd();
+        void onThreadStart();
 };

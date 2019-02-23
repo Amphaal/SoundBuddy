@@ -7,24 +7,17 @@
 
 #include <rapidjson/document.h>
 
-#include "../../helpers/configHelper.cpp"
+#include "../../helpers/configHelper/configHelper.cpp"
 #include "base/TemplateTab.h"
 #include "../../workers/shout/shout.h"
+#include "../../helpers/_const.cpp"
 
 class ShoutTab : public TemplateTab {
     
-    const std::string autoLaunchConfigParam = "autoLaunchShout";
-    
-    ITNZWorker* getWorkerThread() override {
-        return new ShoutWorker();
-    }
-    
     public:
-        ShoutTab(QWidget *parent, ConfigHelper *cHelper) : TemplateTab(parent), 
-        cHelper(cHelper),
-        checkAutoLaunch(new QCheckBox(I18n::tr()->Shout_Autolaunch().c_str(), this))
+        ShoutTab(QWidget *parent = 0) : TemplateTab(parent), cHelper(new ConfigHelper)
           {
-            
+            this->checkAutoLaunch = new QCheckBox(I18n::tr()->Shout_Autolaunch().c_str());
             this->tButton->setText(QString(I18n::tr()->Shout_Button().c_str()));
 
             QObject::connect(this->checkAutoLaunch, &QCheckBox::stateChanged,
@@ -34,18 +27,16 @@ class ShoutTab : public TemplateTab {
             this->layout()->addWidget(this->tButton);
             this->layout()->addWidget(this->checkAutoLaunch);
 
-            auto config = this->cHelper->accessConfig();
-            if (this->cHelper->getParamValue(config, this->autoLaunchConfigParam) == "true") {
+            if (this->cHelper->getParamValue(AUTO_RUN_SHOUT_PARAM_NAME) == "true") {
                 this->checkAutoLaunch->setCheckState(Qt::CheckState::Checked);
-                this->startThread();
             }
         }
 
     private:
-        ConfigHelper *cHelper;
-        QCheckBox *checkAutoLaunch;
+        ConfigHelper *cHelper = 0;
+        QCheckBox *checkAutoLaunch = 0;
 
         void changeAutoLaunch(bool isChecked) {
-            this->cHelper->updateParamValue(this->autoLaunchConfigParam, isChecked ? "true" : "false");
+            this->cHelper->updateParamValue(AUTO_RUN_SHOUT_PARAM_NAME, isChecked ? "true" : "false");
         }
 };

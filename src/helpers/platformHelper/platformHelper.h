@@ -13,17 +13,17 @@
 class PlatformHelper
 {
     public:
-        void openFileInOS(std::string cpURL);
-        void openUrlInBrowser(std::string cpURL);
-        std::string getITunesPrefFileProbableLocation();
-        std::string getEnvironmentVariable(const char* variable);
-        std::string extractItunesLibLocation(std::string pathToParamFile);
-        bool isLaunchingAtStartup();
-        void switchStartupLaunch();
-        bool fileExists(std::string filename);
+        static void openFileInOS(std::string cpURL);
+        static void openUrlInBrowser(std::string cpURL);
+        static std::string getITunesPrefFileProbableLocation();
+        static std::string getEnvironmentVariable(const char* variable);
+        static std::string extractItunesLibLocation(std::string pathToParamFile);
+        static bool isLaunchingAtStartup();
+        static void switchStartupLaunch();
+        static bool fileExists(std::string filename);
 
     private:
-        QSettings* getStartupSettingsHandler();
-        std::string getPathToApp();
-        std::string getPathToAppFromStartupSettings(QSettings *settings);
+        static QSettings* getStartupSettingsHandler();
+        static std::string getPathToApp();
+        static std::string getPathToAppFromStartupSettings(QSettings *settings);
 };

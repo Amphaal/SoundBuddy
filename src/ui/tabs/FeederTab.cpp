@@ -8,18 +8,12 @@
 #include "../../localization/i18n.cpp"
 
 class FeederTab : public TemplateTab {
-
-    ITNZWorker* getWorkerThread() override {
-        return new FeederWorker();
-    }
-
     public:
-        FeederTab(QWidget *parent) : TemplateTab(parent) {
+        FeederTab(QWidget *parent = 0, FeederWorker* worker = 0) : TemplateTab(parent) {
 
             this->tButton->setText(QString(I18n::tr()->Feeder_Button().c_str()));
 
             this->layout()->addWidget(this->scrollArea);
             this->layout()->addWidget(this->tButton);
         }
-    
 };

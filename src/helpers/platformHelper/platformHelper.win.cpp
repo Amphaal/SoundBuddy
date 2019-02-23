@@ -34,13 +34,13 @@
     };
     
     string PlatformHelper::getITunesPrefFileProbableLocation() {
-        return this->getEnvironmentVariable("APPDATA") + string("\\Apple Computer\\Preferences\\com.apple.iTunes.plist");
+        return PlatformHelper::getEnvironmentVariable("APPDATA") + string("\\Apple Computer\\Preferences\\com.apple.iTunes.plist");
     };
 
     string PlatformHelper::extractItunesLibLocation(std::string pathToParamFile) {
 
         //get a copy of converted binary plist 
-        auto pathTo_plutil = this->getEnvironmentVariable("PROGRAMFILES") + string("\\Common Files\\Apple\\Apple Application Support\\plutil.exe");
+        auto pathTo_plutil = PlatformHelper::getEnvironmentVariable("PROGRAMFILES") + string("\\Common Files\\Apple\\Apple Application Support\\plutil.exe");
         auto destPath = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation).toStdString() + "/temp.plist";
         std::string command = "-convert xml1 -o ";
                     command += "\"" + destPath +"\" ";
@@ -81,10 +81,10 @@
 
     void PlatformHelper::switchStartupLaunch() {
 
-        auto settings = this->getStartupSettingsHandler();
+        auto settings = PlatformHelper::getStartupSettingsHandler();
 
-        if (!this->isLaunchingAtStartup()) {
-            settings->setValue(APP_NAME, this->getPathToApp().c_str());
+        if (!PlatformHelper::isLaunchingAtStartup()) {
+            settings->setValue(APP_NAME, PlatformHelper::getPathToApp().c_str());
         } else {
             settings->remove(APP_NAME);
         }

@@ -10,6 +10,11 @@ class LogScrollView : public QWidget {
        LogScrollView(QWidget *parent) : QWidget(parent) {
             this->setLayout(new QVBoxLayout);
             this->layout()->setAlignment(Qt::AlignTop);
+
+            //set background color
+            QPalette palette = this->palette();
+            palette.setColor(this->backgroundRole(), Qt::white);
+            this->setPalette(palette);
         }
 
         void addMessage(const std::string & newMessage, const bool isError = false) {
@@ -28,9 +33,15 @@ class LogScrollView : public QWidget {
         }
 
         void updateLatestMessage(const std::string & newMessage) {
+            
             auto msg = QString::fromStdString(newMessage);
-            auto i = this->layout()->count() - 1;
-            if(i < 0) return this->addMessage(newMessage);
-            ((QLabel*)this->layout()->itemAt(i))->setText(msg);
+            auto i = this->layout()->count() - 1; //count items in layout
+            
+            //if no message, add message
+            if(i < 0) {
+                return this->addMessage(newMessage);
+            }
+            auto lbl = (QLabel*)this->layout()->itemAt(i)->widget();
+            lbl->setText(msg);
         }
 };

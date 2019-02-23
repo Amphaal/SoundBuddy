@@ -126,14 +126,15 @@ file(GLOB_RECURSE INT_LIBS
 
 #mandatory explicit generation
 list(APPEND SOURCES
-    src/main.cpp
     src/helpers/platformHelper/platformHelper.cpp
     src/helpers/iTunesLibParser/iTunesLibParser.cpp
     src/workers/base/ITNZThread.h
     src/workers/shout/shout.cpp
-    src/ui/mainWindow.cpp
     src/ui/tabs/base/TemplateTab.cpp 
     src/ui/widgets/LightWidget.cpp
+    src/ui/mainWindow/parts/mainWindowUI.cpp
+    src/ui/mainWindow/mainWindow.cpp
+    src/main.cpp
 )
 
 #win specifics

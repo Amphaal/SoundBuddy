@@ -3,7 +3,7 @@
 #include <QtCore/QString>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QStyleFactory>
-#include "ui/mainWindow.h"
+#include "ui/mainWindow/mainWindow.h"
 
 #include "helpers/_const.cpp"
 
