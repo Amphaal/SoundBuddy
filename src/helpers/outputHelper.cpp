@@ -118,7 +118,7 @@ class OutputHelper {
             OutputHelper(
                 std::string filePath, std::string targetFunction = "", 
                 std::string uploadFileName = ""
-            ) : _pathToFile(filePath), _uploadFileName(uploadFileName),  _uploadTargetFunction(targetFunction){
+            ) : _pathToFile(filePath),  _uploadTargetFunction(targetFunction), _uploadFileName(uploadFileName) {
                 
                 //set definitive location and create path if not exist
                 std::string hostPath = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation).toStdString();

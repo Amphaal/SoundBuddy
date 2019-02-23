@@ -18,7 +18,6 @@ class LogScrollView : public QWidget {
         }
 
         void addMessage(const std::string & newMessage, const bool isError = false) {
-            auto c = this->layout()->count();
             auto msg = QString::fromStdString(newMessage);
             auto label = new QLabel(msg);
             label->setWordWrap(true);
