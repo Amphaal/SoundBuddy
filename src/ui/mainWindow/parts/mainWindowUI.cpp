@@ -58,7 +58,6 @@ void MainWindow::_initStatusBar() {
 
     //define statusbar content
     sb_widget->setLayout(new QHBoxLayout);
-    sb_widget->layout()->setAlignment(Qt::AlignLeft);
     sb_widget->layout()->addWidget(this->statusLight);
     sb_widget->layout()->addWidget(this->statusLabel);
 

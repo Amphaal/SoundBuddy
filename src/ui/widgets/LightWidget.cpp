@@ -5,7 +5,6 @@
 LightWidget::LightWidget(const QColor &color, QWidget *parent)
     : QWidget(parent), m_color(color), m_on(true) {
         this->setLayout(new QHBoxLayout);
-        this->layout()->setAlignment(Qt::AlignBottom);
     };
 
 bool LightWidget::isOn() const
