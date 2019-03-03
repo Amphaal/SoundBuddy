@@ -16,3 +16,20 @@ bool PlatformHelper::fileExists(std::string outputFileName) {
     confP = boost::filesystem::absolute(confP);
     return boost::filesystem::exists(confP);
 }
+
+/* STD PATHS */
+
+std::string PlatformHelper::getAppDirectory() {
+    return QCoreApplication::applicationDirPath().toStdString();
+
+}
+std::string PlatformHelper::getDataStorageDirectory() {
+    return PlatformHelper::prepareStandardPath(QStandardPaths::AppLocalDataLocation);
+}
+
+std::string PlatformHelper::prepareStandardPath(QStandardPaths::StandardLocation pathType) {
+    auto path = QStandardPaths::writableLocation(pathType).toStdString();
+    QDir destDir(path.c_str());
+    if (!destDir.exists()) destDir.mkpath(".");
+    return path;
+}

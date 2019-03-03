@@ -10,6 +10,7 @@
 #include "src/helpers/stringHelper/stringHelper.cpp"
 #include "src/helpers/configHelper/authHelper.cpp"
 #include "src/localization/i18n.cpp"
+#include "src/helpers/_const.cpp"
 
 #include <QStandardPaths>
 #include <QDir>
@@ -79,6 +80,7 @@ class FTNZErrorProcessingUploadException : public std::exception {
 class OutputHelper {
         private:
             boost::filesystem::path _pathToFile;
+            std::string _pathToCert;
             string _uploadTargetFunction;
             string _uploadTargetUrl;
             map<string, string> _uploadPostData;
@@ -121,10 +123,11 @@ class OutputHelper {
             ) : _pathToFile(filePath),  _uploadTargetFunction(targetFunction), _uploadFileName(uploadFileName) {
                 
                 //set definitive location and create path if not exist
-                std::string hostPath = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation).toStdString();
-                QDir hostDir(hostPath.c_str());
-                if (!hostDir.exists()) hostDir.mkpath(".");
+                std::string hostPath = PlatformHelper::getDataStorageDirectory();
                 this->_pathToFile = hostPath + "/" + this->_pathToFile.string();
+                this->_pathToCert =QDir::toNativeSeparators(
+                    (PlatformHelper::getAppDirectory() + "/" + PEM_CERT_NAME).c_str()
+                ).toStdString();
             }
 
             std::string getOutputPath() {
@@ -197,9 +200,9 @@ class OutputHelper {
                     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
                     /* try use of SSL for this */
-                    curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
-                    curl_easy_setopt(curl, CURLOPT_CAINFO, "cacert.pem");
+                    curl_easy_setopt(curl, CURLOPT_CAINFO, this->_pathToCert.c_str());
                     curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT_MS, 1000L);
+
 
                     //url and execute
                     curl_easy_setopt(curl, CURLOPT_URL, this->_uploadTargetUrl.c_str()); 

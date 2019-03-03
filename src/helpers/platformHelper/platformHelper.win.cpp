@@ -6,7 +6,6 @@
     #include <string>
     #include <map>
 	#include <vector>
-    #include <QStandardPaths>
     #include "src/helpers/iTunesLibParser/iTunesLibParser.h"
     #include "libs/base64/base64.h"
 
@@ -41,7 +40,7 @@
 
         //get a copy of converted binary plist 
         auto pathTo_plutil = PlatformHelper::getEnvironmentVariable("PROGRAMFILES") + string("\\Common Files\\Apple\\Apple Application Support\\plutil.exe");
-        auto destPath = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation).toStdString() + "/temp.plist";
+        auto destPath = PlatformHelper::getDataStorageDirectory() + "/temp.plist";
         std::string command = "-convert xml1 -o ";
                     command += "\"" + destPath +"\" ";
                     command +="\"" + pathToParamFile  +"\"";

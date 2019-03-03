@@ -9,6 +9,8 @@
 #include "src/version.h"
 #include <QtCore/QSettings>
 #include <QCoreApplication>
+#include <QStandardPaths>
+#include <QDir>
 
 class PlatformHelper
 {
@@ -21,9 +23,12 @@ class PlatformHelper
         static bool isLaunchingAtStartup();
         static void switchStartupLaunch();
         static bool fileExists(std::string filename);
+        static std::string getAppDirectory();
+        static std::string getDataStorageDirectory();
 
     private:
         static QSettings* getStartupSettingsHandler();
         static std::string getPathToApp();
         static std::string getPathToAppFromStartupSettings(QSettings *settings);
+        static std::string prepareStandardPath(QStandardPaths::StandardLocation pathType);
 };

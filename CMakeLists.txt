@@ -5,8 +5,9 @@ cmake_minimum_required(VERSION 3.13.3)
 ##too heavy, prefer specific intermediate local 
 #SET(CACERT_URL_SOURCE "https://curl.haxx.se/ca/cacert.pem")
 ##DST Root CA X3 only, from Firefox's "https://ccadb-public.secure.force.com/mozilla/IncludedCACertificateReport"
-SET(CACERT_URL_SOURCE "https://crt.sh/?d=0687260331A72403D909F105E69BCF0D32E1BD2493FFC6D9206D11BCD6770739") 
-file(DOWNLOAD ${CACERT_URL_SOURCE} ${CMAKE_BINARY_DIR}/bin/cacert.pem)
+SET(CACERT_URL_SOURCE "https://crt.sh/?d=0687260331A72403D909F105E69BCF0D32E1BD2493FFC6D9206D11BCD6770739")
+SET(PEM_CERT_NAME "cacert.pem")
+file(DOWNLOAD ${CACERT_URL_SOURCE} ${CMAKE_BINARY_DIR}/bin/${PEM_CERT_NAME})
 
 ########################
 ## VERSION.H HANDLING ##
@@ -19,7 +20,7 @@ SET(APP_MAIN_URL ${APP_ROOT_URL}/wtnz)
 #version
 SET(CMAKE_PROJECT_VERSION_MAJOR 0)
 SET(CMAKE_PROJECT_VERSION_MINOR 2)
-SET(CMAKE_PROJECT_VERSION_PATCH 4)
+SET(CMAKE_PROJECT_VERSION_PATCH 5)
 
 
 #set default maintenance tool path

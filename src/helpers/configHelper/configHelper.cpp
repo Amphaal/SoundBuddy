@@ -47,7 +47,7 @@ class ConfigHelper {
         ) : _requiredFields(requiredFields) {
 
             //set definitive location and create path if not exist
-            std::string hostPath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation).toStdString();
+            std::string hostPath = PlatformHelper::getDataStorageDirectory();
             this->_hostDir = new QDir(hostPath.c_str());
             this->_configFilePath = hostPath + "/" + rPathToConfigFile;
 
