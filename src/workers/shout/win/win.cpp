@@ -33,7 +33,7 @@ void ShoutWorker::run() {
             emit printLog(I18n::tr()->Shout_StartListening());
 
             //initiate COM object
-            CoInitializeEx(NULL, COINIT_MULTITHREADED);
+            CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
             wchar_t* wch = nullptr;
 
             //iTunes IID extracted from Apple API
@@ -49,7 +49,7 @@ void ShoutWorker::run() {
             //process events
             while(this->mustListen && !handler->iTunesShutdownRequested) {
                 QCoreApplication::processEvents();
-                this->msleep(200);
+                this->msleep(20);
             }
 
             //clear COM usage

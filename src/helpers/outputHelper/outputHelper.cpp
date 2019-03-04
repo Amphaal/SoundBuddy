@@ -78,158 +78,164 @@ class FTNZErrorProcessingUploadException : public std::exception {
 ///
 
 class OutputHelper {
-        private:
-            boost::filesystem::path _pathToFile;
-            std::string _pathToCert;
-            string _uploadTargetFunction;
-            string _uploadTargetUrl;
-            map<string, string> _uploadPostData;
-            string _uploadFileName;
-            bool _mustPrepareUpload = true;
+    private:
+        boost::filesystem::path _pathToFile;
+        std::string _pathToCert;
+        string _uploadTargetFunction;
+        string _uploadTargetUrl;
+        map<string, string> _uploadPostData;
+        string _uploadFileName;
+        bool _mustPrepareUpload = true;
 
-            //upload response reader
-            static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp)
-            {
-                ((std::string*)userp)->append((char*)contents, size * nmemb);
-                return size * nmemb;
-            }
+        //upload response reader
+        static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp)
+        {
+            ((std::string*)userp)->append((char*)contents, size * nmemb);
+            return size * nmemb;
+        }
 
-            void prepareUpload() {
+        void prepareUpload() {
 
-                if(!this->_mustPrepareUpload) return;
+            if(!this->_mustPrepareUpload) return;
 
-                //check config file
-                AuthHelper aHelper;
-                aHelper.ensureConfigFileIsReadyForUpload();
+            //check config file
+            AuthHelper aHelper;
+            aHelper.ensureConfigFileIsReadyForUpload();
 
-                //harvest values
-                auto userUrl = aHelper.getUsersHomeUrl();
-                auto password = aHelper.getParamValue("password");
+            //harvest values
+            auto userUrl = aHelper.getUsersHomeUrl();
+            auto password = aHelper.getParamValue("password");
 
-                //define them
-                this->_uploadTargetUrl = userUrl + "/" + this->_uploadTargetFunction;
-                this->_uploadPostData.clear();
-                this->_uploadPostData.insert(pair<string, string>("password", password));
-                this->_uploadPostData.insert(pair<string, string>("headless", "1"));
+            //define them
+            this->_uploadTargetUrl = userUrl + "/" + this->_uploadTargetFunction;
+            this->_uploadPostData.clear();
+            this->_uploadPostData.insert(pair<string, string>("password", password));
+            this->_uploadPostData.insert(pair<string, string>("headless", "1"));
 
-                //prepared !
-                this->_mustPrepareUpload = false;      
-            }
+            //prepared !
+            this->_mustPrepareUpload = false;      
+        }
 
-        public:
-            OutputHelper(
-                std::string filePath, std::string targetFunction = "", 
-                std::string uploadFileName = ""
-            ) : _pathToFile(filePath),  _uploadTargetFunction(targetFunction), _uploadFileName(uploadFileName) {
-                
-                //set definitive location and create path if not exist
-                std::string hostPath = PlatformHelper::getDataStorageDirectory();
-                this->_pathToFile = hostPath + "/" + this->_pathToFile.string();
-                this->_pathToCert =QDir::toNativeSeparators(
-                    (PlatformHelper::getAppDirectory() + "/" + PEM_CERT_NAME).c_str()
-                ).toStdString();
-            }
+    public:
+        OutputHelper(
+            std::string filePath, std::string targetFunction = "", 
+            std::string uploadFileName = ""
+        ) : _pathToFile(filePath),  _uploadTargetFunction(targetFunction), _uploadFileName(uploadFileName) {
+            
+            //set definitive location and create path if not exist
+            std::string hostPath = PlatformHelper::getDataStorageDirectory();
+            this->_pathToFile = hostPath + "/" + this->_pathToFile.string();
+            this->_pathToCert =QDir::toNativeSeparators(
+                (PlatformHelper::getAppDirectory() + "/" + PEM_CERT_NAME).c_str()
+            ).toStdString();
+        }
 
-            std::string getOutputPath() {
-                return this->_pathToFile.generic_string();
-            }
+        std::string getOutputPath() {
+            return this->_pathToFile.generic_string();
+        }
 
-            //write outputfile
-            void writeAsJsonFile(rapidjson::Document &obj, bool mustPrettyPrint = false) {
+        //write outputfile
+        void writeAsJsonFile(rapidjson::Document &obj, bool mustPrettyPrint = false) {
 
-                //get all path
-                boost::filesystem::create_directory(this->_pathToFile.parent_path()); //create dir if not exist
+            //get all path
+            boost::filesystem::create_directory(this->_pathToFile.parent_path()); //create dir if not exist
 
-                //save on path
-                auto fp = fopen(this->_pathToFile.string().c_str(), "w");
+            //save on path
+            auto fp = fopen(this->_pathToFile.string().c_str(), "w");
 
-                char writeBuffer[65536];
-                rapidjson::FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
+            char writeBuffer[65536];
+            rapidjson::FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
 
-                if(mustPrettyPrint) {
-                    rapidjson::PrettyWriter<rapidjson::FileWriteStream> writer(os);
-                    obj.Accept(writer);
-                } else {
-                    rapidjson::Writer<rapidjson::FileWriteStream> writer(os);
-                    obj.Accept(writer);
-                }    
-                fclose(fp);
-            }
+            if(mustPrettyPrint) {
+                rapidjson::PrettyWriter<rapidjson::FileWriteStream> writer(os);
+                obj.Accept(writer);
+            } else {
+                rapidjson::Writer<rapidjson::FileWriteStream> writer(os);
+                obj.Accept(writer);
+            }    
+            fclose(fp);
+        }
 
-            std::string uploadFile() {
-                
-                this->prepareUpload();
+        std::string uploadFile() {
+            
+            this->prepareUpload();
 
-                /* In windows, this will init the winsock stuff */ 
-                curl_global_init(CURL_GLOBAL_ALL);
-                
-                /* get a curl handle */ 
-                std::string response;
-                CURL *curl = curl_easy_init();
-                if(curl) {
+            /* In windows, this will init the winsock stuff */ 
+            curl_global_init(CURL_GLOBAL_ALL);
+            
+            /* get a curl handle */ 
+            std::string response;
+            CURL *curl = curl_easy_init();
+            std::exception_ptr futureException;
 
-                    curl_mime *form = NULL;
-                    curl_mimepart *field = NULL;
+            if(curl) {
 
-                    /* Create the form */ 
-                    form = curl_mime_init(curl);
-                
-                    /* Fill in the file upload field */ 
+                curl_mime *form = NULL;
+                curl_mimepart *field = NULL;
+
+                /* Create the form */ 
+                form = curl_mime_init(curl);
+            
+                /* Fill in the file upload field */ 
+                field = curl_mime_addpart(form);
+                curl_mime_name(field, this->_uploadFileName.c_str());
+                curl_mime_filedata(field, this->_pathToFile.string().c_str());
+            
+                /* For each field*/
+                for(auto kvp : this->_uploadPostData) {
                     field = curl_mime_addpart(form);
-                    curl_mime_name(field, this->_uploadFileName.c_str());
-                    curl_mime_filedata(field, this->_pathToFile.string().c_str());
-                
-                    /* For each field*/
-                    for(auto kvp : this->_uploadPostData) {
-                        field = curl_mime_addpart(form);
-                        curl_mime_name(field, kvp.first.c_str());
-                        curl_mime_data(field, kvp.second.c_str(), CURL_ZERO_TERMINATED);
-                    }
-
-                    /* what URL that receives this POST */ 
-                    curl_easy_setopt(curl, CURLOPT_MIMEPOST, form);
-
-                    //header
-                    struct curl_slist *list = NULL;
-                    auto localeHeader = string("Accept-Language: ") + I18n::getLocaleName();
-                    list = curl_slist_append(list, localeHeader.c_str());
-                    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
-                    
-                    //response text
-                    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
-                    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
-
-                    /* try use of SSL for this */
-                    curl_easy_setopt(curl, CURLOPT_CAINFO, this->_pathToCert.c_str());
-                    curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT_MS, 1000L);
-
-
-                    //url and execute
-                    curl_easy_setopt(curl, CURLOPT_URL, this->_uploadTargetUrl.c_str()); 
-                    CURLcode res = curl_easy_perform(curl); 
-                    
-                    if(res != CURLE_OK) {
-                        auto descr = curl_easy_strerror(res);
-                        throw FTNZErrorUploadingException(descr); 
-                        return "";
-                    } else {
-                        //response code
-                        long code;
-                        curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &code);
-                        
-                        //if http code is not OK
-                        if(code != 200) {
-                            this->_mustPrepareUpload = true; //reprepare
-                            throw FTNZErrorProcessingUploadException(code, response);
-                            return "";
-                        }
-                    }
-
-                    curl_easy_cleanup(curl); /* always cleanup */ 
-                    curl_mime_free(form); /* then cleanup the form */ 
+                    curl_mime_name(field, kvp.first.c_str());
+                    curl_mime_data(field, kvp.second.c_str(), CURL_ZERO_TERMINATED);
                 }
 
-                curl_global_cleanup(); /* always cleanup */ 
+                /* what URL that receives this POST */ 
+                curl_easy_setopt(curl, CURLOPT_MIMEPOST, form);
+
+                //header
+                struct curl_slist *list = NULL;
+                auto localeHeader = string("Accept-Language: ") + I18n::getLocaleName();
+                list = curl_slist_append(list, localeHeader.c_str());
+                curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
+                
+                //response text
+                curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+                curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+
+                /* try use of SSL for this */
+                curl_easy_setopt(curl, CURLOPT_CAINFO, this->_pathToCert.c_str());
+                curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT_MS, 1000L);
+
+
+                //url and execute
+                curl_easy_setopt(curl, CURLOPT_URL, this->_uploadTargetUrl.c_str()); 
+                CURLcode res = curl_easy_perform(curl); 
+                
+                if(res != CURLE_OK) {
+                    auto descr = curl_easy_strerror(res);
+                    futureException = make_exception_ptr<FTNZErrorUploadingException>(FTNZErrorUploadingException(descr)); 
+                } else {
+                    //response code
+                    long code;
+                    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &code);
+                    
+                    //if http code is not OK
+                    if(code != 200) {
+                        this->_mustPrepareUpload = true; //reprepare
+                        futureException = make_exception_ptr<FTNZErrorProcessingUploadException>(FTNZErrorProcessingUploadException(code, response));
+                    }
+                }
+
+                curl_mime_free(form); /* then cleanup the form */ 
+                curl_easy_cleanup(curl); /* always cleanup */ 
+            }
+
+            curl_global_cleanup(); /* always cleanup */ 
+            
+            if(futureException) {
+                std::rethrow_exception(futureException);
+                return "";
+            } else {
                 return response;
             }
+        }
 };
