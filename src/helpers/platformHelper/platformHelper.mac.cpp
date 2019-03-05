@@ -13,7 +13,7 @@
     #include <filesystem>
 
     void PlatformHelper::openFileInOS(std::string cpURL) {
-        std::string command = "open " + cpURL;
+        std::string command = "open \"" + cpURL + "\"";
         system(command.c_str());
     };
 
