@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>
 #include <curl/curl.h>
@@ -79,7 +79,7 @@ class FTNZErrorProcessingUploadException : public std::exception {
 
 class OutputHelper {
     private:
-        boost::filesystem::path _pathToFile;
+        filesystem::path _pathToFile;
         std::string _pathToCert;
         string _uploadTargetFunction;
         string _uploadTargetUrl;
@@ -138,7 +138,7 @@ class OutputHelper {
         void writeAsJsonFile(rapidjson::Document &obj, bool mustPrettyPrint = false) {
 
             //get all path
-            boost::filesystem::create_directory(this->_pathToFile.parent_path()); //create dir if not exist
+            filesystem::create_directory(this->_pathToFile.parent_path()); //create dir if not exist
 
             //save on path
             auto fp = fopen(this->_pathToFile.string().c_str(), "w");

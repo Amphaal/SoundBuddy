@@ -6,10 +6,9 @@
 #include <exception>
 #include <map>
 #include <set>
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include <QtWidgets/QWidget>
-#include <boost/algorithm/string/join.hpp>
 
 #include "src/workers/base/ITNZWorker.h"
 #include "src/helpers/_const.cpp"
@@ -107,7 +106,7 @@ class FeederWorker : public ITNZWorker {
             } else {
                 //remove old warning file
                 auto pToRem = this->ohWrn.getOutputPath();
-                boost::filesystem::remove(pToRem.c_str());
+                filesystem::remove(pToRem.c_str());
             }
 
             emit printLog(I18n::tr()->Feeder_Unmolding(OUTPUT_FILE_PATH));  //EMIT
@@ -234,7 +233,8 @@ class FeederWorker : public ITNZWorker {
                 );
                 if (missingAttrs.size()) {
                     rapidjson::Value key(track->value["Location"].GetString(), lwajAlloc);
-                    rapidjson::Value val(boost::algorithm::join(missingAttrs, ", ").c_str(), lwajAlloc);
+                    auto joined = StringHelper::join(missingAttrs, ", ");
+                    rapidjson::Value val(joined.c_str(), lwajAlloc);
                     this->libWarningsAsJSON.AddMember(key, val, lwajAlloc);
                     tracksIdToRemove.insert(track->name.GetString());
                 }

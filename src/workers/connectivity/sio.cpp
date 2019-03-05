@@ -6,6 +6,7 @@
 #include "src/workers/base/IConnectivityWorker.h"
 #include "src/helpers/configHelper/authHelper.cpp"
 #include "src/localization/i18n.cpp"
+#include <iostream>
 
 class ConnectivityWorker : public IConnectivityWorker {
     
@@ -13,9 +14,18 @@ class ConnectivityWorker : public IConnectivityWorker {
         ConnectivityWorker(AuthHelper *aHelper) : _aHelper(aHelper) {}
 
         void run() override {
+
             ////////////////////
             // Event Handlers //
             ////////////////////
+
+            this->_sioClient.set_fail_listener([&]() {
+
+            });
+
+            this->_sioClient.socket("/login")->on_error([&](sio::message::ptr const& message) {
+
+            });
 
             //tell sio is trying to reconnect
             this->_sioClient.set_reconnect_listener([&](unsigned int a, unsigned int b) {
@@ -61,10 +71,7 @@ class ConnectivityWorker : public IConnectivityWorker {
             
             //connect...
             this->_sioClient.connect(this->getTargetUrl());
-        }
 
-        void exit() {
-            this->_sioClient.sync_close();
         }
 
     void askCheckCredentials() {

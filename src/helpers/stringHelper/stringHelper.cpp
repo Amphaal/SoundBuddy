@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include <sstream>
+#include <set>
 
 using namespace std;
 
@@ -26,6 +28,23 @@ class StringHelper {
             }
             return input;
         }
+
+        static std::string join(std::set<string> vect, const std::string& separator = ", ") {
+
+            std::stringstream ss;
+
+            for(set<string>::iterator it=vect.begin(); it!=vect.end(); ++it)
+            {
+                if (std::next(it) != vect.end()) {
+                    ss << *it << separator;
+                } else {
+                    ss << *it;
+                }
+            }
+
+            return ss.str();
+        }
+
 
         static string boolToString(bool val) {
              return val ? "true" : "false";

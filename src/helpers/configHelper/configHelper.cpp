@@ -1,7 +1,7 @@
 #pragma once
 
 #include <exception>
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include <rapidjson/document.h>
 #include <rapidjson/filereadstream.h>
@@ -80,8 +80,8 @@ class ConfigHelper {
 
         //get full path of the config file
         std::string getConfigFileFullPath() {
-            boost::filesystem::path confP(this->_configFilePath);
-            return boost::filesystem::absolute(confP).string();
+            filesystem::path confP(this->_configFilePath);
+            return filesystem::absolute(confP).string();
         }
 
     protected:

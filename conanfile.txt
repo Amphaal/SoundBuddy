@@ -1,11 +1,10 @@
 [requires]
-qt/5.12.0@bincrafters/stable
-pugixml/1.9@bincrafters/stable
+OpenSSL/1.1.1b@conan/stable
+asio/1.12.2@bincrafters/stable
+qt/5.12.1@bincrafters/stable
 libcurl/7.61.1@bincrafters/stable
 rapidjson/1.1.0@bincrafters/stable
-boost/1.69.0@conan/stable
 websocketpp/0.8.1@bincrafters/stable
-OpenSSL/1.0.2o@conan/stable
 
 [generators]
 cmake
@@ -15,7 +14,7 @@ cmake_paths
 [options]
 qt:qtactiveqt=True
 
-#disable old prerequisites from packages linked to OpenSSL/boost
+#disable old prerequisites from packages linked to OpenSSL
 qt:openssl=False
 websocketpp:asio=standalone
 

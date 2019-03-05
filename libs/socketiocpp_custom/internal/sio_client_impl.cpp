@@ -199,11 +199,10 @@ namespace sio
     /*************************private:*************************/
     void client_impl::run_loop()
     {
-
-        m_client.run();
-        m_client.reset();
-        m_client.get_alog().write(websocketpp::log::alevel::devel,
-                                  "run loop end");
+            m_client.run();
+            m_client.reset();
+            m_client.get_alog().write(websocketpp::log::alevel::devel,
+                                    "run loop end");
     }
 
     void client_impl::connect_impl(const string& uri, const string& queryString)
@@ -581,11 +580,14 @@ failed:
 #if SIO_TLS
     client_impl::context_ptr client_impl::on_tls_init(connection_hdl conn)
     {
-        context_ptr ctx = context_ptr(new  asio::ssl::context(asio::ssl::context::tlsv1));
+        context_ptr ctx = context_ptr(new asio::ssl::context(asio::ssl::context::tlsv12_client));
+        ctx->load_verify_file("cacert.pem");
         asio::error_code ec;
         ctx->set_options(asio::ssl::context::default_workarounds |
                              asio::ssl::context::no_sslv2 |
-                             asio::ssl::context::single_dh_use,ec);
+                             asio::ssl::context::no_sslv3 |
+                             asio::ssl::context::no_tlsv1 |
+                             asio::ssl::context::single_dh_use, ec);
         if(ec)
         {
             cerr<<"Init tls failed,reason:"<< ec.message()<<endl;

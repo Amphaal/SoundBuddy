@@ -19,11 +19,9 @@
             "intelliSenseMode": "clang-x64",
             "includePath": [
                 "${default}",
-                "/Users/Amphaal/.conan/data/boost/1.69.0/conan/stable/package/35bffc1c1953a7504313b3cb1d811c81d56c162c/include",
                 "/Users/Amphaal/.conan/data/qt/5.12.0/bincrafters/stable/package/138b8c71da7be5db2d40f44590f8f19701928790/include",
                 "/Users/Amphaal/.conan/data/qt/5.12.0/bincrafters/stable/source/qt5/qt3d/src/3rdparty/assimp/contrib/rapidjson/include",
                 "/Users/Amphaal/.conan/data/qt/5.12.0/bincrafters/stable/package/138b8c71da7be5db2d40f44590f8f19701928790/include/QtCore",
-                "/Users/Amphaal/.conan/data/boost/1.69.0/conan/stable/package/35bffc1c1953a7504313b3cb1d811c81d56c162c/include/boost",
                 "/Users/Amphaal/.conan/data/qt/5.12.0/bincrafters/stable/package/138b8c71da7be5db2d40f44590f8f19701928790/include/QtWidgets",
                 "${workspaceFolder}"
             ]
@@ -55,7 +53,8 @@
                 "C:/Users/Amphaal/.conan/data/asio/1.12.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
                 "${workspaceFolder}/buildDebug/FeedTNZ_autogen/include_Debug",
                 "${workspaceFolder}/buildDebug/FeedTNZ_autogen/include_Debug",
-                "${workspaceFolder}"
+                "${workspaceFolder}",
+                "C:/.conan/crk3egkd/1/include"
             ]
         }
     ],

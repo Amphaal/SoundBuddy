@@ -10,7 +10,7 @@
     #include "platformHelper.h"
     #include "src/helpers/stringHelper/stringHelper.cpp"
 
-    #include <boost/filesystem.hpp>
+    #include <filesystem>
 
     void PlatformHelper::openFileInOS(std::string cpURL) {
         std::string command = "open " + cpURL;
@@ -43,7 +43,7 @@
         auto pathToLib = plist.value("NSNavLastRootDirectory").toString().toStdString();
 
         //get parent directory
-        boost::filesystem::path mapP(pathToLib);
+        filesystem::path mapP(pathToLib);
         mapP = mapP.parent_path();
         auto pre = mapP.string();
 

@@ -2,6 +2,7 @@
 #define SIO_CLIENT_IMPL_H
 
 #define SIO_TLS 1
+#define _WEBSOCKETPP_CPP11_STL_ 1
 
 #include <cstdint>
 #include <memory>
@@ -9,13 +10,9 @@
 #include <thread>
 
 #ifdef _WIN32
-#define _WEBSOCKETPP_CPP11_THREAD_
-//#define _WEBSOCKETPP_CPP11_RANDOM_DEVICE_
-#define _WEBSOCKETPP_NO_CPP11_FUNCTIONAL_
-#define INTIALIZER(__TYPE__)
+    #define INTIALIZER(__TYPE__)
 #else
-#define _WEBSOCKETPP_CPP11_STL_ 1
-#define INTIALIZER(__TYPE__) (__TYPE__)
+    #define INTIALIZER(__TYPE__) (__TYPE__)
 #endif
 #include <websocketpp/client.hpp>
 #if _DEBUG || DEBUG
