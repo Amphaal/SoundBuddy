@@ -180,6 +180,7 @@ namespace sio
         #if SIO_TLS
         typedef websocketpp::lib::shared_ptr<asio::ssl::context> context_ptr;
         
+        context_ptr _ctx;
         context_ptr on_tls_init(connection_hdl con);
         #endif
         
