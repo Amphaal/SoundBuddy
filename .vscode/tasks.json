@@ -40,7 +40,7 @@
                 "command": "cmake .. -G 'Visual Studio 15 2017 Win64'",
             },
             "osx": {
-                "command": "cmake .. -G 'Xcode'",
+                "command": "cmake -DCMAKE_C_COMPILER=/usr/local/opt/gcc/bin/gcc-8 -DCMAKE_CXX_COMPILER=/usr/local/opt/gcc/bin/g++-8  ..",
             },
             "options": {
                 "cwd": "${workspaceRoot}/buildDebug"

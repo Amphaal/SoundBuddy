@@ -59,7 +59,6 @@ conan_basic_setup(KEEP_RPATHS)
 SET(CMAKE_CXX_STANDARD 17)
 
 if (APPLE)
-    SET(CMAKE_OSX_DEPLOYMENT_TARGET 10.12)          #forcing target due to a bug from Qt5.12.0, fixed in 5.12.1
     SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)     #prevent linking errors once app shared
 endif (APPLE)
 

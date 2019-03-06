@@ -10,8 +10,6 @@
     #include "platformHelper.h"
     #include "src/helpers/stringHelper/stringHelper.cpp"
 
-    #include <filesystem>
-
     void PlatformHelper::openFileInOS(std::string cpURL) {
         std::string command = "open \"" + cpURL + "\"";
         system(command.c_str());
