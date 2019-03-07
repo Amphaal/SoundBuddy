@@ -1,7 +1,6 @@
 #pragma once
 
 #include <exception>
-#include "libs/filesystem/path.hpp"
 
 #include <rapidjson/document.h>
 #include <rapidjson/filereadstream.h>
@@ -16,6 +15,8 @@
 #include <QStandardPaths>
 #include <QUrl>
 #include <QDir>
+
+#include <filesystem>
 
 ///
 /// Exceptions
@@ -81,7 +82,7 @@ class ConfigHelper {
         //get full path of the config file
         std::string getConfigFileFullPath() {
             filesystem::path confP(this->_configFilePath);
-            return confP.make_absolute().str();
+            return filesystem::absolute(confP).string();
         }
 
     protected:

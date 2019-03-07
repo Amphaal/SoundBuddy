@@ -101,9 +101,13 @@ class MainWindow : public QMainWindow {
         void iconActivated(QSystemTrayIcon::ActivationReason reason);
 
         //update handling
+        QAction *versionAction;
+        QAction *cfugAction;
         void setupAutoUpdate();
         void onUpdateChecked(bool hasUpdate, bool hasError);
         void requireUpdateCheckFromUser();
+        void checkForAppUpdates();
+        void UpdateSearch_switchUI(bool isSearching);
 
         //tabs
         ShoutTab *st = 0; 

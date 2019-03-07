@@ -57,4 +57,5 @@ class IFeedTNZTranslator {
         virtual string SIOAskingCredentialValidation() = 0;
         virtual string SIOLoggedAs(string username) = 0;
         virtual string SIOErrorOnValidation(string errorCode) = 0;
+        virtual string SearchingForUpdates() = 0;
 };

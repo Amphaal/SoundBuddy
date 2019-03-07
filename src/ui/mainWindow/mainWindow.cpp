@@ -93,7 +93,7 @@ void MainWindow::setupAutoUpdate() {
                      this, &MainWindow::onUpdateChecked);
 
     //start the update check
-    this->updater->checkForUpdates();
+    this->checkForAppUpdates();
 };
 
 void MainWindow::onUpdateChecked(bool hasUpdate, bool hasError) {
@@ -119,7 +119,10 @@ void MainWindow::onUpdateChecked(bool hasUpdate, bool hasError) {
     }
 
     //no update, no go
-    if(!hasUpdate) return;
+    if(!hasUpdate) {
+        this->UpdateSearch_switchUI(false);
+        return;
+    }
 
     //if has update
     std::string title = (std::string)APP_NAME + " - " + I18n::tr()->Alert_UpdateAvailable_Title();
@@ -135,6 +138,8 @@ void MainWindow::onUpdateChecked(bool hasUpdate, bool hasError) {
         this->updater->runUpdaterOnExit();
         this->forcedClose();
     }
+
+    this->UpdateSearch_switchUI(false);
 };
 
 void MainWindow::requireUpdateCheckFromUser() {
@@ -142,9 +147,14 @@ void MainWindow::requireUpdateCheckFromUser() {
     this->userNotificationOnUpdateCheck = true;
 
     if (!this->updater->isRunning()) {
-        this->updater->checkForUpdates();
+        this->checkForAppUpdates();
     }
 };
+
+void MainWindow::checkForAppUpdates() {
+    this->UpdateSearch_switchUI(true);
+    this->updater->checkForUpdates();
+}
 
 void MainWindow::updateStatusBar(const std::string &message, const TLW_Colors &color) {
     this->statusLabel->setText(QString(message.c_str()));

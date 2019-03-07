@@ -86,4 +86,5 @@ class FeedTNZTranslator_EN : public IFeedTNZTranslator {
         }
         return (string)"Server responded with : \"" + part + "\"";
     };
+    string SearchingForUpdates() { return "Searching for updates...";};
 };

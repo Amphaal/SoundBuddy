@@ -1,12 +1,11 @@
 #pragma once
 
 #include <string>
-#include "libs/filesystem/path.hpp"
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>
 #include <curl/curl.h>
 
-#include "src/helpers/platformHelper/platformHelper.h"
+
 #include "src/helpers/stringHelper/stringHelper.cpp"
 #include "src/helpers/configHelper/authHelper.cpp"
 #include "src/localization/i18n.cpp"
@@ -14,6 +13,8 @@
 
 #include <QStandardPaths>
 #include <QDir>
+
+#include <filesystem>
 
 ///
 /// Exceptions
@@ -124,14 +125,14 @@ class OutputHelper {
             
             //set definitive location and create path if not exist
             std::string hostPath = PlatformHelper::getDataStorageDirectory();
-            this->_pathToFile = hostPath + "/" + this->_pathToFile.str();
+            this->_pathToFile = hostPath + "/" + this->_pathToFile.string();
             this->_pathToCert =QDir::toNativeSeparators(
                 (PlatformHelper::getAppDirectory() + "/" + PEM_CERT_NAME).c_str()
             ).toStdString();
         }
 
         std::string getOutputPath() {
-            return this->_pathToFile.str();
+            return this->_pathToFile.string();
         }
 
         //write outputfile
@@ -141,7 +142,7 @@ class OutputHelper {
             create_directory(this->_pathToFile.parent_path()); //create dir if not exist
 
             //save on path
-            auto fp = fopen(this->_pathToFile.str().c_str(), "w");
+            auto fp = fopen(this->_pathToFile.string().c_str(), "w");
 
             char writeBuffer[65536];
             rapidjson::FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
@@ -179,7 +180,7 @@ class OutputHelper {
                 /* Fill in the file upload field */ 
                 field = curl_mime_addpart(form);
                 curl_mime_name(field, this->_uploadFileName.c_str());
-                curl_mime_filedata(field, this->_pathToFile.str().c_str());
+                curl_mime_filedata(field, this->_pathToFile.string().c_str());
             
                 /* For each field*/
                 for(auto kvp : this->_uploadPostData) {

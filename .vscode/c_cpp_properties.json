@@ -55,7 +55,11 @@
                 "${workspaceFolder}",
                 "C:/.conan/crk3egkd/1/include",
                 "C:/Users/Amphaal/.conan/data/OpenSSL/1.0.2r/conan/stable/package/009a50ddeb47afbc9361cbc63650560c127e1234/include",
-                "C:/Users/Amphaal/.conan/data/asio/1.12.2/bincrafters/stable/build/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/source_subfolder/asio/include"
+                "C:/Users/Amphaal/.conan/data/asio/1.12.2/bincrafters/stable/build/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/source_subfolder/asio/include",
+                "C:/.conan/rtgzit0h/1/qt5/qtbase/include",
+                "C:/.conan/vxlqosa5/1/include/QtCore",
+                "C:/.conan/vxlqosa5/1/include",
+                "C:/.conan/vxlqosa5/1/include/QtWidgets"
             ]
         }
     ],

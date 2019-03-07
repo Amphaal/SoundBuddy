@@ -123,21 +123,28 @@ QMenu* MainWindow::_getOptionsMenu() {
     }
 
     //for checking the upgrades available
-    auto cfugAction = new QAction(I18n::tr()->Menu_CheckForUpgrades().c_str(), optionsMenuItem);
+    this->cfugAction = new QAction(I18n::tr()->Menu_CheckForUpgrades().c_str(), optionsMenuItem);
         QObject::connect(
-        cfugAction, &QAction::triggered,
+        this->cfugAction, &QAction::triggered,
         this, &MainWindow::requireUpdateCheckFromUser
     );
     
-    auto versionAction = new QAction(APP_FULL_DENOM, optionsMenuItem);
-    versionAction->setEnabled(false);
+    this->versionAction = new QAction(APP_FULL_DENOM, optionsMenuItem);
+    this->versionAction->setEnabled(false);
 
     optionsMenuItem->addAction(atssAction);
-    optionsMenuItem->addAction(cfugAction);
+    optionsMenuItem->addAction(this->cfugAction);
     optionsMenuItem->addSeparator();
-    optionsMenuItem->addAction(versionAction);
+    optionsMenuItem->addAction(this->versionAction);
 
     return optionsMenuItem;
+}
+
+void MainWindow::UpdateSearch_switchUI(bool isSearching) {
+    this->cfugAction->setEnabled(!isSearching);
+    std::string descr = APP_FULL_DENOM;
+    if(isSearching) descr += " - " + I18n::tr()->SearchingForUpdates();
+    this->versionAction->setText(descr.c_str());
 }
 
 QMenu* MainWindow::_getFileMenu() {

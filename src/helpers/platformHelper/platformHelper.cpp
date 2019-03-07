@@ -13,8 +13,7 @@ bool PlatformHelper::isLaunchingAtStartup() {
 //ensure a file exists
 bool PlatformHelper::fileExists(std::string outputFileName) {
     filesystem::path confP(outputFileName);
-    confP = confP.make_absolute();
-    return confP.exists();
+    return filesystem::exists(confP);
 }
 
 /* STD PATHS */
