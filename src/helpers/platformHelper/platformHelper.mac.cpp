@@ -42,8 +42,7 @@
 
         //get parent directory
         filesystem::path mapP(pathToLib);
-        mapP = mapP.parent_path();
-        auto pre = mapP.string();
+        auto pre = mapP.parent_path().str();
 
         //replace tilda with full path
         StringHelper::replaceFirstOccurrence(pre, "~", PlatformHelper::getEnvironmentVariable("HOME"));

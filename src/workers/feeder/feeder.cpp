@@ -6,7 +6,6 @@
 #include <exception>
 #include <map>
 #include <set>
-#include "src/helpers/filesystem.h"
 
 #include <QtWidgets/QWidget>
 
@@ -106,7 +105,7 @@ class FeederWorker : public ITNZWorker {
             } else {
                 //remove old warning file
                 auto pToRem = this->ohWrn.getOutputPath();
-                filesystem::remove(pToRem.c_str());
+                std::remove(pToRem.c_str());
             }
 
             emit printLog(I18n::tr()->Feeder_Unmolding(OUTPUT_FILE_PATH));  //EMIT

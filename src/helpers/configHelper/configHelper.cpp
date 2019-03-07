@@ -1,7 +1,7 @@
 #pragma once
 
 #include <exception>
-#include "src/helpers/filesystem.h"
+#include "libs/filesystem/path.hpp"
 
 #include <rapidjson/document.h>
 #include <rapidjson/filereadstream.h>
@@ -81,7 +81,7 @@ class ConfigHelper {
         //get full path of the config file
         std::string getConfigFileFullPath() {
             filesystem::path confP(this->_configFilePath);
-            return filesystem::absolute(confP).string();
+            return confP.make_absolute().str();
         }
 
     protected:

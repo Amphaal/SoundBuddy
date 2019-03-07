@@ -5,8 +5,7 @@
             "defines": [],
             "browse": {
                 "path": [
-                    "${env:USERPROFILE}/.conan/data",
-                    "${env:SYSTEMDRIVE}/.conan"
+                    "${env:HOME}/.conan/data"
                 ]
             },
             "macFrameworkPath": [
@@ -19,12 +18,12 @@
             "intelliSenseMode": "clang-x64",
             "includePath": [
                 "${default}",
-                "/Users/Amphaal/.conan/data/qt/5.12.0/bincrafters/stable/package/138b8c71da7be5db2d40f44590f8f19701928790/include",
-                "/Users/Amphaal/.conan/data/qt/5.12.0/bincrafters/stable/source/qt5/qt3d/src/3rdparty/assimp/contrib/rapidjson/include",
-                "/Users/Amphaal/.conan/data/qt/5.12.0/bincrafters/stable/package/138b8c71da7be5db2d40f44590f8f19701928790/include/QtCore",
-                "/Users/Amphaal/.conan/data/qt/5.12.0/bincrafters/stable/package/138b8c71da7be5db2d40f44590f8f19701928790/include/QtWidgets",
                 "${workspaceFolder}",
-                "/Users/Amphaal/.conan/data/rapidjson/1.1.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include"
+                "/Users/Amphaal/.conan/data/qt/5.12.1/bincrafters/stable/source/qt5/qtbase/include",
+                "/Users/Amphaal/.conan/data/qt/5.12.1/bincrafters/stable/source/qt5/qtbase/include/QtCore",
+                "/Users/Amphaal/.conan/data/rapidjson/1.1.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
+                "/Users/Amphaal/.conan/data/qt/5.12.1/bincrafters/stable/build/6312c724d085e1ddfe3e7461f07896380e44b821/qtbase/include",
+                "/Users/Amphaal/.conan/data/qt/5.12.1/bincrafters/stable/package/6312c724d085e1ddfe3e7461f07896380e44b821/include/QtWidgets"
             ]
         },
         {

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "src/helpers/filesystem.h"
+#include "libs/filesystem/path.hpp"
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>
 #include <curl/curl.h>
@@ -124,24 +124,24 @@ class OutputHelper {
             
             //set definitive location and create path if not exist
             std::string hostPath = PlatformHelper::getDataStorageDirectory();
-            this->_pathToFile = hostPath + "/" + this->_pathToFile.string();
+            this->_pathToFile = hostPath + "/" + this->_pathToFile.str();
             this->_pathToCert =QDir::toNativeSeparators(
                 (PlatformHelper::getAppDirectory() + "/" + PEM_CERT_NAME).c_str()
             ).toStdString();
         }
 
         std::string getOutputPath() {
-            return this->_pathToFile.generic_string();
+            return this->_pathToFile.str();
         }
 
         //write outputfile
         void writeAsJsonFile(rapidjson::Document &obj, bool mustPrettyPrint = false) {
 
             //get all path
-            filesystem::create_directory(this->_pathToFile.parent_path()); //create dir if not exist
+            create_directory(this->_pathToFile.parent_path()); //create dir if not exist
 
             //save on path
-            auto fp = fopen(this->_pathToFile.string().c_str(), "w");
+            auto fp = fopen(this->_pathToFile.str().c_str(), "w");
 
             char writeBuffer[65536];
             rapidjson::FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
@@ -179,7 +179,7 @@ class OutputHelper {
                 /* Fill in the file upload field */ 
                 field = curl_mime_addpart(form);
                 curl_mime_name(field, this->_uploadFileName.c_str());
-                curl_mime_filedata(field, this->_pathToFile.string().c_str());
+                curl_mime_filedata(field, this->_pathToFile.str().c_str());
             
                 /* For each field*/
                 for(auto kvp : this->_uploadPostData) {

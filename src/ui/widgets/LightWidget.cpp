@@ -1,5 +1,3 @@
-#pragma once
-
 #include "LightWidget.h"
 
 LightWidget::LightWidget(const QColor &color, QWidget *parent)
