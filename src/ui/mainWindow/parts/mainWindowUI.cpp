@@ -266,6 +266,8 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason) {
     case QSystemTrayIcon::DoubleClick:
         this->trueShow();
         break;
+    default:
+        break;
     }
 };
 

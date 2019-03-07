@@ -14,8 +14,6 @@
 #include <QStandardPaths>
 #include <QDir>
 
-#include <filesystem>
-
 ///
 /// Exceptions
 ///
@@ -80,7 +78,7 @@ class FTNZErrorProcessingUploadException : public std::exception {
 
 class OutputHelper {
     private:
-        filesystem::path _pathToFile;
+        boost::filesystem::path _pathToFile;
         std::string _pathToCert;
         string _uploadTargetFunction;
         string _uploadTargetUrl;
@@ -121,11 +119,11 @@ class OutputHelper {
         OutputHelper(
             std::string filePath, std::string targetFunction = "", 
             std::string uploadFileName = ""
-        ) : _pathToFile(filePath),  _uploadTargetFunction(targetFunction), _uploadFileName(uploadFileName) {
+        ) : _pathToFile(filePath.c_str()),  _uploadTargetFunction(targetFunction), _uploadFileName(uploadFileName) {
             
             //set definitive location and create path if not exist
             std::string hostPath = PlatformHelper::getDataStorageDirectory();
-            this->_pathToFile = hostPath + "/" + this->_pathToFile.string();
+            this->_pathToFile = (hostPath + "/" + this->_pathToFile.string()).c_str();
             this->_pathToCert =QDir::toNativeSeparators(
                 (PlatformHelper::getAppDirectory() + "/" + PEM_CERT_NAME).c_str()
             ).toStdString();

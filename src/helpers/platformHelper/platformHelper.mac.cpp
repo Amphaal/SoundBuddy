@@ -1,6 +1,7 @@
 #ifdef __APPLE__
 
     #include <string>
+    #include <unistd.h>
     #include <stdlib.h>
     #include <map>
     #include <pwd.h>
@@ -9,6 +10,7 @@
 
     #include "platformHelper.h"
     #include "src/helpers/stringHelper/stringHelper.cpp"
+
 
     void PlatformHelper::openFileInOS(std::string cpURL) {
         std::string command = "open \"" + cpURL + "\"";
@@ -41,7 +43,7 @@
         auto pathToLib = plist.value("NSNavLastRootDirectory").toString().toStdString();
 
         //get parent directory
-        filesystem::path mapP(pathToLib);
+        boost::filesystem::path mapP(pathToLib);
         auto pre = mapP.parent_path().string();
 
         //replace tilda with full path

@@ -17,13 +17,16 @@
             "cppStandard": "c++17",
             "intelliSenseMode": "clang-x64",
             "includePath": [
+                "/Users/Amphaal/.conan/data/boost_filesystem/1.69.0/bincrafters/stable/package/b50926ecd86f2fbb840b2eebf9b11c8db8732c91/filesystem/include",
                 "${default}",
                 "${workspaceFolder}",
                 "/Users/Amphaal/.conan/data/qt/5.12.1/bincrafters/stable/source/qt5/qtbase/include",
                 "/Users/Amphaal/.conan/data/qt/5.12.1/bincrafters/stable/source/qt5/qtbase/include/QtCore",
                 "/Users/Amphaal/.conan/data/rapidjson/1.1.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
                 "/Users/Amphaal/.conan/data/qt/5.12.1/bincrafters/stable/build/6312c724d085e1ddfe3e7461f07896380e44b821/qtbase/include",
-                "/Users/Amphaal/.conan/data/qt/5.12.1/bincrafters/stable/package/6312c724d085e1ddfe3e7461f07896380e44b821/include/QtWidgets"
+                "/Users/Amphaal/.conan/data/qt/5.12.1/bincrafters/stable/package/6312c724d085e1ddfe3e7461f07896380e44b821/include/QtWidgets",
+                "/Users/Amphaal/.conan/data/boost/1.69.0/conan/stable/package/35bffc1c1953a7504313b3cb1d811c81d56c162c/include",
+                "/Users/Amphaal/.conan/data/boost/1.69.0/conan/stable/package/411d816e9b8d6cb0bb1ef6e5be8b2a94b8b17c04/include"
             ]
         },
         {

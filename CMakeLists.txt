@@ -1,14 +1,6 @@
 project(FeedTNZ)
 cmake_minimum_required(VERSION 3.13.3)
 
-#download cacert for windows mostly
-##too heavy, prefer specific intermediate local 
-#SET(CACERT_URL_SOURCE "https://curl.haxx.se/ca/cacert.pem")
-##DST Root CA X3 only, from Firefox's "https://ccadb-public.secure.force.com/mozilla/IncludedCACertificateReport"
-SET(CACERT_URL_SOURCE "https://crt.sh/?d=0687260331A72403D909F105E69BCF0D32E1BD2493FFC6D9206D11BCD6770739")
-SET(PEM_CERT_NAME "cacert.pem")
-file(DOWNLOAD ${CACERT_URL_SOURCE} ${CMAKE_BINARY_DIR}/bin/${PEM_CERT_NAME})
-
 ########################
 ## VERSION.H HANDLING ##
 ########################
@@ -16,6 +8,7 @@ file(DOWNLOAD ${CACERT_URL_SOURCE} ${CMAKE_BINARY_DIR}/bin/${PEM_CERT_NAME})
 #app dest path
 SET(APP_ROOT_URL "https://zonme.to2x.ovh")
 SET(APP_MAIN_URL ${APP_ROOT_URL}/wtnz)
+SET(PEM_CERT_NAME "cacert.pem")
 
 #version
 SET(CMAKE_PROJECT_VERSION_MAJOR 0)
@@ -185,6 +178,21 @@ endif(APPLE)
 conan_target_link_libraries(${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME} ${EXT_LIBS})
 
+
+#download cacert for windows mostly
+##too heavy, prefer specific intermediate local 
+#SET(CACERT_URL_SOURCE "https://curl.haxx.se/ca/cacert.pem")
+##DST Root CA X3 only, from Firefox's "https://ccadb-public.secure.force.com/mozilla/IncludedCACertificateReport"
+SET(CACERT_URL_SOURCE "https://crt.sh/?d=0687260331A72403D909F105E69BCF0D32E1BD2493FFC6D9206D11BCD6770739")
+
+if (WIN32)    
+    SET(PEM_CERT_DEST ${CMAKE_BINARY_DIR}/bin/${PEM_CERT_NAME})
+endif (WIN32)
+if(APPLE)
+    SET(PEM_CERT_DEST ${CMAKE_BINARY_DIR}/bin/${PROJECT_NAME}.app/Contents/MacOS/${PEM_CERT_NAME})
+endif(APPLE)
+
+file(DOWNLOAD ${CACERT_URL_SOURCE} ${PEM_CERT_DEST})
 
 ######################
 # add Publish target #

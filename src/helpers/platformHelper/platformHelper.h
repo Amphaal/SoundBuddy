@@ -4,6 +4,8 @@
 #include <map>
 
 #include <rapidjson/document.h>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
 
 #include "src/helpers/_const.cpp"
 #include "src/version.h"
@@ -11,8 +13,6 @@
 #include <QCoreApplication>
 #include <QStandardPaths>
 #include <QDir>
-
-#include <filesystem>
 
 class PlatformHelper
 {
