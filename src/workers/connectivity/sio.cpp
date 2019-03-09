@@ -18,14 +18,6 @@ class ConnectivityWorker : public IConnectivityWorker {
             // Event Handlers //
             ////////////////////
 
-            this->_sioClient.set_fail_listener([&]() {
-
-            });
-
-            this->_sioClient.socket("/login")->on_error([&](sio::message::ptr const& message) {
-
-            });
-
             //tell sio is trying to reconnect
             this->_sioClient.set_reconnect_listener([&](unsigned int a, unsigned int b) {
                 emit updateSIOStatus(I18n::tr()->SIOReconnecting(), TLW_Colors::YELLOW);
@@ -35,6 +27,7 @@ class ConnectivityWorker : public IConnectivityWorker {
             this->_sioClient.set_open_listener([&]() {
                 this->checkCredentials();
             });
+
 
             //once server checked the credentials
             this->_sioClient.socket("/login")->on("credentialsChecked", [&](sio::event& ev) {
@@ -82,6 +75,7 @@ class ConnectivityWorker : public IConnectivityWorker {
         string _loggedInUser = "";
         bool _requestOngoing = false;
         AuthHelper *_aHelper;
+        bool fuckup;
     
     //ask credentials
     void checkCredentials(bool forceRecheck = false) {

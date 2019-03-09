@@ -62,7 +62,15 @@
                 "C:/.conan/rtgzit0h/1/qt5/qtbase/include",
                 "C:/.conan/vxlqosa5/1/include/QtCore",
                 "C:/.conan/vxlqosa5/1/include",
-                "C:/.conan/vxlqosa5/1/include/QtWidgets"
+                "C:/.conan/vxlqosa5/1/include/QtWidgets",
+                "C:/.CONAN/RTGZIT0H/1/QT5/QTBASE/INCLUDE",
+                "C:/.CONAN/RTGZIT0H/1/QT5/QTBASE/INCLUDE",
+                "C:/.CONAN/RTGZIT0H/1/QT5/QTBASE/INCLUDE",
+                "C:/.CONAN/RTGZIT0H/1/QT5/QTBASE/INCLUDE",
+                "C:/.CONAN/VXLQOSA5/1/INCLUDE",
+                "C:/.conan/e5c95d/1/include",
+                "C:/.conan/e5c95d/1/include/QtWidgets",
+                "C:/.conan/c30a5d/1/qt5/qtbase/include/QtCore"
             ]
         }
     ],
