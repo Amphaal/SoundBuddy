@@ -14,7 +14,7 @@ class iTunesCOMHandler : public QObject {
     public slots:
         void OnAboutToPromptUserToQuitEvent();
         void OnPlayerPlayEvent(QVariant iTrack);
-        void OnPlayerStopEvent(QVariant iTrack);  
+        void OnPlayerStopEvent(QVariant iTrack);
 
     public:  
         iTunesCOMHandler(QAxObject *iTunesObj, ShoutWorker *worker);
