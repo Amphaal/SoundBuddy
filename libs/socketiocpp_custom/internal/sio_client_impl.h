@@ -3,6 +3,7 @@
 
 #define SIO_TLS 1
 #define _WEBSOCKETPP_CPP11_STL_ 1
+#define ASIO_STANDALONE 1
 
 #include <cstdint>
 #include <memory>
