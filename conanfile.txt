@@ -1,7 +1,7 @@
 [requires]
 OpenSSL/1.0.2r@conan/stable
 asio/1.12.2@bincrafters/stable
-qt/5.12.1@bincrafters/stable
+qt/5.12.2@bincrafters/stable
 libcurl/7.61.1@bincrafters/stable
 rapidjson/1.1.0@bincrafters/stable
 websocketpp/0.8.1@bincrafters/stable

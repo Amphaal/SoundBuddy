@@ -1,3 +1,4 @@
 buildRelease
 buildDebug
 src/version.h
+.vscode/ipch
