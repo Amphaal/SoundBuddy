@@ -6,6 +6,7 @@ cmake_minimum_required(VERSION 3.13.3)
 ########################
 
 #app dest path
+SET(APP_PUBLISHER "LVWL")
 SET(APP_ROOT_URL "https://zonme.to2x.ovh")
 SET(APP_MAIN_URL ${APP_ROOT_URL}/wtnz)
 SET(PEM_CERT_NAME "cacert.pem")
