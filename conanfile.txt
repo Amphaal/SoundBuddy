@@ -30,8 +30,6 @@ plugins/platforms, qwindows*.dll -> ./bin/platforms
 bin, Qt5Widgets*.dll -> ./bin 
 bin, Qt5Core*.dll -> ./bin 
 bin, Qt5Gui*.dll -> ./bin
-bin, Qt5AxContainer*.dll -> ./bin
-bin, Qt5AxBase*.dll -> ./bin
 
 #MAC
 plugins/platforms, libqcocoa*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/

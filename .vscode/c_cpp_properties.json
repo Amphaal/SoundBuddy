@@ -34,8 +34,8 @@
             "defines": [],
             "browse": {
                 "path": [
-                    "${env:USERPROFILE}\\\\\\\\.conan\\\\\\\\data",
-                    "${env:SYSTEMDRIVE}\\\\\\\\.conan"
+                    "${env:USERPROFILE}\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\.conan\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\data",
+                    "${env:SYSTEMDRIVE}\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\.conan"
                 ]
             },
             "windowsSdkVersion": "10.0.17134.0",
@@ -56,7 +56,10 @@
                 "C:/Users/Amphaal/.conan/data/asio/1.12.2/bincrafters/stable/build/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/source_subfolder/asio/include",
                 "C:/.conan/e5c95d/1/include",
                 "C:/.conan/e5c95d/1/include/QtWidgets",
-                "C:/.conan/c30a5d/1/qt5/qtbase/include/QtCore"
+                "C:/.conan/c30a5d/1/qt5/qtbase/include/QtCore",
+                "C:/.conan/30aa3c/1/qt5/qtactiveqt/include",
+                "C:/.conan/30aa3c/1/qt5/qtbase/include",
+                "C:/.conan/20869a/1/include"
             ]
         }
     ],
