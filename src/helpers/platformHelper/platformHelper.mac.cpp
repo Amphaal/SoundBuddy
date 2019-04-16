@@ -40,11 +40,11 @@
     std::string PlatformHelper::extractItunesLibLocation(std::string pathToParamFile) {
         //get path to iTunes as string
         QSettings plist(pathToParamFile.c_str(), QSettings::NativeFormat);
-        auto pathToLib = plist.value("NSNavLastRootDirectory").toString().toStdString();
+        auto pathToLib = plist.value("NSNavLastRootDirectory").toString();
 
         //get parent directory
-        filesystem::path mapP(pathToLib);
-        auto pre = mapP.parent_path().string();
+        QFileInfo mapP(pathToLib);
+        auto pre = mapP.dir().absolutePath().toStdString();
 
         //replace tilda with full path
         StringHelper::replaceFirstOccurrence(pre, "~", PlatformHelper::getEnvironmentVariable("HOME"));

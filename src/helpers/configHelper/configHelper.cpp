@@ -15,6 +15,7 @@
 #include <QStandardPaths>
 #include <QUrl>
 #include <QDir>
+#include <QFileInfo>
 
 ///
 /// Exceptions
@@ -79,8 +80,8 @@ class ConfigHelper {
 
         //get full path of the config file
         std::string getConfigFileFullPath() {
-            filesystem::path confP(this->_configFilePath);
-            return filesystem::absolute(confP).string();
+            QFileInfo confP(QString::fromStdString(this->_configFilePath));
+            return confP.absoluteFilePath().toStdString();
         }
 
     protected:

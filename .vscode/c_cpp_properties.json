@@ -5,7 +5,8 @@
             "defines": [],
             "browse": {
                 "path": [
-                    "${env:HOME}/.conan/data"
+                    "${env:HOME}/.conan/data",
+                    "${env:HOME}/Qt/5.12.2/clang_64/include"
                 ]
             },
             "macFrameworkPath": [
@@ -20,10 +21,7 @@
                 "${default}",
                 "${workspaceFolder}",
                 "/Users/Amphaal/.conan/data",
-                "/Users/Amphaal/.conan/data/rapidjson/1.1.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
-                "/Users/Amphaal/.conan/data/qt/5.12.2/bincrafters/stable/source/qt5/qtbase/include/QtCore",
-                "/Users/Amphaal/.conan/data/qt/5.12.2/bincrafters/stable/source/qt5/qtbase/include",
-                "/Users/Amphaal/.conan/data/qt/5.12.2/bincrafters/stable/build/6fed1e2c3941c1c15f6f8b7a4890ebc867bbd4ac/qtbase/include"
+                "/Users/Amphaal/.conan/data/rapidjson/1.1.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include"
             ]
         },
         {
@@ -31,8 +29,8 @@
             "defines": [],
             "browse": {
                 "path": [
-                    "${env:USERPROFILE}/data",
-                    "${env:SYSTEMDRIVE}/.conan"
+                    "${env:HOMEPATH}/.conan/data",
+                    "${env:SYSTEMDRIVE}/Qtd/5.12.2/msvc2017_64/include"
                 ]
             },
             "windowsSdkVersion": "10.0.17134.0",
@@ -42,21 +40,13 @@
             "intelliSenseMode": "msvc-x64",
             "includePath": [
                 "${default}",
-                "C:/Users/Amphaal/.conan/data/rapidjson/1.1.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
-                "C:/Users/Amphaal/.conan/data/libcurl/7.61.1/bincrafters/stable/package/8f5289d9807917ac37fa3752916c824d2a8061ad/include",
-                "C:/Users/Amphaal/.conan/data/websocketpp/0.8.1/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
-                "${workspaceFolder}/buildDebug/FeedTNZ_autogen/include_Debug",
-                "${workspaceFolder}/buildDebug/FeedTNZ_autogen/include_Debug",
                 "${workspaceFolder}",
-                "C:/.conan/crk3egkd/1/include",
-                "C:/Users/Amphaal/.conan/data/OpenSSL/1.0.2r/conan/stable/package/009a50ddeb47afbc9361cbc63650560c127e1234/include",
-                "C:/Users/Amphaal/.conan/data/asio/1.12.2/bincrafters/stable/build/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/source_subfolder/asio/include",
-                "C:/.conan/e5c95d/1/include",
-                "C:/.conan/e5c95d/1/include/QtWidgets",
-                "C:/.conan/c30a5d/1/qt5/qtbase/include/QtCore",
-                "C:/.conan/30aa3c/1/qt5/qtactiveqt/include",
-                "C:/.conan/30aa3c/1/qt5/qtbase/include",
-                "C:/.conan/20869a/1/include"
+                "C:/Qtd/5.12.2/msvc2017_64/include/QtWidgets",
+                "C:/Qtd/5.12.2/msvc2017_64/include/QtCore",
+                "C:/Qtd/5.12.2/msvc2017_64/include",
+                "C:/Qtd/5.12.2/msvc2017_64/include/QtGui",
+                "C:/Users/Amphaal/.conan/data/rapidjson/1.1.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
+                "C:/Users/Amphaal/.conan/data/libcurl/7.61.1/bincrafters/stable/package/8f5289d9807917ac37fa3752916c824d2a8061ad/include"
             ]
         }
     ],

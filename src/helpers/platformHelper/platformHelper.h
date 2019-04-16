@@ -4,7 +4,6 @@
 #include <map>
 
 #include <rapidjson/document.h>
-#include <filesystem>
 
 #include "src/helpers/_const.cpp"
 #include "src/version.h"
@@ -13,6 +12,7 @@
 #include <QCoreApplication>
 #include <QStandardPaths>
 #include <QDir>
+#include <QFileInfo>
 
 class PlatformHelper
 {

@@ -43,7 +43,6 @@ configure_file(
 ##################
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
 conan_basic_setup(KEEP_RPATHS)
 
 ################################
@@ -74,6 +73,14 @@ endif(MSVC)
 SET(CMAKE_AUTOMOC ON)
 SET(CMAKE_AUTORCC ON)
 SET(CMAKE_INCLUDE_CURRENT_DIR ON) #for moc auto 
+
+if (WIN32)
+    SET(Qt5_DIR "C:/Qtd/5.12.2/msvc2017_64/lib/cmake/Qt5")
+endif (WIN32)
+if (APPLE)
+    SET(Qt5_DIR "$ENV{HOME}/Qt/5.12.2/clang_64/lib/cmake/Qt5")
+endif (APPLE)
+
 
 ##########################
 ## Bundle configuration ##

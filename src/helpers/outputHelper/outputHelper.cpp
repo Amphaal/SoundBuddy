@@ -3,6 +3,7 @@
 #include <string>
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>
+#include <rapidjson/filewritestream.h>
 #include <curl/curl.h>
 
 
@@ -13,6 +14,7 @@
 
 #include <QStandardPaths>
 #include <QDir>
+#include <QFileInfo>
 
 ///
 /// Exceptions
@@ -78,7 +80,7 @@ class FTNZErrorProcessingUploadException : public std::exception {
 
 class OutputHelper {
     private:
-        filesystem::path _pathToFile;
+        QFileInfo _pathToFile;
         std::string _pathToCert;
         string _uploadTargetFunction;
         string _uploadTargetUrl;
@@ -116,31 +118,31 @@ class OutputHelper {
         }
 
     public:
-        OutputHelper(
-            std::string filePath, std::string targetFunction = "", 
-            std::string uploadFileName = ""
-        ) : _pathToFile(filePath.c_str()),  _uploadTargetFunction(targetFunction), _uploadFileName(uploadFileName) {
+        OutputHelper(std::string filePath, std::string targetFunction = "", std::string uploadFileName = "") : 
+            _uploadTargetFunction(targetFunction), 
+            _uploadFileName(uploadFileName) {
             
             //set definitive location and create path if not exist
             std::string hostPath = PlatformHelper::getDataStorageDirectory();
-            this->_pathToFile = (hostPath + "/" + this->_pathToFile.string()).c_str();
-            this->_pathToCert =QDir::toNativeSeparators(
+            auto pathToFile = QString::fromStdString(hostPath) + "/" + QString::fromStdString(filePath);
+            this->_pathToFile.setFile(pathToFile);
+            this->_pathToCert = QDir::toNativeSeparators(
                 (PlatformHelper::getAppDirectory() + "/" + PEM_CERT_NAME).c_str()
             ).toStdString();
         }
 
         std::string getOutputPath() {
-            return this->_pathToFile.string();
+            return this->_pathToFile.absolutePath().toStdString();
         }
 
         //write outputfile
         void writeAsJsonFile(rapidjson::Document &obj, bool mustPrettyPrint = false) {
 
             //get all path
-            create_directory(this->_pathToFile.parent_path()); //create dir if not exist
+            this->_pathToFile.dir().mkpath("."); //create dir if not exist
 
             //save on path
-            auto fp = fopen(this->_pathToFile.string().c_str(), "w");
+            auto fp = fopen(this->getOutputPath().c_str(), "w");
 
             char writeBuffer[65536];
             rapidjson::FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
@@ -178,7 +180,7 @@ class OutputHelper {
                 /* Fill in the file upload field */ 
                 field = curl_mime_addpart(form);
                 curl_mime_name(field, this->_uploadFileName.c_str());
-                curl_mime_filedata(field, this->_pathToFile.string().c_str());
+                curl_mime_filedata(field, this->getOutputPath().c_str());
             
                 /* For each field*/
                 for(auto kvp : this->_uploadPostData) {

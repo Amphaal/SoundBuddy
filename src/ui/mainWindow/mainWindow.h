@@ -1,24 +1,24 @@
 #pragma once
 
-#include <QtCore/QCoreApplication>
+#include <QCoreApplication>
 
-#include <QtCore/QString>
-#include <QtCore/QSize>
-#include <QtCore/QObject>
-#include <QtCore/QDebug>
-#include <QtCore/QFileSystemWatcher>
-#include <QtWidgets/QTabWidget>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QMenuBar>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QAction>
-#include <QtWidgets/QSystemTrayIcon>
-#include <QtWidgets/QMessageBox>
-#include <QtGui/QCloseEvent>
-#include <QtGui/QHideEvent>
-#include <QtGui/QIcon>
-#include <QtWidgets/QStatusBar>
+#include <QString>
+#include <QSize>
+#include <QObject>
+#include <QDebug>
+#include <QFileSystemWatcher>
+#include <QTabWidget>
+#include <QMainWindow>
+#include <QWidget>
+#include <QMenuBar>
+#include <QMenu>
+#include <QAction>
+#include <QSystemTrayIcon>
+#include <QMessageBox>
+#include <QCloseEvent>
+#include <QHideEvent>
+#include <QIcon>
+#include <QStatusBar>
 
 #include <rapidjson/document.h>
 

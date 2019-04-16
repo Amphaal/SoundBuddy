@@ -11,12 +11,7 @@
             "label": "Debug - 0. Create build folder",
             "group": "test",
             "type": "shell",
-            "windows": {
-                "command": "rm buildDebug -r -fo; mkdir buildDebug",
-            },
-            "osx": {
-                "command": "rm -rf buildDebug; mkdir buildDebug",
-            }
+            "command": "rm -rf buildDebug; mkdir buildDebug"
         },
         {
             "label": "Debug - 1. Download Dependencies",
@@ -36,12 +31,7 @@
                 "kind" : "test"
             },
             "type": "shell",
-            "windows": {
-                "command": "cmake .. -G 'Visual Studio 15 2017 Win64'",
-            },
-            "osx": {
-                "command": "cmake .. -G 'Xcode'",
-            },
+            "command": "cmake ..",
             "options": {
                 "cwd": "${workspaceRoot}/buildDebug"
             }
@@ -56,12 +46,7 @@
             "label": "Release - 0. Create build folder",
             "group": "build",
             "type": "shell",
-            "windows": {
-                "command": "rm buildRelease -r -fo; mkdir buildRelease",
-            },
-            "osx": {
-                "command": "rm -rf buildRelease; mkdir buildRelease",
-            }
+            "command": "rm -rf buildRelease; mkdir buildRelease"
         },
         {
             "label": "Release - 1. Download Dependencies",
@@ -78,12 +63,7 @@
             "dependsOn" : "Release - 1. Download Dependencies",
             "group": "build",
             "type": "shell",
-            "windows": {
-                "command": "cmake .. -G 'Visual Studio 15 2017 Win64'",
-            },
-            "osx": {
-                "command": "cmake .. -G 'Xcode'",
-            },
+            "command": "cmake ..",
             "options": {
                 "cwd": "${workspaceRoot}/buildRelease"
             }

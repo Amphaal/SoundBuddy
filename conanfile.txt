@@ -1,37 +1,14 @@
 [requires]
 OpenSSL/1.0.2r@conan/stable
 asio/1.13.0@bincrafters/stable
-qt/5.12.2@bincrafters/stable
 libcurl/7.61.1@bincrafters/stable
 rapidjson/1.1.0@bincrafters/stable
 websocketpp/0.8.1@bincrafters/stable
 
 [generators]
 cmake
-cmake_find_package
-cmake_paths
 
 [options]
 
-#useless packages
-qt:openssl=False
-
-#componenents to use
-qt:qtactiveqt=True
-
 #disable old prerequisites from packages linked to OpenSSL
 websocketpp:asio=standalone
-
-[imports]
-
-#WINDOWS
-plugins/platforms, qwindows*.dll -> ./bin/platforms
-bin, Qt5Widgets*.dll -> ./bin 
-bin, Qt5Core*.dll -> ./bin 
-bin, Qt5Gui*.dll -> ./bin
-
-#MAC
-plugins/platforms, libqcocoa*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
-lib, libQt5Widgets*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
-lib, libQt5Core*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
-lib, libQt5Gui*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
