@@ -12,8 +12,8 @@ bool PlatformHelper::isLaunchingAtStartup() {
 
 //ensure a file exists
 bool PlatformHelper::fileExists(std::string outputFileName) {
-    boost::filesystem::path confP(outputFileName);
-    return boost::filesystem::exists(confP);
+    filesystem::path confP(outputFileName);
+    return filesystem::exists(confP);
 }
 
 /* STD PATHS */

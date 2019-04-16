@@ -5,7 +5,6 @@ qt/5.12.2@bincrafters/stable
 libcurl/7.61.1@bincrafters/stable
 rapidjson/1.1.0@bincrafters/stable
 websocketpp/0.8.1@bincrafters/stable
-boost_filesystem/1.69.0@bincrafters/stable
 
 [generators]
 cmake

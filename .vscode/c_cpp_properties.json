@@ -17,16 +17,13 @@
             "cppStandard": "c++17",
             "intelliSenseMode": "clang-x64",
             "includePath": [
-                "/Users/Amphaal/.conan/data/boost_filesystem/1.69.0/bincrafters/stable/package/b50926ecd86f2fbb840b2eebf9b11c8db8732c91/filesystem/include",
                 "${default}",
                 "${workspaceFolder}",
-                "/Users/Amphaal/.conan/data/qt/5.12.1/bincrafters/stable/source/qt5/qtbase/include",
-                "/Users/Amphaal/.conan/data/qt/5.12.1/bincrafters/stable/source/qt5/qtbase/include/QtCore",
+                "/Users/Amphaal/.conan/data",
                 "/Users/Amphaal/.conan/data/rapidjson/1.1.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
-                "/Users/Amphaal/.conan/data/qt/5.12.1/bincrafters/stable/build/6312c724d085e1ddfe3e7461f07896380e44b821/qtbase/include",
-                "/Users/Amphaal/.conan/data/qt/5.12.1/bincrafters/stable/package/6312c724d085e1ddfe3e7461f07896380e44b821/include/QtWidgets",
-                "/Users/Amphaal/.conan/data/asio/1.12.2/bincrafters/stable/build/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/source_subfolder/asio/include",
-                "/Users/Amphaal/.conan/data/websocketpp/0.8.1/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include"
+                "/Users/Amphaal/.conan/data/qt/5.12.2/bincrafters/stable/source/qt5/qtbase/include/QtCore",
+                "/Users/Amphaal/.conan/data/qt/5.12.2/bincrafters/stable/source/qt5/qtbase/include",
+                "/Users/Amphaal/.conan/data/qt/5.12.2/bincrafters/stable/build/6fed1e2c3941c1c15f6f8b7a4890ebc867bbd4ac/qtbase/include"
             ]
         },
         {
@@ -34,8 +31,8 @@
             "defines": [],
             "browse": {
                 "path": [
-                    "${env:USERPROFILE}\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\.conan\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\data",
-                    "${env:SYSTEMDRIVE}\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\.conan"
+                    "${env:USERPROFILE}/data",
+                    "${env:SYSTEMDRIVE}/.conan"
                 ]
             },
             "windowsSdkVersion": "10.0.17134.0",

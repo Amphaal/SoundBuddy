@@ -78,7 +78,7 @@ class FTNZErrorProcessingUploadException : public std::exception {
 
 class OutputHelper {
     private:
-        boost::filesystem::path _pathToFile;
+        filesystem::path _pathToFile;
         std::string _pathToCert;
         string _uploadTargetFunction;
         string _uploadTargetUrl;

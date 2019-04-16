@@ -4,12 +4,12 @@
 #include <map>
 
 #include <rapidjson/document.h>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
 
 #include "src/helpers/_const.cpp"
 #include "src/version.h"
-#include <QtCore/QSettings>
+
+#include <QSettings>
 #include <QCoreApplication>
 #include <QStandardPaths>
 #include <QDir>

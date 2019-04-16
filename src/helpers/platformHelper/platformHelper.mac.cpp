@@ -43,7 +43,7 @@
         auto pathToLib = plist.value("NSNavLastRootDirectory").toString().toStdString();
 
         //get parent directory
-        boost::filesystem::path mapP(pathToLib);
+        filesystem::path mapP(pathToLib);
         auto pre = mapP.parent_path().string();
 
         //replace tilda with full path
