@@ -1,4 +1,5 @@
 buildRelease
 buildDebug
 src/version.h
+src/cacert.pem
 .vscode/ipch

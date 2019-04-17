@@ -2,13 +2,40 @@
 ### CPACK CONFIG + Qt ITW ##
 ############################
 
-if (APPLE)
-    INSTALL(TARGETS ${PROJECT_NAME} DESTINATION .)
-endif (APPLE)
+install(TARGETS ${PROJECT_NAME} 
+        DESTINATION .)
 
-if (WIN32)
-    INSTALL(DIRECTORY ${CMAKE_BINARY_DIR}/bin/ DESTINATION .)
-endif (WIN32)
+# # #WINDOWS
+# # plugins/platforms, qwindows*.dll -> ./bin/platforms
+# # bin, Qt5Widgets*.dll -> ./bin 
+# # bin, Qt5Core*.dll -> ./bin 
+# # bin, Qt5Gui*.dll -> ./bin
+
+# # #MAC
+# # plugins/platforms, libqcocoa*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
+# # lib, libQt5Widgets*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
+# # lib, libQt5Core*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
+# # lib, libQt5Gui*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
+
+# # Qt Libraries
+
+# # install(FILES
+# #   ${QT_DLL_DIR}/icudt51.dll
+# #   ${QT_DLL_DIR}/icuin51.dll
+# #   ${QT_DLL_DIR}/icuuc51.dll
+# #   ${QT_DLL_DIR}/Qt5Core.dll
+# #   ${QT_DLL_DIR}/Qt5Gui.dll
+# #   ${QT_DLL_DIR}/Qt5Widgets.dll
+# #   ${CMAKE_SOURCE_DIR}/win/qt.conf
+# #   DESTINATION .
+# # )
+# # Qt Platform Plugin
+
+foreach(plugin ${Qt5Gui_PLUGINS})
+  get_target_property(_loc ${plugin} LOCATION)
+  message("Plugin ${plugin} is at location ${_loc}")
+endforeach()
+
 
 SET(CPACK_MONOLITHIC_INSTALL 1)
 
@@ -78,7 +105,10 @@ SET(FEEDTNZ_PACKAGED_REPOSITORY_PATH ${FEEDTNZ_PACKAGED_PATH}/repository)
 
 #install CoreUtils for Win32 if mv missing
 add_custom_target(publishPackage 
+    #build
     COMMAND ${CMAKE_COMMAND} --build . --config Release --target package
-    COMMAND cp -rf ${FEEDTNZ_PACKAGED_INSTALLER_PATH} ${FEEDTNZ_REMOTE_SERVER_DOWNLOAD_PATH}
-    COMMAND cp -rf ${FEEDTNZ_PACKAGED_REPOSITORY_PATH}/* ${FEEDTNZ_REMOTE_SERVER_PACKAGES_PATH}
+
+    #copy to dest
+    #COMMAND cp -rf ${FEEDTNZ_PACKAGED_INSTALLER_PATH} ${FEEDTNZ_REMOTE_SERVER_DOWNLOAD_PATH}
+    #COMMAND cp -rf ${FEEDTNZ_PACKAGED_REPOSITORY_PATH}/* ${FEEDTNZ_REMOTE_SERVER_PACKAGES_PATH}
 )

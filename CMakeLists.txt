@@ -16,27 +16,38 @@ SET(CMAKE_PROJECT_VERSION_MAJOR 0)
 SET(CMAKE_PROJECT_VERSION_MINOR 3)
 SET(CMAKE_PROJECT_VERSION_PATCH 2)
 
-
 #set default maintenance tool path
 SET(MAINTENANCE_TOOL_LOCATION "")
 SET(IS_DEBUG_APP OFF)
 
+#if debug build
 IF(${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR}/buildDebug)
 
+    #define debug
     SET(IS_DEBUG_APP ON)
 
+    #define maintenance tool location
     if (APPLE)
         SET(MAINTENANCE_TOOL_LOCATION "/Qt/MaintenanceTool")
     endif(APPLE)
     if (WIN32)
         SET(MAINTENANCE_TOOL_LOCATION "C:/Qt/MaintenanceTool")
     endif(WIN32)
+
 ENDIF()
 
+#config file to source code
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/build_templates/version.h.in 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/version.h
 )
+
+#download cacert file to source code
+file(DOWNLOAD 
+    "https://crt.sh/?d=0687260331A72403D909F105E69BCF0D32E1BD2493FFC6D9206D11BCD6770739" 
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/${PEM_CERT_NAME}
+)
+SET(CACERT src/${PEM_CERT_NAME})
 
 ##################
 ## Enable Conan ##
@@ -56,6 +67,13 @@ if (APPLE)
 endif (APPLE)
 
 if(MSVC)
+    #ignore warnings
+    set_target_properties(
+        ${PROJECT_NAME} PROPERTIES 
+        LINK_FLAGS "/ignore:4099 /ignore:4267 /ignore:4244 /ignore:4715"
+    )
+
+    #ignore more
     add_definitions(-D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
     add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
@@ -81,28 +99,36 @@ if (APPLE)
     SET(Qt5_DIR "$ENV{HOME}/Qt/5.12.2/clang_64/lib/cmake/Qt5")
 endif (APPLE)
 
-
 ##########################
 ## Bundle configuration ##
 ##########################
 
 if (WIN32)
-    SET(BUNDLE_TYPE WIN32) #set bundle type
-    SET(FEEDTNZ_ICO ${CMAKE_CURRENT_SOURCE_DIR}/resources/resources.rc) #add icon
+    #set bundle type
+    SET(BUNDLE_TYPE WIN32) 
+    #add icon
+    SET(FEEDTNZ_ICO ${CMAKE_CURRENT_SOURCE_DIR}/resources/resources.rc) 
 endif (WIN32)
 
 if (APPLE)
-    SET(BUNDLE_TYPE MACOSX_BUNDLE) #set bundle type
-
+    #set bundle type
+    SET(BUNDLE_TYPE MACOSX_BUNDLE) 
     #add icons
     SET(MACOSX_BUNDLE_ICON_FILE feedtnz.icns)
     SET(FEEDTNZ_ICO ${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/feedtnz.icns)
-
+    set_source_files_properties(${FEEDTNZ_ICO} PROPERTIES 
+        MACOSX_PACKAGE_LOCATION "Resources"                                                    
+    )
+    #CACERT
+    set_source_files_properties(${CACERT} PROPERTIES 
+        MACOSX_PACKAGE_LOCATION "MacOS"                                                    
+    )
 endif (APPLE)
 
 #default source contains
 SET(SOURCES
     ${FEEDTNZ_ICO}
+    ${CACERT}
     resources/resources.qrc
 )
 
@@ -111,10 +137,11 @@ SET(SOURCES
 ####################
 
 # Define required linked QT libs
-find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
+find_package(Qt5 REQUIRED COMPONENTS Core Widgets Gui)
 SET(EXT_LIBS 
     Qt5::Widgets 
     Qt5::Core
+    Qt5::Gui
 )
 
 #private libs
@@ -163,44 +190,14 @@ endif (WIN32)
 # Create executable
 add_executable(${PROJECT_NAME} ${BUNDLE_TYPE} ${SOURCES} ${INT_LIBS}) 
 
-if (WIN32)    
-    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/ignore:4099 /ignore:4267 /ignore:4244 /ignore:4715")
-endif (WIN32)
-
-if(APPLE)
-
-    #defines icns localization into the package
-    set_source_files_properties(${FEEDTNZ_ICO} PROPERTIES 
-        MACOSX_PACKAGE_LOCATION "Resources"                                                    
-    )
-
-    #add highdpi support / menu behavior via plist template
-    set_target_properties(${PROJECT_NAME} PROPERTIES 
-        MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/build_templates/Info.plist.in     
-    ) 
-
-endif(APPLE)
-
+#add highdpi support / menu behavior via plist template
+set_target_properties(${PROJECT_NAME} PROPERTIES 
+    MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/build_templates/Info.plist.in     
+) 
 
 # Bind ext libs
 conan_target_link_libraries(${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME} ${EXT_LIBS})
-
-
-#download cacert for windows mostly
-##too heavy, prefer specific intermediate local 
-#SET(CACERT_URL_SOURCE "https://curl.haxx.se/ca/cacert.pem")
-##DST Root CA X3 only, from Firefox's "https://ccadb-public.secure.force.com/mozilla/IncludedCACertificateReport"
-SET(CACERT_URL_SOURCE "https://crt.sh/?d=0687260331A72403D909F105E69BCF0D32E1BD2493FFC6D9206D11BCD6770739")
-
-if (WIN32)    
-    SET(PEM_CERT_DEST ${CMAKE_BINARY_DIR}/bin/${PEM_CERT_NAME})
-endif (WIN32)
-if(APPLE)
-    SET(PEM_CERT_DEST ${CMAKE_BINARY_DIR}/bin/${PROJECT_NAME}.app/Contents/MacOS/${PEM_CERT_NAME})
-endif(APPLE)
-
-file(DOWNLOAD ${CACERT_URL_SOURCE} ${PEM_CERT_DEST})
 
 ######################
 # add Publish target #
