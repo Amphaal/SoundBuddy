@@ -1,0 +1,21 @@
+function Component()
+{qsdqsdqsd
+  Component.prototype.createOperations = function()
+  {
+    // call default implementation
+    component.createOperations();
+
+    // ... add custom operations
+
+    var kernel = systemInfo.kernelType;
+    if( kernel == "winnt" ) {
+      var exePath = installer.value("TargetDir") + "FeedTNZ.exe";
+      component.addElevatedOperation("Execute", exePath, "Install", "UNDOEXECUTE", exePath, "Remove" );
+    }
+
+    if( kernel == "darwin" ) {
+      var exePath = installer.value("TargetDir") + "/FeedTNZ";
+      component.addElevatedOperation("Execute", exePath, "Install", "UNDOEXECUTE", exePath, "Remove" );
+    }
+  }
+}

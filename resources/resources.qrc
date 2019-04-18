@@ -1,6 +1,6 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
-    <file>icons/feedtnz.png</file>
-    <file>icons/feedtnz_reverse.png</file>
+    <file>icons/app.png</file>
+    <file>icons/app_reverse.png</file>
 </qresource>
 </RCC>

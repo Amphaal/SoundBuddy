@@ -44,7 +44,9 @@
                 "C:/Qtd/5.12.2/msvc2017_64/include/QtWidgets",
                 "C:/Qtd/5.12.2/msvc2017_64/include/QtCore",
                 "C:/Qtd/5.12.2/msvc2017_64/include",
-                "C:/Qtd/5.12.2/msvc2017_64/include/QtGui"
+                "C:/Qtd/5.12.2/msvc2017_64/include/QtGui",
+                "C:/Users/Amphaal/.conan/data/rapidjson/1.1.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
+                "C:/Users/Amphaal/.conan/data/libcurl/7.64.1/bincrafters/stable/source/source_subfolder/include"
             ]
         }
     ],

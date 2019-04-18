@@ -48,6 +48,7 @@ file(DOWNLOAD
     ${CMAKE_CURRENT_SOURCE_DIR}/src/${PEM_CERT_NAME}
 )
 SET(CACERT src/${PEM_CERT_NAME})
+get_filename_component(CACERT_FP ${CACERT} ABSOLUTE)
 
 ##################
 ## Enable Conan ##
@@ -67,12 +68,6 @@ if (APPLE)
 endif (APPLE)
 
 if(MSVC)
-    #ignore warnings
-    set_target_properties(
-        ${PROJECT_NAME} PROPERTIES 
-        LINK_FLAGS "/ignore:4099 /ignore:4267 /ignore:4244 /ignore:4715"
-    )
-
     #ignore more
     add_definitions(-D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
@@ -107,16 +102,16 @@ if (WIN32)
     #set bundle type
     SET(BUNDLE_TYPE WIN32) 
     #add icon
-    SET(FEEDTNZ_ICO ${CMAKE_CURRENT_SOURCE_DIR}/resources/resources.rc) 
+    SET(APP_ICO ${CMAKE_CURRENT_SOURCE_DIR}/resources/resources.rc) 
 endif (WIN32)
 
 if (APPLE)
     #set bundle type
     SET(BUNDLE_TYPE MACOSX_BUNDLE) 
     #add icons
-    SET(MACOSX_BUNDLE_ICON_FILE feedtnz.icns)
-    SET(FEEDTNZ_ICO ${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/feedtnz.icns)
-    set_source_files_properties(${FEEDTNZ_ICO} PROPERTIES 
+    SET(MACOSX_BUNDLE_ICON_FILE "app.icns")
+    SET(APP_ICO ${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/app.icns)
+    set_source_files_properties(${APP_ICO} PROPERTIES 
         MACOSX_PACKAGE_LOCATION "Resources"                                                    
     )
     #CACERT
@@ -127,7 +122,7 @@ endif (APPLE)
 
 #default source contains
 SET(SOURCES
-    ${FEEDTNZ_ICO}
+    ${APP_ICO}
     ${CACERT}
     resources/resources.qrc
 )
@@ -189,8 +184,14 @@ endif (WIN32)
 
 # Create executable
 add_executable(${PROJECT_NAME} ${BUNDLE_TYPE} ${SOURCES} ${INT_LIBS}) 
+ 
+#ignore warnings(WINDOWS)
+set_target_properties(
+    ${PROJECT_NAME} PROPERTIES 
+    LINK_FLAGS "/ignore:4099 /ignore:4267 /ignore:4244 /ignore:4715 /ignore:4267"
+)
 
-#add highdpi support / menu behavior via plist template
+#add highdpi support / menu behavior via plist template (MACOS)
 set_target_properties(${PROJECT_NAME} PROPERTIES 
     MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/build_templates/Info.plist.in     
 ) 
@@ -198,6 +199,40 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 # Bind ext libs
 conan_target_link_libraries(${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME} ${EXT_LIBS})
+
+###
+### LIBRARIES COPY
+###
+
+#default
+add_custom_command(TARGET ${PROJECT_NAME}
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt5::Core> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt5::Gui> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt5::Widgets> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+)
+
+#apple
+if(APPLE)
+    add_custom_command(TARGET ${PROJECT_NAME}
+        #UI plugin
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different 
+        $<TARGET_FILE:Qt5::QCocoaIntegrationPlugin> 
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>/platforms/$<TARGET_FILE_NAME:Qt5::QCocoaIntegrationPlugin>
+    )
+endif(APPLE)
+
+#win
+if (WIN32)
+    add_custom_command(TARGET ${PROJECT_NAME}
+        #CA CERT
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CACERT_FP} $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        #UI plugin
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different 
+        $<TARGET_FILE:Qt5::QWindowsIntegrationPlugin> 
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>/platforms/$<TARGET_FILE_NAME:Qt5::QWindowsIntegrationPlugin>
+    )
+endif (WIN32)
+
 
 ######################
 # add Publish target #

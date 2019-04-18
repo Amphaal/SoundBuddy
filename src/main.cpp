@@ -14,7 +14,7 @@ int main(int argc, char** argv){
     
     //prevent multiples instances
     QString tmpDir = QDir::tempPath();
-    QLockFile lockFile(tmpDir + "/feedtnz.lock");
+    QLockFile lockFile(tmpDir + "/" + APP_NAME + ".lock");
     if(!lockFile.tryLock(100)){
         return 1;
     }

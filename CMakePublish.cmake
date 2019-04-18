@@ -2,106 +2,87 @@
 ### CPACK CONFIG + Qt ITW ##
 ############################
 
-install(TARGETS ${PROJECT_NAME} 
+INCLUDE(CPack)
+
+#configure IFW
+INCLUDE(CPackIFW)
+SET(CPACK_GENERATOR IFW)
+
+#define install
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin/
         DESTINATION .)
 
-# # #WINDOWS
-# # plugins/platforms, qwindows*.dll -> ./bin/platforms
-# # bin, Qt5Widgets*.dll -> ./bin 
-# # bin, Qt5Core*.dll -> ./bin 
-# # bin, Qt5Gui*.dll -> ./bin
+###################
+# MAIN DEFINITION #
+###################
 
-# # #MAC
-# # plugins/platforms, libqcocoa*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
-# # lib, libQt5Widgets*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
-# # lib, libQt5Core*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
-# # lib, libQt5Gui*.dylib -> ./bin/FeedTNZ.app/Contents/MacOS/
+    SET(APP_DESCRIPTION ${PROJECT_NAME}
+        fr "Logiciel compagnon pour WTNZ"
+    )
 
-# # Qt Libraries
+    SET(CPACK_IFW_PACKAGE_NAME ${PROJECT_NAME})
+    SET(CPACK_IFW_PACKAGE_WIZARD_STYLE "Modern")
+    SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY ${APP_DESCRIPTION})
+    SET(CPACK_IFW_PACKAGE_PUBLISHER ${APP_PUBLISHER})
+    SET(CPACK_IFW_PACKAGE_START_MENU_DIRECTORY ${APP_PUBLISHER})
+    SET(CPACK_IFW_PRODUCT_URL ${APP_MAIN_URL})
+    SET(CPACK_IFW_TARGET_DIRECTORY "@ApplicationsDirX64@/${PROJECT_NAME}")
 
-# # install(FILES
-# #   ${QT_DLL_DIR}/icudt51.dll
-# #   ${QT_DLL_DIR}/icuin51.dll
-# #   ${QT_DLL_DIR}/icuuc51.dll
-# #   ${QT_DLL_DIR}/Qt5Core.dll
-# #   ${QT_DLL_DIR}/Qt5Gui.dll
-# #   ${QT_DLL_DIR}/Qt5Widgets.dll
-# #   ${CMAKE_SOURCE_DIR}/win/qt.conf
-# #   DESTINATION .
-# # )
-# # Qt Platform Plugin
+    if (APPLE)
+        SET(CPACK_IFW_ROOT "/Qt/QtIFW-3.0.6")
+        SET(APP_REMOTE_SERVER_PATH "/Volumes/www/feedtnz")
+        SET(APP_REMOTE_SERVER_PLATFORM_FOLDER "osx")
+        SET(APP_INSTALLER_EXTENSION ".dmg")
+        SET(APP_ICON_EXT ".icns")
+    endif (APPLE)
 
-foreach(plugin ${Qt5Gui_PLUGINS})
-  get_target_property(_loc ${plugin} LOCATION)
-  message("Plugin ${plugin} is at location ${_loc}")
-endforeach()
+    if (WIN32)
+        SET(CPACK_IFW_ROOT "C:/Qt/QtIFW-3.0.6")
+        SET(APP_REMOTE_SERVER_PATH "//192.168.0.12/www/feedtnz")
+        SET(APP_REMOTE_SERVER_PLATFORM_FOLDER "win")
+        SET(APP_INSTALLER_EXTENSION ".exe")
+        SET(APP_ICON_EXT ".ico")
+    endif (WIN32)
 
+    #icons
+    SET(CPACK_IFW_PACKAGE_LOGO "${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/app_64.png")
+    SET(CPACK_IFW_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/package${APP_ICON_EXT}")
 
-SET(CPACK_MONOLITHIC_INSTALL 1)
-
-SET(FEEDTNZ_DESCRIPTION "FeedTNZ")
-SET(FEEDTNZ_DESCRIPTION_LOCALIZED ${FEEDTNZ_DESCRIPTION}
-    fr "Logiciel compagnon pour WTNZ"
-)
-
-SET(CPACK_IFW_PACKAGE_WIZARD_STYLE "Modern")
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY ${FEEDTNZ_DESCRIPTION})
-SET(CPACK_IFW_PACKAGE_PUBLISHER ${APP_PUBLISHER})
-SET(CPACK_IFW_PACKAGE_START_MENU_DIRECTORY ${APP_PUBLISHER})
-SET(CPACK_IFW_PRODUCT_URL ${APP_MAIN_URL})
-SET(CPACK_IFW_TARGET_DIRECTORY "@ApplicationsDirX64@/FeedTNZ")
-
-if (APPLE)
-    SET(CPACK_IFW_ROOT "/Qt/QtIFW-3.0.6")
-    SET(FEEDTNZ_REMOTE_SERVER_PATH "/Volumes/www/feedtnz")
-    SET(FEEDTNZ_REMOTE_SERVER_PLATFORM_FOLDER "osx")
-    SET(FEEDTNZ_INSTALLER_EXTENSION ".dmg")
-    SET(FEEDTNZ_ICON_EXT ".icns")
-endif (APPLE)
-
-if (WIN32)
-    SET(CPACK_IFW_ROOT "C:/Qt/QtIFW-3.0.6")
-    SET(FEEDTNZ_REMOTE_SERVER_PATH "//192.168.0.12/www/feedtnz")
-    SET(FEEDTNZ_REMOTE_SERVER_PLATFORM_FOLDER "win")
-    SET(FEEDTNZ_INSTALLER_EXTENSION ".exe")
-    SET(FEEDTNZ_ICON_EXT ".ico")
-endif (WIN32)
-
-#icons
-SET(CPACK_IFW_PACKAGE_LOGO ${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/feedtnz_64.png)
-SET(CPACK_IFW_PACKAGE_ICON ${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/package${FEEDTNZ_ICON_EXT})
-
-SET(FEEDTNZ_REMOTE_SERVER_DOWNLOAD_PATH ${FEEDTNZ_REMOTE_SERVER_PATH}/downloads/${FEEDTNZ_REMOTE_SERVER_PLATFORM_FOLDER})
-SET(FEEDTNZ_REMOTE_SERVER_PACKAGES_PATH ${FEEDTNZ_REMOTE_SERVER_PATH}/packages/${FEEDTNZ_REMOTE_SERVER_PLATFORM_FOLDER})
-
-SET(CPACK_GENERATOR IFW)
-INCLUDE(CPack)
-INCLUDE(CPackIFW)
-
+#componenent
 cpack_add_component(${PROJECT_NAME}
                     DISPLAY_NAME ${PROJECT_NAME}
-                    DESCRIPTION ${FEEDTNZ_DESCRIPTION}
+                    DESCRIPTION ${APP_DESCRIPTION}
                     REQUIRED
 )
 
+#additionnal configuration
 cpack_ifw_configure_component(${PROJECT_NAME} 
                     ESSENTIAL
                     FORCED_INSTALLATION
                     NAME "com.lvwl.feedtnz.core"
-                    DESCRIPTION ${FEEDTNZ_DESCRIPTION}
-                    DEFAULT TRUE
+                    DESCRIPTION ${APP_DESCRIPTION}
+                    VERSION ${CPACK_PACKAGE_VERSION} 
+                    SCRIPT "src/ifw/install.js"
+                    DEFAULT true
 )
 
-cpack_ifw_add_repository(coreRepo URL ${APP_ROOT_URL}/feedtnz/packages/${FEEDTNZ_REMOTE_SERVER_PLATFORM_FOLDER})
+#remote repo
+cpack_ifw_add_repository(coreRepo URL "${APP_ROOT_URL}/feedtnz/packages/${APP_REMOTE_SERVER_PLATFORM_FOLDER}")
+
 
 #############
 ## Publish ## 
 #############
 
-SET(FEEDTNZ_PACKAGE_FILE_NAME ${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_SYSTEM_NAME})
-SET(FEEDTNZ_PACKAGED_PATH ${CMAKE_BINARY_DIR}/_CPack_Packages/${CPACK_SYSTEM_NAME}/IFW/${FEEDTNZ_PACKAGE_FILE_NAME})
-SET(FEEDTNZ_PACKAGED_INSTALLER_PATH ${FEEDTNZ_PACKAGED_PATH}${FEEDTNZ_INSTALLER_EXTENSION})
-SET(FEEDTNZ_PACKAGED_REPOSITORY_PATH ${FEEDTNZ_PACKAGED_PATH}/repository)
+#target
+SET(APP_REMOTE_SERVER_DOWNLOAD_PATH "${APP_REMOTE_SERVER_PATH}/downloads/${APP_REMOTE_SERVER_PLATFORM_FOLDER}")
+SET(APP_REMOTE_SERVER_PACKAGES_PATH "${APP_REMOTE_SERVER_PATH}/packages/${APP_REMOTE_SERVER_PLATFORM_FOLDER}")
+
+#source
+SET(APP_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_SYSTEM_NAME}")
+SET(APP_PACKAGED_PATH "${CMAKE_BINARY_DIR}/_CPack_Packages/${CPACK_SYSTEM_NAME}/IFW/${APP_PACKAGE_FILE_NAME}")
+SET(APP_PACKAGED_INSTALLER_PATH "${APP_PACKAGED_PATH}${APP_INSTALLER_EXTENSION}")
+SET(APP_PACKAGED_REPOSITORY_PATH "${APP_PACKAGED_PATH}/repository")
 
 #install CoreUtils for Win32 if mv missing
 add_custom_target(publishPackage 
@@ -109,6 +90,6 @@ add_custom_target(publishPackage
     COMMAND ${CMAKE_COMMAND} --build . --config Release --target package
 
     #copy to dest
-    #COMMAND cp -rf ${FEEDTNZ_PACKAGED_INSTALLER_PATH} ${FEEDTNZ_REMOTE_SERVER_DOWNLOAD_PATH}
-    #COMMAND cp -rf ${FEEDTNZ_PACKAGED_REPOSITORY_PATH}/* ${FEEDTNZ_REMOTE_SERVER_PACKAGES_PATH}
+    #COMMAND ${CMAKE_COMMAND} -E copy ${APP_PACKAGED_INSTALLER_PATH} ${APP_REMOTE_SERVER_DOWNLOAD_PATH}
+    #COMMAND ${CMAKE_COMMAND} -E copy ${APP_PACKAGED_REPOSITORY_PATH}/* ${APP_REMOTE_SERVER_PACKAGES_PATH}
 )

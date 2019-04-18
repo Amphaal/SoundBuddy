@@ -13,7 +13,7 @@
             "type": "shell",
             "command": "rm -rf buildDebug; mkdir buildDebug",
             "windows": {
-                "command": "rmdir /S /Q buildDebug & md buildDebug"
+                "command": "del /S /Q buildDebug & rd /S /Q buildDebug & md buildDebug"
             }
         },
         {
@@ -58,7 +58,7 @@
             "type": "shell",
             "command": "rm -rf buildRelease; mkdir buildRelease",
             "windows": {
-                "command": "rmdir /S /Q buildRelease & md buildRelease"
+                "command": "del /S /Q buildRelease & rd /S /Q buildRelease & md buildRelease"
             }
         },
         {
