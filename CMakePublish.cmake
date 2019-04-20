@@ -17,7 +17,7 @@ set(CPACK_COMPONENTS_ALL app)
 ###################
 
     SET(APP_DESCRIPTION ${PROJECT_NAME}
-        fr "Logiciel compagnon pour WTNZ"
+        fr "Logiciel compagnon pour WTNZ."
     )
 
     SET(CPACK_IFW_PACKAGE_WIZARD_STYLE "Modern")
