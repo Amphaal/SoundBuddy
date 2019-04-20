@@ -186,10 +186,12 @@ endif (WIN32)
 add_executable(${PROJECT_NAME} ${BUNDLE_TYPE} ${SOURCES} ${INT_LIBS}) 
  
 #ignore warnings(WINDOWS)
-set_target_properties(
-    ${PROJECT_NAME} PROPERTIES 
-    LINK_FLAGS "/ignore:4099 /ignore:4267 /ignore:4244 /ignore:4715 /ignore:4267"
-)
+if (WIN32)
+    set_target_properties(
+        ${PROJECT_NAME} PROPERTIES 
+        LINK_FLAGS "/ignore:4099 /ignore:4267 /ignore:4244 /ignore:4715 /ignore:4267"
+    )
+endif (WIN32)
 
 #add highdpi support / menu behavior via plist template (MACOS)
 set_target_properties(${PROJECT_NAME} PROPERTIES 

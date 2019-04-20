@@ -3,16 +3,16 @@
 ############################
 
 #configure IFW
-INCLUDE(CPackIFW)
 SET(CPACK_GENERATOR IFW)
 
 #define install
 install(
     DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin/
     DESTINATION .
+    COMPONENT app
 )
 
-set(CPACK_COMPONENTS_ALL Unspecified)
+set(CPACK_COMPONENTS_ALL app)
 
 ###################
 # MAIN DEFINITION #
@@ -50,14 +50,15 @@ set(CPACK_COMPONENTS_ALL Unspecified)
     SET(CPACK_IFW_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/package${APP_ICON_EXT}")
 
 #componenent
-cpack_add_component(Unspecified
+INCLUDE(CPackIFW)
+
+cpack_add_component(app
                     DISPLAY_NAME ${PROJECT_NAME}
                     DESCRIPTION ${APP_DESCRIPTION}
-                    REQUIRED
 )
 
 #additionnal configuration
-cpack_ifw_configure_component(Unspecified
+cpack_ifw_configure_component(app
                     ESSENTIAL
                     FORCED_INSTALLATION
                     NAME "com.lvwl.feedtnz"
@@ -65,7 +66,7 @@ cpack_ifw_configure_component(Unspecified
                     VERSION ${CPACK_PACKAGE_VERSION} 
                     SCRIPT "src/ifw/install.js"
                     USER_INTERFACES "src/ifw/install.ui"
-                    DEFAULT true
+                    DEFAULT TRUE
 )
 
 #remote repo
