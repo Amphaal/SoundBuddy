@@ -1,21 +1,57 @@
-function Component()
-{qsdqsdqsd
-  Component.prototype.createOperations = function()
-  {
-    // call default implementation
+function Component() {
+  installer.installationFinished.connect(this, Component.prototype.installationFinishedPageIsShown);
+  installer.finishButtonClicked.connect(this, Component.prototype.installationFinished);
+}
+
+Component.prototype.getPathToApp = function() {
+
+    var exePath;
+    var appName = installer.value("Title");
+
+    switch(systemInfo.kernelType) {
+        case "winnt":
+            exePath = installer.value("TargetDir") + "/" + appName + ".exe";
+            break;
+        case "darwin":
+            exePath = installer.value("TargetDir") + "/"+ appName + ".app/Contents/MacOS/" + appName;
+            break;
+    }
+
+    return exePath;
+
+}
+
+Component.prototype.createOperations = function() {
     component.createOperations();
 
-    // ... add custom operations
-
-    var kernel = systemInfo.kernelType;
-    if( kernel == "winnt" ) {
-      var exePath = installer.value("TargetDir") + "FeedTNZ.exe";
-      component.addElevatedOperation("Execute", exePath, "Install", "UNDOEXECUTE", exePath, "Remove" );
+    //create a shortcut on windows
+    if (systemInfo.productType === "windows") {
+      component.addOperation("CreateShortcut", Component.prototype.getPathToApp(), "@DesktopDir@/@Title@.lnk");
     }
+}
 
-    if( kernel == "darwin" ) {
-      var exePath = installer.value("TargetDir") + "/FeedTNZ";
-      component.addElevatedOperation("Execute", exePath, "Install", "UNDOEXECUTE", exePath, "Remove" );
+Component.prototype.installationFinishedPageIsShown = function() {
+    try {
+        if (installer.isInstaller() && installer.status == QInstaller.Success) {
+            installer.addWizardPageItem( component, "EndInstallerForm", QInstaller.InstallationFinished );
+        }
+    } catch(e) {
+        console.log(e);
     }
-  }
+}
+
+Component.prototype.installationFinished = function() {
+    try {
+        if (installer.isInstaller() && installer.status == QInstaller.Success) {
+
+          //LaunchBox
+          var isLaunchBoxChecked = component.userInterface( "EndInstallerForm" ).LaunchBox.checked;
+          if (isLaunchBoxChecked) {
+            QDesktopServices.openUrl("file:///" + Component.prototype.getPathToApp());
+          }
+
+        }
+    } catch(e) {
+        console.log(e);
+    }
 }
