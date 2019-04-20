@@ -13,7 +13,7 @@ Component.prototype.getPathToApp = function() {
             exePath = installer.value("TargetDir") + "/" + appName + ".exe";
             break;
         case "darwin":
-            exePath = installer.value("TargetDir") + "/"+ appName + ".app/Contents/MacOS/" + appName;
+            exePath = installer.value("TargetDir") + "/"+ appName + ".app";
             break;
     }
 
@@ -47,7 +47,15 @@ Component.prototype.installationFinished = function() {
           //LaunchBox
           var isLaunchBoxChecked = component.userInterface( "EndInstallerForm" ).LaunchBox.checked;
           if (isLaunchBoxChecked) {
-            QDesktopServices.openUrl("file:///" + Component.prototype.getPathToApp());
+            switch(systemInfo.kernelType) {
+                case "winnt":
+                    QDesktopServices.openUrl("file:///" + Component.prototype.getPathToApp());
+                    break;
+                case "darwin":
+                    var argsList = ["-a", Component.prototype.getPathToApp()];
+                    installer.execute("open", argsList);
+                    break;
+            }
           }
 
         }
