@@ -10,6 +10,9 @@ install(TARGETS ${PROJECT_NAME}
 DESTINATION .
 COMPONENT app)
 
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin
+DESTINATION .)
+
 set(CPACK_COMPONENTS_ALL app)
 
 ###################
