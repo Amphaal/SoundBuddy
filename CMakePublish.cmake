@@ -5,11 +5,12 @@
 #configure IFW
 SET(CPACK_GENERATOR IFW)
 
-#define install
+#install the app
 install(TARGETS ${PROJECT_NAME}
 DESTINATION .
 COMPONENT app)
 
+#install all the dependencies
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin
 DESTINATION .)
 
