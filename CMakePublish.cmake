@@ -5,13 +5,17 @@
 #configure IFW
 SET(CPACK_GENERATOR IFW)
 
-#install the app
-install(TARGETS ${PROJECT_NAME}
-DESTINATION .
-COMPONENT app)
+if(APPLE)
+    #install the app
+    install(
+        TARGETS ${PROJECT_NAME}
+        DESTINATION .
+        COMPONENT app
+    )
+endif(APPLE)
 
-#install all the dependencies
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin
+#install all the dependencies + bin
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin/
 DESTINATION .)
 
 set(CPACK_COMPONENTS_ALL app)
