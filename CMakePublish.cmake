@@ -12,11 +12,24 @@ if(APPLE)
         DESTINATION .
         COMPONENT app
     )
+
+    #install all the dependencies (overrides file structure)
+    install(
+        DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin/
+        DESTINATION .
+    )
+
 endif(APPLE)
 
-#install all the dependencies + bin
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin/
-DESTINATION .)
+if (WIN32)
+    #install all the dependencies + bin
+    install(
+        DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin/
+        DESTINATION .
+        COMPONENT app
+    )
+endif (WIN32)
+
 
 set(CPACK_COMPONENTS_ALL app)
 
