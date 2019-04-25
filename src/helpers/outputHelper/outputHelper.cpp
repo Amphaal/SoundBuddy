@@ -124,15 +124,17 @@ class OutputHelper {
             
             //set definitive location and create path if not exist
             std::string hostPath = PlatformHelper::getDataStorageDirectory();
-            auto pathToFile = QString::fromStdString(hostPath) + "/" + QString::fromStdString(filePath);
-            this->_pathToFile.setFile(pathToFile);
+            auto pathToFile = hostPath + "/" + filePath;
+            this->_pathToFile.setFile(QString::fromStdString(pathToFile));
+            
+            //certificate
             this->_pathToCert = QDir::toNativeSeparators(
                 (PlatformHelper::getAppDirectory() + "/" + PEM_CERT_NAME).c_str()
             ).toStdString();
         }
 
         std::string getOutputPath() {
-            return this->_pathToFile.absolutePath().toStdString();
+            return this->_pathToFile.absoluteFilePath().toStdString();
         }
 
         //write outputfile
