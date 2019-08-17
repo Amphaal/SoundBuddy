@@ -56,7 +56,7 @@ void ConnectivityThread::run() {
     emit updateSIOStatus(I18n::tr()->SIOWaitingConnection(), TLW_Colors::YELLOW);
     
     //connect...
-    this->_sioClient->connect(this->_getTargetUrl());
+    this->_sioClient->connect(this->_getTargetUrl().toStdString());
 
 }
 
@@ -93,8 +93,8 @@ void ConnectivityThread::_checkCredentials(bool forceRecheck) {
         auto username = this->_aHelper->getParamValue("username");
         auto password = this->_aHelper->getParamValue("password");
 
-        p.push(sio::string_message::create(username.toUtf8()));
-        p.push(sio::string_message::create(password.toUtf8()));
+        p.push(sio::string_message::create(username.toStdString()));
+        p.push(sio::string_message::create(password.toStdString()));
         this->_sioClient->socket("/login")->emit_socket("checkCredentials", p);
     }
 

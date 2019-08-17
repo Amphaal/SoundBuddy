@@ -7,7 +7,7 @@
 
 #include "src/_libs/socketiocpp_custom/sio_client.h"
 #include "src/helpers/configHelper/authHelper.hpp"
-#include "src/localization/i18n.cpp"
+#include "src/localization/i18n.hpp"
 #include <iostream>
 
 #include <QThread>

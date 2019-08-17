@@ -23,7 +23,7 @@
 #include <rapidjson/document.h>
 
 #include "src/version.h"
-#include "src/localization/i18n.cpp"
+#include "src/localization/i18n.hpp"
 
 #include "src/_libs/autoupdatercore/updater.h"
 
@@ -31,11 +31,11 @@
 #include "src/helpers/configHelper/authHelper.hpp"
 #include "src/helpers/platformHelper/platformHelper.h"
 
-#include "src/ui/tabs/ShoutTab.cpp"
-#include "src/ui/tabs/FeederTab.cpp"
+#include "src/ui/tabs/ShoutTab.hpp"
+#include "src/ui/tabs/FeederTab.hpp"
 #include "src/workers/connectivity/ConnectivityThread.h"
 
-#include "src/ui/widgets/TraficLight.cpp"
+#include "src/ui/widgets/TraficLight.hpp"
 
 
 class MainWindow : public QMainWindow {

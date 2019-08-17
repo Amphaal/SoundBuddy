@@ -8,7 +8,7 @@
 #include <rapidjson/prettywriter.h>
 
 #include "src/helpers/platformHelper/platformHelper.h"
-#include "src/localization/i18n.cpp"
+#include "src/localization/i18n.hpp"
 #include "src/helpers/_const.hpp"
 #include "src/version.h"
 
@@ -42,13 +42,13 @@ class ConfigHelper {
     
     public:
         ConfigHelper(
-            const QString rPathToConfigFile = APP_CONFIG_FILE_PATH, 
-            const QVector<QString> requiredFields = {AUTO_RUN_SHOUT_PARAM_NAME}
+            const QString &rPathToConfigFile = APP_CONFIG_FILE_PATH, 
+            const QVector<QString> &requiredFields = { AUTO_RUN_SHOUT_PARAM_NAME }
         ) : _requiredFields(requiredFields) {
 
             //set definitive location and create path if not exist
-            QString hostPath = PlatformHelper::getDataStorageDirectory();
-            this->_hostDir = new QDir(hostPath.toUtf8());
+            auto hostPath = PlatformHelper::getDataStorageDirectory();
+            this->_hostDir = new QDir(hostPath);
             this->_configFilePath = hostPath + "/" + rPathToConfigFile;
 
         }
@@ -63,7 +63,7 @@ class ConfigHelper {
         }
 
         //update the current config file
-        void updateParamValue(const QString paramToUpdate, const QString value) {
+        void updateParamValue(const QString &paramToUpdate, const QString &value) {
             auto config = this->accessConfig();
             this->defineParamValue(config, paramToUpdate, value);
 
@@ -71,22 +71,23 @@ class ConfigHelper {
         }
 
         //get the param value
-        QString getParamValue(const QString param) {
+        QString getParamValue(const QString &param) {
             auto config = this->accessConfig();
             auto mem = config.FindMember(param.toUtf8());
             if(mem == config.MemberEnd()) return "";
-            return !config[param.toUtf8()].IsString() ? "" : config[param.toUtf8()].GetString();
+            auto cParam = param.toStdString().c_str();
+            return !config[cParam].IsString() ? "" : config[cParam].GetString();
         }
 
         //get full path of the config file
         QString getConfigFileFullPath() {
-            QFileInfo confP(QString::fromStdString(this->_configFilePath));
+            QFileInfo confP(this->_configFilePath);
             return confP.absoluteFilePath();
         }
 
     protected:
         QString _configFilePath;
-        QDir *_hostDir;
+        QDir* _hostDir = nullptr;
         QVector<QString> _requiredFields;
 
 
@@ -164,7 +165,7 @@ class ConfigHelper {
         }
 
         //create a parameter into the config file if it doesnt exist, else define its value
-        void defineParamValue(rapidjson::Document &config, QString paramToFind, QString defVal = "") {
+        void defineParamValue(rapidjson::Document &config, const QString &paramToFind, const QString &defVal = "") {
             
             auto mem = config.FindMember(paramToFind.toUtf8());
             rapidjson::Document::AllocatorType &alloc = config.GetAllocator();

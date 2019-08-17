@@ -25,7 +25,7 @@ class AppTranslator_FR : public IAppTranslator {
     QString FTNZNoMusicFoundException() { return "Aucunes musiques trouvée dans iTunes. Merci de lui en fournir quelques unes !"; };
     QString Feeder_Warning() { return "ATTENTION ! Assurez-vous que le partage du fichier XML de la bibliothèque est bien activé dans iTunes>Préférences>Avancées"; };
     QString Feeder_NotifyWarningsExistence(size_t warningsCount, const QString &outputFileName) {
-        return "ATTENTION ! %1 fichiers dans votre bibliothèque manquent d'importantes données liées aux chansons et n'ont donc pas été incluse dans le fichier de sortie ! Merci de vérifier le fichier \"%2\" pour plus d'informations.").arg(warningsCount).arg(outputFileName);
+        return QString("ATTENTION ! %1 fichiers dans votre bibliothèque manquent d'importantes données liées aux chansons et n'ont donc pas été incluse dans le fichier de sortie ! Merci de vérifier le fichier \"%2\" pour plus d'informations.").arg(warningsCount).arg(outputFileName);
     };
     QString Feeder_Unmolding(const QString &fileName) {
         return QString("Démoulage du fichier \"%1\"...").arg(fileName);

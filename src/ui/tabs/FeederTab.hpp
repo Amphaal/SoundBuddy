@@ -5,7 +5,7 @@
 
 #include "base/TemplateTab.h"
 #include "src/workers/feeder/FeederThread.h"
-#include "src/localization/i18n.cpp"
+#include "src/localization/i18n.hpp"
 
 class FeederTab : public TemplateTab {
     public:

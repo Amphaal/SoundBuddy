@@ -1,14 +1,15 @@
 #ifdef _WIN32
 
 #include <windows.h>
+#include <combaseapi.h>
 
-#include <ActiveQt/QAxBase>
-#include <ActiveQt/QAxObject>
+#include <QAxBase>
+#include <QAxObject>
 
 #include "src/workers/shout/ShoutThread.h" 
 #include "iTunesCOMHandler.h"
-#include "src/helpers/stringHelper/stringHelper.cpp"
-#include "src/localization/i18n.cpp"
+#include "src/helpers/stringHelper/stringHelper.hpp"
+#include "src/localization/i18n.hpp"
 
 #include <QMetaObject>
 #include <QMetaMethod>
@@ -56,9 +57,20 @@ void ShoutThread::run() {
         iTunesCOMHandler *handler = new iTunesCOMHandler(iITunes, this);      
 
         //bind events to sink handler
-        auto oatputqe = QObject::connect(iITunes, iITunes->metaObject()->method(5), handler, handler->metaObject()->method(5));
-        auto oppe = QObject::connect(iITunes, iITunes->metaObject()->method(9), handler, handler->metaObject()->method(6));
-        auto opse = QObject::connect(iITunes, iITunes->metaObject()->method(11), handler, handler->metaObject()->method(7));
+        auto oatputqe = QObject::connect(
+            iITunes, SIGNAL(OnAboutToPromptUserToQuitEvent()), 
+            handler, SLOT(OnAboutToPromptUserToQuitEvent())
+        );
+
+        auto oppe = QObject::connect(
+            iITunes, SIGNAL(OnPlayerPlayEvent(QVariant)), 
+            handler, SLOT(OnPlayerPlayEvent(QVariant))
+        );
+
+        auto opse = QObject::connect(
+            iITunes, SIGNAL(OnPlayerStopEvent(QVariant)), 
+            handler, SLOT(OnPlayerStopEvent(QVariant))
+        );
 
         //iITunes->dumpObjectInfo();
 
@@ -74,7 +86,7 @@ void ShoutThread::run() {
         QObject::disconnect(opse);
 
         //clear COM related Obj
-        this->_shoutEmpty();
+        this->shoutEmpty();
         delete handler;
         iITunes->clear(); 
         delete iITunes;

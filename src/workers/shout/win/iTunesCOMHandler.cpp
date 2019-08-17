@@ -19,39 +19,33 @@ void iTunesCOMHandler::OnPlayerStopEvent(QVariant iTrack) {
 }; 
 
 void iTunesCOMHandler::shoutHelper(QVariant iTrack) {
-    
-    //inst as COM obj
-    QAxObject *trackObj = new QAxObject(iTrack.value<IDispatch*>());
 
-    //if empty
-    if(trackObj->isNull()) {
-        //get current track
-        trackObj = this->iTunesObj->querySubObject("CurrentTrack");
+    //find value
+    if(iTrack.isNull()) {
+        iTrack = this->iTunesObj->querySubObject("CurrentTrack")->asVariant();
     }
 
     //if still empty, shout nothing
-    if (trackObj == NULL) return this->worker->_shoutEmpty();
+    if (iTrack.isNull()) return this->worker->shoutEmpty();
+
+    auto dataList = iTrack.toHash();
 
     //get values for shout
-    auto tName = trackObj->property("Name").value<QString>();
-    auto tAlbum = trackObj->property("Album").value<QString>();
-    auto tArtist = trackObj->property("Artist").value<QString>();
-    auto tGenre = trackObj->property("Genre").value<QString>();
-    auto iDuration = trackObj->property("Duration").value<int>();
+    auto tName = dataList.value("Name").toString();
+    auto tAlbum = dataList.value("Album").toString();
+    auto tArtist = dataList.value("Artist").toString();
+    auto tGenre = dataList.value("Genre").toString();
+    auto iDuration = dataList.value("Duration").toInt();
     auto iPlayerPos = this->iTunesObj->property("PlayerPosition").value<int>();
     auto iPlayerState = this->iTunesObj->property("PlayerState").value<bool>();
-    auto tDatePlayed = trackObj->property("PlayedDate").value<QDateTime>().toString(Qt::ISODate);
-    auto tDateSkipped = trackObj->property("SkippedDate").value<QDateTime>().toString(Qt::ISODate);
-    auto tYear = trackObj->property("Year").value<int>();
-
-    //clear
-    trackObj->clear();
-    delete trackObj;
+    auto tDatePlayed = dataList.value("PlayedDate").toDateTime().toString(Qt::ISODate);
+    auto tDateSkipped = dataList.value("SkippedDate").toDateTime().toString(Qt::ISODate);
+    auto tYear = dataList.value("Year").toInt();
 
     //compare with old shout, if equivalent, don't reshout
-    if(this->worker->_shouldUpload(iPlayerState, tName, tAlbum, tArtist, tDatePlayed, tDateSkipped)) {
+    if(this->worker->shouldUpload(iPlayerState, tName, tAlbum, tArtist, tDatePlayed, tDateSkipped)) {
         //shout !
-        this->worker->_shoutFilled(tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState, tYear);
+        this->worker->shoutFilled(tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState, tYear);
     } 
 };
 

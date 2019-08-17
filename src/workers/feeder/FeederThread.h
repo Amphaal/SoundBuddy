@@ -4,6 +4,7 @@
 #include <rapidjson/pointer.h>
 
 #include <fstream>
+#include <algorithm>
 #include <exception>
 #include <QSet>
 #include <QString>
@@ -13,7 +14,7 @@
 #include "src/workers/base/ITNZThread.h"
 #include "src/helpers/_const.hpp"
 #include "src/helpers/platformHelper/platformHelper.h"
-#include "src/helpers/stringHelper/stringHelper.cpp"
+#include "src/helpers/stringHelper/stringHelper.hpp"
 #include "src/helpers/outputHelper/outputHelper.cpp"
 #include "src/helpers/iTunesLibParser/iTunesLibParser.h"
 

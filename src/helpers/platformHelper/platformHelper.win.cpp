@@ -1,5 +1,6 @@
 #ifdef _WIN32
     #include <windows.h>
+    #include <shellapi.h>
     #include <stdlib.h>  
 
     #include "platformHelper.h"
@@ -40,19 +41,19 @@
         auto pathTo_plutil = PlatformHelper::getEnvironmentVariable("PROGRAMFILES") + QString("\\Common Files\\Apple\\Apple Application Support\\plutil.exe");
         auto destPath = PlatformHelper::getDataStorageDirectory() + "/temp.plist";
         QString command = "-convert xml1 -o ";
-                    command += "\"" + destPath +"\" ";
-                    command +="\"" + pathToParamFile  +"\"";
+                command += "\"" + destPath +"\" ";
+                command +="\"" + pathToParamFile  +"\"";
         ShellExecuteA(NULL, "open", pathTo_plutil.toUtf8(), command.toUtf8(), NULL, SW_HIDE);
 
         //read it into JSON obj
-        iTunesLibParser iTunesParams(destPath.toUtf8());
+        iTunesLibParser iTunesParams(destPath);
         auto xmlAsJSONString = iTunesParams.ToJSON();
         rapidjson::Document d;
         d.Parse(xmlAsJSONString.toUtf8());
 
         //decode path
         auto encodedPath = (QString)d["LXML:1:iTunes Library XML Location"].GetString();
-        QVector<BYTE> decodedData = base64_decode(encodedPath);
+        auto decodedData = base64_decode(encodedPath.toStdString());
         
         //reformat from source UTF-16
         QString rAsString;

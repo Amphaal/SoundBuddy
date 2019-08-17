@@ -48,7 +48,8 @@
                 "C:/Qt/5.13.0/msvc2017_64/include/QtWidgets",
                 "C:/Qt/5.13.0/msvc2017_64/include/QtGui",
                 "C:/Users/Amphaal/.conan/data/rapidjson/1.1.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
-                "C:/Users/Amphaal/.conan/data/libcurl/7.64.1/bincrafters/stable/package/b1ec501b86bf2ab1ae3e10bbe52321a58d5db822/include"
+                "C:/Users/Amphaal/.conan/data/libcurl/7.64.1/bincrafters/stable/package/b1ec501b86bf2ab1ae3e10bbe52321a58d5db822/include",
+                "C:/Qt/5.13.0/msvc2017_64/include/ActiveQt"
             ]
         }
     ],

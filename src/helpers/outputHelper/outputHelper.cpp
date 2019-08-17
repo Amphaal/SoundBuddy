@@ -7,9 +7,9 @@
 #include <curl/curl.h>
 
 
-#include "src/helpers/stringHelper/stringHelper.cpp"
+#include "src/helpers/stringHelper/stringHelper.hpp"
 #include "src/helpers/configHelper/authHelper.hpp"
-#include "src/localization/i18n.cpp"
+#include "src/localization/i18n.hpp"
 #include "src/helpers/_const.hpp"
 
 #include <QStandardPaths>
@@ -93,7 +93,7 @@ class OutputHelper {
         //upload response reader
         static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp)
         {
-            ((QString*)userp)->append((char*)contents, size * nmemb);
+            ((std::string*)userp)->append((char*)contents, size * nmemb);
             return size * nmemb;
         }
 
@@ -112,8 +112,8 @@ class OutputHelper {
             //define them
             this->_uploadTargetUrl = userUrl + "/" + this->_uploadTargetFunction;
             this->_uploadPostData.clear();
-            this->_uploadPostData.insert({"password", password});
-            this->_uploadPostData.insert({"headless", "1"});
+            this->_uploadPostData.insert("password", password);
+            this->_uploadPostData.insert("headless", "1");
 
             //prepared !
             this->_mustPrepareUpload = false;      
@@ -127,7 +127,7 @@ class OutputHelper {
             //set definitive location and create path if not exist
             auto hostPath = PlatformHelper::getDataStorageDirectory();
             auto pathToFile = hostPath + "/" + filePath;
-            this->_pathToFile.setFile(QString::fromStdString(pathToFile));
+            this->_pathToFile.setFile(pathToFile);
             
             //certificate
             this->_pathToCert = QDir::toNativeSeparators(
@@ -187,10 +187,10 @@ class OutputHelper {
                 curl_mime_filedata(field, this->getOutputPath().toUtf8());
             
                 /* For each field*/
-                for(auto kvp : this->_uploadPostData) {
+                for(auto i = this->_uploadPostData.begin(); i != this->_uploadPostData.end(); i++) {
                     field = curl_mime_addpart(form);
-                    curl_mime_name(field, kvp.first.toUtf8());
-                    curl_mime_data(field, kvp.second.toUtf8(), CURL_ZERO_TERMINATED);
+                    curl_mime_name(field, i.key().toUtf8());
+                    curl_mime_data(field, i.value().toUtf8(), CURL_ZERO_TERMINATED);
                 }
 
                 /* what URL that receives this POST */ 

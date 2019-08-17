@@ -1,9 +1,4 @@
-#ifdef __APPLE__
-    #include "platformHelper.mac.cpp"
-#endif
-#ifdef _WIN32
-    #include "platformHelper.win.cpp"
-#endif
+#include "platformHelper.h"
 
 bool PlatformHelper::isLaunchingAtStartup() {
     auto settings = PlatformHelper::getStartupSettingsHandler();
@@ -12,7 +7,7 @@ bool PlatformHelper::isLaunchingAtStartup() {
 
 //ensure a file exists
 bool PlatformHelper::fileExists(const QString &outputFileName) {
-    QFileInfo confP(QString::fromStdString(outputFileName));
+    QFileInfo confP(outputFileName);
     return confP.exists();
 }
 

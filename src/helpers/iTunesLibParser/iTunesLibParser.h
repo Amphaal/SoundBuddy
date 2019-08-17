@@ -1,11 +1,13 @@
-#include <string>
+#pragma once
+
+#include <QString>
 #include <fstream>
 #include <iostream>
 
 class iTunesLibParser {
     
     public:
-        iTunesLibParser(QString pathToFile);
+        iTunesLibParser(const QString &pathToFile);
         ~iTunesLibParser();
         QString ToJSON();
 
@@ -28,8 +30,8 @@ class iTunesLibParser {
 
         void processFile();
         void skipUntilInterestingData();
-        void attrToJSON(QString &attr);
-        bool ifLastRemove(const char * c, QString & target);
+        void attrToJSON(const QString &attr);
+        bool ifLastRemove(const QChar &c, QString &target);
         void removeVirgula();
 
         

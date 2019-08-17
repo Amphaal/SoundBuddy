@@ -36,7 +36,7 @@ void MainWindow::_initUITray() {
         auto cMenu = this->_getFileMenu();
     #endif
 
-    #ifdef __APPLE__
+    #ifdef Q_OS_OSX
         auto cMenu = new QMenu("");
         cMenu->addMenu(this->_getFileMenu());
         cMenu->addMenu(this->_getOptionsMenu());
@@ -211,7 +211,7 @@ QMenu* MainWindow::_getFileMenu() {
 void MainWindow::closeEvent(QCloseEvent *event) {
 
     //apple specific behaviour, prevent closing
-    #ifdef __APPLE__
+    #ifdef Q_OS_OSX
         if(!this->forceQuitOnMacOS) {
             return this->trueHide(event);
         }

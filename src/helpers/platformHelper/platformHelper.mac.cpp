@@ -1,4 +1,4 @@
-#ifdef __APPLE__
+#ifdef Q_OS_OSX
 
     #include <string>
     #include <unistd.h>
@@ -9,7 +9,7 @@
     #include <QtCore/QCoreApplication>
 
     #include "platformHelper.h"
-    #include "src/helpers/stringHelper/stringHelper.cpp"
+    #include "src/helpers/stringHelper/stringHelper.hpp"
 
 
     void PlatformHelper::openFileInOS(const QString &cpURL) {

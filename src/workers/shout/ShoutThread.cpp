@@ -31,13 +31,13 @@ rapidjson::Document ShoutThread::_createBasicShout() {
     return obj;
 };
 
-void ShoutThread::_shoutEmpty(){
+void ShoutThread::shoutEmpty(){
     auto obj = this->_createBasicShout();
     emit this->printLog(I18n::tr()->Shout_Nothing(obj["date"].GetString()));
     this->_shoutToServer(obj);
 };
 
-void ShoutThread::_shoutFilled(QString name, QString album, QString artist, QString genre, int duration, int playerPosition, bool playerState, int year) {
+void ShoutThread::shoutFilled(QString name, QString album, QString artist, QString genre, int duration, int playerPosition, bool playerState, int year) {
     
     //fill obj
     auto obj = this->_createBasicShout();
@@ -73,25 +73,28 @@ void ShoutThread::_shoutFilled(QString name, QString album, QString artist, QStr
 
 void ShoutThread::_shoutToServer(rapidjson::Document &incoming) {
     try {
-        this->_helper.writeAsJsonFile(incoming);
-        this->_helper.uploadFile();
+        this->_helper->writeAsJsonFile(incoming);
+        this->_helper->uploadFile();
     } catch(const std::exception& e) {
         emit this->printLog(e.what(), false, true);
     }
 };
 
 //compare with old shout, if equivalent, don't reshout
-bool ShoutThread::_shouldUpload(bool iPlayerState, QString tName, QString tAlbum, QString tArtist, QString tDatePlayed, QString tDateSkipped) {
+bool ShoutThread::shouldUpload(bool iPlayerState, QString tName, QString tAlbum, QString tArtist, QString tDatePlayed, QString tDateSkipped) {
     
-    size_t currHash = std::hash<QString>{}(StringHelper::boolToString(iPlayerState) + tName + tAlbum + tArtist + (tDatePlayed >= tDateSkipped ? tDatePlayed : tDateSkipped));
+    auto concatedStr = StringHelper::boolToString(iPlayerState) + tName + tAlbum + tArtist + (tDatePlayed >= tDateSkipped ? tDatePlayed : tDateSkipped);
+    
+    std::hash<std::string> hashFunc;
+    size_t currHash = hashFunc(concatedStr.toStdString());
+
     bool isHashIdentical = this->_lastTrackHash == currHash;
-    
     this->_lastTrackHash = currHash;
 
     return !isHashIdentical;
 }
 
-#ifdef __APPLE__
+#ifdef Q_OS_OSX
     #include "mac/mac.cpp"
 #endif
 #ifdef _WIN32

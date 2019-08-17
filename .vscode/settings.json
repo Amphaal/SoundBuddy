@@ -65,6 +65,11 @@
         "compare": "cpp",
         "random": "cpp",
         "sstream": "cpp",
-        "qstring": "cpp"
+        "qstring": "cpp",
+        "qaxbase": "cpp",
+        "qlist": "cpp",
+        "qvboxlayout": "cpp",
+        "qlabel": "cpp",
+        "qcoreapplication": "cpp"
     },
 }

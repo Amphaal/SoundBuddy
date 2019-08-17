@@ -3,7 +3,7 @@
 #include <string>
 #include <exception>
 
-#include "src/localization/i18n.cpp"
+#include "src/localization/i18n.hpp"
 
 ///
 /// Exceptions

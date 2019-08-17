@@ -1,4 +1,4 @@
-#ifdef __APPLE__
+#ifdef Q_OS_OSX
 
 #include <unistd.h>
 #include <QProcess>
@@ -6,8 +6,8 @@
 #include <rapidjson/document.h>
 
 #include "src/workers/shout/ShoutThread.h" 
-#include "src/helpers/stringHelper/stringHelper.cpp"
-#include "src/localization/i18n.cpp"
+#include "src/helpers/stringHelper/stringHelper.hpp"
+#include "src/localization/i18n.hpp"
 
 void ShoutThread::run() { 
 
@@ -42,7 +42,7 @@ void ShoutThread::run() {
         //get shout results
         QProcess p;
         p.start(osascript, processArguments);
-        p.write(QString::fromStdString(script).toUtf8());
+        p.write(script.toUtf8());
         p.closeWriteChannel();
         p.waitForReadyRead();
         auto result = p.readAll();

@@ -7,6 +7,7 @@
 #include "i18n/en_EN.cpp"
 
 class I18n {
+     
      public:
         static IAppTranslator* tr() {   
             if (!m_pInstance) {
@@ -20,7 +21,6 @@ class I18n {
         }
 
     private:
-
         I18n(){};  // Private so that it can  not be called
         I18n(I18n const&){};             // copy constructor is private
         //I18n& operator=(I18n const&){};  // assignment operator is private
@@ -30,7 +30,7 @@ class I18n {
         static IAppTranslator* setTranslator() {
             auto lName = I18n::getLocaleName();
 
-            if (lName.substr(0,2) == "fr") {
+            if (lName.mid(0,2) == "fr") {
                 return new AppTranslator_FR();
             } else {
                 return new AppTranslator_EN();

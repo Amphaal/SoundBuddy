@@ -1,8 +1,8 @@
 #pragma once
 
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QVBoxLayout>
-#include <QtCore/QList>
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QList>
 #include "src/helpers/_const.hpp"
 
 class LogScrollView : public QWidget {
@@ -33,8 +33,7 @@ class LogScrollView : public QWidget {
         }
 
         void addMessage(const QString & newMessage, const bool isError = false) {
-            auto msg = QString::fromStdString(newMessage);
-            auto label = new QLabel(msg);
+            auto label = new QLabel(newMessage);
             label->setWordWrap(true);
             
             QPalette palette = label->palette();
@@ -49,7 +48,6 @@ class LogScrollView : public QWidget {
 
         void updateLatestMessage(const QString & newMessage) {
             
-            auto msg = QString::fromStdString(newMessage);
             auto i = this->layout()->count() - 1; //count items in layout
             
             //if no message, add message
@@ -57,6 +55,6 @@ class LogScrollView : public QWidget {
                 return this->addMessage(newMessage);
             }
             auto lbl = (QLabel*)this->layout()->itemAt(i)->widget();
-            lbl->setText(msg);
+            lbl->setText(newMessage);
         }
 };

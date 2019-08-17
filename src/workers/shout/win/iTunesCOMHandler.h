@@ -1,14 +1,14 @@
 #pragma once
 
-#include <ActiveQt/QAxBase>
-#include <ActiveQt/QAxObject>
+#include <QAxBase>
+#include <QAxObject>
 #include <QVariant>
 
 #include <windows.h>
 
 #include "src/workers/shout/ShoutThread.h" 
 #include "iTunesCOMHandler.h"
-#include "src/helpers/stringHelper/stringHelper.cpp"
+#include "src/helpers/stringHelper/stringHelper.hpp"
 
 #include <QMetaObject>
 #include <QMetaMethod>

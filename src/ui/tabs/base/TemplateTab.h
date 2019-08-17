@@ -1,17 +1,17 @@
 #pragma once
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QBoxLayout>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QScrollBar>
-#include <QtWidgets/QScrollArea>
-#include <QtGui/QWindow>
+#include <QWidget>
+#include <QBoxLayout>
+#include <QPushButton>
+#include <QScrollBar>
+#include <QScrollArea>
+#include <QWindow>
 #include <QStyle>
 
 #include "src/workers/base/ITNZThread.h"
-#include "src/helpers/stringHelper/stringHelper.cpp"
+#include "src/helpers/stringHelper/stringHelper.hpp"
 
-#include "LogScrollView.cpp"
+#include "LogScrollView.hpp"
 
 
 class TemplateTab : public QWidget {

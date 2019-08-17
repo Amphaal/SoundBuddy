@@ -1,6 +1,6 @@
 #include "iTunesLibParser.h"
 
-iTunesLibParser::iTunesLibParser(QString pathToFile) : _pathToFile(pathToFile), _stream(pathToFile) {}
+iTunesLibParser::iTunesLibParser(const QString &pathToFile) : _pathToFile(pathToFile), _stream(pathToFile.toUtf8()) {}
 iTunesLibParser::~iTunesLibParser() {
     _stream.close();
 };
@@ -8,7 +8,7 @@ iTunesLibParser::~iTunesLibParser() {
 QString iTunesLibParser::ToJSON() {
     skipUntilInterestingData();
     processFile();
-    return _output;
+    return this->_output;
 };
 
 void iTunesLibParser::processFile() {
@@ -23,7 +23,7 @@ void iTunesLibParser::processFile() {
         } else if (isChevronEnd(c)) {
             
             if (_attr_IsClosingAttr) _curVal = "";
-            _attr_IsNoPairAttr = ifLastRemove("/", _curAttr);
+            _attr_IsNoPairAttr = ifLastRemove('/', _curAttr);
             attrToJSON(_curAttr);
             _curAttr = "";
             _awaitingAttr = false;
@@ -54,18 +54,18 @@ void iTunesLibParser::processFile() {
 };
 
 void iTunesLibParser::removeVirgula() {
-    ifLastRemove(",", _output);
+    ifLastRemove(',', _output);
 }
 
-bool iTunesLibParser::ifLastRemove(const char * c, QString & target) {
-    if(target.back() == *c) {
-        target.pop_back();
+bool iTunesLibParser::ifLastRemove(const QChar &c, QString &target) {
+    if(target.back() == c) {
+        target.chop(1);
         return true;
     }
     return false;
 }
 
-void iTunesLibParser::attrToJSON(QString &attr) {
+void iTunesLibParser::attrToJSON(const QString &attr) {
     
     auto c_next = C_NEXT_ARRAY;
     auto c_open = C_OPEN_STR;
@@ -93,7 +93,7 @@ void iTunesLibParser::attrToJSON(QString &attr) {
         c_open = "";
         c_close = "";
 
-    } else if (attr.find("plist") == 0) {
+    } else if (attr.indexOf("plist") == 0) {
         c_open = "";
         c_close = "";
         c_next = "";
