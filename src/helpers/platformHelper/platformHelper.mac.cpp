@@ -12,12 +12,12 @@
     #include "src/helpers/stringHelper/stringHelper.cpp"
 
 
-    void PlatformHelper::openFileInOS(std::string cpURL) {
+    void PlatformHelper::openFileInOS(const std::string &cpURL) {
         std::string command = "open \"" + cpURL + "\"";
         system(command.c_str());
     };
 
-    void PlatformHelper::openUrlInBrowser(std::string cpURL) {
+    void PlatformHelper::openUrlInBrowser(const std::string &cpURL) {
         PlatformHelper::openFileInOS(cpURL);
     };
 
@@ -37,7 +37,7 @@
         return PlatformHelper::getEnvironmentVariable("HOME") + std::string("/Library/Preferences/com.apple.iTunes.plist");
     };
 
-    std::string PlatformHelper::extractItunesLibLocation(std::string pathToParamFile) {
+    std::string PlatformHelper::extractItunesLibLocation(const std::string &pathToParamFile) {
         //get path to iTunes as string
         QSettings plist(pathToParamFile.c_str(), QSettings::NativeFormat);
         auto pathToLib = plist.value("NSNavLastRootDirectory").toString();

@@ -16,6 +16,8 @@
 #include <QDir>
 #include <QFileInfo>
 
+#include <exception>
+
 ///
 /// Exceptions
 ///
@@ -51,7 +53,7 @@ class FTNZErrorUploadingException : public std::exception {
             std::string exceptionMessage;
 
     public:
-        FTNZErrorUploadingException(string errorMessage) {
+        FTNZErrorUploadingException(std::string errorMessage) {
             this->exceptionMessage = I18n::tr()->FTNZErrorUploadingException(errorMessage);
         }
         const char* what() const throw () {   
@@ -64,7 +66,7 @@ class FTNZErrorProcessingUploadException : public std::exception {
             std::string exceptionMessage;
 
     public:
-        FTNZErrorProcessingUploadException(long code, string response) {
+        FTNZErrorProcessingUploadException(long code, std::string response) {
             StringHelper::replaceFirstOccurrence(response, "\n", "");
             this->exceptionMessage = I18n::tr()->FTNZErrorProcessingUploadException(code, response);
         }
@@ -82,10 +84,10 @@ class OutputHelper {
     private:
         QFileInfo _pathToFile;
         std::string _pathToCert;
-        string _uploadTargetFunction;
-        string _uploadTargetUrl;
-        map<string, string> _uploadPostData;
-        string _uploadFileName;
+        std::string _uploadTargetFunction;
+        std::string _uploadTargetUrl;
+        std::map<std::string, std::string> _uploadPostData;
+        std::string _uploadFileName;
         bool _mustPrepareUpload = true;
 
         //upload response reader
@@ -110,8 +112,8 @@ class OutputHelper {
             //define them
             this->_uploadTargetUrl = userUrl + "/" + this->_uploadTargetFunction;
             this->_uploadPostData.clear();
-            this->_uploadPostData.insert(pair<string, string>("password", password));
-            this->_uploadPostData.insert(pair<string, string>("headless", "1"));
+            this->_uploadPostData.insert({"password", password});
+            this->_uploadPostData.insert({"headless", "1"});
 
             //prepared !
             this->_mustPrepareUpload = false;      
@@ -196,7 +198,7 @@ class OutputHelper {
 
                 //header
                 struct curl_slist *list = NULL;
-                auto localeHeader = string("Accept-Language: ") + I18n::getLocaleName();
+                auto localeHeader = std::string("Accept-Language: ") + I18n::getLocaleName();
                 list = curl_slist_append(list, localeHeader.c_str());
                 curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
                 
@@ -215,7 +217,7 @@ class OutputHelper {
                 
                 if(res != CURLE_OK) {
                     auto descr = curl_easy_strerror(res);
-                    futureException = make_exception_ptr<FTNZErrorUploadingException>(FTNZErrorUploadingException(descr)); 
+                    futureException = std::make_exception_ptr<FTNZErrorUploadingException>(FTNZErrorUploadingException(descr)); 
                 } else {
                     //response code
                     long code;
@@ -224,7 +226,7 @@ class OutputHelper {
                     //if http code is not OK
                     if(code != 200) {
                         this->_mustPrepareUpload = true; //reprepare
-                        futureException = make_exception_ptr<FTNZErrorProcessingUploadException>(FTNZErrorProcessingUploadException(code, response));
+                        futureException = std::make_exception_ptr<FTNZErrorProcessingUploadException>(FTNZErrorProcessingUploadException(code, response));
                     }
                 }
 

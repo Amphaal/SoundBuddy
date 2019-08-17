@@ -15,5 +15,5 @@ static const std::string AUTH_FILE_PATH = "auth.json";
 static const std::string APP_CONFIG_FILE_PATH = "config.json";
 static const std::vector<std::string> REQUIRED_CONFIG_FIELDS{"username", "password"};
 static const std::string AUTO_RUN_SHOUT_PARAM_NAME = "autoLaunchShout";
-static const int SIO_PORT = 3000;
-static const int MAX_LOG_MESSAGES = 100;
+static constexpr int SIO_PORT = 3000;
+static constexpr int MAX_LOG_MESSAGES = 100;

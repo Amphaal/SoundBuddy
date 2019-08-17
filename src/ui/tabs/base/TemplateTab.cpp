@@ -1,5 +1,3 @@
-#define _HAS_STD_BYTE 0 //prevent build error on mac (byte type overriding)
-
 #include "TemplateTab.h"
 
 TemplateTab::TemplateTab(QWidget *parent) : QWidget(parent),
@@ -45,8 +43,8 @@ void TemplateTab::onThreadStart() {
     this->createNewLog();
 };
 
-void TemplateTab::bindWithWorker(ITNZWorker *bThread) {
-    QObject::connect(bThread, &ITNZWorker::printLog,
+void TemplateTab::bindWithWorker(ITNZThread *bThread) {
+    QObject::connect(bThread, &ITNZThread::printLog,
             this, &TemplateTab::printLog);
     QObject::connect(bThread, &QThread::started,
             this, &TemplateTab::onThreadStart);

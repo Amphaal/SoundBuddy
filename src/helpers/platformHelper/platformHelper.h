@@ -17,14 +17,14 @@
 class PlatformHelper
 {
     public:
-        static void openFileInOS(std::string cpURL);
-        static void openUrlInBrowser(std::string cpURL);
+        static void openFileInOS(const std::string &cpURL);
+        static void openUrlInBrowser(const std::string &cpURL);
         static std::string getITunesPrefFileProbableLocation();
         static std::string getEnvironmentVariable(const char* variable);
-        static std::string extractItunesLibLocation(std::string pathToParamFile);
+        static std::string extractItunesLibLocation(const std::string &pathToParamFile);
         static bool isLaunchingAtStartup();
         static void switchStartupLaunch();
-        static bool fileExists(std::string filename);
+        static bool fileExists(const std::string &filename);
         static std::string getAppDirectory();
         static std::string getDataStorageDirectory();
 

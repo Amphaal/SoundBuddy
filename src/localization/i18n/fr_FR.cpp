@@ -1,7 +1,5 @@
 #include "Ii18n.h"
 
-using namespace std;
-
 class AppTranslator_FR : public IAppTranslator {
     std::string Menu_File() { return "Fichier"; }
     std::string Menu_Options() { return "Options"; }

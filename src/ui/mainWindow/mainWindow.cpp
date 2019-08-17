@@ -1,4 +1,3 @@
-#define _HAS_STD_BYTE 0 //prevent build error on mac (byte type overriding)
 #include "mainWindow.h"
 
 MainWindow::MainWindow() : aHelper(), cHelper(), owHelper(WARNINGS_FILE_PATH) {     
@@ -6,7 +5,7 @@ MainWindow::MainWindow() : aHelper(), cHelper(), owHelper(WARNINGS_FILE_PATH) {
     //generate the UI
     this->_initUI();
 
-    this->startupConnectivityWorker();
+    this->startupConnectivityThread();
     this->setupConfigFileWatcher();
     this->updateWarningsMenuItem();
     this->setupAutoUpdate();
@@ -161,18 +160,18 @@ void MainWindow::updateStatusBar(const std::string &message, const TLW_Colors &c
     this->statusLight->setCurrentIndex(color);
 }
 
-void MainWindow::startupConnectivityWorker() {
+void MainWindow::startupConnectivityThread() {
 
-    this->cw = new ConnectivityWorker(&this->aHelper);
+    this->cw = new ConnectivityThread(&this->aHelper);
     QObject::connect(
-        this->cw, &IConnectivityWorker::updateSIOStatus,
+        this->cw, &ConnectivityThread::updateSIOStatus,
         this, &MainWindow::updateStatusBar
     );
     this->cw->start();
 };
 
-void MainWindow::startupShoutWorker() {
-    this->sw = new ShoutWorker;
+void MainWindow::startupShoutThread() {
+    this->sw = new ShoutThread;
     this->st->bindWithWorker(this->sw);
 
     QObject::connect(this->sw, &QThread::finished,
@@ -184,11 +183,11 @@ void MainWindow::startupShoutWorker() {
 }
 
 
-void MainWindow::startupFeederWorker() {
-    this->fw = new FeederWorker;
+void MainWindow::startupFeederThread() {
+    this->fw = new FeederThread;
     this->ft->bindWithWorker(this->fw);
 
-    QObject::connect(this->fw, &ITNZWorker::operationFinished,
+    QObject::connect(this->fw, &ITNZThread::operationFinished,
             this, &MainWindow::updateWarningsMenuItem);
 
     QObject::connect(this->fw, &QThread::finished,

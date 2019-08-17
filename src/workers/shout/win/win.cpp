@@ -5,7 +5,7 @@
 #include <ActiveQt/QAxBase>
 #include <ActiveQt/QAxObject>
 
-#include "src/workers/shout/shout.h" 
+#include "src/workers/shout/ShoutThread.h" 
 #include "iTunesCOMHandler.h"
 #include "src/helpers/stringHelper/stringHelper.cpp"
 #include "src/localization/i18n.cpp"
@@ -16,7 +16,7 @@
 #include <QCoreApplication>
 #include <QDebug>
 
-void ShoutWorker::run() {
+void ShoutThread::run() {
     
     //start with log
     emit this->printLog(I18n::tr()->Shout_WaitITunes());
@@ -63,7 +63,7 @@ void ShoutWorker::run() {
         //iITunes->dumpObjectInfo();
 
         //process events
-        while(this->mustListen && !handler->iTunesShutdownRequested) {
+        while(this->_mustListen && !handler->iTunesShutdownRequested) {
             QCoreApplication::processEvents();
             this->msleep(20);
         }
@@ -74,7 +74,7 @@ void ShoutWorker::run() {
         QObject::disconnect(opse);
 
         //clear COM related Obj
-        this->shoutEmpty();
+        this->_shoutEmpty();
         delete handler;
         iITunes->clear(); 
         delete iITunes;
@@ -83,7 +83,7 @@ void ShoutWorker::run() {
         CoUninitialize();
 
         //if iTunes is shutting down...
-        if(this->mustListen && handler->iTunesShutdownRequested) {
+        if(this->_mustListen && handler->iTunesShutdownRequested) {
             
             //say we acknoledge iTunes shutting down...
             emit this->printLog(I18n::tr()->Shout_ITunesShutdown());
@@ -109,19 +109,18 @@ void ShoutWorker::run() {
                 //if no window found, break...
                 } else {
                     break;
-                }
-                
+                } 
                 
                 //finally, sleep
                 this->sleep(1);
 
-            } while (this->mustListen);
+            } while (this->_mustListen);
             
             //say we relooped
             emit this->printLog(I18n::tr()->Shout_WaitITunesAgain());
         }
 
-    } while (this->mustListen);
+    } while (this->_mustListen);
 
     //end with log
     emit printLog(I18n::tr()->Shout_StopListening());

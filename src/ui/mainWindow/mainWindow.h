@@ -25,7 +25,7 @@
 #include "src/version.h"
 #include "src/localization/i18n.cpp"
 
-#include "libs/qtautoupdater/autoupdatercore/updater.h"
+#include "src/_libs/autoupdatercore/updater.h"
 
 #include "src/helpers/_const.cpp"
 #include "src/helpers/configHelper/authHelper.cpp"
@@ -33,7 +33,7 @@
 
 #include "src/ui/tabs/ShoutTab.cpp"
 #include "src/ui/tabs/FeederTab.cpp"
-#include "src/workers/connectivity/sio.cpp"
+#include "src/workers/connectivity/ConnectivityThread.h"
 
 #include "src/ui/widgets/TraficLight.cpp"
 
@@ -49,12 +49,12 @@ class MainWindow : public QMainWindow {
         bool userNotificationOnUpdateCheck = false;
         QSystemTrayIcon *trayIcon;
         QFileSystemWatcher *configWatcher;
-        vector<QAction*> myWTNZActions;
-        vector<QAction*> warningsfileActions;
+        std::vector<QAction*> myWTNZActions;
+        std::vector<QAction*> warningsfileActions;
         AuthHelper aHelper;
         ConfigHelper cHelper;
         OutputHelper owHelper;
-        string wtnzUrl;
+        std::string wtnzUrl;
         QtAutoUpdater::Updater *updater;
         
         //statusbar
@@ -115,10 +115,10 @@ class MainWindow : public QMainWindow {
         void _initUITabs();
 
         //workers
-        ShoutWorker *sw = 0;
-        FeederWorker *fw = 0;
-        ConnectivityWorker *cw = 0;
-        void startupConnectivityWorker();
-        void startupShoutWorker();
-        void startupFeederWorker();
+        ShoutThread *sw = 0;
+        FeederThread *fw = 0;
+        ConnectivityThread *cw = 0;
+        void startupConnectivityThread();
+        void startupShoutThread();
+        void startupFeederThread();
 };

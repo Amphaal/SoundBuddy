@@ -11,9 +11,9 @@
             "label": "Debug - 0. Create build folder",
             "group": "test",
             "type": "shell",
-            "command": "rm -rf buildDebug; mkdir buildDebug",
-            "windows": {
-                "command": "del /S /Q buildDebug & rd /S /Q buildDebug & md buildDebug"
+            "command": "rm build/Debug -r -fo; mkdir build/Debug",
+            "osx": {
+                "command": "rm -rf build/Debug; mkdir build; mkdir build/Debug",
             }
         },
         {
@@ -28,9 +28,9 @@
             "dependsOn" : "Debug - 0a. add Conan remote",
             "group": "test",
             "type": "shell",
-            "command": "conan install .. -s build_type=Debug --build missing",
+            "command": "conan install ../.. -s build_type=Debug --build missing",
             "options": {
-                "cwd": "${workspaceRoot}/buildDebug"
+                "cwd": "${workspaceRoot}/build/Debug"
             }
         },
         {
@@ -41,24 +41,24 @@
                 "kind" : "test"
             },
             "type": "shell",
-            "command": "cmake ..",
+            "command": "cmake -DCMAKE_BUILD_TYPE=Debug ../..",
             "options": {
-                "cwd": "${workspaceRoot}/buildDebug"
+                "cwd": "${workspaceRoot}/build/Debug"
             }
         },
         {
             "label": "Debug - 3. Build",
             "type": "shell",
-            "command": "cmake --build ./buildDebug --config Debug"
+            "command": "cmake --build ./build/Debug --config Debug"
         },
         /*RELEASE*/
         {
             "label": "Release - 0. Create build folder",
             "group": "build",
             "type": "shell",
-            "command": "rm -rf buildRelease; mkdir buildRelease",
-            "windows": {
-                "command": "del /S /Q buildRelease & rd /S /Q buildRelease & md buildRelease"
+            "command": "rm build/Release -r -fo; mkdir build/Release",
+            "osx": {
+                "command": "rm -rf build/Release; mkdir build; mkdir build/Release"
             }
         },
         {
@@ -66,9 +66,9 @@
             "dependsOn" : "Release - 0. Create build folder",
             "group": "build",
             "type": "shell",
-            "command": "conan install .. -s build_type=Release --build missing",
+            "command": "conan install ../.. -s build_type=Release --build missing",
             "options": {
-                "cwd": "${workspaceRoot}/buildRelease"
+                "cwd": "${workspaceRoot}/build/Release"
             }
         },
         {
@@ -76,9 +76,9 @@
             "dependsOn" : "Release - 1. Download Dependencies",
             "group": "build",
             "type": "shell",
-            "command": "cmake ..",
+            "command": "cmake -DCMAKE_BUILD_TYPE=Release ../..",
             "options": {
-                "cwd": "${workspaceRoot}/buildRelease"
+                "cwd": "${workspaceRoot}/build/Release"
             }
         },
         {
@@ -89,7 +89,7 @@
                 "kind" : "build"
             },
             "type": "shell",
-            "command" : "cmake --build ./buildRelease --target publishPackage"
+            "command" : "cmake --build ./build/Release --config Release --target publishPackage"
         }
     ]
 }

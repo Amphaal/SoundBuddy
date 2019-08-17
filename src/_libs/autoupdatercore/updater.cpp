@@ -76,7 +76,7 @@ void Updater::abortUpdateCheck(int maxDelay, bool async)
 int Updater::scheduleUpdate(int delaySeconds, bool repeated)
 {
 	if((((qint64)delaySeconds) * 1000ll) > (qint64)INT_MAX) {
-		qCWarning(logQtAutoUpdater) << "delaySeconds to big to be converted to msecs";
+		qWarning() << "delaySeconds to big to be converted to msecs";
 		return 0;
 	}
 	return d->scheduler->startSchedule(delaySeconds * 1000, repeated);
@@ -129,15 +129,3 @@ Updater::UpdateInfo::UpdateInfo(QString name, QVersionNumber version, quint64 si
 	version(version),
 	size(size)
 {}
-
-QDebug &operator<<(QDebug &debug, const Updater::UpdateInfo &info)
-{
-	QDebugStateSaver state(debug);
-	Q_UNUSED(state);
-
-	debug.noquote() << QStringLiteral("{Name: \"%1\"; Version: %2; Size: %3}")
-					   .arg(info.name)
-					   .arg(info.version.toString())
-					   .arg(info.size);
-	return debug;
-}

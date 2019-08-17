@@ -1,8 +1,6 @@
-#define _HAS_STD_BYTE 0 //prevent build error on mac (byte type overriding)
-
-#include <QtCore/QString>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QStyleFactory>
+#include <QString>
+#include <QApplication>
+#include <QStyleFactory>
 #include "ui/mainWindow/mainWindow.h"
 
 #include "helpers/_const.cpp"

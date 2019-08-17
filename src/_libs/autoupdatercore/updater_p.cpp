@@ -9,8 +9,6 @@
 
 using namespace QtAutoUpdater;
 
-Q_LOGGING_CATEGORY(logQtAutoUpdater, "QtAutoUpdater")
-
 UpdaterPrivate::UpdaterPrivate(Updater *q_ptr) :
 	QObject(nullptr),
 	q(q_ptr),
@@ -36,7 +34,7 @@ UpdaterPrivate::UpdaterPrivate(Updater *q_ptr) :
 UpdaterPrivate::~UpdaterPrivate()
 {
 	if(runOnExit)
-		qCWarning(logQtAutoUpdater) << "Updater destroyed with run on exit active before the application quit";
+		qWarning() << "Updater destroyed with run on exit active before the application quit";
 
 	if(mainProcess &&
 	   mainProcess->state() != QProcess::NotRunning) {
@@ -148,7 +146,7 @@ QList<Updater::UpdateInfo> UpdaterPrivate::parseResult(const QByteArray &output)
 	}
 
 	if(reader.hasError()) {
-		qCWarning(logQtAutoUpdater) << "XML-reader-error:" << reader.errorString();
+		qWarning() << "XML-reader-error:" << reader.errorString();
 		throw InvalidXmlException();
 	}
 
@@ -213,7 +211,7 @@ void UpdaterPrivate::appAboutToExit()
 		}
 
 		if(!ok) {
-			qCWarning(logQtAutoUpdater) << "Unable to start" << toolInfo.absoluteFilePath()
+			qWarning() << "Unable to start" << toolInfo.absoluteFilePath()
 										<< "with arguments" << runArguments
 										<< "as" << (adminAuth ? "admin/root" : "current user");
 		}

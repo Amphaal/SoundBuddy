@@ -1,5 +1,5 @@
 {
-    "terminal.integrated.shell.windows": "cmd.exe",
+    "terminal.integrated.shell.windows": "C:/Program Files/PowerShell/6/pwsh.exe",
     "files.associations": {
         "algorithm": "cpp",
         "atomic": "cpp",
@@ -50,6 +50,20 @@
         "xstring": "cpp",
         "xtr1common": "cpp",
         "xtree": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "qstylefactory": "cpp",
+        "qapplication": "cpp",
+        "qlockfile": "cpp",
+        "condition_variable": "cpp",
+        "fstream": "cpp",
+        "future": "cpp",
+        "iostream": "cpp",
+        "mutex": "cpp",
+        "set": "cpp",
+        "thread": "cpp",
+        "qthread": "cpp",
+        "compare": "cpp",
+        "random": "cpp",
+        "sstream": "cpp"
     },
 }

@@ -8,7 +8,7 @@
 #include <QtGui/QWindow>
 #include <QStyle>
 
-#include "src/workers/base/ITNZWorker.h"
+#include "src/workers/base/ITNZThread.h"
 #include "src/helpers/stringHelper/stringHelper.cpp"
 
 #include "LogScrollView.cpp"
@@ -19,10 +19,10 @@ class TemplateTab : public QWidget {
     public:
         TemplateTab(QWidget *parent = 0);
         QPushButton *tButton = 0;
-        void bindWithWorker(ITNZWorker *bThread);
+        void bindWithWorker(ITNZThread *bThread);
 
     protected:
-        ITNZWorker *bThread = 0;
+        ITNZThread *bThread = 0;
         LogScrollView *lsv = 0;
         QScrollArea *scrollArea = 0;
         

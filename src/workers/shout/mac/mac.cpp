@@ -5,11 +5,11 @@
 
 #include <rapidjson/document.h>
 
-#include "src/workers/shout/shout.h" 
+#include "src/workers/shout/ShoutThread.h" 
 #include "src/helpers/stringHelper/stringHelper.cpp"
 #include "src/localization/i18n.cpp"
 
-void ShoutWorker::run() { 
+void ShoutThread::run() { 
 
     emit printLog(I18n::tr()->Shout_StartListening());
 
@@ -37,17 +37,17 @@ void ShoutWorker::run() {
     QStringList processArguments;
     processArguments << "-l" << "AppleScript" << "-s" << "s";
 
-    while (this->mustListen) {
+    while (this->_mustListen) {
 
         //get shout results
-        auto p = new QProcess;
-        p->start(osascript, processArguments);
-        p->write(QString::fromStdString(script).toUtf8());
-        p->closeWriteChannel();
-        p->waitForReadyRead();
-        auto result = p->readAll().toStdString();
-        p->waitForFinished(-1);
-        delete p;
+        QProcess p;
+        p.start(osascript, processArguments);
+        p.write(QString::fromStdString(script).toUtf8());
+        p.closeWriteChannel();
+        p.waitForReadyRead();
+        auto result = p.readAll().toStdString();
+        p.waitForFinished(-1);
+        p.deleteLater();
 
         //default values and inst
         std::string tName;

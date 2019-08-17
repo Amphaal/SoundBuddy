@@ -1,9 +1,8 @@
 #include "shout.h"
-#include "src/localization/i18n.cpp"
 
-ShoutWorker::ShoutWorker() : helper(OutputHelper(SHOUT_FILE_PATH, "uploadShout", "shout_file")) {};
+ShoutThread::ShoutThread() : _helper(OutputHelper(SHOUT_FILE_PATH, "uploadShout", "shout_file")) {};
 
-rapidjson::Document ShoutWorker::createBasicShout() {
+rapidjson::Document ShoutThread::_createBasicShout() {
     
     //get iso date
     time_t now;
@@ -20,16 +19,16 @@ rapidjson::Document ShoutWorker::createBasicShout() {
     return obj;
 };
 
-void ShoutWorker::shoutEmpty(){
-    auto obj = this->createBasicShout();
+void ShoutThread::_shoutEmpty(){
+    auto obj = this->_createBasicShout();
     emit this->printLog(I18n::tr()->Shout_Nothing(obj["date"].GetString()));
-    this->shoutToServer(obj);
+    this->_shoutToServer(obj);
 };
 
-void ShoutWorker::shoutFilled(string name, string album, string artist, string genre, int duration, int playerPosition, bool playerState, int year) {
+void ShoutThread::_shoutFilled(std::string name, std::string album, std::string artist, std::string genre, int duration, int playerPosition, bool playerState, int year) {
     
     //fill obj
-    auto obj = this->createBasicShout();
+    auto obj = this->_createBasicShout();
     rapidjson::Document::AllocatorType &alloc = obj.GetAllocator();
 
     //factory for value generation
@@ -48,7 +47,7 @@ void ShoutWorker::shoutFilled(string name, string album, string artist, string g
     obj.AddMember("year", year, alloc);
 
     //log...
-    string logMessage = I18n::tr()->Shout(
+    std::string logMessage = I18n::tr()->Shout(
         obj["date"].GetString(),
         obj["name"].GetString(),
         obj["album"].GetString(),
@@ -57,29 +56,25 @@ void ShoutWorker::shoutFilled(string name, string album, string artist, string g
     );
     emit this->printLog(logMessage);
 
-    this->shoutToServer(obj);
+    this->_shoutToServer(obj);
 };
 
-void ShoutWorker::shoutToServer(rapidjson::Document &incoming) {
+void ShoutThread::_shoutToServer(rapidjson::Document &incoming) {
     try {
-        this->helper.writeAsJsonFile(incoming);
-        this->helper.uploadFile();
+        this->_helper.writeAsJsonFile(incoming);
+        this->_helper.uploadFile();
     } catch(const std::exception& e) {
         emit this->printLog(e.what(), false, true);
     }
 };
 
-void ShoutWorker::exit() {
-    this->mustListen = false;
-}
-
 //compare with old shout, if equivalent, don't reshout
-bool ShoutWorker::shouldUpload(bool iPlayerState, string tName, string tAlbum, string tArtist, string tDatePlayed, string tDateSkipped) {
+bool ShoutThread::_shouldUpload(bool iPlayerState, std::string tName, std::string tAlbum, std::string tArtist, std::string tDatePlayed, std::string tDateSkipped) {
     
     size_t currHash = std::hash<std::string>{}(StringHelper::boolToString(iPlayerState) + tName + tAlbum + tArtist + (tDatePlayed >= tDateSkipped ? tDatePlayed : tDateSkipped));
-    bool isHashIdentical = this->lastTrackHash == currHash;
+    bool isHashIdentical = this->_lastTrackHash == currHash;
     
-    this->lastTrackHash = currHash;
+    this->_lastTrackHash = currHash;
 
     return !isHashIdentical;
 }

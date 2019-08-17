@@ -1,4 +1,3 @@
-#define _HAS_STD_BYTE 0 //prevent build error on mac (byte type overriding)
 #include "src/ui/mainWindow/mainWindow.h"
 
 //main initialization
@@ -73,12 +72,12 @@ void MainWindow::_initUITabs() {
 
     QObject::connect(
         this->st->tButton, &QPushButton::clicked, 
-        this, &MainWindow::startupShoutWorker
+        this, &MainWindow::startupShoutThread
     );
 
     QObject::connect(
         this->ft->tButton, &QPushButton::clicked, 
-        this, &MainWindow::startupFeederWorker
+        this, &MainWindow::startupFeederThread
     );
 
     tabs->addTab(this->st, "Shout!");

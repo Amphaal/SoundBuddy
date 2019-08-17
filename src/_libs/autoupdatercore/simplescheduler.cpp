@@ -14,7 +14,7 @@ SimpleScheduler::SimpleScheduler(QObject *parent) :
 int SimpleScheduler::startSchedule(int msecs, bool repeated, const QVariant &parameter)
 {
 	if(msecs < 0) {
-		qCWarning(logQtAutoUpdater) << "Cannot schedule update tasks for the past!";
+		qWarning() << "Cannot schedule update tasks for the past!";
 		return 0;
 	}
 
@@ -28,7 +28,7 @@ int SimpleScheduler::startSchedule(const QDateTime &when, const QVariant &parame
 {
 	const auto delta = QDateTime::currentDateTime().msecsTo(when);
 	if(delta > (qint64)INT_MAX) {
-		qCWarning(logQtAutoUpdater) << "Time interval to big, timepoint to far in the future.";
+		qWarning() << "Time interval to big, timepoint to far in the future.";
 		return 0;
 	} else
 		return startSchedule((int)delta, false, parameter);

@@ -11,7 +11,7 @@ bool PlatformHelper::isLaunchingAtStartup() {
 }
 
 //ensure a file exists
-bool PlatformHelper::fileExists(std::string outputFileName) {
+bool PlatformHelper::fileExists(const std::string &outputFileName) {
     QFileInfo confP(QString::fromStdString(outputFileName));
     return confP.exists();
 }

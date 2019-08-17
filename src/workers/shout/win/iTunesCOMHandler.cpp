@@ -1,19 +1,8 @@
-#include <windows.h>
+#ifdef _WIN32
 
-#include <ActiveQt/QAxBase>
-#include <ActiveQt/QAxObject>
-
-#include "src/workers/shout/shout.h" 
 #include "iTunesCOMHandler.h"
-#include "src/helpers/stringHelper/stringHelper.cpp"
 
-#include <QMetaObject>
-#include <QMetaMethod>
-#include <QObject>
-#include <QCoreApplication>
-#include <QDateTime>
-
-iTunesCOMHandler::iTunesCOMHandler(QAxObject *iTunesObj, ShoutWorker *worker) : iTunesObj(iTunesObj), worker(worker) {
+iTunesCOMHandler::iTunesCOMHandler(QAxObject *iTunesObj, ShoutThread *worker) : iTunesObj(iTunesObj), worker(worker) {
     this->shoutHelper();
 };
 
@@ -41,7 +30,7 @@ void iTunesCOMHandler::shoutHelper(QVariant iTrack) {
     }
 
     //if still empty, shout nothing
-    if (trackObj == NULL) return this->worker->shoutEmpty();
+    if (trackObj == NULL) return this->worker->_shoutEmpty();
 
     //get values for shout
     auto tName = trackObj->property("Name").value<QString>().toStdString();
@@ -60,8 +49,10 @@ void iTunesCOMHandler::shoutHelper(QVariant iTrack) {
     delete trackObj;
 
     //compare with old shout, if equivalent, don't reshout
-    if(this->worker->shouldUpload(iPlayerState, tName, tAlbum, tArtist, tDatePlayed, tDateSkipped)) {
+    if(this->worker->_shouldUpload(iPlayerState, tName, tAlbum, tArtist, tDatePlayed, tDateSkipped)) {
         //shout !
-        this->worker->shoutFilled(tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState, tYear);
+        this->worker->_shoutFilled(tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState, tYear);
     } 
 };
+
+#endif

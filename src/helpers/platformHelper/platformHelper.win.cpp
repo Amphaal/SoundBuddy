@@ -7,24 +7,22 @@
     #include <map>
 	#include <vector>
     #include "src/helpers/iTunesLibParser/iTunesLibParser.h"
-    #include "libs/base64/base64.h"
+    #include "src/_libs/base64/base64.h"
 
-    using namespace std;
-
-    void PlatformHelper::openFileInOS(string cpURL) {
+    void PlatformHelper::openFileInOS(const std::string &cpURL) {
         ShellExecuteA(NULL, "open", "notepad", cpURL.c_str(), NULL, SW_SHOWNORMAL);
     };
 
-    void PlatformHelper::openUrlInBrowser(string cpURL) {
+    void PlatformHelper::openUrlInBrowser(const std::string &cpURL) {
         ShellExecuteA(NULL, "open", cpURL.c_str(), NULL, NULL, SW_SHOWNORMAL);
     };
 
-    string PlatformHelper::getEnvironmentVariable(const char* variable) {
+    std::string PlatformHelper::getEnvironmentVariable(const char* variable) {
         char* buf = nullptr;
         size_t sz = 0;
         if (_dupenv_s(&buf, &sz, variable) == 0 && buf != nullptr)
         {
-            string ret = buf;
+            std::string ret = buf;
             free(buf);
             return ret;
         } else {
@@ -32,14 +30,14 @@
         }
     };
     
-    string PlatformHelper::getITunesPrefFileProbableLocation() {
-        return PlatformHelper::getEnvironmentVariable("APPDATA") + string("\\Apple Computer\\Preferences\\com.apple.iTunes.plist");
+    std::string PlatformHelper::getITunesPrefFileProbableLocation() {
+        return PlatformHelper::getEnvironmentVariable("APPDATA") + std::string("\\Apple Computer\\Preferences\\com.apple.iTunes.plist");
     };
 
-    string PlatformHelper::extractItunesLibLocation(std::string pathToParamFile) {
+    std::string PlatformHelper::extractItunesLibLocation(const std::string &pathToParamFile) {
 
         //get a copy of converted binary plist 
-        auto pathTo_plutil = PlatformHelper::getEnvironmentVariable("PROGRAMFILES") + string("\\Common Files\\Apple\\Apple Application Support\\plutil.exe");
+        auto pathTo_plutil = PlatformHelper::getEnvironmentVariable("PROGRAMFILES") + std::string("\\Common Files\\Apple\\Apple Application Support\\plutil.exe");
         auto destPath = PlatformHelper::getDataStorageDirectory() + "/temp.plist";
         std::string command = "-convert xml1 -o ";
                     command += "\"" + destPath +"\" ";
@@ -57,7 +55,7 @@
         std::vector<BYTE> decodedData = base64_decode(encodedPath);
         
         //reformat from source UTF-16
-        string rAsString;
+        std::string rAsString;
         for (int b = 0; b < decodedData.size() ; b++)
         {
             if(b % 2 == 0) rAsString += decodedData[b];
