@@ -70,6 +70,7 @@
         "qlist": "cpp",
         "qvboxlayout": "cpp",
         "qlabel": "cpp",
-        "qcoreapplication": "cpp"
+        "qcoreapplication": "cpp",
+        "qfileinfo": "cpp"
     },
 }

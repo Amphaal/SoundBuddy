@@ -16,6 +16,7 @@
 #include <QUrl>
 #include <QDir>
 #include <QFileInfo>
+#include <QDebug>
 
 ///
 /// Exceptions
@@ -75,8 +76,9 @@ class ConfigHelper {
             auto config = this->accessConfig();
             auto mem = config.FindMember(param.toUtf8());
             if(mem == config.MemberEnd()) return "";
-            auto cParam = param.toStdString().c_str();
-            return !config[cParam].IsString() ? "" : config[cParam].GetString();
+            qDebug() << param;
+            auto cParam = param.toStdString();
+            return !config[cParam.c_str()].IsString() ? "" : config[cParam.c_str()].GetString();
         }
 
         //get full path of the config file

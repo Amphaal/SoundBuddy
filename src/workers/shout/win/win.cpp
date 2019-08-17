@@ -19,6 +19,8 @@
 
 void ShoutThread::run() {
     
+    this->_inst();
+    
     //start with log
     emit this->printLog(I18n::tr()->Shout_WaitITunes());
     

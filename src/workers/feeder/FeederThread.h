@@ -11,7 +11,7 @@
 
 #include "_exceptions.hpp"
 
-#include "src/workers/base/ITNZThread.h"
+#include "src/workers/base/ITNZThread.hpp"
 #include "src/helpers/_const.hpp"
 #include "src/helpers/platformHelper/platformHelper.h"
 #include "src/helpers/stringHelper/stringHelper.hpp"
@@ -46,8 +46,8 @@ class FeederThread : public ITNZThread {
         rapidjson::Document* _libAsJSON = nullptr;
         rapidjson::Document* _libWarningsAsJSON = nullptr;
         
-        static const inline QSet<QString> _requiredAttrs = {"Track ID", "Track Number", "Year", "Name", "Album Artist", "Album", "Genre", "Date Added"};
-        static const inline QSet<QString> _ucwordsAttrs = {"Album Artist", "Album", "Genre"};
+        static const inline QSet<QString> _requiredAttrs {"Track ID", "Track Number", "Year", "Name", "Album Artist", "Album", "Genre", "Date Added"};
+        static const inline QSet<QString> _ucwordsAttrs {"Album Artist", "Album", "Genre"};
 
         void _processFile(const QString &xmlFileLocation);
         void _generateJSON(const QString &xmlFileLocation);

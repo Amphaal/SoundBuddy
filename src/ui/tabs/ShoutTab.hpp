@@ -33,8 +33,8 @@ class ShoutTab : public TemplateTab {
         }
 
     private:
-        ConfigHelper *cHelper = 0;
-        QCheckBox *checkAutoLaunch = 0;
+        ConfigHelper *cHelper = nullptr;
+        QCheckBox *checkAutoLaunch = nullptr;
 
         void changeAutoLaunch(bool isChecked) {
             this->cHelper->updateParamValue(AUTO_RUN_SHOUT_PARAM_NAME, isChecked ? "true" : "false");

@@ -12,13 +12,13 @@
             },
             "osx": {
                 "MIMode": "lldb",
-                "program": "${workspaceFolder}/buildDebug/bin/FeedTNZ.app/Contents/MacOS/feedtnz",
+                "program": "${workspaceFolder}/build/Debug/bin/FeedTNZ.app/Contents/MacOS/feedtnz",
             },
             "type": "cppdbg",
             "request": "launch",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/buildDebug/bin/",
+            "cwd": "${workspaceFolder}/build/Debug/bin/",
             "environment": [],
             "externalConsole": false,
             "preLaunchTask": "Debug - 3. Build"

@@ -93,10 +93,3 @@ bool ShoutThread::shouldUpload(bool iPlayerState, QString tName, QString tAlbum,
 
     return !isHashIdentical;
 }
-
-#ifdef Q_OS_OSX
-    #include "mac/mac.cpp"
-#endif
-#ifdef _WIN32
-    #include "win/win.cpp"
-#endif

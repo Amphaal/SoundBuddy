@@ -5,7 +5,7 @@
 #include <QString>
 #include <rapidjson/document.h>
 
-#include "src/workers/base/ITNZThread.h"
+#include "src/workers/base/ITNZThread.hpp"
 #include "src/helpers/_const.hpp"
 #include "src/helpers/outputHelper/outputHelper.cpp"
 

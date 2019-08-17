@@ -11,6 +11,8 @@
 
 void ShoutThread::run() { 
 
+    this->_inst();
+
     emit printLog(I18n::tr()->Shout_StartListening());
 
     //define applescript to get shout values

@@ -22,10 +22,14 @@ void LightWidget::paintEvent(QPaintEvent *) {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setBrush(m_color);
+
+    auto height = this->height();
+
     painter.drawEllipse(
-        (double)height() * .25, 
-        (double)height() * .25, 
-        (double)height() * .75, 
-        (double)height() * .75
+        qFloor(height * .25), 
+        qFloor(height * .25), 
+        qFloor(height * .75), 
+        qFloor(height * .75)
     );
+
 };
