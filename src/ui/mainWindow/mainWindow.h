@@ -27,8 +27,8 @@
 
 #include "src/_libs/autoupdatercore/updater.h"
 
-#include "src/helpers/_const.cpp"
-#include "src/helpers/configHelper/authHelper.cpp"
+#include "src/helpers/_const.hpp"
+#include "src/helpers/configHelper/authHelper.hpp"
 #include "src/helpers/platformHelper/platformHelper.h"
 
 #include "src/ui/tabs/ShoutTab.cpp"
@@ -49,17 +49,17 @@ class MainWindow : public QMainWindow {
         bool userNotificationOnUpdateCheck = false;
         QSystemTrayIcon *trayIcon;
         QFileSystemWatcher *configWatcher;
-        std::vector<QAction*> myWTNZActions;
-        std::vector<QAction*> warningsfileActions;
+        QVector<QAction*> myWTNZActions;
+        QVector<QAction*> warningsfileActions;
         AuthHelper aHelper;
         ConfigHelper cHelper;
         OutputHelper owHelper;
-        std::string wtnzUrl;
-        QtAutoUpdater::Updater *updater;
+        QString wtnzUrl;
+        QtAutoUpdater::Updater *updater = nullptr;
         
         //statusbar
         void _initStatusBar();
-        void updateStatusBar(const std::string &message, const TLW_Colors &color);
+        void updateStatusBar(const QString &message, const TLW_Colors &color);
         QLabel *statusLabel;
         TrafficLightWidget *statusLight;
 
@@ -101,8 +101,8 @@ class MainWindow : public QMainWindow {
         void iconActivated(QSystemTrayIcon::ActivationReason reason);
 
         //update handling
-        QAction *versionAction;
-        QAction *cfugAction;
+        QAction *versionAction = nullptr;
+        QAction *cfugAction = nullptr;
         void setupAutoUpdate();
         void onUpdateChecked(bool hasUpdate, bool hasError);
         void requireUpdateCheckFromUser();
@@ -110,14 +110,14 @@ class MainWindow : public QMainWindow {
         void UpdateSearch_switchUI(bool isSearching);
 
         //tabs
-        ShoutTab *st = 0; 
-        FeederTab *ft = 0;
+        ShoutTab *st = nullptr; 
+        FeederTab *ft = nullptr;
         void _initUITabs();
 
         //workers
-        ShoutThread *sw = 0;
-        FeederThread *fw = 0;
-        ConnectivityThread *cw = 0;
+        ShoutThread *sw = nullptr;
+        FeederThread *fw = nullptr;
+        ConnectivityThread *cw = nullptr;
         void startupConnectivityThread();
         void startupShoutThread();
         void startupFeederThread();

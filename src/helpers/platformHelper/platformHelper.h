@@ -5,7 +5,7 @@
 
 #include <rapidjson/document.h>
 
-#include "src/helpers/_const.cpp"
+#include "src/helpers/_const.hpp"
 #include "src/version.h"
 
 #include <QSettings>
@@ -17,20 +17,20 @@
 class PlatformHelper
 {
     public:
-        static void openFileInOS(const std::string &cpURL);
-        static void openUrlInBrowser(const std::string &cpURL);
-        static std::string getITunesPrefFileProbableLocation();
-        static std::string getEnvironmentVariable(const char* variable);
-        static std::string extractItunesLibLocation(const std::string &pathToParamFile);
+        static void openFileInOS(const QString &cpURL);
+        static void openUrlInBrowser(const QString &cpURL);
+        static QString getITunesPrefFileProbableLocation();
+        static QString getEnvironmentVariable(const char* variable);
+        static QString extractItunesLibLocation(const QString &pathToParamFile);
         static bool isLaunchingAtStartup();
         static void switchStartupLaunch();
-        static bool fileExists(const std::string &filename);
-        static std::string getAppDirectory();
-        static std::string getDataStorageDirectory();
+        static bool fileExists(const QString &filename);
+        static QString getAppDirectory();
+        static QString getDataStorageDirectory();
 
     private:
         static QSettings* getStartupSettingsHandler();
-        static std::string getPathToApp();
-        static std::string getPathToAppFromStartupSettings(QSettings *settings);
-        static std::string prepareStandardPath(QStandardPaths::StandardLocation pathType);
+        static QString getPathToApp();
+        static QString getPathToAppFromStartupSettings(QSettings *settings);
+        static QString prepareStandardPath(QStandardPaths::StandardLocation pathType);
 };

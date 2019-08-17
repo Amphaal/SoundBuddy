@@ -15,8 +15,8 @@ class I18n {
             return m_pInstance;
         }
 
-        static std::string getLocaleName() {
-            return QLocale::system().name().toStdString();
+        static QString getLocaleName() {
+            return QLocale::system().name();
         }
 
     private:

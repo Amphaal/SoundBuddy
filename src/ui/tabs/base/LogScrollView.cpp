@@ -3,7 +3,7 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QVBoxLayout>
 #include <QtCore/QList>
-#include "src/helpers/_const.cpp"
+#include "src/helpers/_const.hpp"
 
 class LogScrollView : public QWidget {
     
@@ -32,7 +32,7 @@ class LogScrollView : public QWidget {
             this->setPalette(palette);
         }
 
-        void addMessage(const std::string & newMessage, const bool isError = false) {
+        void addMessage(const QString & newMessage, const bool isError = false) {
             auto msg = QString::fromStdString(newMessage);
             auto label = new QLabel(msg);
             label->setWordWrap(true);
@@ -47,7 +47,7 @@ class LogScrollView : public QWidget {
             this->layout()->addWidget(label);
         }
 
-        void updateLatestMessage(const std::string & newMessage) {
+        void updateLatestMessage(const QString & newMessage) {
             
             auto msg = QString::fromStdString(newMessage);
             auto i = this->layout()->count() - 1; //count items in layout

@@ -22,7 +22,7 @@ void MainWindow::setupConfigFileWatcher() {
     this->updateMenuItemsFromConfigValues();
 
     auto configFilePath = this->aHelper.getConfigFileFullPath();
-    auto filesToWatch = QStringList(configFilePath.c_str());
+    auto filesToWatch = QStringList(configFilePath.toUtf8());
     this->configWatcher = new QFileSystemWatcher(filesToWatch);
     
     QObject::connect(this->configWatcher, &QFileSystemWatcher::fileChanged,
@@ -59,7 +59,7 @@ void MainWindow::updateWarningsMenuItem() {
 
 
 void MainWindow::accessWTNZ() {
-    PlatformHelper::openUrlInBrowser(this->wtnzUrl.c_str());
+    PlatformHelper::openUrlInBrowser(this->wtnzUrl.toUtf8());
 };
 
 //open the config file into the OS browser
@@ -101,18 +101,18 @@ void MainWindow::onUpdateChecked(bool hasUpdate, bool hasError) {
     if(this->userNotificationOnUpdateCheck) {
         this->userNotificationOnUpdateCheck = false;
         
-        std::string title = (std::string)APP_NAME + " - " + I18n::tr()->Menu_CheckForUpgrades();
-        std::string content = this->updater->errorLog().toStdString();
+        QString title = (QString)APP_NAME + " - " + I18n::tr()->Menu_CheckForUpgrades();
+        QString content = this->updater->errorLog();
 
         if(!hasUpdate && !hasError) {
             QMessageBox::information(this, 
-                QString(title.c_str()), 
-                QString(content.c_str()), 
+                QString(title.toUtf8()), 
+                QString(content.toUtf8()), 
                 QMessageBox::Ok, QMessageBox::Ok);
         } else if (hasError) {
             QMessageBox::warning(this, 
-                QString(title.c_str()), 
-                QString(content.c_str()), 
+                QString(title.toUtf8()), 
+                QString(content.toUtf8()), 
                 QMessageBox::Ok, QMessageBox::Ok);
         }
     }
@@ -124,12 +124,12 @@ void MainWindow::onUpdateChecked(bool hasUpdate, bool hasError) {
     }
 
     //if has update
-    std::string title = (std::string)APP_NAME + " - " + I18n::tr()->Alert_UpdateAvailable_Title();
-    std::string content = I18n::tr()->Alert_UpdateAvailable_Text();
+    QString title = (QString)APP_NAME + " - " + I18n::tr()->Alert_UpdateAvailable_Title();
+    QString content = I18n::tr()->Alert_UpdateAvailable_Text();
 
     auto msgboxRslt = QMessageBox::information(this, 
-                QString(title.c_str()), 
-                QString(content.c_str()), 
+                QString(title.toUtf8()), 
+                QString(content.toUtf8()), 
                 QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes
     );
     
@@ -155,8 +155,8 @@ void MainWindow::checkForAppUpdates() {
     this->updater->checkForUpdates();
 }
 
-void MainWindow::updateStatusBar(const std::string &message, const TLW_Colors &color) {
-    this->statusLabel->setText(QString(message.c_str()));
+void MainWindow::updateStatusBar(const QString &message, const TLW_Colors &color) {
+    this->statusLabel->setText(QString(message.toUtf8()));
     this->statusLight->setCurrentIndex(color);
 }
 

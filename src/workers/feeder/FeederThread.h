@@ -3,18 +3,15 @@
 #include <rapidjson/document.h>
 #include <rapidjson/pointer.h>
 
-#include <string>
 #include <fstream>
 #include <exception>
-#include <map>
-#include <set>
-
-#include <QtWidgets/QWidget>
+#include <QSet>
+#include <QString>
 
 #include "_exceptions.hpp"
 
 #include "src/workers/base/ITNZThread.h"
-#include "src/helpers/_const.cpp"
+#include "src/helpers/_const.hpp"
 #include "src/helpers/platformHelper/platformHelper.h"
 #include "src/helpers/stringHelper/stringHelper.cpp"
 #include "src/helpers/outputHelper/outputHelper.cpp"
@@ -48,11 +45,11 @@ class FeederThread : public ITNZThread {
         rapidjson::Document* _libAsJSON = nullptr;
         rapidjson::Document* _libWarningsAsJSON = nullptr;
         
-        static const inline set<string> _requiredAttrs = {"Track ID", "Track Number", "Year", "Name", "Album Artist", "Album", "Genre", "Date Added"};
-        static const inline set<string> _ucwordsAttrs = {"Album Artist", "Album", "Genre"};
+        static const inline QSet<QString> _requiredAttrs = {"Track ID", "Track Number", "Year", "Name", "Album Artist", "Album", "Genre", "Date Added"};
+        static const inline QSet<QString> _ucwordsAttrs = {"Album Artist", "Album", "Genre"};
 
-        void _processFile(const std::string &xmlFileLocation);
-        void _generateJSON(const std::string &xmlFileLocation);
+        void _processFile(const QString &xmlFileLocation);
+        void _generateJSON(const QString &xmlFileLocation);
         void _standardizeJSON();
 
         ///
@@ -63,6 +60,6 @@ class FeederThread : public ITNZThread {
         void _tracksEmitHelper();
 
         //seek in iTunes preference file the library location
-        std::string _getITunesLibLocation();
+        QString _getITunesLibLocation();
 
 };

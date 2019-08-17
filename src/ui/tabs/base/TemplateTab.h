@@ -29,7 +29,7 @@ class TemplateTab : public QWidget {
         void scrollUpdate(int min, int max);
 
         void createNewLog();
-        void printLog(const std::string &message, const bool replacePreviousLine = false, const bool isError = false);
+        void printLog(const QString &message, const bool replacePreviousLine = false, const bool isError = false);
         void onThreadEnd();
         void onThreadStart();
 };

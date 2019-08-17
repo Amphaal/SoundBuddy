@@ -4,10 +4,10 @@
 void MainWindow::_initUI() {
 
     //values specific to this
-    std::string stdTitle = IS_DEBUG_APP ? (std::string)"DEBUG - " + APP_NAME : APP_NAME;
-    this->setWindowTitle(QString(stdTitle.c_str()));
+    QString stdTitle = IS_DEBUG_APP ? (QString)"DEBUG - " + APP_NAME : APP_NAME;
+    this->setWindowTitle(QString(stdTitle.toUtf8()));
     this->setMinimumSize(QSize(480, 400));
-    this->setWindowIcon(QIcon(LOCAL_ICON_PNG_PATH.c_str()));
+    this->setWindowIcon(QIcon(LOCAL_ICON_PNG_PATH.toUtf8()));
 
     //helpers
     this->_initUITabs();
@@ -24,7 +24,7 @@ void MainWindow::_initUI() {
 void MainWindow::_initUITray() {
     auto trayIcon = new QSystemTrayIcon;
     this->trayIcon = trayIcon;
-    trayIcon->setIcon(QIcon(LOCAL_REVERSE_ICON_PNG_PATH.c_str()));
+    trayIcon->setIcon(QIcon(LOCAL_REVERSE_ICON_PNG_PATH.toUtf8()));
     trayIcon->setToolTip(this->windowTitle());
     
     QObject::connect(
@@ -108,10 +108,10 @@ void MainWindow::_initUIMenu() {
 
 QMenu* MainWindow::_getOptionsMenu() {
 
-    QMenu *optionsMenuItem = new QMenu(I18n::tr()->Menu_Options().c_str());
+    QMenu *optionsMenuItem = new QMenu(I18n::tr()->Menu_Options().toUtf8());
 
     //add to system startup Action
-    auto atssAction = new QAction(I18n::tr()->Menu_AddToStartup().c_str(), optionsMenuItem);
+    auto atssAction = new QAction(I18n::tr()->Menu_AddToStartup().toUtf8(), optionsMenuItem);
     atssAction->setCheckable(true);
     QObject::connect(
         atssAction, &QAction::triggered,
@@ -122,7 +122,7 @@ QMenu* MainWindow::_getOptionsMenu() {
     }
 
     //for checking the upgrades available
-    this->cfugAction = new QAction(I18n::tr()->Menu_CheckForUpgrades().c_str(), optionsMenuItem);
+    this->cfugAction = new QAction(I18n::tr()->Menu_CheckForUpgrades().toUtf8(), optionsMenuItem);
         QObject::connect(
         this->cfugAction, &QAction::triggered,
         this, &MainWindow::requireUpdateCheckFromUser
@@ -141,24 +141,24 @@ QMenu* MainWindow::_getOptionsMenu() {
 
 void MainWindow::UpdateSearch_switchUI(bool isSearching) {
     this->cfugAction->setEnabled(!isSearching);
-    std::string descr = APP_FULL_DENOM;
+    QString descr = APP_FULL_DENOM;
     if(isSearching) descr += " - " + I18n::tr()->SearchingForUpdates();
-    this->versionAction->setText(descr.c_str());
+    this->versionAction->setText(descr.toUtf8());
 }
 
 QMenu* MainWindow::_getFileMenu() {
 
-    auto fileMenuItem = new QMenu(I18n::tr()->Menu_File().c_str());
+    auto fileMenuItem = new QMenu(I18n::tr()->Menu_File().toUtf8());
 
     //monitorAction
-    auto monitorAction = new QAction(I18n::tr()->Menu_OpenMonitor().c_str(), fileMenuItem);
+    auto monitorAction = new QAction(I18n::tr()->Menu_OpenMonitor().toUtf8(), fileMenuItem);
     QObject::connect(
         monitorAction, &QAction::triggered,
         this, &MainWindow::trueShow
     );
 
     //myWTNZAction
-    auto myWTNZAction = new QAction(I18n::tr()->Menu_MyWTNZ().c_str(), fileMenuItem);
+    auto myWTNZAction = new QAction(I18n::tr()->Menu_MyWTNZ().toUtf8(), fileMenuItem);
     myWTNZAction->setEnabled(false);
     QObject::connect(
         myWTNZAction, &QAction::triggered,
@@ -167,14 +167,14 @@ QMenu* MainWindow::_getFileMenu() {
     this->myWTNZActions.push_back(myWTNZAction);
 
     //updateConfigAction
-    auto updateConfigAction = new QAction(I18n::tr()->Menu_UpdateConfig().c_str(), fileMenuItem);
+    auto updateConfigAction = new QAction(I18n::tr()->Menu_UpdateConfig().toUtf8(), fileMenuItem);
     QObject::connect(
         updateConfigAction, &QAction::triggered,
         this, &MainWindow::openConfigFile
     );
 
     //openWarningsAction
-    auto openWarningsAction = new QAction(I18n::tr()->Menu_OpenWarnings().c_str(), fileMenuItem);
+    auto openWarningsAction = new QAction(I18n::tr()->Menu_OpenWarnings().toUtf8(), fileMenuItem);
     openWarningsAction->setEnabled(false);
     QObject::connect(
         openWarningsAction, &QAction::triggered,
@@ -183,7 +183,7 @@ QMenu* MainWindow::_getFileMenu() {
     this->warningsfileActions.push_back(openWarningsAction);
 
     //quit
-    auto quitAction = new QAction(I18n::tr()->Menu_Quit().c_str(), fileMenuItem);
+    auto quitAction = new QAction(I18n::tr()->Menu_Quit().toUtf8(), fileMenuItem);
     QObject::connect(
         quitAction, &QAction::triggered,
         this, &MainWindow::forcedClose
@@ -219,13 +219,13 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 
     //if running shout thread
     if(this->sw && this->sw->isRunning()) {
-        auto msgboxRslt = QMessageBox::warning(this, QString(I18n::tr()->Alert_RunningWorker_Title().c_str()), 
-                    QString(I18n::tr()->Alert_RunningWorker_Text().c_str()), 
+        auto msgboxRslt = QMessageBox::warning(this, QString(I18n::tr()->Alert_RunningWorker_Title().toUtf8()), 
+                    QString(I18n::tr()->Alert_RunningWorker_Text().toUtf8()), 
                     QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
         
         if(msgboxRslt == QMessageBox::Yes) {
             //makes sure to wait for shoutThread to end. Limits COM app retention on Windows
-            this->sw->exit();
+            this->sw->quit();
             this->sw->wait();
         } else {
             event->ignore();

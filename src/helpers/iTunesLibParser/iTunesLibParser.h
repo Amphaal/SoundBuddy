@@ -5,18 +5,18 @@
 class iTunesLibParser {
     
     public:
-        iTunesLibParser(std::string pathToFile);
+        iTunesLibParser(QString pathToFile);
         ~iTunesLibParser();
-        std::string ToJSON();
+        QString ToJSON();
 
     private:
-        std::string _output;
-        std::string _pathToFile;
+        QString _output;
+        QString _pathToFile;
         std::ifstream _stream;
         
         int _curLevel;
-        std::string _curAttr;
-        std::string _curVal;
+        QString _curAttr;
+        QString _curVal;
         bool _awaitingAttr = false;
         bool _attr_IsClosingAttr = false;
         bool _attr_IsNoPairAttr = false;
@@ -28,8 +28,8 @@ class iTunesLibParser {
 
         void processFile();
         void skipUntilInterestingData();
-        void attrToJSON(std::string &attr);
-        bool ifLastRemove(const char * c, std::string & target);
+        void attrToJSON(QString &attr);
+        bool ifLastRemove(const char * c, QString & target);
         void removeVirgula();
 
         

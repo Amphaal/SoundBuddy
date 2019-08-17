@@ -14,7 +14,7 @@ void ShoutThread::run() {
     emit printLog(I18n::tr()->Shout_StartListening());
 
     //define applescript to get shout values
-    std::string script = "tell application \"iTunes\" \n ";
+    QString script = "tell application \"iTunes\" \n ";
     script += "if skipped date of current track is not missing value then \n "
               "set SkpDt to skipped date of current track as «class isot» as string \n "
               "else \n "
@@ -45,21 +45,21 @@ void ShoutThread::run() {
         p.write(QString::fromStdString(script).toUtf8());
         p.closeWriteChannel();
         p.waitForReadyRead();
-        auto result = p.readAll().toStdString();
+        auto result = p.readAll();
         p.waitForFinished(-1);
         p.deleteLater();
 
         //default values and inst
-        std::string tName;
-        std::string tAlbum;
-        std::string tArtist;
-        std::string tGenre;
+        QString tName;
+        QString tAlbum;
+        QString tArtist;
+        QString tGenre;
         int iDuration;
         int iPlayerPos;
         bool iPlayerState = false;
         //bool iRepeatMode;
-        std::string tDateSkipped;
-        std::string tDatePlayed;
+        QString tDateSkipped;
+        QString tDatePlayed;
         int tYear;
 
         //if has result
@@ -72,7 +72,7 @@ void ShoutThread::run() {
             
             //cast to json
             rapidjson::Document trackObj;
-            trackObj.Parse(result.c_str());
+            trackObj.Parse(result.toUtf8());
             
             //get values for shout
             tName = trackObj[0].GetString();
@@ -82,7 +82,7 @@ void ShoutThread::run() {
             iDuration = trackObj[4].GetFloat();
             tYear = trackObj[5].GetFloat();
             iPlayerPos = trackObj[6].GetFloat();
-            iPlayerState = std::string(trackObj[7].GetString()) == "paused" ? 0 : 1;
+            iPlayerState = QString(trackObj[7].GetString()) == "paused" ? 0 : 1;
             tDateSkipped = trackObj[8].GetString();
             tDatePlayed = trackObj[9].GetString();
             

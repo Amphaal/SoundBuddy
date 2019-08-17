@@ -12,16 +12,16 @@
     #include "src/helpers/stringHelper/stringHelper.cpp"
 
 
-    void PlatformHelper::openFileInOS(const std::string &cpURL) {
-        std::string command = "open \"" + cpURL + "\"";
-        system(command.c_str());
+    void PlatformHelper::openFileInOS(const QString &cpURL) {
+        QString command = "open \"" + cpURL + "\"";
+        system(command.toUtf8());
     };
 
-    void PlatformHelper::openUrlInBrowser(const std::string &cpURL) {
+    void PlatformHelper::openUrlInBrowser(const QString &cpURL) {
         PlatformHelper::openFileInOS(cpURL);
     };
 
-    std::string PlatformHelper::getEnvironmentVariable(const char* variable) {
+    QString PlatformHelper::getEnvironmentVariable(const char* variable) {
     
         const char *homeDir = getenv(variable);
 
@@ -33,18 +33,18 @@
         return homeDir;
     };
 
-    std::string PlatformHelper::getITunesPrefFileProbableLocation() {
-        return PlatformHelper::getEnvironmentVariable("HOME") + std::string("/Library/Preferences/com.apple.iTunes.plist");
+    QString PlatformHelper::getITunesPrefFileProbableLocation() {
+        return PlatformHelper::getEnvironmentVariable("HOME") + QString("/Library/Preferences/com.apple.iTunes.plist");
     };
 
-    std::string PlatformHelper::extractItunesLibLocation(const std::string &pathToParamFile) {
+    QString PlatformHelper::extractItunesLibLocation(const QString &pathToParamFile) {
         //get path to iTunes as string
-        QSettings plist(pathToParamFile.c_str(), QSettings::NativeFormat);
+        QSettings plist(pathToParamFile.toUtf8(), QSettings::NativeFormat);
         auto pathToLib = plist.value("NSNavLastRootDirectory").toString();
 
         //get parent directory
         QFileInfo mapP(pathToLib);
-        auto pre = mapP.dir().absolutePath().toStdString();
+        auto pre = mapP.dir().absolutePath();
 
         //replace tilda with full path
         StringHelper::replaceFirstOccurrence(pre, "~", PlatformHelper::getEnvironmentVariable("HOME"));
@@ -54,18 +54,18 @@
 
     QSettings* PlatformHelper::getStartupSettingsHandler() {
         auto cPath = PlatformHelper::getEnvironmentVariable("HOME") + MAC_REG_STARTUP_LAUNCH_PATH; //computed path
-        auto settings = new QSettings(cPath.c_str(), QSettings::NativeFormat);
+        auto settings = new QSettings(cPath.toUtf8(), QSettings::NativeFormat);
         return settings;
     }
 
-    std::string PlatformHelper::getPathToApp() {
-        return QCoreApplication::applicationFilePath().toStdString();
+    QString PlatformHelper::getPathToApp() {
+        return QCoreApplication::applicationFilePath();
     }
 
-    std::string PlatformHelper::getPathToAppFromStartupSettings(QSettings *settings) {
+    QString PlatformHelper::getPathToAppFromStartupSettings(QSettings *settings) {
         QStringList c = settings->value("ProgramArguments").toStringList();
         if(!c.size()) return ""; //if file not exists
-        return c.takeFirst().toStdString();
+        return c.takeFirst();
     }
 
     void PlatformHelper::switchStartupLaunch() {
@@ -78,11 +78,11 @@
             settings->setValue("ExitTimeOut", 0);
             settings->setValue("RunAtLoad", true);
             settings->setValue("LimitLoadToSessionType", "Aqua");
-            QStringList args(PlatformHelper::getPathToApp().c_str());
+            QStringList args(PlatformHelper::getPathToApp().toUtf8());
             settings->setValue("ProgramArguments", args);
         } else {
             auto cPath = PlatformHelper::getEnvironmentVariable("HOME") + MAC_REG_STARTUP_LAUNCH_PATH; //computed path
-            remove(cPath.c_str());
+            remove(cPath.toUtf8());
         }
     }
 

@@ -11,24 +11,24 @@ bool PlatformHelper::isLaunchingAtStartup() {
 }
 
 //ensure a file exists
-bool PlatformHelper::fileExists(const std::string &outputFileName) {
+bool PlatformHelper::fileExists(const QString &outputFileName) {
     QFileInfo confP(QString::fromStdString(outputFileName));
     return confP.exists();
 }
 
 /* STD PATHS */
 
-std::string PlatformHelper::getAppDirectory() {
-    return QCoreApplication::applicationDirPath().toStdString();
+QString PlatformHelper::getAppDirectory() {
+    return QCoreApplication::applicationDirPath();
 
 }
-std::string PlatformHelper::getDataStorageDirectory() {
+QString PlatformHelper::getDataStorageDirectory() {
     return PlatformHelper::prepareStandardPath(QStandardPaths::AppLocalDataLocation);
 }
 
-std::string PlatformHelper::prepareStandardPath(QStandardPaths::StandardLocation pathType) {
-    auto path = QStandardPaths::writableLocation(pathType).toStdString();
-    QDir destDir(path.c_str());
+QString PlatformHelper::prepareStandardPath(QStandardPaths::StandardLocation pathType) {
+    auto path = QStandardPaths::writableLocation(pathType);
+    QDir destDir(path.toUtf8());
     if (!destDir.exists()) destDir.mkpath(".");
     return path;
 }

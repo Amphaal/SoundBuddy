@@ -1,11 +1,11 @@
 #include "iTunesLibParser.h"
 
-iTunesLibParser::iTunesLibParser(std::string pathToFile) : _pathToFile(pathToFile), _stream(pathToFile) {}
+iTunesLibParser::iTunesLibParser(QString pathToFile) : _pathToFile(pathToFile), _stream(pathToFile) {}
 iTunesLibParser::~iTunesLibParser() {
     _stream.close();
 };
 
-std::string iTunesLibParser::ToJSON() {
+QString iTunesLibParser::ToJSON() {
     skipUntilInterestingData();
     processFile();
     return _output;
@@ -57,7 +57,7 @@ void iTunesLibParser::removeVirgula() {
     ifLastRemove(",", _output);
 }
 
-bool iTunesLibParser::ifLastRemove(const char * c, std::string & target) {
+bool iTunesLibParser::ifLastRemove(const char * c, QString & target) {
     if(target.back() == *c) {
         target.pop_back();
         return true;
@@ -65,7 +65,7 @@ bool iTunesLibParser::ifLastRemove(const char * c, std::string & target) {
     return false;
 }
 
-void iTunesLibParser::attrToJSON(std::string &attr) {
+void iTunesLibParser::attrToJSON(QString &attr) {
     
     auto c_next = C_NEXT_ARRAY;
     auto c_open = C_OPEN_STR;
@@ -101,7 +101,7 @@ void iTunesLibParser::attrToJSON(std::string &attr) {
 
     //apply parsing
     if(_attr_IsNoPairAttr) {
-        if(_attr_IsEnclosingAttr) _output += (std::string)c_open + c_close + c_next;
+        if(_attr_IsEnclosingAttr) _output += (QString)c_open + c_close + c_next;
         else _output += attr + c_next;
     } else if (_attr_IsEnclosingAttr) {
         if (_attr_IsClosingAttr) { 

@@ -33,15 +33,15 @@ void iTunesCOMHandler::shoutHelper(QVariant iTrack) {
     if (trackObj == NULL) return this->worker->_shoutEmpty();
 
     //get values for shout
-    auto tName = trackObj->property("Name").value<QString>().toStdString();
-    auto tAlbum = trackObj->property("Album").value<QString>().toStdString();
-    auto tArtist = trackObj->property("Artist").value<QString>().toStdString();
-    auto tGenre = trackObj->property("Genre").value<QString>().toStdString();
+    auto tName = trackObj->property("Name").value<QString>();
+    auto tAlbum = trackObj->property("Album").value<QString>();
+    auto tArtist = trackObj->property("Artist").value<QString>();
+    auto tGenre = trackObj->property("Genre").value<QString>();
     auto iDuration = trackObj->property("Duration").value<int>();
     auto iPlayerPos = this->iTunesObj->property("PlayerPosition").value<int>();
     auto iPlayerState = this->iTunesObj->property("PlayerState").value<bool>();
-    auto tDatePlayed = trackObj->property("PlayedDate").value<QDateTime>().toString(Qt::ISODate).toStdString();
-    auto tDateSkipped = trackObj->property("SkippedDate").value<QDateTime>().toString(Qt::ISODate).toStdString();
+    auto tDatePlayed = trackObj->property("PlayedDate").value<QDateTime>().toString(Qt::ISODate);
+    auto tDateSkipped = trackObj->property("SkippedDate").value<QDateTime>().toString(Qt::ISODate);
     auto tYear = trackObj->property("Year").value<int>();
 
     //clear

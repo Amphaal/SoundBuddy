@@ -44,7 +44,7 @@ void FeederThread::_generateLibJSONFile() {
     } else {
         //remove old warning file
         auto pToRem = this->_ohWrn->getOutputPath();
-        std::remove(pToRem.c_str());
+        std::remove(pToRem.toUtf8());
     }
 
     emit printLog(I18n::tr()->Feeder_Unmolding(OUTPUT_FILE_PATH));  //EMIT
@@ -60,7 +60,7 @@ void FeederThread::_generateLibJSONFile() {
 //upload
 void FeederThread::_uploadLibToServer() {
     emit printLog(I18n::tr()->Feeder_StartSend());  //EMIT
-    string response = this->_ohLib->uploadFile();
+    QString response = this->_ohLib->uploadFile();
     if (response != "") {
         emit printLog(I18n::tr()->HTTP_ServerResponded(response));  //EMIT
     } else {
@@ -69,7 +69,7 @@ void FeederThread::_uploadLibToServer() {
 }
 
 
-void FeederThread::_processFile(const std::string &xmlFileLocation) {
+void FeederThread::_processFile(const QString &xmlFileLocation) {
     this->_recCount = 0;
     this->_expectedCount = 0;
 
@@ -88,14 +88,14 @@ void FeederThread::_processFile(const std::string &xmlFileLocation) {
 }
 
 //navigate through XML and generate object
-void FeederThread::_generateJSON(const std::string &xmlFileLocation) {
+void FeederThread::_generateJSON(const QString &xmlFileLocation) {
     
     emit printLog(I18n::tr()->Feeder_PredigestXML()); //EMIT
     
-    //read xml as string
+    //read xml as QString
     iTunesLibParser *doc;
     try {
-        doc = new iTunesLibParser(xmlFileLocation.c_str());
+        doc = new iTunesLibParser(xmlFileLocation.toUtf8());
     } catch(...) {
         return throw FTNZXMLLibFileUnreadableException();
     }
@@ -104,7 +104,7 @@ void FeederThread::_generateJSON(const std::string &xmlFileLocation) {
 
     //try parse to temp JSON
     rapidjson::Document d;
-    rapidjson::ParseResult s = d.Parse(xmlAsJSONString.c_str());
+    rapidjson::ParseResult s = d.Parse(xmlAsJSONString.toUtf8());
     if(s.IsError()) {
         return throw FTNZXMLLibFileUnreadableException();
     }
@@ -132,19 +132,19 @@ void FeederThread::_standardizeJSON() {
     rapidjson::Document::AllocatorType &wjAlloc = this->_workingJSON->GetAllocator();
 
     //prepare
-    set<string> tracksIdToRemove = {};
+    QSet<QString> tracksIdToRemove = {};
     this->_recCount = 0;
     this->_expectedCount = this->_workingJSON->MemberCount();
     
     //through each tracks
     for (auto track = this->_workingJSON->MemberBegin(); track != this->_workingJSON->MemberEnd(); ++track) {
         
-        set<string> toRemove = {};
-        set<string> foundRequired = {};
+        QSet<QString> toRemove = {};
+        QSet<QString> foundRequired = {};
 
         //iterate through properties
         for (auto prop = track->value.MemberBegin(); prop != track->value.MemberEnd(); ++prop) {
-            string k = prop->name.GetString();
+            QString k = prop->name.GetString();
             
             //check presence of required attrs
             if (_requiredAttrs.find(k) == _requiredAttrs.end()) {
@@ -155,23 +155,23 @@ void FeederThread::_standardizeJSON() {
         }
 
         //check required attrs, else go warnings
-        set<string> missingAttrs;
+        QStringList missingAttrs;
         set_difference(
             _requiredAttrs.begin(), _requiredAttrs.end(), 
             foundRequired.begin(), foundRequired.end(),
             inserter(missingAttrs, missingAttrs.end())
         );
-        if (missingAttrs.size()) {
+        if (missingAttrs.length()) {
             rapidjson::Value key(track->value["Location"].GetString(), lwajAlloc);
-            auto joined = StringHelper::join(missingAttrs, ", ");
-            rapidjson::Value val(joined.c_str(), lwajAlloc);
+            auto joined = missingAttrs.join(", ");
+            rapidjson::Value val(joined.toUtf8(), lwajAlloc);
             this->_libWarningsAsJSON->AddMember(key, val, lwajAlloc);
             tracksIdToRemove.insert(track->name.GetString());
         }
 
         //remove useless props
         for(auto ktr : toRemove) {
-            track->value.RemoveMember(ktr.c_str());
+            track->value.RemoveMember(ktr.toUtf8());
         }
 
         //set optionnal values default
@@ -183,7 +183,7 @@ void FeederThread::_standardizeJSON() {
     }
 
     //remove tracks with warnings
-    for(auto idtr : tracksIdToRemove) this->_workingJSON->RemoveMember(idtr.c_str());
+    for(auto idtr : tracksIdToRemove) this->_workingJSON->RemoveMember(idtr.toUtf8());
 
     //turn obect based container into an array one
     for (auto track = this->_workingJSON->MemberBegin(); track != this->_workingJSON->MemberEnd(); ++track) {
@@ -206,10 +206,10 @@ void FeederThread::_tracksEmitHelper() {
 }
 
 //seek in iTunes preference file the library location
-string FeederThread::_getITunesLibLocation() {
+QString FeederThread::_getITunesLibLocation() {
     emit printLog(I18n::tr()->Feeder_GetXMLFileLoc());  //EMIT
 
-    std::string pathToPrefs = PlatformHelper::getITunesPrefFileProbableLocation();
+    QString pathToPrefs = PlatformHelper::getITunesPrefFileProbableLocation();
     
     try {
         return PlatformHelper::extractItunesLibLocation(pathToPrefs);

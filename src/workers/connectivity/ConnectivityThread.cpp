@@ -30,7 +30,7 @@ void ConnectivityThread::run() {
         //extract response
         auto response = ev.get_messages()[0]->get_map();
         auto isOk = response["isLoginOk"]->get_bool();
-        std::string accomp = response["accomp"]->get_string();
+        QString accomp = QString::fromStdString(response["accomp"]->get_string());
 
         if(isOk) {
             this->_loggedInUser = accomp;
@@ -93,18 +93,17 @@ void ConnectivityThread::_checkCredentials(bool forceRecheck) {
         auto username = this->_aHelper->getParamValue("username");
         auto password = this->_aHelper->getParamValue("password");
 
-        p.push(sio::string_message::create(username.c_str()));
-        p.push(sio::string_message::create(password.c_str()));
+        p.push(sio::string_message::create(username.toUtf8()));
+        p.push(sio::string_message::create(password.toUtf8()));
         this->_sioClient->socket("/login")->emit_socket("checkCredentials", p);
     }
 
 }
 
-std::string ConnectivityThread::_getTargetUrl() {
+QString ConnectivityThread::_getTargetUrl() {
     //extract destination url for sio connection
     auto t_qurl = this->_aHelper->getTargetUrl();
-    t_qurl->setPort(SIO_PORT);
-    auto turl = t_qurl->toString(QUrl::RemovePath).toStdString();
-    delete t_qurl;
+    t_qurl.setPort(SIO_PORT);
+    auto turl = t_qurl.toString(QUrl::RemovePath);
     return turl;
 }

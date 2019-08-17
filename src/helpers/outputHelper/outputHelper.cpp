@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include <QString>
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>
 #include <rapidjson/filewritestream.h>
@@ -8,9 +8,9 @@
 
 
 #include "src/helpers/stringHelper/stringHelper.cpp"
-#include "src/helpers/configHelper/authHelper.cpp"
+#include "src/helpers/configHelper/authHelper.hpp"
 #include "src/localization/i18n.cpp"
-#include "src/helpers/_const.cpp"
+#include "src/helpers/_const.hpp"
 
 #include <QStandardPaths>
 #include <QDir>
@@ -24,54 +24,54 @@
 
 class FTNZNoOutputFileException : public std::exception {
     private:
-        std::string exceptionMessage;
+        QString exceptionMessage;
 
     public:
-        FTNZNoOutputFileException(std::string outputPath) {
+        FTNZNoOutputFileException(QString outputPath) {
             this->exceptionMessage = I18n::tr()->FTNZNoOutputFileException(outputPath);
         }
         const char* what() const throw () {   
-            return this->exceptionMessage.c_str();
+            return this->exceptionMessage.toUtf8();
         }
 };
 
 class FTNZOutputFileUnreadableException : public std::exception {
     private:
-        std::string exceptionMessage;
+        QString exceptionMessage;
 
     public:
-        FTNZOutputFileUnreadableException(std::string outputPath) {
+        FTNZOutputFileUnreadableException(QString outputPath) {
             this->exceptionMessage = I18n::tr()->FTNZOutputFileUnreadableException(outputPath);
         }
         const char* what() const throw () {   
-            return this->exceptionMessage.c_str();
+            return this->exceptionMessage.toUtf8();
         }
 };
 
 class FTNZErrorUploadingException : public std::exception {
     private:
-            std::string exceptionMessage;
+            QString exceptionMessage;
 
     public:
-        FTNZErrorUploadingException(std::string errorMessage) {
+        FTNZErrorUploadingException(QString errorMessage) {
             this->exceptionMessage = I18n::tr()->FTNZErrorUploadingException(errorMessage);
         }
         const char* what() const throw () {   
-            return this->exceptionMessage.c_str();
+            return this->exceptionMessage.toUtf8();
         }
 };
 
 class FTNZErrorProcessingUploadException : public std::exception {
     private:
-            std::string exceptionMessage;
+            QString exceptionMessage;
 
     public:
-        FTNZErrorProcessingUploadException(long code, std::string response) {
+        FTNZErrorProcessingUploadException(long code, QString response) {
             StringHelper::replaceFirstOccurrence(response, "\n", "");
             this->exceptionMessage = I18n::tr()->FTNZErrorProcessingUploadException(code, response);
         }
         const char* what() const throw () {   
-            return this->exceptionMessage.c_str();
+            return this->exceptionMessage.toUtf8();
         }
 };
 
@@ -83,17 +83,17 @@ class FTNZErrorProcessingUploadException : public std::exception {
 class OutputHelper {
     private:
         QFileInfo _pathToFile;
-        std::string _pathToCert;
-        std::string _uploadTargetFunction;
-        std::string _uploadTargetUrl;
-        std::map<std::string, std::string> _uploadPostData;
-        std::string _uploadFileName;
+        QString _pathToCert;
+        QString _uploadTargetFunction;
+        QString _uploadTargetUrl;
+        QMap<QString, QString> _uploadPostData;
+        QString _uploadFileName;
         bool _mustPrepareUpload = true;
 
         //upload response reader
         static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp)
         {
-            ((std::string*)userp)->append((char*)contents, size * nmemb);
+            ((QString*)userp)->append((char*)contents, size * nmemb);
             return size * nmemb;
         }
 
@@ -120,23 +120,23 @@ class OutputHelper {
         }
 
     public:
-        OutputHelper(std::string filePath, std::string targetFunction = "", std::string uploadFileName = "") : 
+        OutputHelper(const QString &filePath, const QString &targetFunction = "", const QString &uploadFileName = "") : 
             _uploadTargetFunction(targetFunction), 
             _uploadFileName(uploadFileName) {
             
             //set definitive location and create path if not exist
-            std::string hostPath = PlatformHelper::getDataStorageDirectory();
+            auto hostPath = PlatformHelper::getDataStorageDirectory();
             auto pathToFile = hostPath + "/" + filePath;
             this->_pathToFile.setFile(QString::fromStdString(pathToFile));
             
             //certificate
             this->_pathToCert = QDir::toNativeSeparators(
-                (PlatformHelper::getAppDirectory() + "/" + PEM_CERT_NAME).c_str()
-            ).toStdString();
+                (PlatformHelper::getAppDirectory() + "/" + PEM_CERT_NAME).toUtf8()
+            );
         }
 
-        std::string getOutputPath() {
-            return this->_pathToFile.absoluteFilePath().toStdString();
+        QString getOutputPath() {
+            return this->_pathToFile.absoluteFilePath();
         }
 
         //write outputfile
@@ -146,7 +146,7 @@ class OutputHelper {
             this->_pathToFile.dir().mkpath("."); //create dir if not exist
 
             //save on path
-            auto fp = fopen(this->getOutputPath().c_str(), "w");
+            auto fp = fopen(this->getOutputPath().toUtf8(), "w");
 
             char writeBuffer[65536];
             rapidjson::FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
@@ -161,7 +161,7 @@ class OutputHelper {
             fclose(fp);
         }
 
-        std::string uploadFile() {
+        QString uploadFile() {
             
             this->prepareUpload();
 
@@ -169,7 +169,7 @@ class OutputHelper {
             curl_global_init(CURL_GLOBAL_ALL);
             
             /* get a curl handle */ 
-            std::string response;
+            QString response;
             CURL *curl = curl_easy_init();
             std::exception_ptr futureException;
 
@@ -183,14 +183,14 @@ class OutputHelper {
             
                 /* Fill in the file upload field */ 
                 field = curl_mime_addpart(form);
-                curl_mime_name(field, this->_uploadFileName.c_str());
-                curl_mime_filedata(field, this->getOutputPath().c_str());
+                curl_mime_name(field, this->_uploadFileName.toUtf8());
+                curl_mime_filedata(field, this->getOutputPath().toUtf8());
             
                 /* For each field*/
                 for(auto kvp : this->_uploadPostData) {
                     field = curl_mime_addpart(form);
-                    curl_mime_name(field, kvp.first.c_str());
-                    curl_mime_data(field, kvp.second.c_str(), CURL_ZERO_TERMINATED);
+                    curl_mime_name(field, kvp.first.toUtf8());
+                    curl_mime_data(field, kvp.second.toUtf8(), CURL_ZERO_TERMINATED);
                 }
 
                 /* what URL that receives this POST */ 
@@ -198,8 +198,8 @@ class OutputHelper {
 
                 //header
                 struct curl_slist *list = NULL;
-                auto localeHeader = std::string("Accept-Language: ") + I18n::getLocaleName();
-                list = curl_slist_append(list, localeHeader.c_str());
+                auto localeHeader = QString("Accept-Language: ") + I18n::getLocaleName();
+                list = curl_slist_append(list, localeHeader.toUtf8());
                 curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
                 
                 //response text
@@ -207,12 +207,12 @@ class OutputHelper {
                 curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
                 /* try use of SSL for this */
-                curl_easy_setopt(curl, CURLOPT_CAINFO, this->_pathToCert.c_str());
+                curl_easy_setopt(curl, CURLOPT_CAINFO, this->_pathToCert.toUtf8());
                 curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT_MS, 1000L);
 
 
                 //url and execute
-                curl_easy_setopt(curl, CURLOPT_URL, this->_uploadTargetUrl.c_str()); 
+                curl_easy_setopt(curl, CURLOPT_URL, this->_uploadTargetUrl.toUtf8()); 
                 CURLcode res = curl_easy_perform(curl); 
                 
                 if(res != CURLE_OK) {

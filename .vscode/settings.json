@@ -64,6 +64,7 @@
         "qthread": "cpp",
         "compare": "cpp",
         "random": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "qstring": "cpp"
     },
 }

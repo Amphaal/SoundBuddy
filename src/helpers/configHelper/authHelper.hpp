@@ -1,7 +1,6 @@
-
 #pragma once
 
-#include "configHelper.cpp"
+#include "configHelper.hpp"
 
 class AuthHelper : public ConfigHelper {
 
@@ -9,7 +8,7 @@ class AuthHelper : public ConfigHelper {
 
         AuthHelper() : ConfigHelper(AUTH_FILE_PATH, REQUIRED_CONFIG_FIELDS) { }
 
-        std::string getUsersHomeUrl() {
+        QString getUsersHomeUrl() {
             
             //try to get users name
             auto tUser = this->getParamValue("username");
@@ -17,34 +16,28 @@ class AuthHelper : public ConfigHelper {
 
             //no target ? no url
             auto tUrl = this->getTargetUrl();
-            if (tUrl == NULL) return "";
+            if(tUrl.isValid()) return "";
             
             //add user part to url
-            auto newP = tUrl->toString().toStdString() + "/" + tUser;
-            QUrl ret(newP.c_str());
-            delete tUrl;
+            auto newP = tUrl.toString() + "/" + tUser;
+            QUrl ret(newP);
 
             //check validity
             if(!ret.isValid()) return "";
-            return ret.toString().toStdString();
+            return ret.toString();
         }
 
         //get the targeted platform url
-        QUrl* getTargetUrl() {
+        QUrl getTargetUrl() {
             
             //get parameterized targetUrl
             auto tUrl = this->getParamValue("targetUrl");
             if (tUrl == "") tUrl = APP_DEFAULT_URL;
             
             //check validity
-            auto rlObj = new QUrl(tUrl.c_str(), QUrl::TolerantMode);
-            if(rlObj->isValid()) {
-                return rlObj;
-            }
-            else {
-                delete rlObj;
-                return NULL;
-            }
+            QUrl rlObj(tUrl, QUrl::TolerantMode);
+            return rlObj;
+
         }
 
     
@@ -65,8 +58,8 @@ class AuthHelper : public ConfigHelper {
        void onEmptyRequiredValue(std::function<void()> cb) {
             auto config = this->accessConfig();
             for (auto &rf : _requiredFields) {
-                auto mem = config.FindMember(rf.c_str());
-                if(mem == config.MemberEnd() || !mem->value.IsString() || ((std::string)mem->value.GetString() == "")) {
+                auto mem = config.FindMember(rf.toUtf8());
+                if(mem == config.MemberEnd() || !mem->value.IsString() || ((QString)mem->value.GetString() == "")) {
                     cb();
                 }
             }

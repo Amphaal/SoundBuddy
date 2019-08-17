@@ -19,7 +19,7 @@ void TemplateTab::createNewLog() {
     this->scrollArea->setWidget(this->lsv);
 };
 
-void TemplateTab::printLog(const std::string &message, const bool replacePreviousLine, const bool isError) {
+void TemplateTab::printLog(const QString &message, const bool replacePreviousLine, const bool isError) {
     
     if(replacePreviousLine) {
         this->lsv->updateLatestMessage(message);

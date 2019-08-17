@@ -6,7 +6,7 @@
 #include "src\ui\widgets\LightWidget.h"
 
 #include "src/_libs/socketiocpp_custom/sio_client.h"
-#include "src/helpers/configHelper/authHelper.cpp"
+#include "src/helpers/configHelper/authHelper.hpp"
 #include "src/localization/i18n.cpp"
 #include <iostream>
 
@@ -24,15 +24,15 @@ class ConnectivityThread : public QThread {
         void askCheckCredentials();
 
     signals:
-        void updateSIOStatus(const std::string &message, const TLW_Colors &color);
+        void updateSIOStatus(const QString &message, const TLW_Colors &color);
 
     private:
         sio::client* _sioClient = nullptr;
-        std::string _loggedInUser = "";
+        QString _loggedInUser = "";
         bool _requestOngoing = false;
-        AuthHelper *_aHelper = nullptr;
+        AuthHelper* _aHelper = nullptr;
     
         //ask credentials
         void _checkCredentials(bool forceRecheck = false);
-        std::string _getTargetUrl();
+        QString _getTargetUrl();
 };

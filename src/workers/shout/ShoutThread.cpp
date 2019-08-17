@@ -1,6 +1,18 @@
-#include "shout.h"
+#include "ShoutThread.h"
 
-ShoutThread::ShoutThread() : _helper(OutputHelper(SHOUT_FILE_PATH, "uploadShout", "shout_file")) {};
+ShoutThread::ShoutThread() {};
+
+ShoutThread::~ShoutThread() {
+    if(this->_helper) delete this->_helper;
+}
+
+void ShoutThread::_inst() {
+    this->_helper = new OutputHelper(SHOUT_FILE_PATH, "uploadShout", "shout_file");
+}
+
+void ShoutThread::quit() {
+    this->_mustListen = false;
+}
 
 rapidjson::Document ShoutThread::_createBasicShout() {
     
@@ -25,15 +37,15 @@ void ShoutThread::_shoutEmpty(){
     this->_shoutToServer(obj);
 };
 
-void ShoutThread::_shoutFilled(std::string name, std::string album, std::string artist, std::string genre, int duration, int playerPosition, bool playerState, int year) {
+void ShoutThread::_shoutFilled(QString name, QString album, QString artist, QString genre, int duration, int playerPosition, bool playerState, int year) {
     
     //fill obj
     auto obj = this->_createBasicShout();
     rapidjson::Document::AllocatorType &alloc = obj.GetAllocator();
 
     //factory for value generation
-    std::function<rapidjson::Value(std::string)> valGen = [&alloc](std::string defVal) {
-        rapidjson::Value p(defVal.c_str(), alloc);
+    auto valGen = [&alloc](QString defVal) {
+        rapidjson::Value p(defVal.toUtf8(), alloc);
         return p;
     };
 
@@ -47,7 +59,7 @@ void ShoutThread::_shoutFilled(std::string name, std::string album, std::string 
     obj.AddMember("year", year, alloc);
 
     //log...
-    std::string logMessage = I18n::tr()->Shout(
+    QString logMessage = I18n::tr()->Shout(
         obj["date"].GetString(),
         obj["name"].GetString(),
         obj["album"].GetString(),
@@ -69,9 +81,9 @@ void ShoutThread::_shoutToServer(rapidjson::Document &incoming) {
 };
 
 //compare with old shout, if equivalent, don't reshout
-bool ShoutThread::_shouldUpload(bool iPlayerState, std::string tName, std::string tAlbum, std::string tArtist, std::string tDatePlayed, std::string tDateSkipped) {
+bool ShoutThread::_shouldUpload(bool iPlayerState, QString tName, QString tAlbum, QString tArtist, QString tDatePlayed, QString tDateSkipped) {
     
-    size_t currHash = std::hash<std::string>{}(StringHelper::boolToString(iPlayerState) + tName + tAlbum + tArtist + (tDatePlayed >= tDateSkipped ? tDatePlayed : tDateSkipped));
+    size_t currHash = std::hash<QString>{}(StringHelper::boolToString(iPlayerState) + tName + tAlbum + tArtist + (tDatePlayed >= tDateSkipped ? tDatePlayed : tDateSkipped));
     bool isHashIdentical = this->_lastTrackHash == currHash;
     
     this->_lastTrackHash = currHash;

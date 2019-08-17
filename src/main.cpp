@@ -3,7 +3,7 @@
 #include <QStyleFactory>
 #include "ui/mainWindow/mainWindow.h"
 
-#include "helpers/_const.cpp"
+#include "helpers/_const.hpp"
 
 #include <QDir>
 #include <QLockFile>
@@ -26,7 +26,6 @@ int main(int argc, char** argv){
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
 
     //configure QThreads to acknowledge specific types for data exchanges
-    qRegisterMetaType<std::string>("std::string");
     qRegisterMetaType<size_t>("size_t");
     qRegisterMetaType<TLW_Colors>("TLW_Colors");
 

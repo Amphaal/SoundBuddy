@@ -5,8 +5,11 @@
 class ITNZThread : public QThread {
     
     Q_OBJECT
-        
+
+    public:
+        virtual void quit();
+
     signals:
-        void printLog(const std::string &message, const bool replacePreviousLine = false, const bool isError = false);
+        void printLog(const QString &message, const bool replacePreviousLine = false, const bool isError = false);
         void operationFinished();
 };

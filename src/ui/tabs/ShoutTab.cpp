@@ -7,18 +7,18 @@
 
 #include <rapidjson/document.h>
 
-#include "src/helpers/configHelper/configHelper.cpp"
+#include "src/helpers/configHelper/configHelper.hpp"
 #include "./base/TemplateTab.h"
 #include "src/workers/shout/ShoutThread.h"
-#include "src/helpers/_const.cpp"
+#include "src/helpers/_const.hpp"
 
 class ShoutTab : public TemplateTab {
     
     public:
         ShoutTab(QWidget *parent = 0) : TemplateTab(parent), cHelper(new ConfigHelper)
           {
-            this->checkAutoLaunch = new QCheckBox(I18n::tr()->Shout_Autolaunch().c_str());
-            this->tButton->setText(QString(I18n::tr()->Shout_Button().c_str()));
+            this->checkAutoLaunch = new QCheckBox(I18n::tr()->Shout_Autolaunch().toUtf8());
+            this->tButton->setText(QString(I18n::tr()->Shout_Button().toUtf8()));
 
             QObject::connect(this->checkAutoLaunch, &QCheckBox::stateChanged,
             this, &ShoutTab::changeAutoLaunch);
