@@ -24,14 +24,14 @@
 
 class FTNZMissingConfigValuesException : public std::exception {    
     private:
-        QString exceptionMessage;
+        std::string exceptionMessage;
 
     public:
         FTNZMissingConfigValuesException() {
-            this->exceptionMessage = I18n::tr()->FTNZMissingConfigValuesException();
+            this->exceptionMessage = I18n::tr()->FTNZMissingConfigValuesException().toStdString();
         }  
         const char * what () const throw () {
-            return this->exceptionMessage.toUtf8();
+            return this->exceptionMessage.c_str();
         }
 };
 
@@ -74,9 +74,8 @@ class ConfigHelper {
         //get the param value
         QString getParamValue(const QString &param) {
             auto config = this->accessConfig();
-            auto mem = config.FindMember(param.toUtf8());
+            auto mem = config.FindMember(param.toStdString().c_str());
             if(mem == config.MemberEnd()) return "";
-            qDebug() << param;
             auto cParam = param.toStdString();
             return !config[cParam.c_str()].IsString() ? "" : config[cParam.c_str()].GetString();
         }
@@ -99,7 +98,7 @@ class ConfigHelper {
             //check required field presence and adds them if missing
             rapidjson::Document::AllocatorType &alloc = config.GetAllocator();
             this->onMissingRequiredMember(config, [&mustWrite, &config, &alloc](QString rf){
-                    rapidjson::Value n(rf.toUtf8(), alloc);
+                    rapidjson::Value n(rf.toStdString().c_str(), alloc);
                     config.AddMember(n, "", alloc);
                     mustWrite = true;
             });
@@ -112,7 +111,7 @@ class ConfigHelper {
 
         //write pretty printed document into file
         void writeFormatedFileFromObj(rapidjson::Document &d) {
-            auto fp = fopen(this->_configFilePath.toUtf8(), "w");
+            auto fp = fopen(this->_configFilePath.toStdString().c_str(), "w");
             char writeBuffer[65536];
             rapidjson::FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
             rapidjson::PrettyWriter<rapidjson::FileWriteStream> writer(os);    
@@ -132,7 +131,7 @@ class ConfigHelper {
             }
 
             //open file
-            auto fp = fopen(this->_configFilePath.toUtf8(), "r");
+            auto fp = fopen(this->_configFilePath.toStdString().c_str(), "r");
             char readBuffer[65536];
             rapidjson::FileReadStream is(fp, readBuffer, sizeof(readBuffer));
             rapidjson::Document d;
@@ -152,7 +151,7 @@ class ConfigHelper {
 
         void onMissingRequiredMember(rapidjson::Document &config, std::function<void(QString)> cb) {
             for (auto &rf : this->_requiredFields) {
-                auto mem = config.FindMember(rf.toUtf8());
+                auto mem = config.FindMember(rf.toStdString().c_str());
                 if(mem == config.MemberEnd()) {
                     cb(rf);
                 }
@@ -169,15 +168,15 @@ class ConfigHelper {
         //create a parameter into the config file if it doesnt exist, else define its value
         void defineParamValue(rapidjson::Document &config, const QString &paramToFind, const QString &defVal = "") {
             
-            auto mem = config.FindMember(paramToFind.toUtf8());
+            auto mem = config.FindMember(paramToFind.toStdString().c_str());
             rapidjson::Document::AllocatorType &alloc = config.GetAllocator();
 
                 if(mem == config.MemberEnd()) {
-                    rapidjson::Value param(paramToFind.toUtf8(), alloc);
-                    rapidjson::Value val(defVal.toUtf8(), alloc);
+                    rapidjson::Value param(paramToFind.toStdString().c_str(), alloc);
+                    rapidjson::Value val(defVal.toStdString().c_str(), alloc);
                     config.AddMember(param, val, alloc);
                 } else {
-                    mem->value.SetString(defVal.toUtf8(), alloc);
+                    mem->value.SetString(defVal.toStdString().c_str(), alloc);
                 }
         }
 };

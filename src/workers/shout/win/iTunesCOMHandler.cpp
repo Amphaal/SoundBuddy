@@ -20,27 +20,37 @@ void iTunesCOMHandler::OnPlayerStopEvent(QVariant iTrack) {
 
 void iTunesCOMHandler::shoutHelper(QVariant iTrack) {
 
+    QAxObject* weilder = nullptr;
+
     //find value
     if(iTrack.isNull()) {
-        iTrack = this->iTunesObj->querySubObject("CurrentTrack")->asVariant();
+
+        weilder = this->iTunesObj->querySubObject("CurrentTrack");
+        
+        //shout empty
+        if(!weilder) return this->worker->shoutEmpty();
+
+    } else {
+
+        weilder = new QAxObject(iTrack.value<IDispatch*>());
+
     }
 
-    //if still empty, shout nothing
-    if (iTrack.isNull()) return this->worker->shoutEmpty();
-
-    auto dataList = iTrack.toHash();
-
     //get values for shout
-    auto tName = dataList.value("Name").toString();
-    auto tAlbum = dataList.value("Album").toString();
-    auto tArtist = dataList.value("Artist").toString();
-    auto tGenre = dataList.value("Genre").toString();
-    auto iDuration = dataList.value("Duration").toInt();
+    auto tName = weilder->property("Name").toString();
+    auto tAlbum = weilder->property("Album").toString();
+    auto tArtist = weilder->property("Artist").toString();
+    auto tGenre = weilder->property("Genre").toString();
+    auto iDuration = weilder->property("Duration").toInt();
     auto iPlayerPos = this->iTunesObj->property("PlayerPosition").value<int>();
     auto iPlayerState = this->iTunesObj->property("PlayerState").value<bool>();
-    auto tDatePlayed = dataList.value("PlayedDate").toDateTime().toString(Qt::ISODate);
-    auto tDateSkipped = dataList.value("SkippedDate").toDateTime().toString(Qt::ISODate);
-    auto tYear = dataList.value("Year").toInt();
+    auto tDatePlayed = weilder->property("PlayedDate").toDateTime().toString(Qt::ISODate);
+    auto tDateSkipped = weilder->property("SkippedDate").toDateTime().toString(Qt::ISODate);
+    auto tYear = weilder->property("Year").toInt();
+    
+    //clear
+    weilder->clear();
+    delete weilder;
 
     //compare with old shout, if equivalent, don't reshout
     if(this->worker->shouldUpload(iPlayerState, tName, tAlbum, tArtist, tDatePlayed, tDateSkipped)) {

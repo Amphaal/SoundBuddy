@@ -22,7 +22,7 @@ void ShoutThread::run() {
     this->_inst();
     
     //start with log
-    emit this->printLog(I18n::tr()->Shout_WaitITunes());
+    emit printLog(I18n::tr()->Shout_WaitITunes());
     
     //prepare CLID
     HWND currentITunesWindowsHandler;
@@ -100,7 +100,7 @@ void ShoutThread::run() {
         if(this->_mustListen && handler->iTunesShutdownRequested) {
             
             //say we acknoledge iTunes shutting down...
-            emit this->printLog(I18n::tr()->Shout_ITunesShutdown());
+            emit printLog(I18n::tr()->Shout_ITunesShutdown());
 
             //wait for old iTunes window to finally shutdown
             do {
@@ -131,7 +131,7 @@ void ShoutThread::run() {
             } while (this->_mustListen);
             
             //say we relooped
-            emit this->printLog(I18n::tr()->Shout_WaitITunesAgain());
+            emit printLog(I18n::tr()->Shout_WaitITunesAgain());
         }
 
     } while (this->_mustListen);

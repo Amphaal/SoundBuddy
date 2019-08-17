@@ -23,9 +23,12 @@ void FeederThread::run() {
 
     } catch (const std::exception& e) {
 
-        emit printLog(e.what(), false, true);  //EMIT
+        QString errMsg(e.what());
+        emit printLog(errMsg, false, true);  //EMIT
 
     }
+
+    emit printLog("FIN");  //EMIT
 }
 
 //generate files
@@ -104,7 +107,7 @@ void FeederThread::_generateJSON(const QString &xmlFileLocation) {
 
     //try parse to temp JSON
     rapidjson::Document d;
-    rapidjson::ParseResult s = d.Parse(xmlAsJSONString.toUtf8());
+    rapidjson::ParseResult s = d.Parse(xmlAsJSONString.toStdString().c_str());
     if(s.IsError()) {
         return throw FTNZXMLLibFileUnreadableException();
     }
@@ -140,7 +143,7 @@ void FeederThread::_standardizeJSON() {
     for (auto track = this->_workingJSON->MemberBegin(); track != this->_workingJSON->MemberEnd(); ++track) {
         
         QSet<QString> toRemove = {};
-        QSet<QString> foundRequired = {};
+        std::set<QString> foundRequired;
 
         //iterate through properties
         for (auto prop = track->value.MemberBegin(); prop != track->value.MemberEnd(); ++prop) {
@@ -166,14 +169,14 @@ void FeederThread::_standardizeJSON() {
         if (missingAttrs.length()) {
             rapidjson::Value key(track->value["Location"].GetString(), lwajAlloc);
             auto joined = missingAttrs.join(", ");
-            rapidjson::Value val(joined.toUtf8(), lwajAlloc);
+            rapidjson::Value val(joined.toStdString().c_str(), lwajAlloc);
             this->_libWarningsAsJSON->AddMember(key, val, lwajAlloc);
             tracksIdToRemove.insert(track->name.GetString());
         }
 
         //remove useless props
         for(auto ktr : toRemove) {
-            track->value.RemoveMember(ktr.toUtf8());
+            track->value.RemoveMember(ktr.toStdString().c_str());
         }
 
         //set optionnal values default

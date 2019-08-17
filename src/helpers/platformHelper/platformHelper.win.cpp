@@ -11,11 +11,11 @@
     #include "src/_libs/base64/base64.h"
 
     void PlatformHelper::openFileInOS(const QString &cpURL) {
-        ShellExecuteA(NULL, "open", "notepad", cpURL.toUtf8(), NULL, SW_SHOWNORMAL);
+        ShellExecuteA(NULL, "open", "notepad", cpURL.toStdString().c_str(), NULL, SW_SHOWNORMAL);
     };
 
     void PlatformHelper::openUrlInBrowser(const QString &cpURL) {
-        ShellExecuteA(NULL, "open", cpURL.toUtf8(), NULL, NULL, SW_SHOWNORMAL);
+        ShellExecuteA(NULL, "open", cpURL.toStdString().c_str(), NULL, NULL, SW_SHOWNORMAL);
     };
 
     QString PlatformHelper::getEnvironmentVariable(const char* variable) {
@@ -43,13 +43,13 @@
         QString command = "-convert xml1 -o ";
                 command += "\"" + destPath +"\" ";
                 command +="\"" + pathToParamFile  +"\"";
-        ShellExecuteA(NULL, "open", pathTo_plutil.toUtf8(), command.toUtf8(), NULL, SW_HIDE);
+        ShellExecuteA(NULL, "open", pathTo_plutil.toStdString().c_str(), command.toStdString().c_str(), NULL, SW_HIDE);
 
         //read it into JSON obj
         iTunesLibParser iTunesParams(destPath);
         auto xmlAsJSONString = iTunesParams.ToJSON();
         rapidjson::Document d;
-        d.Parse(xmlAsJSONString.toUtf8());
+        d.Parse(xmlAsJSONString.toStdString().c_str());
 
         //decode path
         auto encodedPath = (QString)d["LXML:1:iTunes Library XML Location"].GetString();
@@ -65,7 +65,7 @@
     };
 
     QSettings* PlatformHelper::getStartupSettingsHandler() {
-        auto settings = new QSettings(WINDOWS_REG_STARTUP_LAUNCH_PATH.toUtf8(), QSettings::NativeFormat);
+        auto settings = new QSettings(WINDOWS_REG_STARTUP_LAUNCH_PATH.toStdString().c_str(), QSettings::NativeFormat);
         return settings;
     }
 
@@ -82,7 +82,7 @@
         auto settings = PlatformHelper::getStartupSettingsHandler();
 
         if (!PlatformHelper::isLaunchingAtStartup()) {
-            settings->setValue(APP_NAME, PlatformHelper::getPathToApp().toUtf8());
+            settings->setValue(APP_NAME, PlatformHelper::getPathToApp().toStdString().c_str());
         } else {
             settings->remove(APP_NAME);
         }

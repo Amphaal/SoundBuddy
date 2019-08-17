@@ -1,6 +1,6 @@
 #include "iTunesLibParser.h"
 
-iTunesLibParser::iTunesLibParser(const QString &pathToFile) : _pathToFile(pathToFile), _stream(pathToFile.toUtf8()) {}
+iTunesLibParser::iTunesLibParser(const QString &pathToFile) : _pathToFile(pathToFile), _stream(pathToFile.toStdString().c_str()) {}
 iTunesLibParser::~iTunesLibParser() {
     _stream.close();
 };

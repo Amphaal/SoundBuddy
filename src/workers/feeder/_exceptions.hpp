@@ -11,40 +11,40 @@
 
 class FTNZXMLLibFileUnreadableException : public std::exception {      
     private:
-        QString exceptionMessage;
+        std::string exceptionMessage;
 
     public:
         FTNZXMLLibFileUnreadableException() {
-            this->exceptionMessage = I18n::tr()->FTNZXMLLibFileUnreadableException();
+            this->exceptionMessage = I18n::tr()->FTNZXMLLibFileUnreadableException().toStdString();
         }
         const char * what () const throw () {
-            return this->exceptionMessage.toUtf8();
+            return this->exceptionMessage.c_str();
         }
 };
 
 class FTNZMissingItunesConfigException : public std::exception {
     private:
-        QString exceptionMessage;
+        std::string exceptionMessage;
     
     public:
         FTNZMissingItunesConfigException() {
-            this->exceptionMessage = I18n::tr()->FTNZMissingItunesConfigException();
+            this->exceptionMessage = I18n::tr()->FTNZMissingItunesConfigException().toStdString();
         }
         const char * what () const throw () {
-            return this->exceptionMessage.toUtf8();
+            return this->exceptionMessage.c_str();
         }
 };
 
 class FTNZNoMusicFoundException : public std::exception {
     private:
-        QString exceptionMessage;
+        std::string exceptionMessage;
     
     public:
         FTNZNoMusicFoundException() {
-            this->exceptionMessage = I18n::tr()->FTNZNoMusicFoundException();
+            this->exceptionMessage = I18n::tr()->FTNZNoMusicFoundException().toStdString();
         }
         const char * what () const throw () {
-            return this->exceptionMessage.toUtf8();
+            return this->exceptionMessage.c_str();
         }
 };
 

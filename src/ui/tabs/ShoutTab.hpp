@@ -17,8 +17,8 @@ class ShoutTab : public TemplateTab {
     public:
         ShoutTab(QWidget *parent = 0) : TemplateTab(parent), cHelper(new ConfigHelper)
           {
-            this->checkAutoLaunch = new QCheckBox(I18n::tr()->Shout_Autolaunch().toUtf8());
-            this->tButton->setText(QString(I18n::tr()->Shout_Button().toUtf8()));
+            this->checkAutoLaunch = new QCheckBox(I18n::tr()->Shout_Autolaunch().toStdString().c_str());
+            this->tButton->setText(QString(I18n::tr()->Shout_Button().toStdString().c_str()));
 
             QObject::connect(this->checkAutoLaunch, &QCheckBox::stateChanged,
             this, &ShoutTab::changeAutoLaunch);

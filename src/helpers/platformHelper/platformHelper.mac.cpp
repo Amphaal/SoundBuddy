@@ -14,7 +14,7 @@
 
     void PlatformHelper::openFileInOS(const QString &cpURL) {
         QString command = "open \"" + cpURL + "\"";
-        system(command.toUtf8());
+        system(command.toStdString().c_str());
     };
 
     void PlatformHelper::openUrlInBrowser(const QString &cpURL) {
@@ -39,7 +39,7 @@
 
     QString PlatformHelper::extractItunesLibLocation(const QString &pathToParamFile) {
         //get path to iTunes as string
-        QSettings plist(pathToParamFile.toUtf8(), QSettings::NativeFormat);
+        QSettings plist(pathToParamFile.toStdString().c_str(), QSettings::NativeFormat);
         auto pathToLib = plist.value("NSNavLastRootDirectory").toString();
 
         //get parent directory
@@ -54,7 +54,7 @@
 
     QSettings* PlatformHelper::getStartupSettingsHandler() {
         auto cPath = PlatformHelper::getEnvironmentVariable("HOME") + MAC_REG_STARTUP_LAUNCH_PATH; //computed path
-        auto settings = new QSettings(cPath.toUtf8(), QSettings::NativeFormat);
+        auto settings = new QSettings(cPath.toStdString().c_str(), QSettings::NativeFormat);
         return settings;
     }
 
@@ -78,11 +78,11 @@
             settings->setValue("ExitTimeOut", 0);
             settings->setValue("RunAtLoad", true);
             settings->setValue("LimitLoadToSessionType", "Aqua");
-            QStringList args(PlatformHelper::getPathToApp().toUtf8());
+            QStringList args(PlatformHelper::getPathToApp().toStdString().c_str());
             settings->setValue("ProgramArguments", args);
         } else {
             auto cPath = PlatformHelper::getEnvironmentVariable("HOME") + MAC_REG_STARTUP_LAUNCH_PATH; //computed path
-            remove(cPath.toUtf8());
+            remove(cPath.toStdString().c_str());
         }
     }
 

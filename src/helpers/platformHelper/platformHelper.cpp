@@ -23,7 +23,7 @@ QString PlatformHelper::getDataStorageDirectory() {
 
 QString PlatformHelper::prepareStandardPath(QStandardPaths::StandardLocation pathType) {
     auto path = QStandardPaths::writableLocation(pathType);
-    QDir destDir(path.toUtf8());
+    QDir destDir(path.toStdString().c_str());
     if (!destDir.exists()) destDir.mkpath(".");
     return path;
 }

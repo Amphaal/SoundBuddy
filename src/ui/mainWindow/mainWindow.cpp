@@ -5,8 +5,8 @@ MainWindow::MainWindow() : aHelper(), cHelper(), owHelper(WARNINGS_FILE_PATH) {
     //generate the UI
     this->_initUI();
 
-    this->startupConnectivityThread();
     this->setupConfigFileWatcher();
+    this->startupConnectivityThread();
     this->updateWarningsMenuItem();
     this->setupAutoUpdate();
     
@@ -22,18 +22,17 @@ void MainWindow::setupConfigFileWatcher() {
     this->updateMenuItemsFromConfigValues();
 
     auto configFilePath = this->aHelper.getConfigFileFullPath();
-    auto filesToWatch = QStringList(configFilePath.toUtf8());
+    auto filesToWatch = QStringList(configFilePath.toStdString().c_str());
     this->configWatcher = new QFileSystemWatcher(filesToWatch);
     
-    QObject::connect(this->configWatcher, &QFileSystemWatcher::fileChanged,
-            this, &MainWindow::updateMenuItemsFromConfigValues);
+    QObject::connect(
+        this->configWatcher, &QFileSystemWatcher::fileChanged,
+        this, &MainWindow::updateMenuItemsFromConfigValues
+    );
 };
 
 //updates the menu depending on the config values filled or not
 void MainWindow::updateMenuItemsFromConfigValues(const QString &path) {
-
-    // force rechecking credentials
-    this->cw->askCheckCredentials();
 
     //check then save
     auto myWtnzUrl = this->aHelper.getUsersHomeUrl();
@@ -59,7 +58,7 @@ void MainWindow::updateWarningsMenuItem() {
 
 
 void MainWindow::accessWTNZ() {
-    PlatformHelper::openUrlInBrowser(this->wtnzUrl.toUtf8());
+    PlatformHelper::openUrlInBrowser(this->wtnzUrl.toStdString().c_str());
 };
 
 //open the config file into the OS browser
@@ -106,13 +105,13 @@ void MainWindow::onUpdateChecked(bool hasUpdate, bool hasError) {
 
         if(!hasUpdate && !hasError) {
             QMessageBox::information(this, 
-                QString(title.toUtf8()), 
-                QString(content.toUtf8()), 
+                QString(title.toStdString().c_str()), 
+                QString(content.toStdString().c_str()), 
                 QMessageBox::Ok, QMessageBox::Ok);
         } else if (hasError) {
             QMessageBox::warning(this, 
-                QString(title.toUtf8()), 
-                QString(content.toUtf8()), 
+                QString(title.toStdString().c_str()), 
+                QString(content.toStdString().c_str()), 
                 QMessageBox::Ok, QMessageBox::Ok);
         }
     }
@@ -128,8 +127,8 @@ void MainWindow::onUpdateChecked(bool hasUpdate, bool hasError) {
     QString content = I18n::tr()->Alert_UpdateAvailable_Text();
 
     auto msgboxRslt = QMessageBox::information(this, 
-                QString(title.toUtf8()), 
-                QString(content.toUtf8()), 
+                QString(title.toStdString().c_str()), 
+                QString(content.toStdString().c_str()), 
                 QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes
     );
     
@@ -156,17 +155,19 @@ void MainWindow::checkForAppUpdates() {
 }
 
 void MainWindow::updateStatusBar(const QString &message, const TLW_Colors &color) {
-    this->statusLabel->setText(QString(message.toUtf8()));
+    this->statusLabel->setText(QString(message.toStdString().c_str()));
     this->statusLight->setCurrentIndex(color);
 }
 
 void MainWindow::startupConnectivityThread() {
 
-    this->cw = new ConnectivityThread(&this->aHelper);
+    this->cw = new ConnectivityThread(&this->aHelper, this->configWatcher);
+    
     QObject::connect(
         this->cw, &ConnectivityThread::updateSIOStatus,
         this, &MainWindow::updateStatusBar
     );
+    
     this->cw->start();
 };
 
@@ -174,10 +175,13 @@ void MainWindow::startupShoutThread() {
     this->sw = new ShoutThread;
     this->st->bindWithWorker(this->sw);
 
-    QObject::connect(this->sw, &QThread::finished,
-    this, [this]() {
-        delete this->sw;
-    });
+    QObject::connect(
+        this->sw, &QThread::finished,
+        [=]() {
+            delete this->sw;
+            this->sw = nullptr;
+        }
+    );
 
     this->sw->start();
 }
@@ -187,12 +191,16 @@ void MainWindow::startupFeederThread() {
     this->fw = new FeederThread;
     this->ft->bindWithWorker(this->fw);
 
-    QObject::connect(this->fw, &ITNZThread::operationFinished,
-            this, &MainWindow::updateWarningsMenuItem);
+    QObject::connect(
+        this->fw, &ITNZThread::operationFinished,
+        this, &MainWindow::updateWarningsMenuItem
+    );
 
-    QObject::connect(this->fw, &QThread::finished,
-        this, [this]() {
+    QObject::connect(
+        this->fw, &QThread::finished,
+        [=]() {
             delete this->fw;
+            this->fw = nullptr;
         });
 
     this->fw->start();

@@ -44,7 +44,7 @@ void ShoutThread::run() {
         //get shout results
         QProcess p;
         p.start(osascript, processArguments);
-        p.write(script.toUtf8());
+        p.write(script.toStdString().c_str());
         p.closeWriteChannel();
         p.waitForReadyRead();
         auto result = p.readAll();
@@ -74,7 +74,7 @@ void ShoutThread::run() {
             
             //cast to json
             rapidjson::Document trackObj;
-            trackObj.Parse(result.toUtf8());
+            trackObj.Parse(result.toStdString().c_str());
             
             //get values for shout
             tName = trackObj[0].GetString();

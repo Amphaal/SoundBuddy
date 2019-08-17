@@ -12,11 +12,11 @@ class AuthHelper : public ConfigHelper {
             
             //try to get users name
             auto tUser = this->getParamValue("username");
-            if (tUser == "") return ""; //no user, no URL
+            if (tUser.isEmpty()) return ""; //no user, no URL
 
             //no target ? no url
             auto tUrl = this->getTargetUrl();
-            if(tUrl.isValid()) return "";
+            if(tUrl.isEmpty()) return "";
             
             //add user part to url
             auto newP = tUrl.toString() + "/" + tUser;
@@ -36,6 +36,7 @@ class AuthHelper : public ConfigHelper {
             
             //check validity
             QUrl rlObj(tUrl, QUrl::TolerantMode);
+            
             return rlObj;
 
         }
@@ -58,7 +59,7 @@ class AuthHelper : public ConfigHelper {
        void onEmptyRequiredValue(std::function<void()> cb) {
             auto config = this->accessConfig();
             for (auto &rf : _requiredFields) {
-                auto mem = config.FindMember(rf.toUtf8());
+                auto mem = config.FindMember(rf.toStdString().c_str());
                 if(mem == config.MemberEnd() || !mem->value.IsString() || ((QString)mem->value.GetString() == "")) {
                     cb();
                 }

@@ -187,7 +187,7 @@ void UpdaterPrivate::updaterError(QProcess::ProcessError error)
 	if(mainProcess) {
 		normalExit = false;
 		lastErrorCode = error;
-		lastErrorLog = mainProcess->errorString().toUtf8();
+		lastErrorLog = mainProcess->errorString().toStdString().c_str();
 		mainProcess->deleteLater();
 		mainProcess = nullptr;
 

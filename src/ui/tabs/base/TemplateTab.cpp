@@ -20,12 +20,13 @@ void TemplateTab::createNewLog() {
 };
 
 void TemplateTab::printLog(const QString &message, const bool replacePreviousLine, const bool isError) {
-    
+
     if(replacePreviousLine) {
         this->lsv->updateLatestMessage(message);
     } else {
         this->lsv->addMessage(message, isError);
     }
+    
 };
 
 void TemplateTab::scrollUpdate(int min, int max) {
@@ -44,10 +45,19 @@ void TemplateTab::onThreadStart() {
 };
 
 void TemplateTab::bindWithWorker(ITNZThread *bThread) {
-    QObject::connect(bThread, &ITNZThread::printLog,
-            this, &TemplateTab::printLog);
-    QObject::connect(bThread, &QThread::started,
-            this, &TemplateTab::onThreadStart);
-    QObject::connect(bThread, &QThread::finished,
-            this, &TemplateTab::onThreadEnd);
+    
+    QObject::connect(
+        bThread, &ITNZThread::printLog,
+        this, &TemplateTab::printLog
+    );
+
+    QObject::connect(
+        bThread, &QThread::started,
+        this, &TemplateTab::onThreadStart
+    );
+
+    QObject::connect(
+        bThread, &QThread::finished,
+        this, &TemplateTab::onThreadEnd
+    );
 }

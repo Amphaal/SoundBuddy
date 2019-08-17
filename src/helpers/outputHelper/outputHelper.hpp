@@ -24,54 +24,54 @@
 
 class FTNZNoOutputFileException : public std::exception {
     private:
-        QString exceptionMessage;
+        std::string exceptionMessage;
 
     public:
         FTNZNoOutputFileException(QString outputPath) {
-            this->exceptionMessage = I18n::tr()->FTNZNoOutputFileException(outputPath);
+            this->exceptionMessage = I18n::tr()->FTNZNoOutputFileException(outputPath).toStdString();
         }
         const char* what() const throw () {   
-            return this->exceptionMessage.toUtf8();
+            return this->exceptionMessage.c_str();
         }
 };
 
 class FTNZOutputFileUnreadableException : public std::exception {
     private:
-        QString exceptionMessage;
+        std::string exceptionMessage;
 
     public:
         FTNZOutputFileUnreadableException(QString outputPath) {
-            this->exceptionMessage = I18n::tr()->FTNZOutputFileUnreadableException(outputPath);
+            this->exceptionMessage = I18n::tr()->FTNZOutputFileUnreadableException(outputPath).toStdString();
         }
         const char* what() const throw () {   
-            return this->exceptionMessage.toUtf8();
+            return this->exceptionMessage.c_str();
         }
 };
 
 class FTNZErrorUploadingException : public std::exception {
     private:
-            QString exceptionMessage;
+            std::string exceptionMessage;
 
     public:
         FTNZErrorUploadingException(QString errorMessage) {
-            this->exceptionMessage = I18n::tr()->FTNZErrorUploadingException(errorMessage);
+            this->exceptionMessage = I18n::tr()->FTNZErrorUploadingException(errorMessage).toStdString();
         }
-        const char* what() const throw () {   
-            return this->exceptionMessage.toUtf8();
+        const char* what() const throw () {
+            return this->exceptionMessage.c_str();
         }
 };
 
 class FTNZErrorProcessingUploadException : public std::exception {
     private:
-            QString exceptionMessage;
+            std::string exceptionMessage;
 
     public:
         FTNZErrorProcessingUploadException(long code, QString response) {
             StringHelper::replaceFirstOccurrence(response, "\n", "");
-            this->exceptionMessage = I18n::tr()->FTNZErrorProcessingUploadException(code, response);
+            this->exceptionMessage = I18n::tr()->FTNZErrorProcessingUploadException(code, response).toStdString();
         }
         const char* what() const throw () {   
-            return this->exceptionMessage.toUtf8();
+            return this->exceptionMessage.c_str();
         }
 };
 
@@ -131,7 +131,7 @@ class OutputHelper {
             
             //certificate
             this->_pathToCert = QDir::toNativeSeparators(
-                (PlatformHelper::getAppDirectory() + "/" + PEM_CERT_NAME).toUtf8()
+                (PlatformHelper::getAppDirectory() + "/" + PEM_CERT_NAME).toStdString().c_str()
             );
         }
 
@@ -146,7 +146,7 @@ class OutputHelper {
             this->_pathToFile.dir().mkpath("."); //create dir if not exist
 
             //save on path
-            auto fp = fopen(this->getOutputPath().toUtf8(), "w");
+            auto fp = fopen(this->getOutputPath().toStdString().c_str(), "w");
 
             char writeBuffer[65536];
             rapidjson::FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
@@ -169,7 +169,7 @@ class OutputHelper {
             curl_global_init(CURL_GLOBAL_ALL);
             
             /* get a curl handle */ 
-            QString response;
+            std::string response;
             CURL *curl = curl_easy_init();
             std::exception_ptr futureException;
 
@@ -183,14 +183,14 @@ class OutputHelper {
             
                 /* Fill in the file upload field */ 
                 field = curl_mime_addpart(form);
-                curl_mime_name(field, this->_uploadFileName.toUtf8());
-                curl_mime_filedata(field, this->getOutputPath().toUtf8());
+                curl_mime_name(field, this->_uploadFileName.toStdString().c_str());
+                curl_mime_filedata(field, this->getOutputPath().toStdString().c_str());
             
                 /* For each field*/
                 for(auto i = this->_uploadPostData.begin(); i != this->_uploadPostData.end(); i++) {
                     field = curl_mime_addpart(form);
-                    curl_mime_name(field, i.key().toUtf8());
-                    curl_mime_data(field, i.value().toUtf8(), CURL_ZERO_TERMINATED);
+                    curl_mime_name(field, i.key().toStdString().c_str());
+                    curl_mime_data(field, i.value().toStdString().c_str(), CURL_ZERO_TERMINATED);
                 }
 
                 /* what URL that receives this POST */ 
@@ -199,7 +199,7 @@ class OutputHelper {
                 //header
                 struct curl_slist *list = NULL;
                 auto localeHeader = QString("Accept-Language: ") + I18n::getLocaleName();
-                list = curl_slist_append(list, localeHeader.toUtf8());
+                list = curl_slist_append(list, localeHeader.toStdString().c_str());
                 curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
                 
                 //response text
@@ -207,12 +207,12 @@ class OutputHelper {
                 curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
                 /* try use of SSL for this */
-                curl_easy_setopt(curl, CURLOPT_CAINFO, this->_pathToCert.toUtf8());
+                curl_easy_setopt(curl, CURLOPT_CAINFO, this->_pathToCert.toStdString().c_str());
                 curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT_MS, 1000L);
 
 
                 //url and execute
-                curl_easy_setopt(curl, CURLOPT_URL, this->_uploadTargetUrl.toUtf8()); 
+                curl_easy_setopt(curl, CURLOPT_URL, this->_uploadTargetUrl.toStdString().c_str()); 
                 CURLcode res = curl_easy_perform(curl); 
                 
                 if(res != CURLE_OK) {
@@ -226,7 +226,7 @@ class OutputHelper {
                     //if http code is not OK
                     if(code != 200) {
                         this->_mustPrepareUpload = true; //reprepare
-                        futureException = std::make_exception_ptr<FTNZErrorProcessingUploadException>(FTNZErrorProcessingUploadException(code, response));
+                        futureException = std::make_exception_ptr<FTNZErrorProcessingUploadException>(FTNZErrorProcessingUploadException(code, QString::fromStdString(response)));
                     }
                 }
 
@@ -240,7 +240,7 @@ class OutputHelper {
                 std::rethrow_exception(futureException);
                 return "";
             } else {
-                return response;
+                return QString::fromStdString(response);
             }
         }
 };

@@ -1,6 +1,7 @@
 #include "ConnectivityThread.h"
 
-ConnectivityThread::ConnectivityThread(AuthHelper *aHelper) : _aHelper(aHelper) {}
+ConnectivityThread::ConnectivityThread(AuthHelper *aHelper, QFileSystemWatcher* toWatchOverChanges) : _aHelper(aHelper), _toWatchOverChanges(toWatchOverChanges) {}
+
 ConnectivityThread::~ConnectivityThread() { 
     if(this->_sioClient) delete this->_sioClient; 
 }
@@ -58,9 +59,16 @@ void ConnectivityThread::run() {
     //connect...
     this->_sioClient->connect(this->_getTargetUrl().toStdString());
 
+    QObject::connect(
+        this->_toWatchOverChanges, &QFileSystemWatcher::fileChanged,
+        this, &ConnectivityThread::_checkCredentialsFromFileUpdate
+    );
+
+    this->exec();
+
 }
 
-void ConnectivityThread::askCheckCredentials() {
+void ConnectivityThread::_checkCredentialsFromFileUpdate() {
     this->_checkCredentials(true);
 }
 

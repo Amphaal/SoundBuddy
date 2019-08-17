@@ -31,6 +31,6 @@ class iTunesCOMHandler : public QObject {
 
     public:  
         iTunesCOMHandler(QAxObject *iTunesObj, ShoutThread *worker);
-        void shoutHelper(QVariant iTrack = NULL);
+        void shoutHelper(QVariant iTrack = QVariant());
         bool iTunesShutdownRequested = false;
 };

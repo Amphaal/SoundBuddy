@@ -33,11 +33,20 @@ rapidjson::Document ShoutThread::_createBasicShout() {
 
 void ShoutThread::shoutEmpty(){
     auto obj = this->_createBasicShout();
-    emit this->printLog(I18n::tr()->Shout_Nothing(obj["date"].GetString()));
+    emit printLog(I18n::tr()->Shout_Nothing(obj["date"].GetString()));
     this->_shoutToServer(obj);
 };
 
-void ShoutThread::shoutFilled(QString name, QString album, QString artist, QString genre, int duration, int playerPosition, bool playerState, int year) {
+void ShoutThread::shoutFilled(
+        const QString &name, 
+        const QString &album, 
+        const QString &artist, 
+        const QString &genre, 
+        int duration, 
+        int playerPosition, 
+        bool playerState, 
+        int year
+    ) {
     
     //fill obj
     auto obj = this->_createBasicShout();
@@ -45,7 +54,7 @@ void ShoutThread::shoutFilled(QString name, QString album, QString artist, QStri
 
     //factory for value generation
     auto valGen = [&alloc](QString defVal) {
-        rapidjson::Value p(defVal.toUtf8(), alloc);
+        rapidjson::Value p(defVal.toStdString().c_str(), alloc);
         return p;
     };
 
@@ -66,7 +75,7 @@ void ShoutThread::shoutFilled(QString name, QString album, QString artist, QStri
         obj["artist"].GetString(),
         obj["playerState"].GetBool()
     );
-    emit this->printLog(logMessage);
+    emit printLog(logMessage);
 
     this->_shoutToServer(obj);
 };
@@ -76,12 +85,19 @@ void ShoutThread::_shoutToServer(rapidjson::Document &incoming) {
         this->_helper->writeAsJsonFile(incoming);
         this->_helper->uploadFile();
     } catch(const std::exception& e) {
-        emit this->printLog(e.what(), false, true);
+        emit printLog(e.what(), false, true);
     }
 };
 
 //compare with old shout, if equivalent, don't reshout
-bool ShoutThread::shouldUpload(bool iPlayerState, QString tName, QString tAlbum, QString tArtist, QString tDatePlayed, QString tDateSkipped) {
+bool ShoutThread::shouldUpload(
+        bool iPlayerState, 
+        const QString &tName, 
+        const QString &tAlbum, 
+        const QString &tArtist, 
+        const QString &tDatePlayed, 
+        const QString &tDateSkipped
+    ) {
     
     auto concatedStr = StringHelper::boolToString(iPlayerState) + tName + tAlbum + tArtist + (tDatePlayed >= tDateSkipped ? tDatePlayed : tDateSkipped);
     
