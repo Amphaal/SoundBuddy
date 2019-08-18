@@ -11,6 +11,7 @@ class IAppTranslator {
         virtual QString Menu_MyWTNZ() = 0;
         virtual QString Menu_UpdateConfig() = 0;
         virtual QString Menu_OpenWarnings() = 0;
+        virtual QString Menu_OpenDataFolder() = 0;
         virtual QString Menu_Quit() = 0;
         virtual QString Menu_CheckForUpgrades() = 0;
         virtual QString Menu_AddToStartup() = 0;

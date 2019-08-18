@@ -52,7 +52,7 @@
         d.Parse(xmlAsJSONString.toStdString().c_str());
 
         //decode path
-        auto encodedPath = (QString)d["LXML:1:iTunes Library XML Location"].GetString();
+        QString encodedPath = d["LXML:1:iTunes Library XML Location"].GetString();
         auto decodedData = base64_decode(encodedPath.toStdString());
         
         //reformat from source UTF-16

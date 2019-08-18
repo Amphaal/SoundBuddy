@@ -7,7 +7,7 @@ class ITNZThread : public QThread {
     Q_OBJECT
 
     public:
-        virtual void quit() { };
+        virtual void quit() { this->quit(); };
         virtual void run() = 0;
 
     signals:

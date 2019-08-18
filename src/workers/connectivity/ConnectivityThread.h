@@ -20,7 +20,6 @@ class ConnectivityThread : public QThread {
 
     public:
         ConnectivityThread(AuthHelper *aHelper, QFileSystemWatcher* toWatchOverChanges);
-        ~ConnectivityThread();
 
         void run() override;
 

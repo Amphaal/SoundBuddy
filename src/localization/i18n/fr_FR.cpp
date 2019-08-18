@@ -9,6 +9,7 @@ class AppTranslator_FR : public IAppTranslator {
     QString Menu_Quit() { return "Quitter"; };
     QString Menu_AddToStartup() { return "Lancer au démarrage système"; };
     QString Menu_OpenWarnings() { return "Visualiser les dernières erreurs d'export"; };
+    QString Menu_OpenDataFolder() { return "Accéder aux données d'export"; };
     QString Menu_CheckForUpgrades() { return "Vérifier les mises à jour"; };
     QString Alert_RunningWorker_Title() { return "Shout en cours !"; };
     QString Alert_RunningWorker_Text() { return "Les shouts sont actuellement scannés : Voulez-vous vraiment quitter ?"; };

@@ -2,10 +2,6 @@
 
 ConnectivityThread::ConnectivityThread(AuthHelper *aHelper, QFileSystemWatcher* toWatchOverChanges) : _aHelper(aHelper), _toWatchOverChanges(toWatchOverChanges) {}
 
-ConnectivityThread::~ConnectivityThread() { 
-    if(this->_sioClient) delete this->_sioClient; 
-}
-
 void ConnectivityThread::run() {
 
     ////////////////////
@@ -65,6 +61,9 @@ void ConnectivityThread::run() {
     );
 
     this->exec();
+
+    //clear
+    delete this->_sioClient;
 
 }
 

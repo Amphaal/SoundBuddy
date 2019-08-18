@@ -1,13 +1,6 @@
 #include "FeederThread.h"
 
 FeederThread::FeederThread() {}
-FeederThread::~FeederThread() {
-    if(this->_ohLib) delete this->_ohLib;
-    if(this->_ohWrn) delete this->_ohWrn;
-    if(this->_workingJSON) delete this->_workingJSON;
-    if(this->_libAsJSON) delete this->_libAsJSON;
-    if(this->_libWarningsAsJSON) delete this->_libAsJSON;
-}
 
 void FeederThread::run() {
 
@@ -28,7 +21,13 @@ void FeederThread::run() {
 
     }
 
-    emit printLog("FIN");  //EMIT
+    //clear
+    delete this->_ohLib;
+    delete this->_ohWrn;
+    delete this->_workingJSON;
+    delete this->_libAsJSON;
+    delete this->_libWarningsAsJSON;
+
 }
 
 //generate files
@@ -63,12 +62,15 @@ void FeederThread::_generateLibJSONFile() {
 //upload
 void FeederThread::_uploadLibToServer() {
     emit printLog(I18n::tr()->Feeder_StartSend());  //EMIT
+    
     QString response = this->_ohLib->uploadFile();
+    
     if (response != "") {
         emit printLog(I18n::tr()->HTTP_ServerResponded(response));  //EMIT
     } else {
         emit printLog(I18n::tr()->HTTP_NoResponse());  //EMIT
     }
+
 }
 
 
@@ -130,9 +132,9 @@ void FeederThread::_standardizeJSON() {
     emit printLog(I18n::tr()->Feeder_CookingJSON());  //EMIT
 
     //declare allocators
-    rapidjson::Document::AllocatorType &lajAlloc = this->_libAsJSON->GetAllocator();
-    rapidjson::Document::AllocatorType &lwajAlloc = this->_libWarningsAsJSON->GetAllocator();
-    rapidjson::Document::AllocatorType &wjAlloc = this->_workingJSON->GetAllocator();
+    auto &lajAlloc = this->_libAsJSON->GetAllocator();
+    auto &lwajAlloc = this->_libWarningsAsJSON->GetAllocator();
+    auto &wjAlloc = this->_workingJSON->GetAllocator();
 
     //prepare
     QSet<QString> tracksIdToRemove = {};
@@ -187,11 +189,14 @@ void FeederThread::_standardizeJSON() {
         this->_tracksEmitHelper();
     }
 
+    qDebug() << this->_workingJSON->MemberCount();
+
     //remove tracks with warnings
     for(auto &idtr : tracksIdToRemove) {
-        auto casted = idtr.toStdString().c_str();
-        this->_workingJSON->RemoveMember(casted);
+        this->_workingJSON->RemoveMember(idtr.toStdString().c_str());
     }
+
+    qDebug() << this->_workingJSON->MemberCount();
 
     //turn obect based container into an array one
     for (auto track = this->_workingJSON->MemberBegin(); track != this->_workingJSON->MemberEnd(); ++track) {

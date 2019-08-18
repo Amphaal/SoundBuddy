@@ -23,7 +23,6 @@ class FeederThread : public ITNZThread {
 
     public:
 		FeederThread();
-        ~FeederThread();
 
         void run() override;
 

@@ -14,6 +14,8 @@ void MainWindow::_initUI() {
     this->_initUITray();
     this->_initUIMenu();
     this->_initStatusBar();
+
+    if(IS_DEBUG_APP) this->trueShow();
 };
 
 
@@ -182,6 +184,15 @@ QMenu* MainWindow::_getFileMenu() {
     );
     this->warningsfileActions.push_back(openWarningsAction);
 
+    //openData
+    auto openDataFolder = new QAction(I18n::tr()->Menu_OpenDataFolder().toStdString().c_str(), fileMenuItem);
+    QObject::connect(
+        openDataFolder, &QAction::triggered,
+        [=]() {
+            PlatformHelper::openUrlInBrowser(PlatformHelper::getDataStorageDirectory());
+        }
+    );
+
     //quit
     auto quitAction = new QAction(I18n::tr()->Menu_Quit().toStdString().c_str(), fileMenuItem);
     QObject::connect(
@@ -194,6 +205,7 @@ QMenu* MainWindow::_getFileMenu() {
     fileMenuItem->addAction(myWTNZAction);
     fileMenuItem->addAction(updateConfigAction);
     fileMenuItem->addAction(openWarningsAction);
+    fileMenuItem->addAction(openDataFolder);
     fileMenuItem->addSeparator();
     fileMenuItem->addAction(quitAction);
 

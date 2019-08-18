@@ -177,10 +177,7 @@ void MainWindow::startupShoutThread() {
 
     QObject::connect(
         this->sw, &QThread::finished,
-        [=]() {
-            delete this->sw;
-            this->sw = nullptr;
-        }
+        this->sw, &QObject::deleteLater
     );
 
     this->sw->start();
@@ -198,10 +195,8 @@ void MainWindow::startupFeederThread() {
 
     QObject::connect(
         this->fw, &QThread::finished,
-        [=]() {
-            delete this->fw;
-            this->fw = nullptr;
-        });
+        this->fw, &QObject::deleteLater
+    );
 
     this->fw->start();
 }
