@@ -34,10 +34,15 @@ void iTunesCOMHandler::shoutHelper(QVariant iTrack) {
 
         weilder = new QAxObject(iTrack.value<IDispatch*>());
 
+        if(weilder->isNull()) {
+            weilder->clear(); delete weilder;
+            weilder = this->iTunesObj->querySubObject("CurrentTrack");
+        }
+
     }
 
     //get values for shout
-    auto tName = weilder->property("Name").toString();
+    auto tName = weilder->property("Name").value<QString>();
     auto tAlbum = weilder->property("Album").toString();
     auto tArtist = weilder->property("Artist").toString();
     auto tGenre = weilder->property("Genre").toString();
