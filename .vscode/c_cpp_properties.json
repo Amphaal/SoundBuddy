@@ -21,7 +21,7 @@
             "defines": [
                 "_DEBUG",
                 "UNICODE",
-                "_UNICODE",
+                "_UNICODE"
             ],
             "windowsSdkVersion": "10.0.18362.0",
             "cStandard": "c11",
