@@ -32,7 +32,7 @@ ENDIF()
 
 #config file to source code
 configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/build_templates/version.h.in 
+    ${CMAKE_CURRENT_SOURCE_DIR}/templates/version.h.in 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/version.h
 )
 
@@ -177,7 +177,7 @@ endif (WIN32)
 
 #add highdpi support / menu behavior via plist template (MACOS)
 set_target_properties(${PROJECT_NAME} PROPERTIES 
-    MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/build_templates/Info.plist.in     
+    MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/templates/Info.plist.in     
 ) 
 
 # Bind ext libs
