@@ -101,6 +101,7 @@
         "qvboxlayout": "cpp",
         "qlabel": "cpp",
         "qcoreapplication": "cpp",
-        "qfileinfo": "cpp"
+        "qfileinfo": "cpp",
+        "*.in": "cpp"
     },
 }

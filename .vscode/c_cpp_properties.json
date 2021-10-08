@@ -2,7 +2,7 @@
     "configurations": [
         {
             "name": "Mac",
-            "defines": [                
+            "defines": [
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE"
@@ -29,7 +29,11 @@
             "intelliSenseMode": "gcc-x64",
             "includePath": [
                 "${default}",
-                "${workspaceFolder}"
+                "${workspaceFolder}",
+                "${env:MINGW64_ROOT}/include/qt6/QtCore",
+                "${env:MINGW64_ROOT}/include/qt6",
+                "${env:MINGW64_ROOT}/include/qt6/QtWidgets",
+                "${env:MINGW64_ROOT}/include/qt6/QtGui"
             ]
         }
     ],

@@ -7,6 +7,12 @@
     },
     "tasks": [
         {
+            "label": "0. Download submodules",
+            "type": "shell",
+            "command": "git submodule update --init --recursive",
+            "problemMatcher": []
+        },
+        {
             "label": "1. Generate Project files",
             "group": {
                 "isDefault": true,

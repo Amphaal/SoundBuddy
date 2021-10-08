@@ -1,14 +1,37 @@
-project(FeedTNZ)
+# policies first
+if(COMMAND cmake_policy)
+    # cmake_policy(SET CMP0011 NEW)
+    # cmake_policy(SET CMP0020 NEW)
+    # cmake_policy(SET CMP0003 NEW)
+endif()
+
+# use ccache
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+    message("== Using CCache ! ==")
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK "${CCACHE_PROGRAM}")
+endif()
+
+# default configuration
+list(APPEND CMAKE_MODULE_PATH 
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Qt
+)
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out)
+
+#############
+## STARTUP ##
+#############
+
 cmake_minimum_required(VERSION 3.14.3)
 
-#version
-SET(CMAKE_PROJECT_VERSION_MAJOR 0)
-SET(CMAKE_PROJECT_VERSION_MINOR 4)
-SET(CMAKE_PROJECT_VERSION_PATCH 1)
-
-#default configuration
-SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
-SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+project(FeedTNZ
+    VERSION 0.4.1
+    DESCRIPTION "Small companion app for desktop to interact with WTNZ"
+    HOMEPAGE_URL "https://github.com/Amphaal/feedtnz"
+    LANGUAGES CXX
+)
 
 ########################
 ## VERSION.H HANDLING ##
@@ -22,13 +45,6 @@ SET(PEM_CERT_NAME "cacert.pem")
 
 #set default maintenance tool path
 SET(MAINTENANCE_TOOL_LOCATION "")
-SET(IS_DEBUG_APP OFF)
-
-#if debug build
-IF(CMAKE_INSTALL_CONFIG_NAME STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "Debug")
-    #set flag as debug
-    SET(IS_DEBUG_APP ON)
-ENDIF()
 
 #config file to source code
 configure_file(
@@ -43,13 +59,6 @@ file(DOWNLOAD
 )
 SET(CACERT src/${PEM_CERT_NAME})
 get_filename_component(CACERT_FP ${CACERT} ABSOLUTE)
-
-##################
-## Enable Conan ##
-##################
-
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup(KEEP_RPATHS)
 
 ################################
 ## CPP Compiler Configuration ##
@@ -166,7 +175,10 @@ endif (WIN32)
 
 # Create executable
 add_executable(${PROJECT_NAME} ${BUNDLE_TYPE} ${SOURCES} ${INT_LIBS}) 
- 
+
+#
+target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:_DEBUG>) #define _DEBUG markup if in DEBUG config
+
 #ignore warnings(WINDOWS)
 if (WIN32)
     set_target_properties(
@@ -179,14 +191,6 @@ endif (WIN32)
 set_target_properties(${PROJECT_NAME} PROPERTIES 
     MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/templates/Info.plist.in     
 ) 
-
-# Bind ext libs
-conan_target_link_libraries(${PROJECT_NAME})
-target_link_libraries(${PROJECT_NAME} ${EXT_LIBS})
-
-#accelerate builds times
-include(cotire)
-cotire(${PROJECT_NAME})
 
 ###
 ### LIBRARIES COPY

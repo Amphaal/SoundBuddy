@@ -4,7 +4,7 @@
 void MainWindow::_initUI() {
 
     //values specific to this
-    QString stdTitle = IS_DEBUG_APP ? (QString)"DEBUG - " + APP_NAME : APP_NAME;
+    QString stdTitle = _DEBUG ? (QString)"DEBUG - " + APP_NAME : APP_NAME;
     this->setWindowTitle(QString(stdTitle.toStdString().c_str()));
     this->setMinimumSize(QSize(480, 400));
     this->setWindowIcon(QIcon(LOCAL_ICON_PNG_PATH.toStdString().c_str()));
@@ -15,7 +15,7 @@ void MainWindow::_initUI() {
     this->_initUIMenu();
     this->_initStatusBar();
 
-    if(IS_DEBUG_APP) this->trueShow();
+    if(_DEBUG) this->trueShow();
 };
 
 
