@@ -57,18 +57,6 @@ cpack_ifw_configure_component("Runtime"
     FORCED_INSTALLATION
 )
 
-# AudioTube
-cpack_add_component("AudioTube" DOWNLOADED)
-cpack_ifw_configure_component("AudioTube"
-    DISPLAY_NAME "AudioTube ${AUDIOTUBE_PROJECT_VERSION}"
-    DESCRIPTION 
-        "Component that allows fetching Youtube audio sources"
-        fr "Composant qui permet la récupération de flux audio depuis Youtube"
-    SORTING_PRIORITY 99
-    VERSION ${AUDIOTUBE_PROJECT_VERSION}
-    FORCED_INSTALLATION
-)
-
 # Qt
 cpack_add_component("Qt" DOWNLOADED)
 cpack_ifw_configure_component("Qt"
@@ -90,30 +78,6 @@ cpack_ifw_configure_component("OpenSSL"
         fr "Librairie permettant de sécuriser les communications"
     SORTING_PRIORITY 97
     VERSION ${OPENSSL_VERSION}
-    FORCED_INSTALLATION
-)
-
-# GStreamer
-cpack_add_component("GStreamer" DOWNLOADED)
-cpack_ifw_configure_component("GStreamer"
-    DISPLAY_NAME "GStreamer ${Gst_VERSION}"
-    DESCRIPTION
-        "Library used for audio streaming"
-        fr "Librairie permettant les fonctionnalités de streaming audio"
-    SORTING_PRIORITY 96
-    VERSION ${Gst_VERSION}
-    FORCED_INSTALLATION
-)
-
-# sentry-native
-cpack_add_component("SentryNative" DOWNLOADED)
-cpack_ifw_configure_component("SentryNative"
-    DISPLAY_NAME "Sentry-Native ${SENTRY_NATIVE_PROJECT_VERSION}"
-    DESCRIPTION
-        "Utility that allows automatic bugs reports"
-        fr "Utilitaire qui permet la génération de rapports de bugs automatiques"
-    SORTING_PRIORITY 95
-    VERSION ${SENTRY_NATIVE_PROJECT_VERSION}
     FORCED_INSTALLATION
 )
 

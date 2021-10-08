@@ -80,11 +80,11 @@ void MainWindow::addToStartupSwitch(bool checked) {
 
 void MainWindow::setupAutoUpdate() {
 
-    if(MAINTENANCE_TOOL_LOCATION == "") {
+    if(APP_MAINTENANCETOOL_PATH == "") {
         this->updater = new QtAutoUpdater::Updater(this);
     }
     else {
-         this->updater = new QtAutoUpdater::Updater(MAINTENANCE_TOOL_LOCATION, this);
+         this->updater = new QtAutoUpdater::Updater(APP_MAINTENANCETOOL_PATH, this);
     }
     
 	QObject::connect(this->updater, &QtAutoUpdater::Updater::checkUpdatesDone, 

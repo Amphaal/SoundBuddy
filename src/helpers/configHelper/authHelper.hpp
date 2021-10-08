@@ -32,7 +32,6 @@ class AuthHelper : public ConfigHelper {
             
             //get parameterized targetUrl
             auto tUrl = this->getParamValue("targetUrl");
-            if (tUrl == "") tUrl = APP_DEFAULT_URL;
             
             //check validity
             QUrl rlObj(tUrl, QUrl::TolerantMode);
