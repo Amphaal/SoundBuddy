@@ -120,6 +120,16 @@ set_target_properties(appExec PROPERTIES
     MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/templates/Info.plist.in     
 ) 
 
+#############
+# Socket.io #
+#############
+
+add_subdirectory(deps/socket.io)
+
+target_link_libraries(appExec PRIVATE
+    sioclient
+)
+
 ########
 # QT 6 #
 ########

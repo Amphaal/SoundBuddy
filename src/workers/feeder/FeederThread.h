@@ -1,7 +1,6 @@
 #pragma once
 
 #include <rapidjson/document.h>
-#include <rapidjson/pointer.h>
 
 #include <fstream>
 #include <algorithm>

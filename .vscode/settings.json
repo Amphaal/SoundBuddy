@@ -30,6 +30,9 @@
         }
     },
     "terminal.integrated.defaultProfile.windows": "Command Prompt",
+    "search.exclude": {
+        "deps" : true
+    },
     "files.associations": {
         "algorithm": "cpp",
         "atomic": "cpp",

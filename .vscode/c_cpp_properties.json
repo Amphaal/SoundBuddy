@@ -33,7 +33,8 @@
                 "${env:MINGW64_ROOT}/include/qt6/QtCore",
                 "${env:MINGW64_ROOT}/include/qt6",
                 "${env:MINGW64_ROOT}/include/qt6/QtWidgets",
-                "${env:MINGW64_ROOT}/include/qt6/QtGui"
+                "${env:MINGW64_ROOT}/include/qt6/QtGui",
+                "${workspaceFolder}/deps/socket.io/lib/rapidjson/include"
             ]
         }
     ],
