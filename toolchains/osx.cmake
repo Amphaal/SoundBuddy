@@ -1,0 +1,3 @@
+SET(CMAKE_BUILD_TYPE Debug)
+
+set(CMAKE_CXX_FLAGS_DEBUG  "-O0 -g")

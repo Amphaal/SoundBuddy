@@ -2,20 +2,14 @@
     "configurations": [
         {
             "name": "Mac",
-            "defines": [],
-            "browse": {
-                "path": [
-                    "/Qt/5.13.0/clang_64/include",
-                    "/Qt/5.13.0/clang_64/lib"
-                ]
-            },
-            "macFrameworkPath": [
-                "/System/Library/Frameworks",
-                "/Library/Frameworks"
+            "defines": [                
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
             ],
             "compilerPath": "/usr/bin/clang",
             "cStandard": "c11",
-            "cppStandard": "c++17",
+            "cppStandard": "c++20",
             "intelliSenseMode": "clang-x64",
             "includePath": [
                 "${default}",
@@ -26,30 +20,16 @@
             "name": "Win32",
             "defines": [
                 "_DEBUG",
-                "UNICODE"
+                "UNICODE",
+                "_UNICODE",
             ],
-            "browse": {
-                "path": [
-                    "C:/Qt/5.13.0/msvc2017_64/include",
-                    "C:/Qt/5.13.0/msvc2017_64/lib",
-                    "C:/Users/Amphaal/.conan"
-                ]
-            },
-            "windowsSdkVersion": "10.0.17134.0",
-            "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.22.27905/bin/Hostx64/x64/cl.exe",
+            "windowsSdkVersion": "10.0.18362.0",
             "cStandard": "c11",
-            "cppStandard": "c++17",
-            "intelliSenseMode": "msvc-x64",
+            "cppStandard": "c++20",
+            "intelliSenseMode": "gcc-x64",
             "includePath": [
                 "${default}",
-                "${workspaceFolder}",
-                "C:/Qt/5.13.0/msvc2017_64/include/QtCore",
-                "C:/Qt/5.13.0/msvc2017_64/include",
-                "C:/Qt/5.13.0/msvc2017_64/include/QtWidgets",
-                "C:/Qt/5.13.0/msvc2017_64/include/QtGui",
-                "C:/Users/Amphaal/.conan/data/rapidjson/1.1.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
-                "C:/Users/Amphaal/.conan/data/libcurl/7.64.1/bincrafters/stable/package/b1ec501b86bf2ab1ae3e10bbe52321a58d5db822/include",
-                "C:/Qt/5.13.0/msvc2017_64/include/ActiveQt"
+                "${workspaceFolder}"
             ]
         }
     ],
