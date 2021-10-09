@@ -1,3 +1,7 @@
 SET(CMAKE_BUILD_TYPE Debug)
 
-set(CMAKE_CXX_FLAGS_DEBUG  "-O0 -g")
+SET(CMAKE_OSX_DEPLOYMENT_TARGET 10.15)
+
+list(APPEND CMAKE_PREFIX_PATH 
+    "/usr/local/opt/openssl@3"
+)

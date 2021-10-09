@@ -23,7 +23,7 @@
                 "command": "cmake -GNinja -Bbuild -H. -DCMAKE_TOOLCHAIN_FILE=toolchains/msys2.cmake"
             },
             "osx":{
-                "command": "cmake -GNinja -Bbuild -H. -DBUILD_TESTING=1 -DCMAKE_TOOLCHAIN_FILE=toolchains/osx.cmake"
+                "command": "cmake -GNinja -Bbuild -H. -DCMAKE_TOOLCHAIN_FILE=toolchains/osx.cmake"
             }
         },
         {

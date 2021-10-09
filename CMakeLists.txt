@@ -62,6 +62,13 @@ SET(CMAKE_AUTORCC ON)
 SET(CMAKE_AUTOUIC ON)
 SET(CMAKE_INCLUDE_CURRENT_DIR ON) #for moc auto 
 
+find_package(Qt6 REQUIRED COMPONENTS 
+    Core 
+    Gui 
+    Widgets
+    LinguistTools
+)
+
 ##########################
 ## Bundle configuration ##
 ##########################
@@ -134,20 +141,10 @@ target_link_libraries(appExec PRIVATE
 # QT 6 #
 ########
 
-find_package(Qt6 REQUIRED COMPONENTS 
-    Core 
-    Gui 
-    Widgets 
-    Network 
-    OpenGL 
-    LinguistTools
-)
 target_link_libraries(appExec PRIVATE
     Qt6::Core
     Qt6::Gui 
     Qt6::Widgets
-    Qt6::Network
-    Qt6::OpenGL
 )
 
 # QT LIBRARIES COPY
