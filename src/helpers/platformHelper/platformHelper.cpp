@@ -1,11 +1,16 @@
 #include "platformHelper.h"
 
+#include <QFileInfo>
+#include <QCoreApplication>
+#include <QStandardPaths>
+#include <QDir>
+
 bool PlatformHelper::isLaunchingAtStartup() {
     auto settings = PlatformHelper::getStartupSettingsHandler();
-    return PlatformHelper::getPathToApp() == PlatformHelper::getPathToAppFromStartupSettings(settings); //compare paths
+    return PlatformHelper::getPathToApp() == PlatformHelper::getPathToAppFromStartupSettings(settings);  // compare paths
 }
 
-//ensure a file exists
+// ensure a file exists
 bool PlatformHelper::fileExists(const QString &outputFileName) {
     QFileInfo confP(outputFileName);
     return confP.exists();
@@ -15,7 +20,6 @@ bool PlatformHelper::fileExists(const QString &outputFileName) {
 
 QString PlatformHelper::getAppDirectory() {
     return QCoreApplication::applicationDirPath();
-
 }
 QString PlatformHelper::getDataStorageDirectory() {
     return PlatformHelper::prepareStandardPath(QStandardPaths::AppLocalDataLocation);

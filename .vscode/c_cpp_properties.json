@@ -14,6 +14,7 @@
             "includePath": [
                 "${default}",
                 "${workspaceFolder}",
+                "${workspaceFolder}/src",
                 "/usr/local/opt/qt",
                 "/usr/local/opt/qt/lib/QtCore.framework/Versions/A/Headers",
                 "${workspaceFolder}/deps/socket.io/lib/rapidjson/include"
@@ -33,8 +34,8 @@
             "includePath": [
                 "${default}",
                 "${workspaceFolder}",
-                "${env:MINGW64_ROOT}/include/qt6/QtCore",
                 "${env:MINGW64_ROOT}/include/qt6",
+                "${env:MINGW64_ROOT}/include/qt6/QtCore",
                 "${env:MINGW64_ROOT}/include/qt6/QtWidgets",
                 "${env:MINGW64_ROOT}/include/qt6/QtGui",
                 "${workspaceFolder}/deps/socket.io/lib/rapidjson/include"

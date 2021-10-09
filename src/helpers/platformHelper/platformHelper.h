@@ -1,20 +1,7 @@
 #pragma once
 
+#include <QString>
 #include <QSettings>
-#include <QCoreApplication>
-#include <QStandardPaths>
-#include <QDir>
-#include <QFileInfo>
-
-#include <rapidjson/document.h>
-
-#include <string>
-#include <fstream>
-#include <map>
-
-#include "src/version.h"
-
-#include "src/helpers/_const.hpp"
 
 class PlatformHelper {
  public:
