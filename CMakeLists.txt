@@ -57,10 +57,9 @@ SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 SET(CMAKE_C_STANDARD 11)
 
 # Qt
-SET(CMAKE_AUTOMOC ON)
-SET(CMAKE_AUTORCC ON)
-SET(CMAKE_AUTOUIC ON)
-SET(CMAKE_INCLUDE_CURRENT_DIR ON) #for moc auto 
+#SET(CMAKE_AUTOMOC ON)
+#SET(CMAKE_AUTORCC ON)
+#SET(CMAKE_AUTOUIC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS 
     Core 
@@ -106,8 +105,8 @@ SET(SOURCES
 # Code compilation #
 ####################
 
-file(GLOB_RECURSE CPP_FILES src/*.cpp)
-file(GLOB_RECURSE HPP_FILES src/*.hpp)
+file(GLOB_RECURSE CPP_FILES "src/*.cpp")
+file(GLOB_RECURSE HPP_FILES "src/*.hpp")
 
 #########################
 # Executable Generation #
@@ -115,9 +114,13 @@ file(GLOB_RECURSE HPP_FILES src/*.hpp)
 
 # Create executable
 add_executable(appExec ${BUNDLE_TYPE}
-    ${CPP_FILES}
     ${HPP_FILES}
+    ${CPP_FILES}
 ) 
+
+target_include_directories(appExec PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
 
 #
 target_compile_definitions(appExec PRIVATE $<$<CONFIG:Debug>:_DEBUG>) #define _DEBUG markup if in DEBUG config
@@ -134,7 +137,12 @@ set_target_properties(appExec PROPERTIES
 add_subdirectory(deps/socket.io)
 
 target_link_libraries(appExec PRIVATE
-    sioclient
+    sioclient_tls
+    rapidjson
+)
+
+target_compile_options(sioclient_tls 
+    PRIVATE "-Wno-expansion-to-defined" #prevent warnings from unmaintained rapidjson
 )
 
 ########

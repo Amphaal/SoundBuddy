@@ -13,7 +13,10 @@
             "intelliSenseMode": "clang-x64",
             "includePath": [
                 "${default}",
-                "${workspaceFolder}"
+                "${workspaceFolder}",
+                "/usr/local/opt/qt",
+                "/usr/local/opt/qt/lib/QtCore.framework/Versions/A/Headers",
+                "${workspaceFolder}/deps/socket.io/lib/rapidjson/include"
             ]
         },
         {
