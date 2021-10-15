@@ -78,41 +78,24 @@ void MainWindow::addToStartupSwitch(bool checked) {
 };
 
 
-void MainWindow::setupAutoUpdate() {
-
-    if(APP_MAINTENANCETOOL_PATH == "") {
-        this->updater = new QtAutoUpdater::Updater(this);
-    }
-    else {
-         this->updater = new QtAutoUpdater::Updater(APP_MAINTENANCETOOL_PATH, this);
-    }
-    
-	QObject::connect(this->updater, &QtAutoUpdater::Updater::checkUpdatesDone, 
+void MainWindow::setupAutoUpdate() {   
+	QObject::connect(this->updateChecker, &UpdateChecker::isNewerVersionAvailable, 
                      this, &MainWindow::onUpdateChecked);
 
     //start the update check
     this->checkForAppUpdates();
 };
 
-void MainWindow::onUpdateChecked(bool hasUpdate, bool hasError) {
+void MainWindow::onUpdateChecked(bool hasUpdate) {
 
     //if the user asks directly to check updates
     if(this->userNotificationOnUpdateCheck) {
         this->userNotificationOnUpdateCheck = false;
         
         QString title = (QString)APP_NAME + " - " + I18n::tr()->Menu_CheckForUpgrades();
-        QString content = this->updater->errorLog();
 
-        if(!hasUpdate && !hasError) {
-            QMessageBox::information(this, 
-                QString(title.toStdString().c_str()), 
-                QString(content.toStdString().c_str()), 
-                QMessageBox::Ok, QMessageBox::Ok);
-        } else if (hasError) {
-            QMessageBox::warning(this, 
-                QString(title.toStdString().c_str()), 
-                QString(content.toStdString().c_str()), 
-                QMessageBox::Ok, QMessageBox::Ok);
+        if(!hasUpdate) {
+            QMessageBox::information(this, title, tr(""), QMessageBox::Ok, QMessageBox::Ok);
         }
     }
 
