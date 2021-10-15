@@ -25,7 +25,7 @@
 #include "src/version.h"
 #include "src/localization/i18n.hpp"
 
-#include "src/_libs/autoupdatercore/updater.h"
+#include <IFWUpdateChecker.hpp>
 
 #include "src/helpers/_const.hpp"
 #include "src/helpers/configHelper/authHelper.hpp"
@@ -47,22 +47,21 @@ class MainWindow : public QMainWindow {
     private:
         bool forceQuitOnMacOS = false;
         bool userNotificationOnUpdateCheck = false;
-        QSystemTrayIcon *trayIcon;
-        QFileSystemWatcher *configWatcher;
+        QSystemTrayIcon* trayIcon;
+        QFileSystemWatcher* configWatcher;
         QVector<QAction*> myWTNZActions;
         QVector<QAction*> warningsfileActions;
         AuthHelper aHelper;
         ConfigHelper cHelper;
         OutputHelper owHelper;
         QString wtnzUrl;
-        QtAutoUpdater::Updater *updater = nullptr;
+        UpdateChecker updateChecker;
         
         //statusbar
         void _initStatusBar();
         void updateStatusBar(const QString &message, const TLW_Colors &color);
-        QLabel *statusLabel;
+        QLabel* statusLabel;
         TrafficLightWidget *statusLight;
-
 
         ///
         ///UI instanciation
@@ -110,8 +109,8 @@ class MainWindow : public QMainWindow {
         void UpdateSearch_switchUI(bool isSearching);
 
         //tabs
-        ShoutTab *st = nullptr; 
-        FeederTab *ft = nullptr;
+        ShoutTab* st = nullptr; 
+        FeederTab* ft = nullptr;
         void _initUITabs();
 
         //workers

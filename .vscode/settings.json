@@ -34,6 +34,7 @@
         "deps" : true
     },
     "files.associations": {
+        "*.ts": "xml",
         "algorithm": "cpp",
         "atomic": "cpp",
         "cctype": "cpp",

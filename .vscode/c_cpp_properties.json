@@ -5,7 +5,8 @@
             "defines": [
                 "_DEBUG",
                 "UNICODE",
-                "_UNICODE"
+                "_UNICODE",
+                "SPDLOG_FMT_EXTERNAL"
             ],
             "compilerPath": "/usr/bin/clang",
             "cStandard": "c11",
@@ -25,7 +26,8 @@
             "defines": [
                 "_DEBUG",
                 "UNICODE",
-                "_UNICODE"
+                "_UNICODE",
+                "SPDLOG_FMT_EXTERNAL"
             ],
             "windowsSdkVersion": "10.0.18362.0",
             "cStandard": "c11",
@@ -38,7 +40,9 @@
                 "${env:MINGW64_ROOT}/include/qt6/QtCore",
                 "${env:MINGW64_ROOT}/include/qt6/QtWidgets",
                 "${env:MINGW64_ROOT}/include/qt6/QtGui",
-                "${workspaceFolder}/deps/socket.io/lib/rapidjson/include"
+                "${workspaceFolder}/deps/socket.io/lib/rapidjson/include",
+                "${workspaceFolder}/deps/socket.io/src",
+                "${workspaceFolder}/deps/IFWUpdateChecker/src"
             ]
         }
     ],
