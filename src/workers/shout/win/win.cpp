@@ -3,9 +3,6 @@
 #include <windows.h>
 #include <combaseapi.h>
 
-#include <QAxBase>
-#include <QAxObject>
-
 #include "src/workers/shout/ShoutThread.h" 
 #include "iTunesCOMHandler.h"
 #include "src/helpers/stringHelper/stringHelper.hpp"

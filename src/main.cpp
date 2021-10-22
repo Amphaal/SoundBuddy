@@ -1,7 +1,7 @@
 #include <QString>
 #include <QApplication>
 #include <QStyleFactory>
-#include "ui/mainWindow/mainWindow.h"
+#include "ui/monitor/mainWindow.h"
 
 #include "helpers/_const.hpp"
 
@@ -23,7 +23,6 @@ int main(int argc, char** argv){
     app.setApplicationName(APP_NAME);
     app.setOrganizationName(APP_PUBLISHER);
     app.setStyle(QStyleFactory::create("Fusion")); 
-    app.setAttribute(Qt::AA_UseHighDpiPixmaps);
 
     //configure QThreads to acknowledge specific types for data exchanges
     qRegisterMetaType<size_t>("size_t");

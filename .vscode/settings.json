@@ -110,6 +110,7 @@
         "qsystemtrayicon": "cpp",
         "*.inc": "cpp",
         "*.ipp": "cpp",
-        "*.tcc": "cpp"
+        "*.tcc": "cpp",
+        "qvariant": "cpp"
     },
 }

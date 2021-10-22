@@ -2,6 +2,7 @@
 
 #include <QString>
 #include <QSettings>
+#include <QStandardPaths>
 
 class PlatformHelper {
  public:

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <QAxBase>
-#include <QAxObject>
 #include <QVariant>
 
 #include <windows.h>
@@ -17,20 +15,19 @@
 #include <QDateTime>
 
 class iTunesCOMHandler : public QObject {
- 
-    Q_OBJECT
-    
-    private:
-        QAxObject *iTunesObj;
-        ShoutThread *worker;
-        
-    public slots:
-        void OnAboutToPromptUserToQuitEvent();
-        void OnPlayerPlayEvent(QVariant iTrack);
-        void OnPlayerStopEvent(QVariant iTrack);
+ Q_OBJECT
 
-    public:  
-        iTunesCOMHandler(QAxObject *iTunesObj, ShoutThread *worker);
-        void shoutHelper(QVariant iTrack = QVariant());
-        bool iTunesShutdownRequested = false;
+ private:
+    QAxObject *iTunesObj;
+    ShoutThread *worker;
+    
+ public slots:
+    void OnAboutToPromptUserToQuitEvent();
+    void OnPlayerPlayEvent(QVariant iTrack);
+    void OnPlayerStopEvent(QVariant iTrack);
+
+ public:  
+    iTunesCOMHandler(QAxObject *iTunesObj, ShoutThread *worker);
+    void shoutHelper(QVariant iTrack = QVariant());
+    bool iTunesShutdownRequested = false;
 };

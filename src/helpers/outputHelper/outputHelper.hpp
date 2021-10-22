@@ -177,7 +177,7 @@ class OutputHelper {
 
         curl_global_cleanup(); /* always cleanup */ 
         
-        if(exceptionText) {
+        if(!exceptionText.isEmpty()) {
             throw std::logic_error(exceptionText.toStdString());
         } else {
             return QString::fromStdString(response);

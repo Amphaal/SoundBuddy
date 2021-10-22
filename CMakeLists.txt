@@ -163,19 +163,40 @@ HandleQtTranslation(appExec
     ${TS_INSTALL_FILES}
 )
 
-#############
-# Socket.io #
-#############
+#########################
+# Socket.io + rapidjson #
+#########################
 
 add_subdirectory(deps/socket.io)
 
-#prevent warnings from unmaintained rapidjson
+# rapidjson
+add_library(rapidjson INTERFACE)
+target_include_directories(rapidjson INTERFACE
+    deps/socket.io/lib/rapidjson/include
+)
+target_compile_options(rapidjson INTERFACE "-Wno-expansion-to-defined")
+
+# Fixing the bullshit that is socket.io CMakeLists.txt 
+target_include_directories(sioclient_tls INTERFACE
+    deps/socket.io/src
+)
 target_compile_options(sioclient_tls PRIVATE "-Wno-expansion-to-defined")
 target_compile_options(sioclient     PRIVATE "-Wno-expansion-to-defined")
 
-target_link_libraries(appExec PRIVATE   
+# link
+target_link_libraries(appExec PRIVATE
     sioclient_tls
     rapidjson
+)
+
+####################
+# IFWUpdateChecker #
+####################
+
+add_subdirectory(deps/IFWUpdateChecker)
+
+target_link_libraries(appExec PRIVATE
+    IFWUpdateChecker
 )
 
 ########

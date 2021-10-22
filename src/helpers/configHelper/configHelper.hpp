@@ -110,10 +110,10 @@ protected:
         char readBuffer[65536];
         rapidjson::FileReadStream is(fp, readBuffer, sizeof(readBuffer));
         rapidjson::Document d;
-        rapidjson::ParseResult s = d.ParseStream(is);
+        d.ParseStream(is);
         fclose(fp);
 
-        if(s.IsError()) {
+        if(d.GetErrorOffset()) {
             this->writeNewConfig();
             return this->accessConfig();
         }
