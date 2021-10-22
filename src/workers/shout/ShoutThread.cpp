@@ -75,13 +75,14 @@ void ShoutThread::shoutFilled(
     auto pState = obj["playerState"].GetBool() ? tr("playing") : tr("paused");
 
     //log...
-    auto logMessage = tr("%1: Shouting -> %2 - %3 - %4 (%5)")
-        obj["date"].GetString(),
-        obj["name"].GetString(),
-        obj["album"].GetString(),
-        obj["artist"].GetString(),
-        pState
-    );
+    auto logMessage = 
+        tr("%1: Shouting -> %2 - %3 - %4 (%5)")
+            .arg(obj["date"].GetString())
+            .arg(obj["name"].GetString())
+            .arg(obj["album"].GetString())
+            .arg(obj["artist"].GetString())
+            .arg(pState);
+
     emit printLog(logMessage);
 
     this->_shoutToServer(obj);

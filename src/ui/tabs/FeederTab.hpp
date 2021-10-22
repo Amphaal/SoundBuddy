@@ -6,12 +6,14 @@
 #include "src/workers/feeder/FeederThread.h"
 
 class FeederTab : public TemplateTab {
-    public:
-        FeederTab(QWidget *parent = 0, FeederThread* worker = 0) : TemplateTab(parent) {
+ Q_OBJECT
 
-            this->tButton->setText(tr("Generate Digest and Upload"));
+ public:
+    FeederTab(QWidget *parent = 0, FeederThread* worker = 0) : TemplateTab(parent) {
 
-            this->layout()->addWidget(this->scrollArea);
-            this->layout()->addWidget(this->tButton);
-        }
+        this->tButton->setText(tr("Generate Digest and Upload"));
+
+        this->layout()->addWidget(this->scrollArea);
+        this->layout()->addWidget(this->tButton);
+    }
 };

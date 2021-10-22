@@ -236,9 +236,12 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 
     //if running shout thread
     if(this->sw && this->sw->isRunning()) {
-        auto msgboxRslt = QMessageBox::warning(this, QString(I18n::tr()->Alert_RunningWorker_Title().toStdString().c_str()), 
-                    QString(I18n::tr()->Alert_RunningWorker_Text().toStdString().c_str()), 
-                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+        auto msgboxRslt = QMessageBox::warning(this, 
+            tr("Shout worker running !"), 
+            tr("Shout worker is actually running : Are you sure you want to exit ?"), 
+            QMessageBox::Yes | QMessageBox::No, 
+            QMessageBox::No
+        );
         
         if(msgboxRslt == QMessageBox::Yes) {
             //makes sure to wait for shoutThread to end. Limits COM app retention on Windows

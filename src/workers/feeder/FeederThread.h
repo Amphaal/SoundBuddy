@@ -16,47 +16,48 @@
 #include "src/helpers/iTunesLibParser/iTunesLibParser.h"
 
 class FeederThread : public ITNZThread {
+ Q_OBJECT
 
-    public:
-		FeederThread();
+ public:
+    FeederThread();
 
-        void run() override;
+    void run() override;
 
-    private:
-        OutputHelper* _ohLib = nullptr;
-        OutputHelper* _ohWrn = nullptr;
+private:
+    OutputHelper* _ohLib = nullptr;
+    OutputHelper* _ohWrn = nullptr;
 
-        //generate files
-        void _generateLibJSONFile();
+    //generate files
+    void _generateLibJSONFile();
 
-        //upload
-        void _uploadLibToServer();
+    //upload
+    void _uploadLibToServer();
 
-        ///
-        /// XML / JSON Helpers
-        ///
+    ///
+    /// XML / JSON Helpers
+    ///
 
-        size_t _recCount;
-        size_t _expectedCount;
-        rapidjson::Document* _workingJSON = nullptr;
-        rapidjson::Document* _libAsJSON = nullptr;
-        rapidjson::Document* _libWarningsAsJSON = nullptr;
-        
-        static const inline std::set<QString> _requiredAttrs {"Track ID", "Track Number", "Year", "Name", "Album Artist", "Album", "Genre", "Date Added"};
-        static const inline std::set<QString> _ucwordsAttrs {"Album Artist", "Album", "Genre"};
+    size_t _recCount;
+    size_t _expectedCount;
+    rapidjson::Document* _workingJSON = nullptr;
+    rapidjson::Document* _libAsJSON = nullptr;
+    rapidjson::Document* _libWarningsAsJSON = nullptr;
+    
+    static const inline std::set<QString> _requiredAttrs {"Track ID", "Track Number", "Year", "Name", "Album Artist", "Album", "Genre", "Date Added"};
+    static const inline std::set<QString> _ucwordsAttrs {"Album Artist", "Album", "Genre"};
 
-        void _processFile(const QString &xmlFileLocation);
-        void _generateJSON(const QString &xmlFileLocation);
-        void _standardizeJSON();
+    void _processFile(const QString &xmlFileLocation);
+    void _generateJSON(const QString &xmlFileLocation);
+    void _standardizeJSON();
 
-        ///
-        /// Other Helpers
-        ///
+    ///
+    /// Other Helpers
+    ///
 
-        //log...
-        void _tracksEmitHelper();
+    //log...
+    void _tracksEmitHelper();
+    void _tracksUnmolding(const char* filename) const;
 
-        //seek in iTunes preference file the library location
-        QString _getITunesLibLocation();
-
+    //seek in iTunes preference file the library location
+    QString _getITunesLibLocation();
 };

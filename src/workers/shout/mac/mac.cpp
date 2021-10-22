@@ -83,7 +83,7 @@ void ShoutThread::run() {
             iDuration = trackObj[4].GetFloat();
             tYear = trackObj[5].GetFloat();
             iPlayerPos = trackObj[6].GetFloat();
-            iPlayerState = QString(trackObj[7].GetString()) == "paused" ? 0 : 1;
+            iPlayerState = trackObj[7].GetString() == "paused" ? 0 : 1;
             tDateSkipped = trackObj[8].GetString();
             tDatePlayed = trackObj[9].GetString();
             

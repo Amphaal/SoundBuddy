@@ -38,85 +38,85 @@
 
 
 class MainWindow : public QMainWindow {
-   
-    public:
-        MainWindow();
-        void informWarningPresence();
+ Q_OBJECT   
+ public:
+    MainWindow();
+    void informWarningPresence();
 
-    private:
-        bool forceQuitOnMacOS = false;
-        bool userNotificationOnUpdateCheck = false;
-        QSystemTrayIcon* trayIcon;
-        QFileSystemWatcher* configWatcher;
-        QVector<QAction*> myWTNZActions;
-        QVector<QAction*> warningsfileActions;
-        AuthHelper aHelper;
-        ConfigHelper cHelper;
-        OutputHelper owHelper;
-        QString wtnzUrl;
-        UpdateChecker updateChecker;
-        
-        //statusbar
-        void _initStatusBar();
-        void updateStatusBar(const QString &message, const TLW_Colors &color);
-        QLabel* statusLabel;
-        TrafficLightWidget *statusLight;
+ private:
+    bool forceQuitOnMacOS = false;
+    bool userNotificationOnUpdateCheck = false;
+    QSystemTrayIcon* trayIcon;
+    QFileSystemWatcher* configWatcher;
+    QVector<QAction*> myWTNZActions;
+    QVector<QAction*> warningsfileActions;
+    AuthHelper aHelper;
+    ConfigHelper cHelper;
+    OutputHelper owHelper;
+    QString wtnzUrl;
+    UpdateChecker updateChecker;
+    
+    //statusbar
+    void _initStatusBar();
+    void updateStatusBar(const QString &message, const TLW_Colors &color);
+    QLabel* statusLabel;
+    TrafficLightWidget *statusLight;
 
-        ///
-        ///UI instanciation
-        ///
+    ///
+    ///UI instanciation
+    ///
 
-        void _initUI();
-        void _initUIMenu();
-        void _initUITray();
+    void _initUI();
+    void _initUIMenu();
+    void _initUITray();
 
-        QMenu* _getFileMenu();
-        QMenu* _getOptionsMenu();
+    QMenu* _getFileMenu();
+    QMenu* _getOptionsMenu();
 
-        void setupConfigFileWatcher();
-        void updateMenuItemsFromConfigValues(const QString &path = NULL);
-        void updateWarningsMenuItem();
+    void setupConfigFileWatcher();
+    void updateMenuItemsFromConfigValues(const QString &path = NULL);
+    void updateWarningsMenuItem();
 
-        ///
-        /// Functionnalities helpers calls
-        ///
+    ///
+    /// Functionnalities helpers calls
+    ///
 
-        void accessWTNZ();
-        void openConfigFile();
-        void openWarnings();
-        void addToStartupSwitch(bool checked);
+    void accessWTNZ();
+    void openConfigFile();
+    void openWarnings();
+    void addToStartupSwitch(bool checked);
 
-        ///
-        /// Events handling
-        ///
+    ///
+    /// Events handling
+    ///
 
-        //visibility
-        void hideEvent(QHideEvent *event);
-        void closeEvent(QCloseEvent *event);
-        void trueShow();
-        void trueHide(QEvent* event);
-        void forcedClose();
-        void iconActivated(QSystemTrayIcon::ActivationReason reason);
+    //visibility
+    void hideEvent(QHideEvent *event);
+    void closeEvent(QCloseEvent *event);
+    void trueShow();
+    void trueHide(QEvent* event);
+    void forcedClose();
+    void iconActivated(QSystemTrayIcon::ActivationReason reason);
 
-        //update handling
-        QAction *versionAction = nullptr;
-        QAction *cfugAction = nullptr;
-        void setupAutoUpdate();
-        void onUpdateChecked(bool hasUpdate, bool hasError);
-        void requireUpdateCheckFromUser();
-        void checkForAppUpdates();
-        void UpdateSearch_switchUI(bool isSearching);
+    //update handling
+    QAction *versionAction = nullptr;
+    QAction *cfugAction = nullptr;
+    void setupAutoUpdate();
+    void onUpdateChecked(bool hasUpdate, bool hasError);
+    void requireUpdateCheckFromUser();
+    void checkForAppUpdates();
+    void UpdateSearch_switchUI(bool isSearching);
 
-        //tabs
-        ShoutTab* st = nullptr; 
-        FeederTab* ft = nullptr;
-        void _initUITabs();
+    //tabs
+    ShoutTab* st = nullptr; 
+    FeederTab* ft = nullptr;
+    void _initUITabs();
 
-        //workers
-        ShoutThread *sw = nullptr;
-        FeederThread *fw = nullptr;
-        ConnectivityThread *cw = nullptr;
-        void startupConnectivityThread();
-        void startupShoutThread();
-        void startupFeederThread();
+    //workers
+    ShoutThread *sw = nullptr;
+    FeederThread *fw = nullptr;
+    ConnectivityThread *cw = nullptr;
+    void startupConnectivityThread();
+    void startupShoutThread();
+    void startupFeederThread();
 };

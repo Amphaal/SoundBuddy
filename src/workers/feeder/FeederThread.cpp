@@ -7,7 +7,7 @@ void FeederThread::run() {
     this->_ohLib = new OutputHelper(OUTPUT_FILE_PATH, "uploadLib", "wtnz_file");
     this->_ohWrn = new OutputHelper(WARNINGS_FILE_PATH);
 
-    emit printLog(I18n::tr()->Feeder_Warning());  //EMIT
+    emit printLog(tr("WARNING ! Make sure you activated the XML file sharing in iTunes>Preferences>Advanced."));
 
     try {
         
@@ -17,7 +17,7 @@ void FeederThread::run() {
     } catch (const std::exception& e) {
 
         QString errMsg(e.what());
-        emit printLog(errMsg, false, true);  //EMIT
+        emit printLog(errMsg, false, true);
 
     }
 
@@ -47,7 +47,7 @@ void FeederThread::_generateLibJSONFile() {
                 .arg(OUTPUT_FILE_PATH)
         );
 
-        emit printLog(I18n::tr()->Feeder_Unmolding(WARNINGS_FILE_PATH));  //EMIT
+        _tracksUnmolding(WARNINGS_FILE_PATH);
         this->_ohWrn->writeAsJsonFile(*this->_libWarningsAsJSON, true);
     } else {
         //remove old warning file
@@ -55,26 +55,29 @@ void FeederThread::_generateLibJSONFile() {
         QFile::remove(pToRem);
     }
 
-    emit printLog(I18n::tr()->Feeder_Unmolding(OUTPUT_FILE_PATH));  //EMIT
+    _tracksUnmolding(OUTPUT_FILE_PATH);
 
     this->_ohLib->writeAsJsonFile(*this->_libAsJSON);
 
-    emit printLog(I18n::tr()->Feeder_OutputReady());  //EMIT
+    emit printLog(tr("OK, output file is ready for breakfast !"));
 
-    emit operationFinished();  //EMIT
+    emit operationFinished();
 }
 
+void FeederThread::_tracksUnmolding(const char* filename) const {
+    emit printLog(tr("Unmolding \"%1\"...").arg(filename));
+}
 
 //upload
 void FeederThread::_uploadLibToServer() {
-    emit printLog(I18n::tr()->Feeder_StartSend());  //EMIT
+    emit printLog(tr("Let's try to send now !"));
     
     QString response = this->_ohLib->uploadFile();
     
-    if (response != "") {
-        emit printLog(I18n::tr()->HTTP_ServerResponded(response));  //EMIT
+    if (!response.isEmpty()) {
+        emit printLog(tr("Server responded: %1").arg(response));
     } else {
-        emit printLog(I18n::tr()->HTTP_NoResponse());  //EMIT
+        emit printLog(tr("No feedback from the server ? Strange... Please check the targeted host."));
     }
 
 }
@@ -101,14 +104,16 @@ void FeederThread::_processFile(const QString &xmlFileLocation) {
 //navigate through XML and generate object
 void FeederThread::_generateJSON(const QString &xmlFileLocation) {
     
-    emit printLog(I18n::tr()->Feeder_PredigestXML()); //EMIT
+    emit printLog(tr("Pre-digesting XML file..."));
+    
+    const auto XMLReadErr = tr("Cannot read the XML file bound to your library. Are you sure you activated the XML file sharing in iTunes ?").toStdString();
     
     //read xml as QString
     iTunesLibParser *doc;
     try {
         doc = new iTunesLibParser(xmlFileLocation);
     } catch(...) {
-        return throw FTNZXMLLibFileUnreadableException();
+        throw std::logic_error(XMLReadErr);
     }
     auto xmlAsJSONString = doc->ToJSON();
     delete doc;
@@ -117,16 +122,16 @@ void FeederThread::_generateJSON(const QString &xmlFileLocation) {
     rapidjson::Document d;
     rapidjson::ParseResult s = d.Parse(xmlAsJSONString.toStdString().c_str());
     if(s.IsError()) {
-        return throw FTNZXMLLibFileUnreadableException();
+        throw std::logic_error(XMLReadErr);
     }
 
-    emit printLog(I18n::tr()->Feeder_TrimingFat());  //EMIT
+    emit printLog(tr("Triming fat..."));
     
     //retrieve tracks and pass to workingJSON
     auto v = rapidjson::Pointer("/Tracks").Get(d);
     this->_expectedCount = v->MemberCount();
     if (!this->_expectedCount) {
-        return throw FTNZNoMusicFoundException();
+        throw std::logic_error(tr("No music found in your library. Please feed it some.").toStdString());
     }
     this->_workingJSON->CopyFrom(d["Tracks"], this->_workingJSON->GetAllocator());
     
@@ -135,7 +140,7 @@ void FeederThread::_generateJSON(const QString &xmlFileLocation) {
 //standardize
 void FeederThread::_standardizeJSON() {
     
-    emit printLog(I18n::tr()->Feeder_CookingJSON());  //EMIT
+    emit printLog(tr("Cooking the JSON file..."));
 
     //declare allocators
     auto &lajAlloc = this->_libAsJSON->GetAllocator();
@@ -220,20 +225,20 @@ void FeederThread::_tracksEmitHelper() {
     this->_recCount++;
     bool canLog = ((this->_recCount % 100) == 0 && this->_recCount <= this->_expectedCount) || this->_recCount == this->_expectedCount || !mustReplacePrevious;
     if(canLog) {
-        emit printLog(I18n::tr()->Feeder_LogTrackEmit(this->_recCount, this->_expectedCount), mustReplacePrevious);  //EMIT
+        emit printLog(tr("%1 over %2 ...").arg(this->_recCount).arg(this->_expectedCount), mustReplacePrevious);
     }
 }
 
 //seek in iTunes preference file the library location
 QString FeederThread::_getITunesLibLocation() {
-    emit printLog(I18n::tr()->Feeder_GetXMLFileLoc());  //EMIT
+    emit printLog(tr("Getting XML file location..."));
 
     QString pathToPrefs = PlatformHelper::getITunesPrefFileProbableLocation();
     
     try {
         return PlatformHelper::extractItunesLibLocation(pathToPrefs);
     } catch(...) {
-        throw FTNZMissingItunesConfigException();
+        throw std::logic_error(tr("An issue happened while fetching iTunes's XML file location. Have you installed iTunes ?").toStdString());
     }
     
 }

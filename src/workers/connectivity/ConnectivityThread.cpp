@@ -12,7 +12,7 @@ void ConnectivityThread::run() {
 
     //tell sio is trying to reconnect
     this->_sioClient->set_reconnect_listener([&](unsigned int a, unsigned int b) {
-        emit updateSIOStatus(I18n::tr()->SIOReconnecting(), TLW_Colors::YELLOW);
+        emit updateSIOStatus(tr("Reconnecting to server..."), TLW_Colors::YELLOW);
     });
 
     //on connect, check credentials
@@ -50,7 +50,7 @@ void ConnectivityThread::run() {
     ////////////////////////
     
     //declare waiting for connection
-    emit updateSIOStatus(I18n::tr()->SIOWaitingConnection(), TLW_Colors::YELLOW);
+    emit updateSIOStatus(tr("Connecting to server..."), TLW_Colors::YELLOW);
     
     //connect...
     this->_sioClient->connect(this->_getTargetUrl().toStdString());
@@ -111,14 +111,14 @@ void ConnectivityThread::_checkCredentials(bool forceRecheck) {
     auto prerequisitesOK = this->_aHelper->ensureConfigFileIsReadyForUpload(false);
 
     if (!prerequisitesOK) {
-        emit updateSIOStatus(I18n::tr()->SIOWaitingCredentials(), TLW_Colors::RED);
+        emit updateSIOStatus(tr("Waiting for appropriate credentials."), TLW_Colors::RED);
     }
 
     else if(prerequisitesOK && !this->_requestOngoing) {
         
         //start check
         this->_requestOngoing = true;
-        emit updateSIOStatus(I18n::tr()->SIOAskingCredentialValidation(), TLW_Colors::YELLOW);
+        emit updateSIOStatus(tr("Asking for credentials validation..."), TLW_Colors::YELLOW);
         
         sio::message::list p;
         auto username = this->_aHelper->getParamValue("username");

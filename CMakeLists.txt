@@ -173,7 +173,7 @@ add_subdirectory(deps/socket.io)
 target_compile_options(sioclient_tls PRIVATE "-Wno-expansion-to-defined")
 target_compile_options(sioclient     PRIVATE "-Wno-expansion-to-defined")
 
-target_link_libraries(appExec PRIVATE
+target_link_libraries(appExec PRIVATE   
     sioclient_tls
     rapidjson
 )

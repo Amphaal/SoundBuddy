@@ -91,11 +91,13 @@ void MainWindow::onUpdateChecked(bool hasUpdate) {
     //if the user asks directly to check updates
     if(this->userNotificationOnUpdateCheck) {
         this->userNotificationOnUpdateCheck = false;
-        
-        QString title = (QString)APP_NAME + " - " + I18n::tr()->Menu_CheckForUpgrades();
-
         if(!hasUpdate) {
-            QMessageBox::information(this, title, tr(""), QMessageBox::Ok, QMessageBox::Ok);
+            QMessageBox::information(this, 
+                tr("%1 - Checking updates").arg(APP_NAME), 
+                tr("No updates available at the time."), 
+                QMessageBox::Ok, 
+                QMessageBox::Ok
+            );
         }
     }
 
@@ -106,11 +108,11 @@ void MainWindow::onUpdateChecked(bool hasUpdate) {
     }
 
     //if has update
-    QString title = (QString)APP_NAME + " - " + I18n::tr()->Alert_UpdateAvailable_Title();
-    QString content = I18n::tr()->Alert_UpdateAvailable_Text();
-
-    auto msgboxRslt = QMessageBox::information(this, title, content, 
-                QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes
+    auto msgboxRslt = QMessageBox::information(this, 
+        tr("%1 - Update Available").arg(APP_NAME), 
+        tr("An update is available for %1. Would you like to install it now ?").arg(APP_NAME), 
+        QMessageBox::Yes | QMessageBox::No, 
+        QMessageBox::Yes
     );
     
     if(msgboxRslt == QMessageBox::Yes) {
