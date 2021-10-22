@@ -36,13 +36,16 @@
             "includePath": [
                 "${default}",
                 "${workspaceFolder}",
+                "${env:MINGW64_ROOT}/include",
                 "${env:MINGW64_ROOT}/include/qt6",
                 "${env:MINGW64_ROOT}/include/qt6/QtCore",
                 "${env:MINGW64_ROOT}/include/qt6/QtWidgets",
                 "${env:MINGW64_ROOT}/include/qt6/QtGui",
                 "${workspaceFolder}/deps/socket.io/lib/rapidjson/include",
                 "${workspaceFolder}/deps/socket.io/src",
-                "${workspaceFolder}/deps/IFWUpdateChecker/src"
+                "${workspaceFolder}/deps/IFWUpdateChecker/src",
+                "${env:MINGW64_ROOT}/include/c++/11.2.0",
+                "${env:MINGW64_ROOT}/include/c++/11.2.0/x86_64-w64-mingw32"
             ]
         }
     ],

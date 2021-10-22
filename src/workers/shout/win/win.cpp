@@ -9,7 +9,6 @@
 #include "src/workers/shout/ShoutThread.h" 
 #include "iTunesCOMHandler.h"
 #include "src/helpers/stringHelper/stringHelper.hpp"
-#include "src/localization/i18n.hpp"
 
 #include <QMetaObject>
 #include <QMetaMethod>
@@ -22,7 +21,7 @@ void ShoutThread::run() {
     this->_inst();
     
     //start with log
-    emit printLog(I18n::tr()->Shout_WaitITunes());
+    emit printLog(tr("Waiting for iTunes to launch..."));
     
     //prepare CLID
     HWND currentITunesWindowsHandler;
@@ -48,7 +47,7 @@ void ShoutThread::run() {
         GetWindowThreadProcessId(currentITunesWindowsHandler, &currentProcessID);
         
         //log..
-        emit printLog(I18n::tr()->Shout_StartListening());
+        emit printLog(tr("Listening to iTunes !"));
 
         //initiate COM object
         CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
@@ -100,7 +99,7 @@ void ShoutThread::run() {
         if(this->_mustListen && handler->iTunesShutdownRequested) {
             
             //say we acknoledge iTunes shutting down...
-            emit printLog(I18n::tr()->Shout_ITunesShutdown());
+            emit printLog(tr("iTunes shutting down !"));
 
             //wait for old iTunes window to finally shutdown
             do {
@@ -131,13 +130,13 @@ void ShoutThread::run() {
             } while (this->_mustListen);
             
             //say we relooped
-            emit printLog(I18n::tr()->Shout_WaitITunesAgain());
+            emit printLog(tr("Waiting for iTunes to launch again..."));
         }
 
     } while (this->_mustListen);
 
     //end with log
-    emit printLog(I18n::tr()->Shout_StopListening());
+    emit printLog(tr("Stopped listening to iTunes."));
 
 };
 

@@ -4,12 +4,9 @@
 
 #include <fstream>
 #include <algorithm>
-#include <exception>
 #include <set>
 
 #include <QString>
-
-#include "_exceptions.hpp"
 
 #include "src/workers/base/ITNZThread.hpp"
 #include "src/helpers/_const.hpp"

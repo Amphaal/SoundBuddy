@@ -22,7 +22,7 @@ void MainWindow::setupConfigFileWatcher() {
     this->updateMenuItemsFromConfigValues();
 
     auto configFilePath = this->aHelper.getConfigFileFullPath();
-    auto filesToWatch = QStringList(configFilePath.toStdString().c_str());
+    auto filesToWatch = QStringList(configFilePath);
     this->configWatcher = new QFileSystemWatcher(filesToWatch);
     
     QObject::connect(
@@ -58,7 +58,7 @@ void MainWindow::updateWarningsMenuItem() {
 
 
 void MainWindow::accessWTNZ() {
-    PlatformHelper::openUrlInBrowser(this->wtnzUrl.toStdString().c_str());
+    PlatformHelper::openUrlInBrowser(this->wtnzUrl);
 };
 
 //open the config file into the OS browser
@@ -109,9 +109,7 @@ void MainWindow::onUpdateChecked(bool hasUpdate) {
     QString title = (QString)APP_NAME + " - " + I18n::tr()->Alert_UpdateAvailable_Title();
     QString content = I18n::tr()->Alert_UpdateAvailable_Text();
 
-    auto msgboxRslt = QMessageBox::information(this, 
-                QString(title.toStdString().c_str()), 
-                QString(content.toStdString().c_str()), 
+    auto msgboxRslt = QMessageBox::information(this, title, content, 
                 QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes
     );
     
@@ -138,7 +136,7 @@ void MainWindow::checkForAppUpdates() {
 }
 
 void MainWindow::updateStatusBar(const QString &message, const TLW_Colors &color) {
-    this->statusLabel->setText(QString(message.toStdString().c_str()));
+    this->statusLabel->setText(message);
     this->statusLight->setCurrentIndex(color);
 }
 

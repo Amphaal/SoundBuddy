@@ -27,13 +27,13 @@ void ConnectivityThread::run() {
         //extract response
         auto response = ev.get_messages()[0]->get_map();
         auto isOk = response["isLoginOk"]->get_bool();
-        QString accomp = QString::fromStdString(response["accomp"]->get_string());
+        auto extraInfo = QString::fromStdString(response["accomp"]->get_string());
 
         if(isOk) {
-            this->_loggedInUser = accomp;
-            emit updateSIOStatus(I18n::tr()->SIOLoggedAs(accomp), TLW_Colors::GREEN);
+            this->_loggedInUser = extraInfo;
+            _emitLoggedUserMsg();
         } else {
-            emit updateSIOStatus(I18n::tr()->SIOErrorOnValidation(accomp), TLW_Colors::RED);
+            emit updateSIOStatus(_validationErrorTr(extraInfo), TLW_Colors::RED);
         }
 
         //toggle flag
@@ -67,6 +67,30 @@ void ConnectivityThread::run() {
 
 }
 
+void ConnectivityThread::_emitLoggedUserMsg() const {
+    emit tr("Logged as \"%1\"").arg(this->_loggedInUser);
+}
+
+const QString ConnectivityThread::_validationErrorTr(const QString& errorCode) const {
+    QString errorMsg;
+    
+    if(errorCode == "cdm") {
+        part = tr("Credential data missing");
+    } else if(errorCode == "eud") {
+        part = tr("Empty users database");
+    } else if(errorCode == "unfid") {
+        part = tr("Username not found in database");
+    } else if(errorCode == "nopass") {
+        part = tr("Password for the user not found in database");
+    } else if(errorCode == "pmiss") {
+        part = tr("Password missmatch");
+    } else {
+        return tr("Unknown error from the validation request");
+    }
+
+    return tr("Server responded with : \"%1\"").arg(part);
+}
+
 void ConnectivityThread::_checkCredentialsFromFileUpdate() {
     this->_checkCredentials(true);
 }
@@ -80,7 +104,7 @@ void ConnectivityThread::_checkCredentials(bool forceRecheck) {
     }
 
     if(this->_loggedInUser != "" && !forceRecheck) {
-        emit updateSIOStatus(I18n::tr()->SIOLoggedAs(this->_loggedInUser), TLW_Colors::GREEN);
+        _emitLoggedUserMsg();
         return;
     }
 

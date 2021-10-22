@@ -7,13 +7,12 @@
 
 #include "src/workers/shout/ShoutThread.h" 
 #include "src/helpers/stringHelper/stringHelper.hpp"
-#include "src/localization/i18n.hpp"
 
 void ShoutThread::run() { 
 
     this->_inst();
 
-    emit printLog(I18n::tr()->Shout_StartListening());
+    emit printLog(tr("Waiting for iTunes to launch..."));
 
     //define applescript to get shout values
     QString script = "tell application \"iTunes\" \n ";
@@ -105,6 +104,6 @@ void ShoutThread::run() {
     }
 
     this->shoutEmpty();
-    emit printLog(I18n::tr()->Shout_StopListening());
+    emit printLog(tr("Stopped listening to iTunes."));
 }
 #endif

@@ -5,9 +5,9 @@ void MainWindow::_initUI() {
 
     //values specific to this
     QString stdTitle = _DEBUG ? (QString)"DEBUG - " + APP_NAME : APP_NAME;
-    this->setWindowTitle(QString(stdTitle.toStdString().c_str()));
+    this->setWindowTitle(stdTitle);
     this->setMinimumSize(QSize(480, 400));
-    this->setWindowIcon(QIcon(LOCAL_ICON_PNG_PATH.toStdString().c_str()));
+    this->setWindowIcon(QIcon(LOCAL_ICON_PNG_PATH));
 
     //helpers
     this->_initUITabs();
@@ -26,7 +26,7 @@ void MainWindow::_initUI() {
 void MainWindow::_initUITray() {
     auto trayIcon = new QSystemTrayIcon;
     this->trayIcon = trayIcon;
-    trayIcon->setIcon(QIcon(LOCAL_REVERSE_ICON_PNG_PATH.toStdString().c_str()));
+    trayIcon->setIcon(QIcon(LOCAL_REVERSE_ICON_PNG_PATH));
     trayIcon->setToolTip(this->windowTitle());
     
     QObject::connect(
@@ -110,10 +110,10 @@ void MainWindow::_initUIMenu() {
 
 QMenu* MainWindow::_getOptionsMenu() {
 
-    QMenu *optionsMenuItem = new QMenu(I18n::tr()->Menu_Options().toStdString().c_str());
+    QMenu *optionsMenuItem = new QMenu(tr("Options"));
 
     //add to system startup Action
-    auto atssAction = new QAction(I18n::tr()->Menu_AddToStartup().toStdString().c_str(), optionsMenuItem);
+    auto atssAction = new QAction(tr("Launch at system boot"), optionsMenuItem);
     atssAction->setCheckable(true);
     QObject::connect(
         atssAction, &QAction::triggered,
@@ -123,8 +123,8 @@ QMenu* MainWindow::_getOptionsMenu() {
         atssAction->setChecked(true);
     }
 
-    //for checking the upgrades available
-    this->cfugAction = new QAction(I18n::tr()->Menu_CheckForUpgrades().toStdString().c_str(), optionsMenuItem);
+    //for checking available updates
+    this->cfugAction = new QAction(tr("Check for updates"), optionsMenuItem);
         QObject::connect(
         this->cfugAction, &QAction::triggered,
         this, &MainWindow::requireUpdateCheckFromUser
@@ -142,25 +142,30 @@ QMenu* MainWindow::_getOptionsMenu() {
 }
 
 void MainWindow::UpdateSearch_switchUI(bool isSearching) {
+    //
     this->cfugAction->setEnabled(!isSearching);
+    
+    //
     QString descr = APP_FULL_DENOM;
-    if(isSearching) descr += " - " + I18n::tr()->SearchingForUpdates();
-    this->versionAction->setText(descr.toStdString().c_str());
+    if(isSearching) descr += " - " + tr("Searching for updates...");
+    
+    //
+    this->versionAction->setText(descr);
 }
 
 QMenu* MainWindow::_getFileMenu() {
-
-    auto fileMenuItem = new QMenu(I18n::tr()->Menu_File().toStdString().c_str());
+    //
+    auto fileMenuItem = new QMenu(tr("File"));
 
     //monitorAction
-    auto monitorAction = new QAction(I18n::tr()->Menu_OpenMonitor().toStdString().c_str(), fileMenuItem);
+    auto monitorAction = new QAction(tr("Open monitor..."), fileMenuItem);
     QObject::connect(
         monitorAction, &QAction::triggered,
         this, &MainWindow::trueShow
     );
 
     //myWTNZAction
-    auto myWTNZAction = new QAction(I18n::tr()->Menu_MyWTNZ().toStdString().c_str(), fileMenuItem);
+    auto myWTNZAction = new QAction(tr("My WTNZ"), fileMenuItem);
     myWTNZAction->setEnabled(false);
     QObject::connect(
         myWTNZAction, &QAction::triggered,
@@ -169,14 +174,14 @@ QMenu* MainWindow::_getFileMenu() {
     this->myWTNZActions.push_back(myWTNZAction);
 
     //updateConfigAction
-    auto updateConfigAction = new QAction(I18n::tr()->Menu_UpdateConfig().toStdString().c_str(), fileMenuItem);
+    auto updateConfigAction = new QAction(tr("Update configuration file"), fileMenuItem);
     QObject::connect(
         updateConfigAction, &QAction::triggered,
         this, &MainWindow::openConfigFile
     );
 
     //openWarningsAction
-    auto openWarningsAction = new QAction(I18n::tr()->Menu_OpenWarnings().toStdString().c_str(), fileMenuItem);
+    auto openWarningsAction = new QAction(tr("Read latest upload warnings report"), fileMenuItem);
     openWarningsAction->setEnabled(false);
     QObject::connect(
         openWarningsAction, &QAction::triggered,
@@ -185,7 +190,7 @@ QMenu* MainWindow::_getFileMenu() {
     this->warningsfileActions.push_back(openWarningsAction);
 
     //openData
-    auto openDataFolder = new QAction(I18n::tr()->Menu_OpenDataFolder().toStdString().c_str(), fileMenuItem);
+    auto openDataFolder = new QAction(tr("Access upload data folder"), fileMenuItem);
     QObject::connect(
         openDataFolder, &QAction::triggered,
         [=]() {
@@ -194,7 +199,7 @@ QMenu* MainWindow::_getFileMenu() {
     );
 
     //quit
-    auto quitAction = new QAction(I18n::tr()->Menu_Quit().toStdString().c_str(), fileMenuItem);
+    auto quitAction = new QAction(tr("Quit"), fileMenuItem);
     QObject::connect(
         quitAction, &QAction::triggered,
         this, &MainWindow::forcedClose

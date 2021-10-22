@@ -33,7 +33,12 @@ rapidjson::Document ShoutThread::_createBasicShout() {
 
 void ShoutThread::shoutEmpty(){
     auto obj = this->_createBasicShout();
-    emit printLog(I18n::tr()->Shout_Nothing(obj["date"].GetString()));
+    const auto date = obj["date"].GetString();
+
+    emit printLog(
+        tr("%1: Shouting -> Nothing").arg(date)
+    );
+    
     this->_shoutToServer(obj);
 };
 
@@ -67,13 +72,15 @@ void ShoutThread::shoutFilled(
     obj.AddMember("playerState", playerState, alloc);
     obj.AddMember("year", year, alloc);
 
+    auto pState = obj["playerState"].GetBool() ? tr("playing") : tr("paused");
+
     //log...
-    QString logMessage = I18n::tr()->Shout(
+    auto logMessage = tr("%1: Shouting -> %2 - %3 - %4 (%5)")
         obj["date"].GetString(),
         obj["name"].GetString(),
         obj["album"].GetString(),
         obj["artist"].GetString(),
-        obj["playerState"].GetBool()
+        pState
     );
     emit printLog(logMessage);
 

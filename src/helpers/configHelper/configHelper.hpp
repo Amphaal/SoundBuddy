@@ -1,14 +1,11 @@
 #pragma once
 
-#include <exception>
-
 #include <rapidjson/document.h>
 #include <rapidjson/filereadstream.h>
 #include <rapidjson/filewritestream.h>
 #include <rapidjson/prettywriter.h>
 
 #include "src/helpers/platformHelper/platformHelper.h"
-#include "src/localization/i18n.hpp"
 #include "src/helpers/_const.hpp"
 #include "src/version.h"
 
@@ -17,27 +14,6 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QDebug>
-
-///
-/// Exceptions
-///
-
-class FTNZMissingConfigValuesException : public std::exception {    
-    private:
-        std::string exceptionMessage;
-
-    public:
-        FTNZMissingConfigValuesException() {
-            this->exceptionMessage = I18n::tr()->FTNZMissingConfigValuesException().toStdString();
-        }  
-        const char * what () const throw () {
-            return this->exceptionMessage.c_str();
-        }
-};
-
-///
-/// End Exceptions
-///
 
 class ConfigHelper {
     

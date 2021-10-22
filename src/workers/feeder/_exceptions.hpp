@@ -1,9 +1,6 @@
 #pragma once
 
 #include <string>
-#include <exception>
-
-#include "src/localization/i18n.hpp"
 
 ///
 /// Exceptions

@@ -9,14 +9,11 @@
 
 #include "src/helpers/stringHelper/stringHelper.hpp"
 #include "src/helpers/configHelper/authHelper.hpp"
-#include "src/localization/i18n.hpp"
 #include "src/helpers/_const.hpp"
 
 #include <QStandardPaths>
 #include <QDir>
 #include <QFileInfo>
-
-#include <exception>
 
 ///
 /// Exceptions

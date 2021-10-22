@@ -1,5 +1,3 @@
-#include "Ii18n.h"
-
 class AppTranslator_FR : public IAppTranslator {
     QString Menu_File() { return "Fichier"; }
     QString Menu_Options() { return "Options"; }

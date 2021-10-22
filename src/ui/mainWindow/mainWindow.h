@@ -23,7 +23,6 @@
 #include <rapidjson/document.h>
 
 #include "src/version.h"
-#include "src/localization/i18n.hpp"
 
 #include <IFWUpdateChecker.hpp>
 

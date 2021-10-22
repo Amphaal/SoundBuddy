@@ -49,7 +49,9 @@ class AuthHelper : public ConfigHelper {
             this->onEmptyRequiredValue([&isReady](){
                     isReady = false;
             });
-            if(!isReady && throwable) throw FTNZMissingConfigValuesException();
+            if(!isReady && throwable) {
+                throw std::logic_error(tr("Expected configuration values are missing. Please check the configuration file !"));
+            }
 
             return isReady;
         }

@@ -39,7 +39,13 @@ void FeederThread::_generateLibJSONFile() {
     auto warningsCount = this->_libWarningsAsJSON->MemberCount();
     if (warningsCount) {
         //create warning file
-        emit printLog(I18n::tr()->Feeder_NotifyWarningsExistence(warningsCount, OUTPUT_FILE_PATH));  //EMIT
+        emit printLog(
+            tr("WARNING ! %1 files in your library are missing important "
+               "metadata and consequently were removed from the output file ! "
+               "Please check the \"%2\" file for more informations.")
+                .arg(warningsCount)
+                .arg(OUTPUT_FILE_PATH)
+        );
 
         emit printLog(I18n::tr()->Feeder_Unmolding(WARNINGS_FILE_PATH));  //EMIT
         this->_ohWrn->writeAsJsonFile(*this->_libWarningsAsJSON, true);

@@ -57,9 +57,9 @@ SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 SET(CMAKE_C_STANDARD 11)
 
 # Qt
-#SET(CMAKE_AUTOMOC ON)
-#SET(CMAKE_AUTORCC ON)
-#SET(CMAKE_AUTOUIC ON)
+SET(CMAKE_AUTOMOC ON)
+SET(CMAKE_AUTORCC ON)
+SET(CMAKE_AUTOUIC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS 
     Core 
@@ -105,8 +105,8 @@ SET(SOURCES
 # Code compilation #
 ####################
 
-file(GLOB_RECURSE CPP_FILES "src/*.cpp")
-file(GLOB_RECURSE HPP_FILES "src/*.hpp")
+file(GLOB_RECURSE APP_CPP_FILES "src/*.cpp")
+file(GLOB_RECURSE APP_HPP_FILES "src/*.hpp")
 
 #########################
 # Executable Generation #
@@ -114,8 +114,8 @@ file(GLOB_RECURSE HPP_FILES "src/*.hpp")
 
 # Create executable
 add_executable(appExec ${BUNDLE_TYPE}
-    ${HPP_FILES}
-    ${CPP_FILES}
+    ${APP_HPP_FILES}
+    ${APP_CPP_FILES}
 ) 
 
 target_include_directories(appExec PRIVATE
@@ -130,19 +130,52 @@ set_target_properties(appExec PROPERTIES
     MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/templates/Info.plist.in     
 ) 
 
+################
+# translations #
+################
+
+include(QtTranslation)
+
+# app sources
+list(APPEND TS_SOURCE_FILES
+    ${APP_CPP_FILES}
+    ${APP_HPP_FILES}
+)
+list(APPEND TS_FILES
+    "src/_i18n/fr.ts"
+)
+HandleQtTranslation(appExec
+    "App"
+    "${TS_SOURCE_FILES}"
+    ${TS_FILES}
+)
+
+# IFW sources
+list(APPEND TS_INSTALL_SOURCE_FILES
+    "src/_ifw/EndInstallerForm.ui"
+)
+list(APPEND TS_INSTALL_FILES
+    "src/_i18n/EndInstallerForm_fr.ts"
+)
+HandleQtTranslation(appExec
+    OFF
+    "${TS_INSTALL_SOURCE_FILES}"
+    ${TS_INSTALL_FILES}
+)
+
 #############
 # Socket.io #
 #############
 
 add_subdirectory(deps/socket.io)
 
+#prevent warnings from unmaintained rapidjson
+target_compile_options(sioclient_tls PRIVATE "-Wno-expansion-to-defined")
+target_compile_options(sioclient     PRIVATE "-Wno-expansion-to-defined")
+
 target_link_libraries(appExec PRIVATE
     sioclient_tls
     rapidjson
-)
-
-target_compile_options(sioclient_tls 
-    PRIVATE "-Wno-expansion-to-defined" #prevent warnings from unmaintained rapidjson
 )
 
 ########

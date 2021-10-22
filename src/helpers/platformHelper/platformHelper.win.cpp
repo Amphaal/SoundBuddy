@@ -82,7 +82,7 @@
         auto settings = PlatformHelper::getStartupSettingsHandler();
 
         if (!PlatformHelper::isLaunchingAtStartup()) {
-            settings->setValue(APP_NAME, PlatformHelper::getPathToApp().toStdString().c_str());
+            settings->setValue(APP_NAME, PlatformHelper::getPathToApp());
         } else {
             settings->remove(APP_NAME);
         }

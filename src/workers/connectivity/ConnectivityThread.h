@@ -5,14 +5,12 @@
 #include <QFileSystemWatcher>
 #include <QThread>
 
-#include <exception>
 #include <string>
 #include <iostream>
 
 #include "src/ui/widgets/LightWidget.h"
 
 #include "src/helpers/configHelper/authHelper.hpp"
-#include "src/localization/i18n.hpp"
 
 class ConnectivityThread : public QThread {
     Q_OBJECT
@@ -37,4 +35,8 @@ class ConnectivityThread : public QThread {
     void _checkCredentials(bool forceRecheck = false);
     void _checkCredentialsFromFileUpdate();
     QString _getTargetUrl();
+
+
+    const QString _validationErrorTr(const QString& errorCode) const;
+    void _emitLoggedUserMsg() const;
 };

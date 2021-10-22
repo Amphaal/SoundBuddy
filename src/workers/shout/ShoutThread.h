@@ -1,7 +1,6 @@
 #pragma once
 
 #include <functional>
-#include <exception>
 #include <QString>
 #include <rapidjson/document.h>
 

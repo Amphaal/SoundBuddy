@@ -39,7 +39,7 @@
 
     QString PlatformHelper::extractItunesLibLocation(const QString &pathToParamFile) {
         //get path to iTunes as string
-        QSettings plist(pathToParamFile.toStdString().c_str(), QSettings::NativeFormat);
+        QSettings plist(pathToParamFile, QSettings::NativeFormat);
         auto pathToLib = plist.value("NSNavLastRootDirectory").toString();
 
         //get parent directory
@@ -54,7 +54,7 @@
 
     QSettings* PlatformHelper::getStartupSettingsHandler() {
         auto cPath = PlatformHelper::getEnvironmentVariable("HOME") + MAC_REG_STARTUP_LAUNCH_PATH; //computed path
-        auto settings = new QSettings(cPath.toStdString().c_str(), QSettings::NativeFormat);
+        auto settings = new QSettings(cPath, QSettings::NativeFormat);
         return settings;
     }
 
@@ -78,7 +78,7 @@
             settings->setValue("ExitTimeOut", 0);
             settings->setValue("RunAtLoad", true);
             settings->setValue("LimitLoadToSessionType", "Aqua");
-            QStringList args(PlatformHelper::getPathToApp().toStdString().c_str());
+            QStringList args(PlatformHelper::getPathToApp());
             settings->setValue("ProgramArguments", args);
         } else {
             auto cPath = PlatformHelper::getEnvironmentVariable("HOME") + MAC_REG_STARTUP_LAUNCH_PATH; //computed path
