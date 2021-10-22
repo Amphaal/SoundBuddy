@@ -3,7 +3,6 @@
 #include "configHelper.hpp"
 
 class AuthHelper : public ConfigHelper {
- Q_GADGET
  public:
     AuthHelper() : ConfigHelper(AUTH_FILE_PATH, REQUIRED_CONFIG_FIELDS) { }
 
@@ -48,7 +47,7 @@ class AuthHelper : public ConfigHelper {
                 isReady = false;
         });
         if(!isReady && throwable) {
-            throw std::logic_error(tr("Expected configuration values are missing. Please check the configuration file !").toStdString());
+            throw std::logic_error(QObject::tr("Expected configuration values are missing. Please check the configuration file !").toStdString());
         }
 
         return isReady;

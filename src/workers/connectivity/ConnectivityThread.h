@@ -1,6 +1,6 @@
 #pragma once
 
-#include <sio_client.h>
+#include "ConnectivityThread.sio.h" // must be put before any Qt include
 
 #include <QFileSystemWatcher>
 #include <QThread>
@@ -11,6 +11,7 @@
 #include "src/ui/widgets/LightWidget.h"
 
 #include "src/helpers/configHelper/authHelper.hpp"
+
 
 class ConnectivityThread : public QThread {
     Q_OBJECT
@@ -38,5 +39,5 @@ class ConnectivityThread : public QThread {
 
 
     const QString _validationErrorTr(const QString& errorCode) const;
-    void _emitLoggedUserMsg() const;
+    void _emitLoggedUserMsg();
 };

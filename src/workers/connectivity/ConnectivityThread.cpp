@@ -67,28 +67,28 @@ void ConnectivityThread::run() {
 
 }
 
-void ConnectivityThread::_emitLoggedUserMsg() const {
-    emit tr("Logged as \"%1\"").arg(this->_loggedInUser);
+void ConnectivityThread::_emitLoggedUserMsg() {
+    emit updateSIOStatus(tr("Logged as \"%1\"").arg(this->_loggedInUser), TLW_Colors::GREEN);
 }
 
 const QString ConnectivityThread::_validationErrorTr(const QString& errorCode) const {
     QString errorMsg;
     
     if(errorCode == "cdm") {
-        part = tr("Credential data missing");
+        errorMsg = tr("Credential data missing");
     } else if(errorCode == "eud") {
-        part = tr("Empty users database");
+        errorMsg = tr("Empty users database");
     } else if(errorCode == "unfid") {
-        part = tr("Username not found in database");
+        errorMsg = tr("Username not found in database");
     } else if(errorCode == "nopass") {
-        part = tr("Password for the user not found in database");
+        errorMsg = tr("Password for the user not found in database");
     } else if(errorCode == "pmiss") {
-        part = tr("Password missmatch");
+        errorMsg = tr("Password missmatch");
     } else {
         return tr("Unknown error from the validation request");
     }
 
-    return tr("Server responded with : \"%1\"").arg(part);
+    return tr("Server responded with : \"%1\"").arg(errorMsg);
 }
 
 void ConnectivityThread::_checkCredentialsFromFileUpdate() {
@@ -126,7 +126,7 @@ void ConnectivityThread::_checkCredentials(bool forceRecheck) {
 
         p.push(sio::string_message::create(username.toStdString()));
         p.push(sio::string_message::create(password.toStdString()));
-        this->_sioClient->socket("/login")->emit_socket("checkCredentials", p);
+        caca(this->_sioClient, p);
     }
 
 }

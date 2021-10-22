@@ -53,9 +53,12 @@
     };
 
     QSettings* PlatformHelper::getStartupSettingsHandler() {
-        auto cPath = PlatformHelper::getEnvironmentVariable("HOME") + MAC_REG_STARTUP_LAUNCH_PATH; //computed path
-        auto settings = new QSettings(cPath, QSettings::NativeFormat);
-        return settings;
+        if(!_settings) {
+            auto cPath = PlatformHelper::getEnvironmentVariable("HOME") + MAC_REG_STARTUP_LAUNCH_PATH; //computed path
+            _settings = new QSettings(cPath, QSettings::NativeFormat);
+        }
+
+        return _settings;
     }
 
     QString PlatformHelper::getPathToApp() {

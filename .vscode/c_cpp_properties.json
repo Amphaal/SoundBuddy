@@ -45,7 +45,9 @@
                 "${workspaceFolder}/deps/socket.io/src",
                 "${workspaceFolder}/deps/IFWUpdateChecker/src",
                 "${env:MINGW64_ROOT}/include/c++/11.2.0",
-                "${env:MINGW64_ROOT}/include/c++/11.2.0/x86_64-w64-mingw32"
+                "${env:MINGW64_ROOT}/include/c++/11.2.0/x86_64-w64-mingw32",
+                "${workspaceFolder}/deps/IFWUpdateChecker/deps/StupidHTTPDownloader/include",
+                "${workspaceFolder}/deps/IFWUpdateChecker/deps/tiny-process-library"
             ]
         }
     ],

@@ -14,11 +14,12 @@ class PlatformHelper {
     static bool isLaunchingAtStartup();
     static void switchStartupLaunch();
     static bool fileExists(const QString &filename);
-    static QString getAppDirectory();
     static QString getDataStorageDirectory();
 
  private:
+    static inline QSettings* _settings = nullptr;
     static QSettings* getStartupSettingsHandler();
+
     static QString getPathToApp();
     static QString getPathToAppFromStartupSettings(QSettings *settings);
     static QString prepareStandardPath(QStandardPaths::StandardLocation pathType);

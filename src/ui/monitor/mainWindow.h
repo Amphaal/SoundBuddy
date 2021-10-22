@@ -24,8 +24,6 @@
 
 #include "src/version.h"
 
-#include <IFWUpdateChecker.hpp>
-
 #include "src/helpers/_const.hpp"
 #include "src/helpers/configHelper/authHelper.hpp"
 #include "src/helpers/platformHelper/platformHelper.h"
@@ -35,7 +33,6 @@
 #include "src/workers/connectivity/ConnectivityThread.h"
 
 #include "src/ui/widgets/TraficLight.hpp"
-
 
 class MainWindow : public QMainWindow {
  Q_OBJECT
@@ -103,7 +100,7 @@ class MainWindow : public QMainWindow {
     QAction *versionAction = nullptr;
     QAction *cfugAction = nullptr;
     void setupAutoUpdate();
-    void onUpdateChecked(bool hasUpdate, bool hasError);
+    void onUpdateChecked(const UpdateChecker::CheckResults checkResults);
     void requireUpdateCheckFromUser();
     void checkForAppUpdates();
     void UpdateSearch_switchUI(bool isSearching);

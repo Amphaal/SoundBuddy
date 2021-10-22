@@ -2,10 +2,11 @@
 #include <windows.h>
 #include <shellapi.h>
 #include <stdlib.h>  
-#include <rapidjson/rapidjson.h>
+#include <rapidjson/document.h>
 
 #include "platformHelper.h"
 #include "src/version.h"
+#include "src/helpers/_const.hpp"
 #include "src/helpers/iTunesLibParser/iTunesLibParser.h"
 
 #include <string>
@@ -55,14 +56,17 @@ QString PlatformHelper::extractItunesLibLocation(const QString &pathToParamFile)
 
     //decode path
     auto encodedPath = QString::fromStdString(d["LXML:1:iTunes Library XML Location"].GetString());
-    auto decodedData = encodedPath.toUtf16().toBase64();
+    auto decodedData = encodedPath.toUtf8().toBase64();
     
     return decodedData;
 };
 
 QSettings* PlatformHelper::getStartupSettingsHandler() {
-    auto settings = new QSettings(WINDOWS_REG_STARTUP_LAUNCH_PATH.toStdString().c_str(), QSettings::NativeFormat);
-    return settings;
+    if(!_settings) {
+        _settings = new QSettings(WINDOWS_REG_STARTUP_LAUNCH_PATH.toStdString().c_str(), QSettings::NativeFormat);
+    }
+
+    return _settings;
 }
 
 QString PlatformHelper::getPathToApp() {

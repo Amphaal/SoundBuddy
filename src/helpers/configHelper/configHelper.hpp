@@ -15,7 +15,7 @@
 #include <QFileInfo>
 #include <QDebug>
 
-class ConfigHelper {
+class ConfigHelper : public QObject {
  public:
     ConfigHelper(
         const QString &rPathToConfigFile = APP_CONFIG_FILE_PATH, 

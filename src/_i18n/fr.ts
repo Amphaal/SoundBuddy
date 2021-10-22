@@ -5,7 +5,7 @@
     <name>AuthHelper</name>
     <message>
         <source>Expected configuration values are missing. Please check the configuration file !</source>
-        <translation>Des paramètres de configurations sont attendus ! Merci de vérifier le fichier de configuration.</translation>
+        <translation type="vanished">Des paramètres de configurations sont attendus ! Merci de vérifier le fichier de configuration.</translation>
     </message>
 </context>
 <context>
@@ -204,11 +204,26 @@
     <name>OutputHelper</name>
     <message>
         <source>Error communicating with the remote server : &quot;%1&quot;.</source>
-        <translation>Problème durant la communication avec le serveur : &quot;%1&quot;.</translation>
+        <translation type="vanished">Problème durant la communication avec le serveur : &quot;%1&quot;.</translation>
     </message>
     <message>
         <source>The server encountered an error while processing the data =&gt; HTTP Code %1 : %2</source>
-        <translation>Le serveur a rencontré une erreur durant le traitement des informations =&gt; Code HTTP %1 : %2</translation>
+        <translation type="vanished">Le serveur a rencontré une erreur durant le traitement des informations =&gt; Code HTTP %1 : %2</translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <source>Error communicating with the remote server : &quot;%1&quot;.</source>
+        <translation type="unfinished">Problème durant la communication avec le serveur : &quot;%1&quot;.</translation>
+    </message>
+    <message>
+        <source>The server encountered an error while processing the data =&gt; HTTP Code %1 : %2</source>
+        <translation type="unfinished">Le serveur a rencontré une erreur durant le traitement des informations =&gt; Code HTTP %1 : %2</translation>
+    </message>
+    <message>
+        <source>Expected configuration values are missing. Please check the configuration file !</source>
+        <translation type="unfinished">Des paramètres de configurations sont attendus ! Merci de vérifier le fichier de configuration.</translation>
     </message>
 </context>
 <context>

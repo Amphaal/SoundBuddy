@@ -4,5 +4,5 @@
 #define APP_NAME "FeedTNZ"
 #define APP_CURRENT_VERSION "0.4.1"
 #define APP_FULL_DENOM "FeedTNZ 0.4.1"
-#define APP_MAINTENANCETOOL_PATH "../maintenancetool"
+#define APP_REMOTE_MANIFEST_URL ""
 #define APP_PATCHNOTE_URL "https://github.com/Amphaal/feedtnz/releases"

@@ -40,7 +40,7 @@ project(FeedTNZ
 #app dest path
 SET(APP_PUBLISHER "LVWL")
 SET(APP_PATCHNOTE_URL ${PROJECT_HOMEPAGE_URL}/releases)
-SET(APP_MAINTENANCETOOL_PATH "../maintenancetool")
+SET(APP_REMOTE_MANIFEST_URL "")
 
 #config file to source code
 configure_file(
@@ -87,10 +87,6 @@ if (APPLE)
     SET(APP_ICO ${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/app.icns)
     set_source_files_properties(${APP_ICO} PROPERTIES 
         MACOSX_PACKAGE_LOCATION "Resources"                                                    
-    )
-    #CACERT
-    set_source_files_properties(${CACERT} PROPERTIES 
-        MACOSX_PACKAGE_LOCATION "MacOS"                                                    
     )
 endif (APPLE)
 

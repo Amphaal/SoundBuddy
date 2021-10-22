@@ -120,8 +120,8 @@ void FeederThread::_generateJSON(const QString &xmlFileLocation) {
 
     //try parse to temp JSON
     rapidjson::Document d;
-    rapidjson::ParseResult s = d.Parse(xmlAsJSONString.toStdString().c_str());
-    if(s.IsError()) {
+    d.Parse(xmlAsJSONString.toStdString().c_str());
+    if(d.HasParseError()) {
         throw std::logic_error(XMLReadErr);
     }
 

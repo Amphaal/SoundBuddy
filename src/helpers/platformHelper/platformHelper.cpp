@@ -17,10 +17,6 @@ bool PlatformHelper::fileExists(const QString &outputFileName) {
 }
 
 /* STD PATHS */
-
-QString PlatformHelper::getAppDirectory() {
-    return QCoreApplication::applicationDirPath();
-}
 QString PlatformHelper::getDataStorageDirectory() {
     return PlatformHelper::prepareStandardPath(QStandardPaths::AppLocalDataLocation);
 }

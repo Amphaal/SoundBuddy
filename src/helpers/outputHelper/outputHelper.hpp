@@ -1,30 +1,28 @@
 #pragma once
 
-#include <QString>
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>
 #include <rapidjson/filewritestream.h>
-#include <curl/curl.h>
 
+#include <StupidHTTPDownloader/Downloader.h>
 
 #include "src/helpers/stringHelper/stringHelper.hpp"
 #include "src/helpers/configHelper/authHelper.hpp"
 #include "src/helpers/_const.hpp"
 
+#include <QString>
 #include <QStandardPaths>
 #include <QDir>
 #include <QFileInfo>
+
 
 ///
 /// End Exceptions
 ///
 
 class OutputHelper {
- Q_GADGET
-
  private:
     QFileInfo _pathToFile;
-    QString _pathToCert;
     QString _uploadTargetFunction;
     QString _uploadTargetUrl;
     QMap<QString, QString> _uploadPostData;
@@ -69,11 +67,6 @@ class OutputHelper {
         auto hostPath = PlatformHelper::getDataStorageDirectory();
         auto pathToFile = hostPath + "/" + filePath;
         this->_pathToFile.setFile(pathToFile);
-        
-        //certificate
-        this->_pathToCert = QDir::toNativeSeparators(
-            (PlatformHelper::getAppDirectory() + "/" + PEM_CERT_NAME).toStdString().c_str()
-        );
     }
 
     QString getOutputPath() {
@@ -148,9 +141,7 @@ class OutputHelper {
             curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
             /* try use of SSL for this */
-            curl_easy_setopt(curl, CURLOPT_CAINFO, this->_pathToCert.toStdString().c_str());
             curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT_MS, 1000L);
-
 
             //url and execute
             curl_easy_setopt(curl, CURLOPT_URL, this->_uploadTargetUrl.toStdString().c_str()); 
@@ -158,7 +149,7 @@ class OutputHelper {
             
             if(res != CURLE_OK) {
                 auto descr = curl_easy_strerror(res);
-                exceptionText = tr("Error communicating with the remote server : \"%1\".").arg(descr); 
+                exceptionText = QObject::tr("Error communicating with the remote server : \"%1\".").arg(descr); 
             } else {
                 //response code
                 long code;
@@ -167,7 +158,7 @@ class OutputHelper {
                 //if http code is not OK
                 if(code != 200) {
                     this->_mustPrepareUpload = true; //reprepare
-                    exceptionText = tr("The server encountered an error while processing the data => HTTP Code %1 : %2").arg(code).arg(response);
+                    exceptionText = QObject::tr("The server encountered an error while processing the data => HTTP Code %1 : %2").arg(code).arg(QString::fromStdString(response));
                 }
             }
 

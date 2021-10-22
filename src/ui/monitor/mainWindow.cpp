@@ -1,6 +1,8 @@
 #include "mainWindow.h"
 
-MainWindow::MainWindow() : aHelper(), cHelper(), owHelper(WARNINGS_FILE_PATH) {     
+#include <IFWUpdateChecker.hpp>
+
+MainWindow::MainWindow() : aHelper(), cHelper(), owHelper(WARNINGS_FILE_PATH), updateChecker(APP_REMOTE_MANIFEST_URL) {
     
     //generate the UI
     this->_initUI();
@@ -9,6 +11,7 @@ MainWindow::MainWindow() : aHelper(), cHelper(), owHelper(WARNINGS_FILE_PATH) {
     this->startupConnectivityThread();
     this->updateWarningsMenuItem();
     this->setupAutoUpdate();
+    
     
 };
 
@@ -86,12 +89,49 @@ void MainWindow::setupAutoUpdate() {
     this->checkForAppUpdates();
 };
 
-void MainWindow::onUpdateChecked(bool hasUpdate) {
+void MainWindow::onUpdateChecked(const UpdateChecker::CheckResults checkResults) {
 
     //if the user asks directly to check updates
     if(this->userNotificationOnUpdateCheck) {
+        // next check will go un-notified
         this->userNotificationOnUpdateCheck = false;
-        if(!hasUpdate) {
+
+        // error 
+        if(checkResults.result != UpdateChecker::CheckCode::Succeeded) {
+            //
+            QString errMsg;
+            switch(checkResults.result) {
+                case UpdateChecker::CheckCode::NoRemoteURL:
+                    errMsg = tr("No remote URL given, probably because of an issue with the executable. Contact the developpers.");
+                break;
+                case UpdateChecker::CheckCode::LocalManifestFetch:
+                    errMsg = tr("Issue while finding the local package manifest.");
+                break;
+                case UpdateChecker::CheckCode::LocalManifestRead:
+                    errMsg = tr("Issue while reading the local package manifest.");
+                break;
+                case UpdateChecker::CheckCode::RemoteManifestFetch:
+                    errMsg = tr("Issue while finding the remote package update manifest.");
+                break;
+                case UpdateChecker::CheckCode::RemoteManifestRead:
+                    errMsg = tr("Issue while reading the remote package update manifest.");
+                break;
+                default:
+                case UpdateChecker::CheckCode::UnspecifiedFail:
+                    errMsg = tr("No specified code linked to the error happening. Contact the developpers.");
+                break;
+            }
+
+            //
+            QMessageBox::critical(this, 
+                tr("%1 - Error while checking updates").arg(APP_NAME), 
+                errMsg, 
+                QMessageBox::Ok, 
+                QMessageBox::Ok
+            );
+
+        // no updates
+        } else if(!checkResults.hasNewerVersion) { 
             QMessageBox::information(this, 
                 tr("%1 - Checking updates").arg(APP_NAME), 
                 tr("No updates available at the time."), 
@@ -102,7 +142,7 @@ void MainWindow::onUpdateChecked(bool hasUpdate) {
     }
 
     //no update, no go
-    if(!hasUpdate) {
+    if(!checkResults.hasNewerVersion) {
         this->UpdateSearch_switchUI(false);
         return;
     }
