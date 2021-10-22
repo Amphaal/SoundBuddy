@@ -1,13 +1,15 @@
 #ifdef _WIN32
-#include <windows.h>
-#include <shellapi.h>
-#include <stdlib.h>  
+
 #include <rapidjson/document.h>
 
 #include "platformHelper.h"
 #include "src/version.h"
 #include "src/helpers/_const.hpp"
 #include "src/helpers/iTunesLibParser/iTunesLibParser.h"
+
+#include <windows.h>
+#include <shellapi.h>
+#include <stdlib.h>  
 
 #include <string>
 #include <map>

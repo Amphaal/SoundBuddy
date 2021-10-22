@@ -1,11 +1,11 @@
 #ifdef _WIN32
 
-#include <windows.h>
-#include <combaseapi.h>
-
 #include "src/workers/shout/ShoutThread.h" 
 #include "iTunesCOMHandler.h"
 #include "src/helpers/stringHelper/stringHelper.hpp"
+
+#include <windows.h>
+#include <combaseapi.h>
 
 #include <QMetaObject>
 #include <QMetaMethod>

@@ -126,7 +126,7 @@ void ConnectivityThread::_checkCredentials(bool forceRecheck) {
 
         p.push(sio::string_message::create(username.toStdString()));
         p.push(sio::string_message::create(password.toStdString()));
-        caca(this->_sioClient, p);
+        _sio_checkCredentials(this->_sioClient, p);
     }
 
 }

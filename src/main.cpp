@@ -1,3 +1,6 @@
+// must be included foremost
+#include "src/workers/connectivity/ConnectivityThread.sio.h"
+
 #include <QString>
 #include <QApplication>
 #include <QStyleFactory>
@@ -9,7 +12,6 @@
 #include <QLockFile>
 
 int main(int argc, char** argv){
-    
     //prevent multiples instances
     QString tmpDir = QDir::tempPath();
     QLockFile lockFile(tmpDir + "/" + APP_NAME + ".lock");

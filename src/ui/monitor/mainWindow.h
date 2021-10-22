@@ -1,5 +1,7 @@
 #pragma once
 
+#include <IFWUpdateChecker.hpp>
+
 #include <QCoreApplication>
 
 #include <QString>
@@ -22,8 +24,6 @@
 
 #include <rapidjson/document.h>
 
-#include "src/version.h"
-
 #include "src/helpers/_const.hpp"
 #include "src/helpers/configHelper/authHelper.hpp"
 #include "src/helpers/platformHelper/platformHelper.h"
@@ -31,6 +31,7 @@
 #include "src/ui/tabs/ShoutTab.hpp"
 #include "src/ui/tabs/FeederTab.hpp"
 #include "src/workers/connectivity/ConnectivityThread.h"
+#include "src/workers/base/UpdaterThread.hpp"
 
 #include "src/ui/widgets/TraficLight.hpp"
 
@@ -52,7 +53,6 @@ class MainWindow : public QMainWindow {
     ConfigHelper cHelper;
     OutputHelper owHelper;
     QString wtnzUrl;
-    UpdateChecker updateChecker;
     
     //statusbar
     void _initStatusBar();
@@ -111,9 +111,10 @@ class MainWindow : public QMainWindow {
     void _initUITabs();
 
     //workers
-    ShoutThread *sw = nullptr;
-    FeederThread *fw = nullptr;
-    ConnectivityThread *cw = nullptr;
+    ShoutThread* sw = nullptr;
+    FeederThread* fw = nullptr;
+    ConnectivityThread* cw = nullptr;
+    UpdaterThread updateChecker;
     void startupConnectivityThread();
     void startupShoutThread();
     void startupFeederThread();

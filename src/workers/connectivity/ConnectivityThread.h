@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ConnectivityThread.sio.h" // must be put before any Qt include
+#include "src/workers/connectivity/ConnectivityThread.sio.h"
 
 #include <QFileSystemWatcher>
 #include <QThread>

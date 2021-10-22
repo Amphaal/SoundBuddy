@@ -2,13 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="fr">
 <context>
-    <name>AuthHelper</name>
-    <message>
-        <source>Expected configuration values are missing. Please check the configuration file !</source>
-        <translation type="vanished">Des paramètres de configurations sont attendus ! Merci de vérifier le fichier de configuration.</translation>
-    </message>
-</context>
-<context>
     <name>ConnectivityThread</name>
     <message>
         <source>Logged as &quot;%1&quot;</source>
@@ -199,31 +192,48 @@
         <source>An update is available for %1. Would you like to install it now ?</source>
         <translation>Une mise à jour a été trouvé pour %1. Voulez-vous l&apos;installer maintenant ?</translation>
     </message>
-</context>
-<context>
-    <name>OutputHelper</name>
     <message>
-        <source>Error communicating with the remote server : &quot;%1&quot;.</source>
-        <translation type="vanished">Problème durant la communication avec le serveur : &quot;%1&quot;.</translation>
+        <source>No remote URL given, probably because of an issue with the executable. Contact the developpers.</source>
+        <translation>Aucune URL distante trouvée, probablement parce qu&apos;il y a un problème avec l&apos;executable. Contactez les développeurs.</translation>
     </message>
     <message>
-        <source>The server encountered an error while processing the data =&gt; HTTP Code %1 : %2</source>
-        <translation type="vanished">Le serveur a rencontré une erreur durant le traitement des informations =&gt; Code HTTP %1 : %2</translation>
+        <source>Issue while finding the local package manifest.</source>
+        <translation>Problème durant la recherche du manifeste de package local.</translation>
+    </message>
+    <message>
+        <source>Issue while reading the local package manifest.</source>
+        <translation>Problème durant la lecture du manifeste de package local.</translation>
+    </message>
+    <message>
+        <source>Issue while finding the remote package update manifest.</source>
+        <translation>Problème durant la recherche du manifeste de package distant.</translation>
+    </message>
+    <message>
+        <source>Issue while reading the remote package update manifest.</source>
+        <translation>Problème durant la lecture du manifeste de package distant.</translation>
+    </message>
+    <message>
+        <source>No specified code linked to the error happening. Contact the developpers.</source>
+        <translation>Aucun code erreur lié au problème en cours. Contactez les développeurs.</translation>
+    </message>
+    <message>
+        <source>%1 - Error while checking updates</source>
+        <translation>%1 - Erreur durant la verification des mises à jour</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <source>Error communicating with the remote server : &quot;%1&quot;.</source>
-        <translation type="unfinished">Problème durant la communication avec le serveur : &quot;%1&quot;.</translation>
+        <translation>Problème durant la communication avec le serveur : &quot;%1&quot;.</translation>
     </message>
     <message>
         <source>The server encountered an error while processing the data =&gt; HTTP Code %1 : %2</source>
-        <translation type="unfinished">Le serveur a rencontré une erreur durant le traitement des informations =&gt; Code HTTP %1 : %2</translation>
+        <translation>Le serveur a rencontré une erreur durant le traitement des informations =&gt; Code HTTP %1 : %2</translation>
     </message>
     <message>
         <source>Expected configuration values are missing. Please check the configuration file !</source>
-        <translation type="unfinished">Des paramètres de configurations sont attendus ! Merci de vérifier le fichier de configuration.</translation>
+        <translation>Des paramètres de configurations sont attendus ! Merci de vérifier le fichier de configuration.</translation>
     </message>
 </context>
 <context>

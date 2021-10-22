@@ -1,18 +1,14 @@
 #include "mainWindow.h"
 
-#include <IFWUpdateChecker.hpp>
-
-MainWindow::MainWindow() : aHelper(), cHelper(), owHelper(WARNINGS_FILE_PATH), updateChecker(APP_REMOTE_MANIFEST_URL) {
-    
+MainWindow::MainWindow() : aHelper(), cHelper(), owHelper(WARNINGS_FILE_PATH) {
     //generate the UI
     this->_initUI();
-
+    
+    //
     this->setupConfigFileWatcher();
     this->startupConnectivityThread();
     this->updateWarningsMenuItem();
     this->setupAutoUpdate();
-    
-    
 };
 
 void MainWindow::informWarningPresence() {
@@ -80,10 +76,11 @@ void MainWindow::addToStartupSwitch(bool checked) {
     PlatformHelper::switchStartupLaunch();
 };
 
-
-void MainWindow::setupAutoUpdate() {   
-	QObject::connect(this->updateChecker, &UpdateChecker::isNewerVersionAvailable, 
-                     this, &MainWindow::onUpdateChecked);
+void MainWindow::setupAutoUpdate() {
+	QObject::connect(
+        &this->updateChecker, &UpdaterThread::isNewerVersionAvailable, 
+        this, &MainWindow::onUpdateChecked
+    );
 
     //start the update check
     this->checkForAppUpdates();
@@ -156,7 +153,7 @@ void MainWindow::onUpdateChecked(const UpdateChecker::CheckResults checkResults)
     );
     
     if(msgboxRslt == QMessageBox::Yes) {
-        this->updater->runUpdaterOnExit();
+        UpdateChecker::tryToLaunchUpdater();
         this->forcedClose();
     }
 
@@ -164,17 +161,13 @@ void MainWindow::onUpdateChecked(const UpdateChecker::CheckResults checkResults)
 };
 
 void MainWindow::requireUpdateCheckFromUser() {
-
     this->userNotificationOnUpdateCheck = true;
-
-    if (!this->updater->isRunning()) {
-        this->checkForAppUpdates();
-    }
+    this->checkForAppUpdates();
 };
 
 void MainWindow::checkForAppUpdates() {
     this->UpdateSearch_switchUI(true);
-    this->updater->checkForUpdates();
+    this->updateChecker.start();
 }
 
 void MainWindow::updateStatusBar(const QString &message, const TLW_Colors &color) {

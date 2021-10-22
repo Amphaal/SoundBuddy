@@ -2,10 +2,11 @@
 
 #include <QVariant>
 
+#include "iTunesCOMHandler.h"
 #include <windows.h>
 
 #include "src/workers/shout/ShoutThread.h" 
-#include "iTunesCOMHandler.h"
+
 #include "src/helpers/stringHelper/stringHelper.hpp"
 
 #include <QMetaObject>
