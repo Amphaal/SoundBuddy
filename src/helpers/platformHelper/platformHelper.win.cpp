@@ -8,7 +8,6 @@
     #include <map>
 	#include <vector>
     #include "src/helpers/iTunesLibParser/iTunesLibParser.h"
-    #include "src/_libs/base64/base64.h"
 
     void PlatformHelper::openFileInOS(const QString &cpURL) {
         ShellExecuteA(NULL, "open", "notepad", cpURL.toStdString().c_str(), NULL, SW_SHOWNORMAL);
@@ -52,16 +51,10 @@
         d.Parse(xmlAsJSONString.toStdString().c_str());
 
         //decode path
-        QString encodedPath = d["LXML:1:iTunes Library XML Location"].GetString();
-        auto decodedData = base64_decode(encodedPath.toStdString());
+        auto encodedPath = QString::fromStdString(d["LXML:1:iTunes Library XML Location"].GetString());
+        auto decodedData = encodedPath.toUtf16().toBase64();
         
-        //reformat from source UTF-16
-        QString rAsString;
-        for (int b = 0; b < decodedData.size() ; b++)
-        {
-            if(b % 2 == 0) rAsString += decodedData[b];
-        }
-        return rAsString;
+        return decodedData;
     };
 
     QSettings* PlatformHelper::getStartupSettingsHandler() {
