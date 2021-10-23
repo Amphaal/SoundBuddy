@@ -6,7 +6,8 @@
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE",
-                "SPDLOG_FMT_EXTERNAL"
+                "SPDLOG_FMT_EXTERNAL",
+                "APPLE"
             ],
             "compilerPath": "/usr/bin/clang",
             "cStandard": "c11",
@@ -18,7 +19,13 @@
                 "${workspaceFolder}/src",
                 "/usr/local/opt/qt",
                 "/usr/local/opt/qt/lib/QtCore.framework/Versions/A/Headers",
-                "${workspaceFolder}/deps/socket.io/lib/rapidjson/include"
+                "${workspaceFolder}/deps/socket.io/lib/rapidjson/include",
+                "/usr/local/Cellar/qt/6.2.0/lib/QtWidgets.framework/Versions/A/Headers",
+                "${workspaceFolder}/deps/IFWUpdateChecker/src",
+                "${workspaceFolder}/deps/IFWUpdateChecker/deps/StupidHTTPDownloader/include",
+                "/usr/local/Cellar/qt/6.2.0/lib/QtGui.framework/Versions/A/Headers",
+                "${workspaceFolder}/deps/IFWUpdateChecker/deps/tiny-process-library",
+                "${workspaceFolder}/deps/socket.io/src"
             ]
         },
         {

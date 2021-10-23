@@ -53,15 +53,15 @@ class MainWindow : public QMainWindow {
     ConfigHelper cHelper;
     OutputHelper owHelper;
     QString wtnzUrl;
-    
-    //statusbar
+
+    // statusbar
     void _initStatusBar();
     void updateStatusBar(const QString &message, const TLW_Colors &color);
     QLabel* statusLabel;
     TrafficLightWidget *statusLight;
 
     ///
-    ///UI instanciation
+    /// UI instanciation
     ///
 
     void _initUI();
@@ -88,7 +88,7 @@ class MainWindow : public QMainWindow {
     /// Events handling
     ///
 
-    //visibility
+    // visibility
     void hideEvent(QHideEvent *event);
     void closeEvent(QCloseEvent *event);
     void trueShow();
@@ -96,7 +96,7 @@ class MainWindow : public QMainWindow {
     void forcedClose();
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
 
-    //update handling
+    // update handling
     QAction *versionAction = nullptr;
     QAction *cfugAction = nullptr;
     void setupAutoUpdate();
@@ -105,12 +105,12 @@ class MainWindow : public QMainWindow {
     void checkForAppUpdates();
     void UpdateSearch_switchUI(bool isSearching);
 
-    //tabs
-    ShoutTab* st = nullptr; 
+    // tabs
+    ShoutTab* st = nullptr;
     FeederTab* ft = nullptr;
     void _initUITabs();
 
-    //workers
+    // workers
     ShoutThread* sw = nullptr;
     FeederThread* fw = nullptr;
     ConnectivityThread* cw = nullptr;

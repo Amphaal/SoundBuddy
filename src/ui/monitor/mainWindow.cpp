@@ -1,55 +1,55 @@
 #include "mainWindow.h"
 
 MainWindow::MainWindow() : aHelper(), cHelper(), owHelper(WARNINGS_FILE_PATH) {
-    //generate the UI
+    // generate the UI
     this->_initUI();
-    
+
     //
     this->setupConfigFileWatcher();
     this->startupConnectivityThread();
     this->updateWarningsMenuItem();
     this->setupAutoUpdate();
-};
+}
 
 void MainWindow::informWarningPresence() {
     this->updateWarningsMenuItem();
-};
+}
 
-
-//set watcher on config file
+// set watcher on config file
 void MainWindow::setupConfigFileWatcher() {
     this->updateMenuItemsFromConfigValues();
 
     auto configFilePath = this->aHelper.getConfigFileFullPath();
     auto filesToWatch = QStringList(configFilePath);
     this->configWatcher = new QFileSystemWatcher(filesToWatch);
-    
+
     QObject::connect(
         this->configWatcher, &QFileSystemWatcher::fileChanged,
-        this, &MainWindow::updateMenuItemsFromConfigValues
-    );
-};
+        this, &MainWindow::updateMenuItemsFromConfigValues);
+}
 
-//updates the menu depending on the config values filled or not
+// updates the menu depending on the config values filled or not
 void MainWindow::updateMenuItemsFromConfigValues(const QString &path) {
-
-    //check then save
+    // check then save
     auto myWtnzUrl = this->aHelper.getUsersHomeUrl();
     bool shouldActivateLink = (myWtnzUrl != "");
-    if(shouldActivateLink) {
+    if (shouldActivateLink) {
         this->wtnzUrl = myWtnzUrl;
     }
-    
-    //update action state
-    for (auto action: this->myWTNZActions){action->setEnabled(shouldActivateLink);}
-    
-}; 
 
-void MainWindow::updateWarningsMenuItem() {    
+    // update action state
+    for (auto action : this->myWTNZActions) {
+        action->setEnabled(shouldActivateLink);
+    }
+}
+
+void MainWindow::updateWarningsMenuItem() {
     bool doEnable = PlatformHelper::fileExists(this->owHelper.getOutputPath());
 
-    for (auto action: this->warningsfileActions){action->setEnabled(doEnable);}
-};
+    for (auto action : this->warningsfileActions) {
+        action->setEnabled(doEnable);
+    }
+}
 
 ///
 /// Functionnalities helpers calls
@@ -58,46 +58,43 @@ void MainWindow::updateWarningsMenuItem() {
 
 void MainWindow::accessWTNZ() {
     PlatformHelper::openUrlInBrowser(this->wtnzUrl);
-};
+}
 
-//open the config file into the OS browser
+// open the config file into the OS browser
 void MainWindow::openConfigFile() {
     this->aHelper.openConfigFile();
-};
+}
 
-
-//open the warnings file on the OS
+// open the warnings file on the OS
 void MainWindow::openWarnings() {
     PlatformHelper::openFileInOS(this->owHelper.getOutputPath());
-};
+}
 
-//change startup
+// change startup
 void MainWindow::addToStartupSwitch(bool checked) {
     PlatformHelper::switchStartupLaunch();
-};
+}
 
 void MainWindow::setupAutoUpdate() {
-	QObject::connect(
-        &this->updateChecker, &UpdaterThread::isNewerVersionAvailable, 
-        this, &MainWindow::onUpdateChecked
-    );
+    QObject::connect(
+        &this->updateChecker, &UpdaterThread::isNewerVersionAvailable,
+        this, &MainWindow::onUpdateChecked);
 
-    //start the update check
+    // start the update check
     this->checkForAppUpdates();
-};
+}
 
 void MainWindow::onUpdateChecked(const UpdateChecker::CheckResults checkResults) {
-
-    //if the user asks directly to check updates
-    if(this->userNotificationOnUpdateCheck) {
+    // if the user asks directly to check updates
+    if (this->userNotificationOnUpdateCheck) {
         // next check will go un-notified
         this->userNotificationOnUpdateCheck = false;
 
-        // error 
-        if(checkResults.result != UpdateChecker::CheckCode::Succeeded) {
+        // error
+        if (checkResults.result != UpdateChecker::CheckCode::Succeeded) {
             //
             QString errMsg;
-            switch(checkResults.result) {
+            switch (checkResults.result) {
                 case UpdateChecker::CheckCode::NoRemoteURL:
                     errMsg = tr("No remote URL given, probably because of an issue with the executable. Contact the developpers.");
                 break;
@@ -120,50 +117,47 @@ void MainWindow::onUpdateChecked(const UpdateChecker::CheckResults checkResults)
             }
 
             //
-            QMessageBox::critical(this, 
-                tr("%1 - Error while checking updates").arg(APP_NAME), 
-                errMsg, 
-                QMessageBox::Ok, 
-                QMessageBox::Ok
-            );
+            QMessageBox::critical(this,
+                tr("%1 - Error while checking updates").arg(APP_NAME),
+                errMsg,
+                QMessageBox::Ok,
+                QMessageBox::Ok);
 
         // no updates
-        } else if(!checkResults.hasNewerVersion) { 
-            QMessageBox::information(this, 
-                tr("%1 - Checking updates").arg(APP_NAME), 
-                tr("No updates available at the time."), 
-                QMessageBox::Ok, 
-                QMessageBox::Ok
-            );
+        } else if (!checkResults.hasNewerVersion) {
+            QMessageBox::information(this,
+                tr("%1 - Checking updates").arg(APP_NAME),
+                tr("No updates available at the time."),
+                QMessageBox::Ok,
+                QMessageBox::Ok);
         }
     }
 
-    //no update, no go
-    if(!checkResults.hasNewerVersion) {
+    // no update, no go
+    if (!checkResults.hasNewerVersion) {
         this->UpdateSearch_switchUI(false);
         return;
     }
 
-    //if has update
-    auto msgboxRslt = QMessageBox::information(this, 
-        tr("%1 - Update Available").arg(APP_NAME), 
-        tr("An update is available for %1. Would you like to install it now ?").arg(APP_NAME), 
-        QMessageBox::Yes | QMessageBox::No, 
-        QMessageBox::Yes
-    );
-    
-    if(msgboxRslt == QMessageBox::Yes) {
+    // if has update
+    auto msgboxRslt = QMessageBox::information(this,
+        tr("%1 - Update Available").arg(APP_NAME),
+        tr("An update is available for %1. Would you like to install it now ?").arg(APP_NAME),
+        QMessageBox::Yes | QMessageBox::No,
+        QMessageBox::Yes);
+
+    if (msgboxRslt == QMessageBox::Yes) {
         UpdateChecker::tryToLaunchUpdater();
         this->forcedClose();
     }
 
     this->UpdateSearch_switchUI(false);
-};
+}
 
 void MainWindow::requireUpdateCheckFromUser() {
     this->userNotificationOnUpdateCheck = true;
     this->checkForAppUpdates();
-};
+}
 
 void MainWindow::checkForAppUpdates() {
     this->UpdateSearch_switchUI(true);
@@ -176,16 +170,15 @@ void MainWindow::updateStatusBar(const QString &message, const TLW_Colors &color
 }
 
 void MainWindow::startupConnectivityThread() {
-
+    //
     this->cw = new ConnectivityThread(&this->aHelper, this->configWatcher);
-    
+
     QObject::connect(
         this->cw, &ConnectivityThread::updateSIOStatus,
-        this, &MainWindow::updateStatusBar
-    );
-    
+        this, &MainWindow::updateStatusBar);
+
     this->cw->start();
-};
+}
 
 void MainWindow::startupShoutThread() {
     this->sw = new ShoutThread;
@@ -193,8 +186,7 @@ void MainWindow::startupShoutThread() {
 
     QObject::connect(
         this->sw, &QThread::finished,
-        this->sw, &QObject::deleteLater
-    );
+        this->sw, &QObject::deleteLater);
 
     this->sw->start();
 }
@@ -206,13 +198,11 @@ void MainWindow::startupFeederThread() {
 
     QObject::connect(
         this->fw, &ITNZThread::operationFinished,
-        this, &MainWindow::updateWarningsMenuItem
-    );
+        this, &MainWindow::updateWarningsMenuItem);
 
     QObject::connect(
         this->fw, &QThread::finished,
-        this->fw, &QObject::deleteLater
-    );
+        this->fw, &QObject::deleteLater);
 
     this->fw->start();
 }
@@ -221,23 +211,22 @@ void MainWindow::startupFeederThread() {
 // UI
 //
 
-//main initialization
+// main initialization
 void MainWindow::_initUI() {
-
-    //values specific to this
+    // values specific to this
     QString stdTitle = _DEBUG ? (QString)"DEBUG - " + APP_NAME : APP_NAME;
     this->setWindowTitle(stdTitle);
     this->setMinimumSize(QSize(480, 400));
     this->setWindowIcon(QIcon(LOCAL_ICON_PNG_PATH));
 
-    //helpers
+    // helpers
     this->_initUITabs();
     this->_initUITray();
     this->_initUIMenu();
     this->_initStatusBar();
 
-    if(_DEBUG) this->trueShow();
-};
+    if (_DEBUG) this->trueShow();
+}
 
 
 //////////
@@ -249,17 +238,16 @@ void MainWindow::_initUITray() {
     this->trayIcon = trayIcon;
     trayIcon->setIcon(QIcon(LOCAL_REVERSE_ICON_PNG_PATH));
     trayIcon->setToolTip(this->windowTitle());
-    
+
     QObject::connect(
         this->trayIcon, &QSystemTrayIcon::activated,
-        this, &MainWindow::iconActivated
-    );
+        this, &MainWindow::iconActivated);
 
     #ifdef _WIN32
         auto cMenu = this->_getFileMenu();
     #endif
 
-    #ifdef Q_OS_OSX
+    #ifdef APPLE
         auto cMenu = new QMenu("");
         cMenu->addMenu(this->_getFileMenu());
         cMenu->addMenu(this->_getOptionsMenu());
@@ -268,22 +256,22 @@ void MainWindow::_initUITray() {
     this->trayIcon->setContextMenu(cMenu);
 
     trayIcon->show();
-};
+}
 
 void MainWindow::_initStatusBar() {
-    
+    //
     auto statusBar = new QStatusBar(this);
 
     auto sb_widget = new QWidget;
     this->statusLight = new TrafficLightWidget;
     this->statusLabel = new QLabel;
 
-    //define statusbar content
+    // define statusbar content
     sb_widget->setLayout(new QHBoxLayout);
     sb_widget->layout()->addWidget(this->statusLight);
     sb_widget->layout()->addWidget(this->statusLabel);
 
-    //define statusbar
+    // define statusbar
     statusBar->addWidget(sb_widget);
     this->setStatusBar(statusBar);
 }
@@ -291,35 +279,32 @@ void MainWindow::_initStatusBar() {
 void MainWindow::_initUITabs() {
     auto tabs = new QTabWidget;
     this->st = new ShoutTab;
-    this->ft = new FeederTab; 
+    this->ft = new FeederTab;
 
     QObject::connect(
-        this->st->tButton, &QPushButton::clicked, 
-        this, &MainWindow::startupShoutThread
-    );
+        this->st->tButton, &QPushButton::clicked,
+        this, &MainWindow::startupShoutThread);
 
     QObject::connect(
-        this->ft->tButton, &QPushButton::clicked, 
-        this, &MainWindow::startupFeederThread
-    );
+        this->ft->tButton, &QPushButton::clicked,
+        this, &MainWindow::startupFeederThread);
 
     tabs->addTab(this->st, "Shout!");
     tabs->addTab(this->ft, "Feeder");
     this->setCentralWidget(tabs);
 
-    //autostart
+    // autostart
     if (this->cHelper.getParamValue(AUTO_RUN_SHOUT_PARAM_NAME) == "true") {
         this->st->tButton->click();
     }
-
-};
+}
 
 void MainWindow::_initUIMenu() {
     auto menuBar = new QMenuBar;
     menuBar->addMenu(this->_getFileMenu());
     menuBar->addMenu(this->_getOptionsMenu());
     this->setMenuWidget(menuBar);
-};
+}
 
 //////////////
 // End Tray //
@@ -330,27 +315,24 @@ void MainWindow::_initUIMenu() {
 //////////////////////
 
 QMenu* MainWindow::_getOptionsMenu() {
-
     QMenu *optionsMenuItem = new QMenu(tr("Options"));
 
-    //add to system startup Action
+    // add to system startup Action
     auto atssAction = new QAction(tr("Launch at system boot"), optionsMenuItem);
     atssAction->setCheckable(true);
     QObject::connect(
         atssAction, &QAction::triggered,
-        this, &MainWindow::addToStartupSwitch
-    );
+        this, &MainWindow::addToStartupSwitch);
     if (PlatformHelper::isLaunchingAtStartup()) {
         atssAction->setChecked(true);
     }
 
-    //for checking available updates
+    // for checking available updates
     this->cfugAction = new QAction(tr("Check for updates"), optionsMenuItem);
         QObject::connect(
         this->cfugAction, &QAction::triggered,
-        this, &MainWindow::requireUpdateCheckFromUser
-    );
-    
+        this, &MainWindow::requireUpdateCheckFromUser);
+
     this->versionAction = new QAction(APP_FULL_DENOM, optionsMenuItem);
     this->versionAction->setEnabled(false);
 
@@ -365,11 +347,11 @@ QMenu* MainWindow::_getOptionsMenu() {
 void MainWindow::UpdateSearch_switchUI(bool isSearching) {
     //
     this->cfugAction->setEnabled(!isSearching);
-    
+
     //
     QString descr = APP_FULL_DENOM;
-    if(isSearching) descr += " - " + tr("Searching for updates...");
-    
+    if (isSearching) descr += " - " + tr("Searching for updates...");
+
     //
     this->versionAction->setText(descr);
 }
@@ -378,53 +360,45 @@ QMenu* MainWindow::_getFileMenu() {
     //
     auto fileMenuItem = new QMenu(tr("File"));
 
-    //monitorAction
+    // monitorAction
     auto monitorAction = new QAction(tr("Open monitor..."), fileMenuItem);
     QObject::connect(
         monitorAction, &QAction::triggered,
-        this, &MainWindow::trueShow
-    );
+        this, &MainWindow::trueShow);
 
-    //myWTNZAction
+    // myWTNZAction
     auto myWTNZAction = new QAction(tr("My WTNZ"), fileMenuItem);
     myWTNZAction->setEnabled(false);
     QObject::connect(
         myWTNZAction, &QAction::triggered,
-        this, &MainWindow::accessWTNZ
-    );
+        this, &MainWindow::accessWTNZ);
     this->myWTNZActions.push_back(myWTNZAction);
 
-    //updateConfigAction
+    // updateConfigAction
     auto updateConfigAction = new QAction(tr("Update configuration file"), fileMenuItem);
     QObject::connect(
         updateConfigAction, &QAction::triggered,
-        this, &MainWindow::openConfigFile
-    );
+        this, &MainWindow::openConfigFile);
 
-    //openWarningsAction
+    // openWarningsAction
     auto openWarningsAction = new QAction(tr("Read latest upload warnings report"), fileMenuItem);
     openWarningsAction->setEnabled(false);
     QObject::connect(
         openWarningsAction, &QAction::triggered,
-        this, &MainWindow::openWarnings
-    );
+        this, &MainWindow::openWarnings);
     this->warningsfileActions.push_back(openWarningsAction);
 
-    //openData
+    // openData
     auto openDataFolder = new QAction(tr("Access upload data folder"), fileMenuItem);
-    QObject::connect(
-        openDataFolder, &QAction::triggered,
-        [=]() {
-            PlatformHelper::openUrlInBrowser(PlatformHelper::getDataStorageDirectory());
-        }
-    );
+    QObject::connect(openDataFolder, &QAction::triggered, [=]() {
+        PlatformHelper::openUrlInBrowser(PlatformHelper::getDataStorageDirectory());
+    });
 
-    //quit
+    // quit
     auto quitAction = new QAction(tr("Quit"), fileMenuItem);
     QObject::connect(
         quitAction, &QAction::triggered,
-        this, &MainWindow::forcedClose
-    );
+        this, &MainWindow::forcedClose);
 
     fileMenuItem->addAction(monitorAction);
     fileMenuItem->addSeparator();
@@ -436,7 +410,7 @@ QMenu* MainWindow::_getFileMenu() {
     fileMenuItem->addAction(quitAction);
 
     return fileMenuItem;
-};
+}
 
 //////////////////////////
 /// End Menu components //
@@ -447,25 +421,23 @@ QMenu* MainWindow::_getFileMenu() {
 //////////////////////
 
 void MainWindow::closeEvent(QCloseEvent *event) {
-
-    //apple specific behaviour, prevent closing
-    #ifdef Q_OS_OSX
-        if(!this->forceQuitOnMacOS) {
+    // apple specific behaviour, prevent closing
+    #ifdef APPLE
+        if (!this->forceQuitOnMacOS) {
             return this->trueHide(event);
         }
     #endif
 
-    //if running shout thread
-    if(this->sw && this->sw->isRunning()) {
-        auto msgboxRslt = QMessageBox::warning(this, 
-            tr("Shout worker running !"), 
-            tr("Shout worker is actually running : Are you sure you want to exit ?"), 
-            QMessageBox::Yes | QMessageBox::No, 
-            QMessageBox::No
-        );
-        
-        if(msgboxRslt == QMessageBox::Yes) {
-            //makes sure to wait for shoutThread to end. Limits COM app retention on Windows
+    // if running shout thread
+    if (this->sw && this->sw->isRunning()) {
+        auto msgboxRslt = QMessageBox::warning(this,
+            tr("Shout worker running !"),
+            tr("Shout worker is actually running : Are you sure you want to exit ?"),
+            QMessageBox::Yes | QMessageBox::No,
+            QMessageBox::No);
+
+        if (msgboxRslt == QMessageBox::Yes) {
+            // makes sure to wait for shoutThread to end. Limits COM app retention on Windows
             this->sw->quit();
             this->sw->wait();
         } else {
@@ -474,33 +446,33 @@ void MainWindow::closeEvent(QCloseEvent *event) {
         }
     }
 
-    //hide trayicon on shutdown for Windows, refereshes the UI frames of system tray
+    // hide trayicon on shutdown for Windows, refereshes the UI frames of system tray
     this->trayIcon->hide();
     QCoreApplication::quit();
-};
+}
 
 void MainWindow::trueShow() {
     this->showNormal();
     this->activateWindow();
     this->raise();
-};
+}
 
-//hide window on minimize, only triggered on windows
+// hide window on minimize, only triggered on windows
 void MainWindow::hideEvent(QHideEvent *event) {
     this->trueHide(event);
-};
+}
 
 void MainWindow::trueHide(QEvent* event) {
     event->ignore();
     this->hide();
-};
+}
 
 void MainWindow::forcedClose() {
     this->forceQuitOnMacOS = true;
     this->close();
-};
+}
 
-//tray click handling
+// tray click handling
 void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason) {
     switch (reason) {
     case QSystemTrayIcon::DoubleClick:
@@ -509,7 +481,7 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason) {
     default:
         break;
     }
-};
+}
 
 //////////////////////////
 /// End Events handling //
