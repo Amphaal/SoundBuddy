@@ -37,7 +37,7 @@ QString PlatformHelper::getEnvironmentVariable(const char* variable) {
 }
 
 QString PlatformHelper::getITunesPrefFileProbableLocation() {
-    return PlatformHelper::getEnvironmentVariable("HOME") + QString("/Library/Preferences/com.apple.iTunes.plist");
+    return PlatformHelper::getEnvironmentVariable("HOME") + QString("/Library/Preferences/com.apple.Music.plist");
 }
 
 QString PlatformHelper::extractItunesLibLocation(const QString &pathToParamFile) {
