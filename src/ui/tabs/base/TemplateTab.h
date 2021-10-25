@@ -9,7 +9,6 @@
 #include <QStyle>
 
 #include "src/workers/base/ITNZThread.hpp"
-#include "src/helpers/stringHelper/stringHelper.hpp"
 
 #include "LogScrollView.hpp"
 

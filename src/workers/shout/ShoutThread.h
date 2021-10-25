@@ -1,15 +1,17 @@
 #pragma once
 
-#include <functional>
 #include <QString>
+
 #include <rapidjson/document.h>
+
+#include <functional>
 
 #include "src/workers/base/ITNZThread.hpp"
 #include "src/helpers/_const.hpp"
 #include "src/helpers/outputHelper/outputHelper.hpp"
 
 class ShoutThread : public ITNZThread {
- Q_OBJECT
+    Q_OBJECT
 
  public:
     ShoutThread();
@@ -17,26 +19,26 @@ class ShoutThread : public ITNZThread {
 
     void run() override;
     void quit() override;
-    
+
     void shoutEmpty();
-    
+
     void shoutFilled(
-        const QString &name, 
-        const QString &album, 
-        const QString &artist, 
-        const QString &genre, 
-        int duration, 
-        int playerPosition, 
+        const QString &name,
+        const QString &album,
+        const QString &artist,
+        const QString &genre,
+        int duration,
+        int playerPosition,
         bool playerState,
         int year
     );
-    
+
     bool shouldUpload(
-        bool iPlayerState, 
-        const QString &tName, 
-        const QString &tAlbum, 
-        const QString &tArtist, 
-        const QString &tDatePlayed, 
+        bool iPlayerState,
+        const QString &tName,
+        const QString &tAlbum,
+        const QString &tArtist,
+        const QString &tDatePlayed,
         const QString &tDateSkipped
     );
 
@@ -44,7 +46,7 @@ class ShoutThread : public ITNZThread {
     void _inst();
 
     OutputHelper* _helper = nullptr;
-    size_t _lastTrackHash;
+    QString _lastTrackHash;
     bool _mustListen = true;
 
     rapidjson::Document _createBasicShout();

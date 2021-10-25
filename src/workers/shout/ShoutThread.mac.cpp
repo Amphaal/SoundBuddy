@@ -6,7 +6,6 @@
 #include <rapidjson/document.h>
 
 #include "src/workers/shout/ShoutThread.h"
-#include "src/helpers/stringHelper/stringHelper.hpp"
 
 void ShoutThread::run() {
     //

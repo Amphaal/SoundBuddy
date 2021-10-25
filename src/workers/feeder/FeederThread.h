@@ -11,7 +11,6 @@
 #include "src/workers/base/ITNZThread.hpp"
 #include "src/helpers/_const.hpp"
 #include "src/helpers/platformHelper/platformHelper.h"
-#include "src/helpers/stringHelper/stringHelper.hpp"
 #include "src/helpers/outputHelper/outputHelper.hpp"
 
 #include <ITunesLibraryParser.hpp>

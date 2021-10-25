@@ -8,8 +8,7 @@ enum TLW_Colors {
     GREEN = 2
 };
 
-class LightWidget : public QWidget
-{
+class LightWidget : public QWidget {
     Q_OBJECT
     Q_PROPERTY(bool on READ isOn WRITE setOn)
     

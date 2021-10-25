@@ -12,7 +12,6 @@
 #include <map>
 
 #include "platformHelper.h"
-#include "src/helpers/stringHelper/stringHelper.hpp"
 #include "src/version.h"
 #include "src/helpers/_const.hpp"
 
@@ -50,8 +49,9 @@ QString PlatformHelper::extractItunesLibLocation(const QString &pathToParamFile)
     auto pre = mapP.dir().absolutePath();
 
     // replace tilda with full path
-    StringHelper::replaceFirstOccurrence(pre, "~", PlatformHelper::getEnvironmentVariable("HOME"));
+    pre.replace('~', PlatformHelper::getEnvironmentVariable("HOME"));
 
+    //
     return pre + "/iTunes Music Library.xml";
 }
 

@@ -1,8 +1,7 @@
 #ifdef _WIN32
 
 #include "src/workers/shout/ShoutThread.h" 
-#include "iTunesCOMHandler.h"
-#include "src/helpers/stringHelper/stringHelper.hpp"
+#include "win/iTunesCOMHandler.h"
 
 #include <windows.h>
 #include <combaseapi.h>

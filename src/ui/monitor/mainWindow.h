@@ -36,7 +36,7 @@
 #include "src/ui/widgets/TraficLight.hpp"
 
 class MainWindow : public QMainWindow {
- Q_OBJECT
+   Q_OBJECT
 
  public:
     MainWindow();

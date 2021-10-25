@@ -14,7 +14,6 @@
 
 #include <string>
 
-#include "src/helpers/stringHelper/stringHelper.hpp"
 #include "src/helpers/configHelper/authHelper.hpp"
 #include "src/helpers/_const.hpp"
 

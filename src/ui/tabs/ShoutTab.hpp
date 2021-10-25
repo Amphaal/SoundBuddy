@@ -13,7 +13,7 @@
 #include "src/helpers/_const.hpp"
 
 class ShoutTab : public TemplateTab {
- Q_OBJECT
+    Q_OBJECT
 
  public:
     ShoutTab(QWidget *parent = 0) : TemplateTab(parent), cHelper(new ConfigHelper)

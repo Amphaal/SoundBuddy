@@ -14,7 +14,7 @@
 
 
 class ConnectivityThread : public QThread {
-    Q_OBJECT
+   Q_OBJECT    
 
  public:
     ConnectivityThread(AuthHelper *aHelper, QFileSystemWatcher* toWatchOverChanges);
