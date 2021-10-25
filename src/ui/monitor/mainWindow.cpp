@@ -1,11 +1,10 @@
 #include "mainWindow.h"
 
-MainWindow::MainWindow() : aHelper(), cHelper(), owHelper(WARNINGS_FILE_PATH) {
+MainWindow::MainWindow() {
     // generate the UI
     this->_initUI();
 
     //
-    this->setupConfigFileWatcher();
     this->startupConnectivityThread();
     this->updateWarningsMenuItem();
     this->setupAutoUpdate();
@@ -46,10 +45,7 @@ void MainWindow::updateMenuItemsFromConfigValues(const QString &path) {
 
 void MainWindow::updateWarningsMenuItem() {
     bool doEnable = PlatformHelper::fileExists(this->owHelper.getOutputPath());
-
-    for (auto action : this->warningsfileActions) {
-        action->setEnabled(doEnable);
-    }
+    this->openWarningsAction->setEnabled(doEnable);
 }
 
 ///
@@ -61,19 +57,13 @@ void MainWindow::accessWTNZ() {
     PlatformHelper::openUrlInBrowser(this->wtnzUrl);
 }
 
-// open the config file into the OS browser
-void MainWindow::openConfigFile() {
-    this->aHelper.openConfigFile();
+void MainWindow::accessPreferences() {
+    PreferencesDialog(&this->appSettings, this).exec();
 }
 
 // open the warnings file on the OS
 void MainWindow::openWarnings() {
     PlatformHelper::openFileInOS(this->owHelper.getOutputPath());
-}
-
-// change startup
-void MainWindow::addToStartupSwitch(bool checked) {
-    PlatformHelper::switchStartupLaunch();
 }
 
 void MainWindow::setupAutoUpdate() {
@@ -185,7 +175,7 @@ void MainWindow::startupConnectivityThread() {
 
 void MainWindow::startupShoutThread() {
     this->sw = new ShoutThread;
-    this->st->bindWithWorker(this->sw);
+    this->shoutTab->bindWithWorker(this->sw);
 
     QObject::connect(
         this->sw, &QThread::finished,
@@ -198,7 +188,7 @@ void MainWindow::startupShoutThread() {
 
 void MainWindow::startupFeederThread() {
     this->fw = new FeederThread;
-    this->ft->bindWithWorker(this->fw);
+    this->feederTab->bindWithWorker(this->fw);
 
     QObject::connect(
         this->fw, &ITNZThread::operationFinished,
@@ -285,26 +275,26 @@ void MainWindow::_initStatusBar() {
 
 void MainWindow::_initUITabs() {
     auto tabs = new QTabWidget(this);
-    this->st = new ShoutTab(this, this->appSettings);
-    this->ft = new FeederTab(this);
+    this->shoutTab = new ShoutTab(this, &this->appSettings);
+    this->feederTab = new FeederTab(this);
 
     QObject::connect(
-        this->st->tButton, &QPushButton::clicked,
+        this->shoutTab->tButton, &QPushButton::clicked,
         this, &MainWindow::startupShoutThread
     );
 
     QObject::connect(
-        this->ft->tButton, &QPushButton::clicked,
+        this->feederTab->tButton, &QPushButton::clicked,
         this, &MainWindow::startupFeederThread
     );
 
-    tabs->addTab(this->st, "Shout!");
-    tabs->addTab(this->ft, "Feeder");
+    tabs->addTab(this->shoutTab, "Shout!");
+    tabs->addTab(this->feederTab, "Feeder");
     this->setCentralWidget(tabs);
 
-    // autostart
-    if (this->cHelper.getParamValue(AUTO_RUN_SHOUT_PARAM_NAME) == "true") {
-        this->st->tButton->click();
+    // autostart shout thread ?
+    if (this->appSettings.value(AppSettings::MUST_AUTORUN_SHOUT).toBool()) {
+        this->shoutTab->tButton->click();
     }
 }
 
@@ -326,17 +316,6 @@ void MainWindow::_initUIMenu() {
 QMenu* MainWindow::_getOptionsMenu() {
     QMenu *optionsMenuItem = new QMenu(tr("Options"));
 
-    // add to system startup Action
-    auto atssAction = new QAction(tr("Launch at system boot"), optionsMenuItem);
-    atssAction->setCheckable(true);
-    QObject::connect(
-        atssAction, &QAction::triggered,
-        this, &MainWindow::addToStartupSwitch
-    );
-    if (PlatformHelper::isLaunchingAtStartup()) {
-        atssAction->setChecked(true);
-    }
-
     // for checking available updates
     this->cfugAction = new QAction(tr("Check for updates"), optionsMenuItem);
         QObject::connect(
@@ -347,7 +326,6 @@ QMenu* MainWindow::_getOptionsMenu() {
     this->versionAction = new QAction(APP_FULL_DENOM, optionsMenuItem);
     this->versionAction->setEnabled(false);
 
-    optionsMenuItem->addAction(atssAction);
     optionsMenuItem->addAction(this->cfugAction);
     optionsMenuItem->addSeparator();
     optionsMenuItem->addAction(this->versionAction);
@@ -387,21 +365,20 @@ QMenu* MainWindow::_getFileMenu() {
     );
     this->myWTNZActions.push_back(myWTNZAction);
 
-    // updateConfigAction
-    auto updateConfigAction = new QAction(tr("Update configuration file"), fileMenuItem);
+    // accessPreferencesAction
+    auto accessPreferencesAction = new QAction(tr("Preferences"), fileMenuItem);
     QObject::connect(
-        updateConfigAction, &QAction::triggered,
-        this, &MainWindow::openConfigFile
+        accessPreferencesAction, &QAction::triggered,
+        this, &MainWindow::accessPreferences
     );
 
     // openWarningsAction
-    auto openWarningsAction = new QAction(tr("Read latest upload warnings report"), fileMenuItem);
-    openWarningsAction->setEnabled(false);
+    this->openWarningsAction = new QAction(tr("Read latest upload warnings report"), fileMenuItem);
+    this->openWarningsAction->setEnabled(false);
     QObject::connect(
-        openWarningsAction, &QAction::triggered,
+        this->openWarningsAction, &QAction::triggered,
         this, &MainWindow::openWarnings
     );
-    this->warningsfileActions.push_back(openWarningsAction);
 
     // openData
     auto openDataFolder = new QAction(tr("Access upload data folder"), fileMenuItem);
@@ -419,7 +396,7 @@ QMenu* MainWindow::_getFileMenu() {
     fileMenuItem->addAction(monitorAction);
     fileMenuItem->addSeparator();
     fileMenuItem->addAction(myWTNZAction);
-    fileMenuItem->addAction(updateConfigAction);
+    fileMenuItem->addAction(accessPreferencesAction);
     fileMenuItem->addAction(openWarningsAction);
     fileMenuItem->addAction(openDataFolder);
     fileMenuItem->addSeparator();

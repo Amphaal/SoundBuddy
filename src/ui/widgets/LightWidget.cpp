@@ -1,6 +1,6 @@
 #include "LightWidget.h"
 
-LightWidget::LightWidget(const QColor &color, QWidget *parent) : QWidget(parent), m_color(color), m_on(true) {
+LightWidget::LightWidget(const QColor &color, QWidget* parent) : QWidget(parent), m_color(color), m_on(true) {
     this->setLayout(new QHBoxLayout);
 };
 

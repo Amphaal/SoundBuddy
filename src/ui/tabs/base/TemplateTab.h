@@ -14,21 +14,20 @@
 
 
 class TemplateTab : public QWidget {
+ public:
+    TemplateTab(QWidget* parent = nullptr);
+    QPushButton* tButton = nullptr;
+    void bindWithWorker(ITNZThread *bThread);
 
-    public:
-        TemplateTab(QWidget *parent = nullptr);
-        QPushButton* tButton = nullptr;
-        void bindWithWorker(ITNZThread *bThread);
+ protected:
+    ITNZThread* bThread = nullptr;
+    LogScrollView* lsv = nullptr;
+    QScrollArea* scrollArea = nullptr;
 
-    protected:
-        ITNZThread* bThread = nullptr;
-        LogScrollView* lsv = nullptr;
-        QScrollArea* scrollArea = nullptr;
-        
-        void scrollUpdate(int min, int max);
+    void scrollUpdate(int min, int max);
 
-        void createNewLog();
-        void printLog(const QString &message, const bool replacePreviousLine = false, const bool isError = false);
-        void onThreadEnd();
-        void onThreadStart();
+    void createNewLog();
+    void printLog(const QString &message, const bool replacePreviousLine = false, const bool isError = false);
+    void onThreadEnd();
+    void onThreadStart();
 };

@@ -3,12 +3,10 @@
 #include <IFWUpdateChecker.hpp>
 
 #include <QCoreApplication>
-
 #include <QString>
 #include <QSize>
 #include <QObject>
 #include <QDebug>
-#include <QFileSystemWatcher>
 #include <QTabWidget>
 #include <QMainWindow>
 #include <QWidget>
@@ -24,7 +22,6 @@
 
 #include <rapidjson/document.h>
 
-#include "src/helpers/configHelper/authHelper.hpp"
 #include "src/helpers/platformHelper/platformHelper.h"
 
 #include "src/ui/tabs/ShoutTab.hpp"
@@ -33,6 +30,9 @@
 #include "src/workers/base/UpdaterThread.hpp"
 
 #include "src/ui/widgets/TraficLight.hpp"
+
+#include "src/helpers/AppSettings.hpp"
+#include "src/ui/monitor/PreferencesDialog.hpp"
 
 class MainWindow : public QMainWindow {
    Q_OBJECT
@@ -45,9 +45,8 @@ class MainWindow : public QMainWindow {
     bool forceQuitOnMacOS = false;
     bool userNotificationOnUpdateCheck = false;
     QSystemTrayIcon* trayIcon;
-    QFileSystemWatcher* configWatcher;
     QVector<QAction*> myWTNZActions;
-    QVector<QAction*> warningsfileActions;
+    QAction* openWarningsAction;
     QSettings appSettings;
     QString wtnzUrl;
 
@@ -68,7 +67,6 @@ class MainWindow : public QMainWindow {
     QMenu* _getFileMenu();
     QMenu* _getOptionsMenu();
 
-    void setupConfigFileWatcher();
     void updateMenuItemsFromConfigValues(const QString &path = NULL);
     void updateWarningsMenuItem();
 
@@ -77,9 +75,8 @@ class MainWindow : public QMainWindow {
     ///
 
     void accessWTNZ();
-    void openConfigFile();
+    void accessPreferences();
     void openWarnings();
-    void addToStartupSwitch(bool checked);
 
     ///
     /// Events handling
@@ -103,8 +100,8 @@ class MainWindow : public QMainWindow {
     void UpdateSearch_switchUI(bool isSearching);
 
     // tabs
-    ShoutTab* st = nullptr;
-    FeederTab* ft = nullptr;
+    ShoutTab* shoutTab= nullptr;
+    FeederTab* feederTab = nullptr;
     void _initUITabs();
 
     // workers

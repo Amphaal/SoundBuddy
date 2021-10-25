@@ -19,7 +19,7 @@ class LogScrollView : public QWidget {
     }
 
  public:
-    explicit LogScrollView(QWidget *parent) : QWidget(parent) {
+    explicit LogScrollView(QWidget* parent) : QWidget(parent) {
         this->setLayout(new QVBoxLayout);
         this->layout()->setAlignment(Qt::AlignTop);
 
