@@ -12,7 +12,7 @@
 #include <rapidjson/prettywriter.h>
 
 #include "src/helpers/platformHelper/platformHelper.h"
-#include "src/helpers/_const.hpp"
+
 #include "src/version.h"
 
 class ConfigHelper : public QObject {

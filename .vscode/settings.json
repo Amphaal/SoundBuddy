@@ -139,6 +139,7 @@
         "numbers": "cpp",
         "semaphore": "cpp",
         "shared_mutex": "cpp",
-        "stop_token": "cpp"
+        "stop_token": "cpp",
+        "filesystem": "cpp"
     },
 }

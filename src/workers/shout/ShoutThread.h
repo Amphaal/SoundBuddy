@@ -7,7 +7,7 @@
 #include <functional>
 
 #include "src/workers/base/ITNZThread.hpp"
-#include "src/helpers/_const.hpp"
+
 #include "src/helpers/outputHelper/outputHelper.hpp"
 
 class ShoutThread : public ITNZThread {

@@ -13,7 +13,7 @@ class LightWidget : public QWidget {
     Q_PROPERTY(bool on READ isOn WRITE setOn)
     
     public:
-        LightWidget(const QColor &color, QWidget *parent = 0);
+        LightWidget(const QColor &color, QWidget *parent = nullptr);
         bool isOn() const;
         void setOn(bool on);
 

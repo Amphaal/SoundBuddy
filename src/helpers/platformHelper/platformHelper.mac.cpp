@@ -3,6 +3,7 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <QFileInfo>
+#include <QDir>
 
 #include <unistd.h>
 #include <stdlib.h>
@@ -13,7 +14,8 @@
 
 #include "platformHelper.h"
 #include "src/version.h"
-#include "src/helpers/_const.hpp"
+
+static const QString MAC_REG_STARTUP_LAUNCH_PATH = "/Library/LaunchAgents/" APP_NAME ".plist";
 
 void PlatformHelper::openFileInOS(const QString &cpURL) {
     QString command = "open \"" + cpURL + "\"";

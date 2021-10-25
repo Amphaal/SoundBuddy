@@ -10,11 +10,9 @@
 
 #include "src/ui/widgets/LightWidget.h"
 
-#include "src/helpers/configHelper/authHelper.hpp"
-
 
 class ConnectivityThread : public QThread {
-   Q_OBJECT    
+   Q_OBJECT
 
  public:
     ConnectivityThread(AuthHelper *aHelper, QFileSystemWatcher* toWatchOverChanges);

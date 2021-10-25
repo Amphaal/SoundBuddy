@@ -5,7 +5,7 @@
 
 class TrafficLightWidget : public QStackedWidget {
  public:
-    explicit TrafficLightWidget(QWidget *parent = 0) : QStackedWidget(parent) {
+    explicit TrafficLightWidget(QWidget *parent = nullptr) : QStackedWidget(parent) {
         this->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
         this->addWidget(new LightWidget(Qt::red));
         this->addWidget(new LightWidget(Qt::yellow));

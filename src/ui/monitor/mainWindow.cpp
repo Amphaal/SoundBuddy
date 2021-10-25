@@ -25,7 +25,8 @@ void MainWindow::setupConfigFileWatcher() {
 
     QObject::connect(
         this->configWatcher, &QFileSystemWatcher::fileChanged,
-        this, &MainWindow::updateMenuItemsFromConfigValues);
+        this, &MainWindow::updateMenuItemsFromConfigValues
+    );
 }
 
 // updates the menu depending on the config values filled or not
@@ -78,7 +79,8 @@ void MainWindow::addToStartupSwitch(bool checked) {
 void MainWindow::setupAutoUpdate() {
     QObject::connect(
         &this->updateChecker, &UpdaterThread::isNewerVersionAvailable,
-        this, &MainWindow::onUpdateChecked);
+        this, &MainWindow::onUpdateChecked
+    );
 
     // start the update check
     this->checkForAppUpdates();
@@ -175,7 +177,8 @@ void MainWindow::startupConnectivityThread() {
 
     QObject::connect(
         this->cw, &ConnectivityThread::updateSIOStatus,
-        this, &MainWindow::updateStatusBar);
+        this, &MainWindow::updateStatusBar
+    );
 
     this->cw->start();
 }
@@ -186,7 +189,8 @@ void MainWindow::startupShoutThread() {
 
     QObject::connect(
         this->sw, &QThread::finished,
-        this->sw, &QObject::deleteLater);
+        this->sw, &QObject::deleteLater
+    );
 
     this->sw->start();
 }
@@ -198,11 +202,13 @@ void MainWindow::startupFeederThread() {
 
     QObject::connect(
         this->fw, &ITNZThread::operationFinished,
-        this, &MainWindow::updateWarningsMenuItem);
+        this, &MainWindow::updateWarningsMenuItem
+    );
 
     QObject::connect(
         this->fw, &QThread::finished,
-        this->fw, &QObject::deleteLater);
+        this->fw, &QObject::deleteLater
+    );
 
     this->fw->start();
 }
@@ -217,7 +223,7 @@ void MainWindow::_initUI() {
     QString stdTitle = _DEBUG ? (QString)"DEBUG - " + APP_NAME : APP_NAME;
     this->setWindowTitle(stdTitle);
     this->setMinimumSize(QSize(480, 400));
-    this->setWindowIcon(QIcon(LOCAL_ICON_PNG_PATH));
+    this->setWindowIcon(QIcon(":/icons/app.png"));
 
     // helpers
     this->_initUITabs();
@@ -236,12 +242,13 @@ void MainWindow::_initUI() {
 void MainWindow::_initUITray() {
     auto trayIcon = new QSystemTrayIcon;
     this->trayIcon = trayIcon;
-    trayIcon->setIcon(QIcon(LOCAL_REVERSE_ICON_PNG_PATH));
+    trayIcon->setIcon(QIcon(":/icons/app_reverse.png"));
     trayIcon->setToolTip(this->windowTitle());
 
     QObject::connect(
         this->trayIcon, &QSystemTrayIcon::activated,
-        this, &MainWindow::iconActivated);
+        this, &MainWindow::iconActivated
+    );
 
     #ifdef _WIN32
         auto cMenu = this->_getFileMenu();
@@ -277,17 +284,19 @@ void MainWindow::_initStatusBar() {
 }
 
 void MainWindow::_initUITabs() {
-    auto tabs = new QTabWidget;
-    this->st = new ShoutTab;
-    this->ft = new FeederTab;
+    auto tabs = new QTabWidget(this);
+    this->st = new ShoutTab(this, this->appSettings);
+    this->ft = new FeederTab(this);
 
     QObject::connect(
         this->st->tButton, &QPushButton::clicked,
-        this, &MainWindow::startupShoutThread);
+        this, &MainWindow::startupShoutThread
+    );
 
     QObject::connect(
         this->ft->tButton, &QPushButton::clicked,
-        this, &MainWindow::startupFeederThread);
+        this, &MainWindow::startupFeederThread
+    );
 
     tabs->addTab(this->st, "Shout!");
     tabs->addTab(this->ft, "Feeder");
@@ -322,7 +331,8 @@ QMenu* MainWindow::_getOptionsMenu() {
     atssAction->setCheckable(true);
     QObject::connect(
         atssAction, &QAction::triggered,
-        this, &MainWindow::addToStartupSwitch);
+        this, &MainWindow::addToStartupSwitch
+    );
     if (PlatformHelper::isLaunchingAtStartup()) {
         atssAction->setChecked(true);
     }
@@ -331,7 +341,8 @@ QMenu* MainWindow::_getOptionsMenu() {
     this->cfugAction = new QAction(tr("Check for updates"), optionsMenuItem);
         QObject::connect(
         this->cfugAction, &QAction::triggered,
-        this, &MainWindow::requireUpdateCheckFromUser);
+        this, &MainWindow::requireUpdateCheckFromUser
+    );
 
     this->versionAction = new QAction(APP_FULL_DENOM, optionsMenuItem);
     this->versionAction->setEnabled(false);
@@ -364,28 +375,32 @@ QMenu* MainWindow::_getFileMenu() {
     auto monitorAction = new QAction(tr("Open monitor..."), fileMenuItem);
     QObject::connect(
         monitorAction, &QAction::triggered,
-        this, &MainWindow::trueShow);
+        this, &MainWindow::trueShow
+    );
 
     // myWTNZAction
     auto myWTNZAction = new QAction(tr("My WTNZ"), fileMenuItem);
     myWTNZAction->setEnabled(false);
     QObject::connect(
         myWTNZAction, &QAction::triggered,
-        this, &MainWindow::accessWTNZ);
+        this, &MainWindow::accessWTNZ
+    );
     this->myWTNZActions.push_back(myWTNZAction);
 
     // updateConfigAction
     auto updateConfigAction = new QAction(tr("Update configuration file"), fileMenuItem);
     QObject::connect(
         updateConfigAction, &QAction::triggered,
-        this, &MainWindow::openConfigFile);
+        this, &MainWindow::openConfigFile
+    );
 
     // openWarningsAction
     auto openWarningsAction = new QAction(tr("Read latest upload warnings report"), fileMenuItem);
     openWarningsAction->setEnabled(false);
     QObject::connect(
         openWarningsAction, &QAction::triggered,
-        this, &MainWindow::openWarnings);
+        this, &MainWindow::openWarnings
+    );
     this->warningsfileActions.push_back(openWarningsAction);
 
     // openData
@@ -398,7 +413,8 @@ QMenu* MainWindow::_getFileMenu() {
     auto quitAction = new QAction(tr("Quit"), fileMenuItem);
     QObject::connect(
         quitAction, &QAction::triggered,
-        this, &MainWindow::forcedClose);
+        this, &MainWindow::forcedClose
+    );
 
     fileMenuItem->addAction(monitorAction);
     fileMenuItem->addSeparator();

@@ -3,28 +3,26 @@
 ConnectivityThread::ConnectivityThread(AuthHelper *aHelper, QFileSystemWatcher* toWatchOverChanges) : _aHelper(aHelper), _toWatchOverChanges(toWatchOverChanges) {}
 
 void ConnectivityThread::run() {
-
     ////////////////////
     // Event Handlers //
     ////////////////////
 
     this->_sioClient = new sio::client();
 
-    //tell sio is trying to reconnect
+    // tell sio is trying to reconnect
     this->_sioClient->set_reconnect_listener([&](unsigned int a, unsigned int b) {
         emit updateSIOStatus(tr("Reconnecting to server..."), TLW_Colors::YELLOW);
     });
 
-    //on connect, check credentials
+    // on connect, check credentials
     this->_sioClient->set_open_listener([&]() {
         this->_checkCredentials();
     });
 
 
-    //once server checked the credentials
+    // once server checked the credentials
     this->_sioClient->socket("/login")->on("credentialsChecked", [&](sio::event& ev) {
-        
-        //extract response
+        // extract response
         auto response = ev.get_messages()[0]->get_map();
         auto isOk = response["isLoginOk"]->get_bool();
         auto extraInfo = QString::fromStdString(response["accomp"]->get_string());
@@ -36,11 +34,11 @@ void ConnectivityThread::run() {
             emit updateSIOStatus(_validationErrorTr(extraInfo), TLW_Colors::RED);
         }
 
-        //toggle flag
+        // toggle flag
         this->_requestOngoing = false;
     });
 
-    //when server tell us the database has been updated, ask for revalidation
+    // when server tell us the database has been updated, ask for revalidation
     this->_sioClient->socket("/login")->on("databaseUpdated", [&](sio::event& ev) {
         this->_checkCredentials(true);
     });
@@ -48,11 +46,11 @@ void ConnectivityThread::run() {
     ////////////////////////
     // End Event Handlers //
     ////////////////////////
-    
-    //declare waiting for connection
+
+    // declare waiting for connection
     emit updateSIOStatus(tr("Connecting to server..."), TLW_Colors::YELLOW);
-    
-    //connect...
+
+    // connect...
     this->_sioClient->connect(this->_getTargetUrl().toStdString());
 
     QObject::connect(
@@ -62,9 +60,8 @@ void ConnectivityThread::run() {
 
     this->exec();
 
-    //clear
+    // clear
     delete this->_sioClient;
-
 }
 
 void ConnectivityThread::_emitLoggedUserMsg() {
@@ -73,7 +70,7 @@ void ConnectivityThread::_emitLoggedUserMsg() {
 
 const QString ConnectivityThread::_validationErrorTr(const QString& errorCode) const {
     QString errorMsg;
-    
+
     if(errorCode == "cdm") {
         errorMsg = tr("Credential data missing");
     } else if(errorCode == "eud") {
@@ -95,9 +92,9 @@ void ConnectivityThread::_checkCredentialsFromFileUpdate() {
     this->_checkCredentials(true);
 }
 
-//ask credentials
+// ask credentials
 void ConnectivityThread::_checkCredentials(bool forceRecheck) {
-
+    //
     if(forceRecheck) {
         this->_loggedInUser = "";
         this->_requestOngoing = false;
@@ -112,14 +109,11 @@ void ConnectivityThread::_checkCredentials(bool forceRecheck) {
 
     if (!prerequisitesOK) {
         emit updateSIOStatus(tr("Waiting for appropriate credentials."), TLW_Colors::RED);
-    }
-
-    else if(prerequisitesOK && !this->_requestOngoing) {
-        
-        //start check
+    } else if (prerequisitesOK && !this->_requestOngoing) {
+        // start check
         this->_requestOngoing = true;
         emit updateSIOStatus(tr("Asking for credentials validation..."), TLW_Colors::YELLOW);
-        
+
         sio::message::list p;
         auto username = this->_aHelper->getParamValue("username");
         auto password = this->_aHelper->getParamValue("password");
@@ -128,13 +122,12 @@ void ConnectivityThread::_checkCredentials(bool forceRecheck) {
         p.push(sio::string_message::create(password.toStdString()));
         _sio_checkCredentials(this->_sioClient, p);
     }
-
 }
 
 QString ConnectivityThread::_getTargetUrl() {
-    //extract destination url for sio connection
+    // extract destination url for sio connection
     auto t_qurl = this->_aHelper->getTargetUrl();
-    t_qurl.setPort(SIO_PORT);
+    t_qurl.setPort(3000);
     auto turl = t_qurl.toString(QUrl::RemovePath);
     return turl;
 }

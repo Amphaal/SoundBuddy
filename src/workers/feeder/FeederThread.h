@@ -9,7 +9,7 @@
 #include <set>
 
 #include "src/workers/base/ITNZThread.hpp"
-#include "src/helpers/_const.hpp"
+
 #include "src/helpers/platformHelper/platformHelper.h"
 #include "src/helpers/outputHelper/outputHelper.hpp"
 

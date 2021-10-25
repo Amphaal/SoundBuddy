@@ -14,7 +14,7 @@
 
 #include "platformHelper.h"
 #include "src/version.h"
-#include "src/helpers/_const.hpp"
+
 #include "src/helpers/iTunesLibParser/iTunesLibParser.h"
 
 void PlatformHelper::openFileInOS(const QString &cpURL) {
@@ -65,7 +65,7 @@ QString PlatformHelper::extractItunesLibLocation(const QString &pathToParamFile)
 
 QSettings* PlatformHelper::getStartupSettingsHandler() {
     if (!_settings) {
-        _settings = new QSettings(WINDOWS_REG_STARTUP_LAUNCH_PATH.toStdString().c_str(), QSettings::NativeFormat);
+        _settings = new QSettings(R"(HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run)", QSettings::NativeFormat);
     }
 
     return _settings;

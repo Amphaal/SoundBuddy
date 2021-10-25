@@ -24,7 +24,6 @@
 
 #include <rapidjson/document.h>
 
-#include "src/helpers/_const.hpp"
 #include "src/helpers/configHelper/authHelper.hpp"
 #include "src/helpers/platformHelper/platformHelper.h"
 
@@ -49,9 +48,7 @@ class MainWindow : public QMainWindow {
     QFileSystemWatcher* configWatcher;
     QVector<QAction*> myWTNZActions;
     QVector<QAction*> warningsfileActions;
-    AuthHelper aHelper;
-    ConfigHelper cHelper;
-    OutputHelper owHelper;
+    QSettings appSettings;
     QString wtnzUrl;
 
     // statusbar
