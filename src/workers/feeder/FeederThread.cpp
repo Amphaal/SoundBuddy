@@ -3,54 +3,47 @@
 FeederThread::FeederThread() {}
 
 void FeederThread::run() {
-
     this->_ohLib = new OutputHelper(OUTPUT_FILE_PATH, "uploadLib", "wtnz_file");
     this->_ohWrn = new OutputHelper(WARNINGS_FILE_PATH);
 
     emit printLog(tr("WARNING ! Make sure you activated the XML file sharing in iTunes>Preferences>Advanced."));
 
     try {
-        
         this->_generateLibJSONFile();
         this->_uploadLibToServer();
-
     } catch (const std::exception& e) {
-
         QString errMsg(e.what());
         emit printLog(errMsg, false, true);
-
     }
 
-    //clear
+    // clear
     delete this->_ohLib;
     delete this->_ohWrn;
     delete this->_workingJSON;
     delete this->_libAsJSON;
     delete this->_libWarningsAsJSON;
-
 }
 
-//generate files
+// generate files
 void FeederThread::_generateLibJSONFile() {
     auto itnzLibPath = this->_getITunesLibLocation();
     this->_processFile(itnzLibPath);
 
-    //check warnings
+    // check warnings
     auto warningsCount = this->_libWarningsAsJSON->MemberCount();
     if (warningsCount) {
-        //create warning file
+        // create warning file
         emit printLog(
             tr("WARNING ! %1 files in your library are missing important "
                "metadata and consequently were removed from the output file ! "
                "Please check the \"%2\" file for more informations.")
                 .arg(warningsCount)
-                .arg(OUTPUT_FILE_PATH)
-        );
+                .arg(OUTPUT_FILE_PATH));
 
         _tracksUnmolding(WARNINGS_FILE_PATH);
         this->_ohWrn->writeAsJsonFile(*this->_libWarningsAsJSON, true);
     } else {
-        //remove old warning file
+        // remove old warning file
         auto pToRem = this->_ohWrn->getOutputPath();
         QFile::remove(pToRem);
     }
@@ -64,22 +57,21 @@ void FeederThread::_generateLibJSONFile() {
     emit operationFinished();
 }
 
-void FeederThread::_tracksUnmolding(const char* filename) const {
+void FeederThread::_tracksUnmolding(const char* filename) {
     emit printLog(tr("Unmolding \"%1\"...").arg(filename));
 }
 
-//upload
+// upload
 void FeederThread::_uploadLibToServer() {
     emit printLog(tr("Let's try to send now !"));
-    
+
     QString response = this->_ohLib->uploadFile();
-    
+
     if (!response.isEmpty()) {
         emit printLog(tr("Server responded: %1").arg(response));
     } else {
         emit printLog(tr("No feedback from the server ? Strange... Please check the targeted host."));
     }
-
 }
 
 
@@ -91,24 +83,24 @@ void FeederThread::_processFile(const QString &xmlFileLocation) {
     this->_workingJSON = new rapidjson::Document;
     this->_libAsJSON = new rapidjson::Document;
 
-    //set default
+    // set default
     this->_libWarningsAsJSON->Parse("{}");
     this->_workingJSON->Parse("{}");
     this->_libAsJSON->Parse("[]");
 
-    //format to dict
+    // format to dict
     this->_generateJSON(xmlFileLocation);
-    this->_standardizeJSON();    
+    this->_standardizeJSON();
 }
 
-//navigate through XML and generate object
+// navigate through XML and generate object
 void FeederThread::_generateJSON(const QString &xmlFileLocation) {
-    
+    //
     emit printLog(tr("Pre-digesting XML file..."));
-    
+
     const auto XMLReadErr = tr("Cannot read the XML file bound to your library. Are you sure you activated the XML file sharing in iTunes ?").toStdString();
-    
-    //read xml as QString
+
+    // read xml as QString
     iTunesLibParser *doc;
     try {
         doc = new iTunesLibParser(xmlFileLocation);
@@ -118,28 +110,27 @@ void FeederThread::_generateJSON(const QString &xmlFileLocation) {
     auto xmlAsJSONString = doc->ToJSON();
     delete doc;
 
-    //try parse to temp JSON
+    // try parse to temp JSON
     rapidjson::Document d;
     d.Parse(xmlAsJSONString.toStdString().c_str());
-    if(d.HasParseError()) {
+    if (d.HasParseError()) {
         throw std::logic_error(XMLReadErr);
     }
 
     emit printLog(tr("Triming fat..."));
-    
-    //retrieve tracks and pass to workingJSON
+
+    // retrieve tracks and pass to workingJSON
     auto v = rapidjson::Pointer("/Tracks").Get(d);
     this->_expectedCount = v->MemberCount();
     if (!this->_expectedCount) {
         throw std::logic_error(tr("No music found in your library. Please feed it some.").toStdString());
     }
     this->_workingJSON->CopyFrom(d["Tracks"], this->_workingJSON->GetAllocator());
-    
 }
 
-//standardize
+// standardize
 void FeederThread::_standardizeJSON() {
-    
+    //
     emit printLog(tr("Cooking the JSON file..."));
 
     //declare allocators
@@ -162,23 +153,23 @@ void FeederThread::_standardizeJSON() {
         for (auto prop = track->value.MemberBegin(); prop != track->value.MemberEnd(); ++prop) {
             QString k = prop->name.GetString();
             
-            //check presence of required attrs
+            // check presence of required attrs
             if (_requiredAttrs.find(k) == _requiredAttrs.end()) {
-                if (k != "Disc Number") toRemove.insert(k); //dont remove optional values !
+                if (k != "Disc Number") toRemove.insert(k);  // dont remove optional values !
             } else {
                 foundRequired.insert(k);
             }
         }
 
-        //apply diff on required attr, dump into missingAttrs
+        // apply diff on required attr, dump into missingAttrs
         QStringList missingAttrs;
         std::set_difference(
-            _requiredAttrs.begin(), _requiredAttrs.end(), 
+            _requiredAttrs.begin(), _requiredAttrs.end(),
             foundRequired.begin(), foundRequired.end(),
             std::inserter(missingAttrs, missingAttrs.end())
         );
 
-        //if there are missing attrs
+        // if there are missing attrs
         if (missingAttrs.length()) {
             rapidjson::Value key(track->value["Location"].GetString(), lwajAlloc);
             auto joined = missingAttrs.join(", ");
@@ -187,12 +178,12 @@ void FeederThread::_standardizeJSON() {
             tracksIdToRemove.insert(track->name.GetString());
         }
 
-        //remove useless props
-        for(auto ktr : toRemove) {
+        // remove useless props
+        for (auto ktr : toRemove) {
             track->value.RemoveMember(ktr.toStdString().c_str());
         }
 
-        //set optionnal values default
+        // set optionnal values default
         if (!track->value.HasMember("Disc Number")) {
             track->value.AddMember("Disc Number","1", wjAlloc);
         }
@@ -202,14 +193,14 @@ void FeederThread::_standardizeJSON() {
 
     qDebug() << this->_workingJSON->MemberCount();
 
-    //remove tracks with warnings
+    // remove tracks with warnings
     for(auto &idtr : tracksIdToRemove) {
         this->_workingJSON->RemoveMember(idtr.toStdString().c_str());
     }
 
     qDebug() << this->_workingJSON->MemberCount();
 
-    //turn obect based container into an array one
+    // turn obect based container into an array one
     for (auto track = this->_workingJSON->MemberBegin(); track != this->_workingJSON->MemberEnd(); ++track) {
         this->_libAsJSON->PushBack(track->value, lajAlloc);
     }
@@ -219,26 +210,25 @@ void FeederThread::_standardizeJSON() {
 /// Other Helpers
 ///
 
-//log...
+// log...
 void FeederThread::_tracksEmitHelper() {
     bool mustReplacePrevious = this->_recCount;
     this->_recCount++;
     bool canLog = ((this->_recCount % 100) == 0 && this->_recCount <= this->_expectedCount) || this->_recCount == this->_expectedCount || !mustReplacePrevious;
-    if(canLog) {
+    if (canLog) {
         emit printLog(tr("%1 over %2 ...").arg(this->_recCount).arg(this->_expectedCount), mustReplacePrevious);
     }
 }
 
-//seek in iTunes preference file the library location
+// seek in iTunes preference file the library location
 QString FeederThread::_getITunesLibLocation() {
     emit printLog(tr("Getting XML file location..."));
 
     QString pathToPrefs = PlatformHelper::getITunesPrefFileProbableLocation();
-    
+
     try {
         return PlatformHelper::extractItunesLibLocation(pathToPrefs);
     } catch(...) {
         throw std::logic_error(tr("An issue happened while fetching iTunes's XML file location. Have you installed iTunes ?").toStdString());
     }
-    
 }
