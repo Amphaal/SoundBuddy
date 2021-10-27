@@ -28,7 +28,7 @@ cmake_minimum_required(VERSION 3.14.3)
 
 project(FeedTNZ
     VERSION 0.4.1
-    DESCRIPTION "Small companion app for desktop to interact with WTNZ"
+    DESCRIPTION "Small companion app for desktop to feed or stream ITunes / Music library informations"
     HOMEPAGE_URL "https://github.com/Amphaal/feedtnz"
     LANGUAGES CXX
 )
@@ -39,6 +39,7 @@ project(FeedTNZ
 
 #app dest path
 SET(APP_PUBLISHER "LVWL")
+SET(DEST_PLATFORM_PRODUCT_NAME "WTNZ")
 SET(APP_PATCHNOTE_URL ${PROJECT_HOMEPAGE_URL}/releases)
 SET(APP_REMOTE_MANIFEST_URL "")
 
@@ -55,6 +56,7 @@ configure_file(
 SET(CMAKE_CXX_STANDARD 17)
 SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 SET(CMAKE_C_STANDARD 11)
+ADD_DEFINITIONS(-DUNICODE)
 
 # Qt
 SET(CMAKE_AUTOMOC ON)

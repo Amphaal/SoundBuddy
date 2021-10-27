@@ -5,11 +5,6 @@
 #include <QDir>
 #include <QFileInfo>
 
-#include <curl/curl.h>
-#include <rapidjson/document.h>
-#include <rapidjson/prettywriter.h>
-#include <rapidjson/filewritestream.h>
-
 #include <StupidHTTPDownloader/Downloader.h>
 
 #include <string>

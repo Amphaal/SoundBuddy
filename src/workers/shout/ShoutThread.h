@@ -2,8 +2,6 @@
 
 #include <QString>
 
-#include <rapidjson/document.h>
-
 #include <functional>
 
 #include "src/workers/base/ITNZThread.hpp"

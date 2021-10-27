@@ -129,10 +129,6 @@
         <translation>Options</translation>
     </message>
     <message>
-        <source>Launch at system boot</source>
-        <translation>Lancer au démarrage système</translation>
-    </message>
-    <message>
         <source>Check for updates</source>
         <translation>Vérification de mises à jour</translation>
     </message>
@@ -149,12 +145,8 @@
         <translation>Ouvrir le tableau de bord</translation>
     </message>
     <message>
-        <source>My WTNZ</source>
-        <translation>Mon WTNZ</translation>
-    </message>
-    <message>
-        <source>Update configuration file</source>
-        <translation>Mettre à jour le fichier de configuration</translation>
+        <source>My %1</source>
+        <translation>Mon %1</translation>
     </message>
     <message>
         <source>Read latest upload warnings report</source>
@@ -219,6 +211,41 @@
     <message>
         <source>%1 - Error while checking updates</source>
         <translation>%1 - Erreur durant la verification des mises à jour</translation>
+    </message>
+    <message>
+        <source>Preferences</source>
+        <translation>Paramètres</translation>
+    </message>
+</context>
+<context>
+    <name>PreferencesDialog</name>
+    <message>
+        <source>Preferences</source>
+        <translation>Paramètres</translation>
+    </message>
+    <message>
+        <source>Connectivity</source>
+        <translation>Connectivité</translation>
+    </message>
+    <message>
+        <source>%1 Host URL</source>
+        <translation>URL hôte %1</translation>
+    </message>
+    <message>
+        <source>%1 username</source>
+        <translation>Nom d&apos;utilisateur %1</translation>
+    </message>
+    <message>
+        <source>%1 user password</source>
+        <translation>Mot de passe %1</translation>
+    </message>
+    <message>
+        <source>Automation</source>
+        <translation>Automatisation</translation>
+    </message>
+    <message>
+        <source>Launch %1 at system boot</source>
+        <translation>Lancer %1 au demarrage système</translation>
     </message>
 </context>
 <context>

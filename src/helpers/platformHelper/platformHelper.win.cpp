@@ -6,8 +6,6 @@
 #include <shellapi.h>
 #include <stdlib.h>
 
-#include <rapidjson/document.h>
-
 #include <string>
 #include <map>
 #include <vector>

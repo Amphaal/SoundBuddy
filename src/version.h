@@ -6,3 +6,4 @@
 #define APP_FULL_DENOM "FeedTNZ 0.4.1"
 #define APP_REMOTE_MANIFEST_URL ""
 #define APP_PATCHNOTE_URL "https://github.com/Amphaal/feedtnz/releases"
+#define DEST_PLATFORM_PRODUCT_NAME "WTNZ"

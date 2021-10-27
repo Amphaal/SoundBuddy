@@ -131,3 +131,7 @@ QString ConnectivityThread::_getTargetUrl() {
     auto turl = t_qurl.toString(QUrl::RemovePath);
     return turl;
 }
+
+void _sio_checkCredentials(sio::client* sioClient, sio::message::list& p) {
+   sioClient->socket("/login")->emit("checkCredentials", p);
+}

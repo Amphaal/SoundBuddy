@@ -2,8 +2,6 @@
 
 #include <QString>
 
-#include <rapidjson/document.h>
-
 #include <fstream>
 #include <algorithm>
 #include <set>
@@ -16,7 +14,7 @@
 #include <ITunesLibraryParser.hpp>
 
 class FeederThread : public ITNZThread {
- Q_OBJECT
+   Q_OBJECT
 
  public:
     FeederThread();

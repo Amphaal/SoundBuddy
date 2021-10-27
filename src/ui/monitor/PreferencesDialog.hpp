@@ -11,6 +11,8 @@
 #include "src/helpers/AppSettings.hpp"
 
 class PreferencesDialog : public QDialog {
+    Q_OBJECT
+
  public:
     explicit PreferencesDialog(QSettings* appSettings, QWidget* parent = nullptr) : QDialog(parent), _appSettings(appSettings) {
         this->setWindowTitle(tr("Preferences"));
@@ -18,28 +20,28 @@ class PreferencesDialog : public QDialog {
         auto layout = new QGridLayout;
         this->setLayout(layout);
 
-        // WTNZ connectivity
+        // Platform connectivity
         auto connectivityGroup = new QGroupBox(tr("Connectivity"), this);
 
-            this->_WTNZURLEdit = new QLineEdit(tr("WTNZ Profile URL"), this);
-            this->_WTNZUsernameEdit = new QLineEdit(tr("WTNZ username"), this);
-            this->_WTNZPasswordEdit = new QLineEdit(tr("WTNZ user password"), this);
-            this->_WTNZPasswordEdit->setEchoMode(QLineEdit::Password);
+            this->_PlatformURLEdit = new QLineEdit(tr("%1 Host URL").arg(DEST_PLATFORM_PRODUCT_NAME), this);
+            this->_PlatformUsernameEdit = new QLineEdit(tr("%1 username").arg(DEST_PLATFORM_PRODUCT_NAME), this);
+            this->_PlatformPasswordEdit = new QLineEdit(tr("%1 user password").arg(DEST_PLATFORM_PRODUCT_NAME), this);
+            this->_PlatformPasswordEdit->setEchoMode(QLineEdit::Password);
 
-            this->_WTNZURLEdit->setText(this->_appSettings->value(AppSettings::WTNZ_HOST_URL).toString());
-            this->_WTNZUsernameEdit->setText(this->_appSettings->value(AppSettings::WTNZ_USERNAME).toString());
-            this->_WTNZPasswordEdit->setText(this->_appSettings->value(AppSettings::WTNZ_PASSWORD).toString());
+            this->_PlatformURLEdit->setText(this->_appSettings->value(AppSettings::PLATFORM_HOST_URL).toString());
+            this->_PlatformUsernameEdit->setText(this->_appSettings->value(AppSettings::PLATFORM_USERNAME).toString());
+            this->_PlatformPasswordEdit->setText(this->_appSettings->value(AppSettings::PLATFORM_PASSWORD).toString());
 
-            connectivityGroup->layout()->addWidget(this->_WTNZURLEdit);
-            connectivityGroup->layout()->addWidget(this->_WTNZPasswordEdit);
-            connectivityGroup->layout()->addWidget(this->_WTNZPasswordEdit);
+            connectivityGroup->layout()->addWidget(this->_PlatformURLEdit);
+            connectivityGroup->layout()->addWidget(this->_PlatformPasswordEdit);
+            connectivityGroup->layout()->addWidget(this->_PlatformPasswordEdit);
 
         layout->addWidget(connectivityGroup);
 
         // Automation
         auto automationGroup = new QGroupBox(tr("Automation"), this);
 
-            this->_launchAppAtStartupChk = new QCheckBox(tr("Launch FeedTNZ at system boot"), this);
+            this->_launchAppAtStartupChk = new QCheckBox(tr("Launch %1 at system boot").arg(APP_NAME), this);
 
             this->_launchAppAtStartupChk->setChecked(this->_appSettings->value(AppSettings::MUST_RUN_AT_STARTUP).toBool());
 
@@ -60,9 +62,9 @@ class PreferencesDialog : public QDialog {
  private:
     QSettings* _appSettings;
 
-    QLineEdit* _WTNZURLEdit;
-    QLineEdit* _WTNZUsernameEdit;
-    QLineEdit* _WTNZPasswordEdit;
+    QLineEdit* _PlatformURLEdit;
+    QLineEdit* _PlatformUsernameEdit;
+    QLineEdit* _PlatformPasswordEdit;
 
     QCheckBox* _launchAppAtStartupChk;
 
@@ -72,9 +74,9 @@ class PreferencesDialog : public QDialog {
     }
 
     void closeEvent(QCloseEvent *event) override {
-        this->_appSettings->setValue(AppSettings::WTNZ_HOST_URL, this->_WTNZURLEdit->text());
-        this->_appSettings->setValue(AppSettings::WTNZ_USERNAME, this->_WTNZUsernameEdit->text());
-        this->_appSettings->setValue(AppSettings::WTNZ_PASSWORD, this->_WTNZPasswordEdit->text());
+        this->_appSettings->setValue(AppSettings::PLATFORM_HOST_URL, this->_PlatformURLEdit->text());
+        this->_appSettings->setValue(AppSettings::PLATFORM_USERNAME, this->_PlatformUsernameEdit->text());
+        this->_appSettings->setValue(AppSettings::PLATFORM_PASSWORD, this->_PlatformPasswordEdit->text());
         this->_appSettings->sync();
     }
 };

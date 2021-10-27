@@ -1,7 +1,5 @@
 #pragma once
 
-#include "src/workers/connectivity/ConnectivityThread.sio.h"
-
 #include <QFileSystemWatcher>
 #include <QThread>
 

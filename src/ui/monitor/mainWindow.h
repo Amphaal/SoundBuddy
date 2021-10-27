@@ -20,8 +20,6 @@
 #include <QIcon>
 #include <QStatusBar>
 
-#include <rapidjson/document.h>
-
 #include "src/helpers/platformHelper/platformHelper.h"
 
 #include "src/ui/tabs/ShoutTab.hpp"
@@ -45,10 +43,10 @@ class MainWindow : public QMainWindow {
     bool forceQuitOnMacOS = false;
     bool userNotificationOnUpdateCheck = false;
     QSystemTrayIcon* trayIcon;
-    QVector<QAction*> myWTNZActions;
+    QAction* myPlatformAction;
     QAction* openWarningsAction;
     QSettings appSettings;
-    QString wtnzUrl;
+    QString plaformFullUrl;
 
     // statusbar
     void _initStatusBar();
@@ -74,7 +72,7 @@ class MainWindow : public QMainWindow {
     /// Functionnalities helpers calls
     ///
 
-    void accessWTNZ();
+    void accessPlatform();
     void accessPreferences();
     void openWarnings();
 

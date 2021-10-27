@@ -31,16 +31,14 @@ void MainWindow::setupConfigFileWatcher() {
 // updates the menu depending on the config values filled or not
 void MainWindow::updateMenuItemsFromConfigValues(const QString &path) {
     // check then save
-    auto myWtnzUrl = this->aHelper.getUsersHomeUrl();
-    bool shouldActivateLink = (myWtnzUrl != "");
+    auto myplaformFullUrl = this->aHelper.getUsersHomeUrl();
+    bool shouldActivateLink = (myplaformFullUrl != "");
     if (shouldActivateLink) {
-        this->wtnzUrl = myWtnzUrl;
+        this->plaformFullUrl = myplaformFullUrl;
     }
 
     // update action state
-    for (auto action : this->myWTNZActions) {
-        action->setEnabled(shouldActivateLink);
-    }
+    this->myPlatformAction->setEnabled(shouldActivateLink);
 }
 
 void MainWindow::updateWarningsMenuItem() {
@@ -53,8 +51,8 @@ void MainWindow::updateWarningsMenuItem() {
 ///
 
 
-void MainWindow::accessWTNZ() {
-    PlatformHelper::openUrlInBrowser(this->wtnzUrl);
+void MainWindow::accessPlatform() {
+    PlatformHelper::openUrlInBrowser(this->plaformFullUrl);
 }
 
 void MainWindow::accessPreferences() {
@@ -356,14 +354,13 @@ QMenu* MainWindow::_getFileMenu() {
         this, &MainWindow::trueShow
     );
 
-    // myWTNZAction
-    auto myWTNZAction = new QAction(tr("My WTNZ"), fileMenuItem);
-    myWTNZAction->setEnabled(false);
+    // myPlatformAction
+    this->myPlatformAction = new QAction(tr("My %1").arg(DEST_PLATFORM_PRODUCT_NAME), fileMenuItem);
+    myPlatformAction->setEnabled(false);
     QObject::connect(
-        myWTNZAction, &QAction::triggered,
-        this, &MainWindow::accessWTNZ
+        myPlatformAction, &QAction::triggered,
+        this, &MainWindow::accessPlatform
     );
-    this->myWTNZActions.push_back(myWTNZAction);
 
     // accessPreferencesAction
     auto accessPreferencesAction = new QAction(tr("Preferences"), fileMenuItem);
@@ -395,7 +392,7 @@ QMenu* MainWindow::_getFileMenu() {
 
     fileMenuItem->addAction(monitorAction);
     fileMenuItem->addSeparator();
-    fileMenuItem->addAction(myWTNZAction);
+    fileMenuItem->addAction(myPlatformAction);
     fileMenuItem->addAction(accessPreferencesAction);
     fileMenuItem->addAction(openWarningsAction);
     fileMenuItem->addAction(openDataFolder);

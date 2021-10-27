@@ -3,8 +3,6 @@
 #include <QCheckBox>
 #include <QString>
 
-#include <rapidjson/document.h>
-
 #include <string>
 
 #include "base/TemplateTab.h"
