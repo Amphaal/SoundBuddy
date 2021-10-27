@@ -1,5 +1,3 @@
-#include "src/workers/connectivity/ConnectivityThread.sio.h"  // must be included foremost
-
 #include <QString>
 #include <QApplication>
 #include <QStyleFactory>
@@ -10,8 +8,7 @@
 
 int main(int argc, char** argv) {
     // prevent multiples instances
-    QString tmpDir = QDir::tempPath();
-    QLockFile lockFile(tmpDir + "/" + APP_NAME + ".lock");
+    QLockFile lockFile(QDir::tempPath() + '/' + APP_NAME + ".lock");
     if (!lockFile.tryLock(100)) {
         return 1;
     }
@@ -22,10 +19,6 @@ int main(int argc, char** argv) {
     app.setApplicationName(APP_NAME);
     app.setOrganizationName(APP_PUBLISHER);
     app.setStyle(QStyleFactory::create("Fusion"));
-
-    // configure QThreads to acknowledge specific types for data exchanges
-    qRegisterMetaType<size_t>("size_t");
-    qRegisterMetaType<TLW_Colors>("TLW_Colors");
 
     // fetch main window
     MainWindow mw;

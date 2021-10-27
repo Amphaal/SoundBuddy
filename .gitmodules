@@ -1,6 +1,3 @@
-[submodule "deps/socket.io"]
-	path = deps/socket.io
-	url = https://github.com/socketio/socket.io-client-cpp
 [submodule "deps/ItunesLibraryParser"]
 	path = deps/ItunesLibraryParser
 	url = https://github.com/Amphaal/ItunesLibraryParser

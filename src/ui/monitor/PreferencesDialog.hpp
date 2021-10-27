@@ -26,7 +26,7 @@ class PreferencesDialog : public QDialog {
             this->_WTNZPasswordEdit = new QLineEdit(tr("WTNZ user password"), this);
             this->_WTNZPasswordEdit->setEchoMode(QLineEdit::Password);
 
-            this->_WTNZURLEdit->setText(this->_appSettings->value(AppSettings::WTNZ_PROFILE_URL).toString());
+            this->_WTNZURLEdit->setText(this->_appSettings->value(AppSettings::WTNZ_HOST_URL).toString());
             this->_WTNZUsernameEdit->setText(this->_appSettings->value(AppSettings::WTNZ_USERNAME).toString());
             this->_WTNZPasswordEdit->setText(this->_appSettings->value(AppSettings::WTNZ_PASSWORD).toString());
 
@@ -72,7 +72,7 @@ class PreferencesDialog : public QDialog {
     }
 
     void closeEvent(QCloseEvent *event) override {
-        this->_appSettings->setValue(AppSettings::WTNZ_PROFILE_URL, this->_WTNZURLEdit->text());
+        this->_appSettings->setValue(AppSettings::WTNZ_HOST_URL, this->_WTNZURLEdit->text());
         this->_appSettings->setValue(AppSettings::WTNZ_USERNAME, this->_WTNZUsernameEdit->text());
         this->_appSettings->setValue(AppSettings::WTNZ_PASSWORD, this->_WTNZPasswordEdit->text());
         this->_appSettings->sync();

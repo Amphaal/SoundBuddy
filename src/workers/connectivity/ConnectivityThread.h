@@ -24,11 +24,11 @@ class ConnectivityThread : public QThread {
     void requestCredentialCheck();
 
  private:
-    sio::client* _sioClient = nullptr;
-    QString _loggedInUser;
     bool _requestOngoing = false;
+    sio::client* _sioClient = nullptr;
     AuthHelper* _aHelper = nullptr;
     QFileSystemWatcher* _toWatchOverChanges = nullptr;
+    QString _loggedInUser;
 
     // ask credentials
     void _checkCredentials(bool forceRecheck = false);

@@ -65,6 +65,7 @@ find_package(Qt6 REQUIRED COMPONENTS
     Core 
     Gui 
     Widgets
+    WebSockets
     LinguistTools
 )
 
@@ -159,32 +160,6 @@ HandleQtTranslation(appExec
     ${TS_INSTALL_FILES}
 )
 
-#########################
-# Socket.io + rapidjson #
-#########################
-
-add_subdirectory(deps/socket.io)
-
-# rapidjson
-add_library(rapidjson INTERFACE)
-target_include_directories(rapidjson INTERFACE
-    deps/socket.io/lib/rapidjson/include
-)
-target_compile_options(rapidjson INTERFACE "-Wno-expansion-to-defined")
-
-# Fixing the bullshit that is socket.io CMakeLists.txt 
-target_include_directories(sioclient_tls INTERFACE
-    deps/socket.io/src
-)
-target_compile_options(sioclient_tls PRIVATE "-Wno-expansion-to-defined")
-target_compile_options(sioclient     PRIVATE "-Wno-expansion-to-defined")
-
-# link
-target_link_libraries(appExec PRIVATE
-    sioclient_tls
-    rapidjson
-)
-
 ####################
 # IFWUpdateChecker #
 ####################
@@ -203,6 +178,7 @@ target_link_libraries(appExec PRIVATE
     Qt6::Core
     Qt6::Gui 
     Qt6::Widgets
+    Qt6::WebSockets
 )
 
 # QT LIBRARIES COPY
