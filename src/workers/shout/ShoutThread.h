@@ -6,14 +6,11 @@
 
 #include "src/workers/base/ITNZThread.hpp"
 
-#include "src/helpers/outputHelper/outputHelper.hpp"
-
 class ShoutThread : public ITNZThread {
     Q_OBJECT
 
  public:
-    ShoutThread();
-    ~ShoutThread();
+    ShoutThread(const AppSettings::ConnectivityInfos &connectivityInfos);
 
     void run() override;
     void quit() override;
@@ -41,12 +38,10 @@ class ShoutThread : public ITNZThread {
     );
 
  private:
-    void _inst();
-
-    OutputHelper* _helper = nullptr;
+    const AppSettings::ConnectivityInfos _connectivityInfos;
     QString _lastTrackHash;
     bool _mustListen = true;
 
-    rapidjson::Document _createBasicShout();
-    void _shoutToServer(rapidjson::Document &incoming);
+    QJsonDocument _createBasicShout();
+    void _shoutToServer(QJsonDocument &incoming);
 };

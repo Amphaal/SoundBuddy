@@ -10,6 +10,7 @@
 #include <QFile>
 
 #include "src/helpers/AppSettings.hpp"
+
 class Uploader {
  public:
      struct UploadInstructions {

@@ -2,57 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="fr">
 <context>
-    <name>ConnectivityThread</name>
-    <message>
-        <source>Logged as &quot;%1&quot;</source>
-        <translation>Connecté en tant que &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <source>Credential data missing</source>
-        <translation>Données manquantes pour l&apos;identification</translation>
-    </message>
-    <message>
-        <source>Empty users database</source>
-        <translation>Base de données utilisateur vide</translation>
-    </message>
-    <message>
-        <source>Username not found in database</source>
-        <translation>Utilisateur introuvable dans la base de données</translation>
-    </message>
-    <message>
-        <source>Password for the user not found in database</source>
-        <translation>Mot de passe de l&apos;utilisateur introuvable</translation>
-    </message>
-    <message>
-        <source>Password missmatch</source>
-        <translation>Mot de passe incorrect</translation>
-    </message>
-    <message>
-        <source>Unknown error from the validation request</source>
-        <translation>Erreur inconnue suite à la tentative de validation</translation>
-    </message>
-    <message>
-        <source>Server responded with : &quot;%1&quot;</source>
-        <translation>Reponse serveur : &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <source>Reconnecting to server...</source>
-        <translation>Reconnexion au serveur...</translation>
-    </message>
-    <message>
-        <source>Connecting to server...</source>
-        <translation>Connexion au serveur...</translation>
-    </message>
-    <message>
-        <source>Waiting for appropriate credentials.</source>
-        <translation>En attente d&apos;identifiants appropriés.</translation>
-    </message>
-    <message>
-        <source>Asking for credentials validation...</source>
-        <translation>Demande de validation des identifiants...</translation>
-    </message>
-</context>
-<context>
     <name>FeederTab</name>
     <message>
         <source>Generate Digest and Upload</source>
@@ -120,6 +69,57 @@
     <message>
         <source>An issue happened while fetching iTunes&apos;s XML file location. Have you installed iTunes ?</source>
         <translation>Un problème est survenu durant la recherche de l&apos;emplacement de la bibliothèque. Etes-vous sûr d&apos;avoir installé iTunes ?</translation>
+    </message>
+</context>
+<context>
+    <name>MBeatThread</name>
+    <message>
+        <source>Logged as &quot;%1&quot;</source>
+        <translation>Connecté en tant que &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>Credential data missing</source>
+        <translation>Données manquantes pour l&apos;identification</translation>
+    </message>
+    <message>
+        <source>Empty users database</source>
+        <translation>Base de données utilisateur vide</translation>
+    </message>
+    <message>
+        <source>Username not found in database</source>
+        <translation>Utilisateur introuvable dans la base de données</translation>
+    </message>
+    <message>
+        <source>Password for the user not found in database</source>
+        <translation>Mot de passe de l&apos;utilisateur introuvable</translation>
+    </message>
+    <message>
+        <source>Password missmatch</source>
+        <translation>Mot de passe incorrect</translation>
+    </message>
+    <message>
+        <source>Unknown error from the validation request</source>
+        <translation>Erreur inconnue suite à la tentative de validation</translation>
+    </message>
+    <message>
+        <source>Server responded with : &quot;%1&quot;</source>
+        <translation>Reponse serveur : &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>Reconnecting to server...</source>
+        <translation>Reconnexion au serveur...</translation>
+    </message>
+    <message>
+        <source>Connecting to server...</source>
+        <translation>Connexion au serveur...</translation>
+    </message>
+    <message>
+        <source>Waiting for appropriate credentials.</source>
+        <translation>En attente d&apos;identifiants appropriés.</translation>
+    </message>
+    <message>
+        <source>Asking for credentials validation...</source>
+        <translation>Demande de validation des identifiants...</translation>
     </message>
 </context>
 <context>
@@ -216,6 +216,14 @@
         <source>Preferences</source>
         <translation>Paramètres</translation>
     </message>
+    <message>
+        <source>Cannot access %1 plaform</source>
+        <translation>Impossible d&apos;accéder à la plateforme %1</translation>
+    </message>
+    <message>
+        <source>%1 Plaform URL is not valid. Please check Preferences connectivity parameters.</source>
+        <translation>L&apos;URL de la plateforme %1 n&apos;est pas valide. Merci de vérifier les paramètres de connectivité.</translation>
+    </message>
 </context>
 <context>
     <name>PreferencesDialog</name>
@@ -246,21 +254,6 @@
     <message>
         <source>Launch %1 at system boot</source>
         <translation>Lancer %1 au demarrage système</translation>
-    </message>
-</context>
-<context>
-    <name>QObject</name>
-    <message>
-        <source>Error communicating with the remote server : &quot;%1&quot;.</source>
-        <translation>Problème durant la communication avec le serveur : &quot;%1&quot;.</translation>
-    </message>
-    <message>
-        <source>The server encountered an error while processing the data =&gt; HTTP Code %1 : %2</source>
-        <translation>Le serveur a rencontré une erreur durant le traitement des informations =&gt; Code HTTP %1 : %2</translation>
-    </message>
-    <message>
-        <source>Expected configuration values are missing. Please check the configuration file !</source>
-        <translation>Des paramètres de configurations sont attendus ! Merci de vérifier le fichier de configuration.</translation>
     </message>
 </context>
 <context>

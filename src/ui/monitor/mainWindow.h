@@ -24,7 +24,7 @@
 
 #include "src/ui/tabs/ShoutTab.hpp"
 #include "src/ui/tabs/FeederTab.hpp"
-#include "src/workers/connectivity/ConnectivityThread.h"
+#include "src/workers/mBeat/MBeatThread.h"
 #include "src/workers/base/UpdaterThread.hpp"
 
 #include "src/ui/widgets/TraficLight.hpp"
@@ -104,9 +104,9 @@ class MainWindow : public QMainWindow {
     // workers
     ShoutThread* sw = nullptr;
     FeederThread* fw = nullptr;
-    ConnectivityThread* cw = nullptr;
+    MBeatThread* cw = nullptr;
     UpdaterThread updateChecker;
-    void startupConnectivityThread();
+    void startupMBeatThread();
     void startupShoutThread();
     void startupFeederThread();
 };

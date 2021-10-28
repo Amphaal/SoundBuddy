@@ -1,8 +1,8 @@
-#include "ConnectivityThread.h"
+#include "MBeatThread.h"
 
-ConnectivityThread::ConnectivityThread(const AppSettings::ConnectivityInfos &connectivityInfos) : _connectivityInfos(connectivityInfos) {}
+MBeatThread::MBeatThread(const AppSettings::ConnectivityInfos &connectivityInfos) : _connectivityInfos(connectivityInfos) {}
 
-void ConnectivityThread::run() {
+void MBeatThread::run() {
     ////////////////////
     // Event Handlers //
     ////////////////////
@@ -55,7 +55,7 @@ void ConnectivityThread::run() {
 
     QObject::connect(
         this->_toWatchOverChanges, &QFileSystemWatcher::fileChanged,
-        this, &ConnectivityThread::_checkCredentialsFromFileUpdate
+        this, &MBeatThread::_checkCredentialsFromFileUpdate
     );
 
     this->exec();
@@ -64,11 +64,11 @@ void ConnectivityThread::run() {
     delete this->_sioClient;
 }
 
-void ConnectivityThread::_emitLoggedUserMsg() {
+void MBeatThread::_emitLoggedUserMsg() {
     emit updateSIOStatus(tr("Logged as \"%1\"").arg(this->_loggedInUser), TLW_Colors::GREEN);
 }
 
-const QString ConnectivityThread::_validationErrorTr(const QString& errorCode) const {
+const QString MBeatThread::_validationErrorTr(const QString& errorCode) const {
     QString errorMsg;
 
     if(errorCode == "cdm") {
@@ -88,12 +88,12 @@ const QString ConnectivityThread::_validationErrorTr(const QString& errorCode) c
     return tr("Server responded with : \"%1\"").arg(errorMsg);
 }
 
-void ConnectivityThread::_checkCredentialsFromFileUpdate() {
+void MBeatThread::_checkCredentialsFromFileUpdate() {
     this->_checkCredentials(true);
 }
 
 // ask credentials
-void ConnectivityThread::_checkCredentials(bool forceRecheck) {
+void MBeatThread::_checkCredentials(bool forceRecheck) {
     //
     if(forceRecheck) {
         this->_loggedInUser = "";
@@ -124,7 +124,7 @@ void ConnectivityThread::_checkCredentials(bool forceRecheck) {
     }
 }
 
-QString ConnectivityThread::_getPlatformHostUrl() {
+QString MBeatThread::_getPlatformHostUrl() {
     // extract destination url for sio connection
     auto t_qurl = this->_aHelper->getPlatformHostUrl();
     t_qurl.setPort(3000);

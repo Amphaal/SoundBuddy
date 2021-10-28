@@ -173,6 +173,16 @@ target_link_libraries(appExec PRIVATE
     IFWUpdateChecker
 )
 
+#######################
+# ITunesLibraryParser #
+#######################
+
+add_subdirectory(deps/ITunesLibraryParser)
+
+target_link_libraries(appExec PRIVATE
+    itunes-library-parser
+)
+
 ########
 # QT 6 #
 ########

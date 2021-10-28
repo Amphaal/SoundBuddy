@@ -2,22 +2,13 @@
 
 #include <string>
 
-ShoutThread::ShoutThread() {}
-
-ShoutThread::~ShoutThread() {
-    if (this->_helper)
-        delete this->_helper;
-}
-
-void ShoutThread::_inst() {
-    this->_helper = new OutputHelper(SHOUT_FILE_PATH, "uploadShout", "shout_file");
-}
+ShoutThread::ShoutThread(const AppSettings::ConnectivityInfos &connectivityInfos) : _connectivityInfos(connectivityInfos) {}
 
 void ShoutThread::quit() {
     this->_mustListen = false;
 }
 
-rapidjson::Document ShoutThread::_createBasicShout() {
+QJsonDocument ShoutThread::_createBasicShout() {
     // get iso date
     time_t now;
     time(&now);
@@ -25,9 +16,9 @@ rapidjson::Document ShoutThread::_createBasicShout() {
     strftime(buf, sizeof buf, "%FT%TZ", gmtime(&now));
 
     // return json obj
-    rapidjson::Document obj;
+    QJsonDocument obj;
     obj.Parse("{}");
-    rapidjson::Document::AllocatorType &alloc = obj.GetAllocator();
+    QJsonDocument::AllocatorType &alloc = obj.GetAllocator();
     auto dateAsJSONVal = rapidjson::Value(buf, alloc);
     obj.AddMember("date", dateAsJSONVal, alloc);
     return obj;
@@ -56,7 +47,7 @@ void ShoutThread::shoutFilled(
     ) {
     // fill obj
     auto obj = this->_createBasicShout();
-    rapidjson::Document::AllocatorType &alloc = obj.GetAllocator();
+    QJsonDocument::AllocatorType &alloc = obj.GetAllocator();
 
     // factory for value generation
     auto valGen = [&alloc](QString defVal) {
@@ -89,7 +80,7 @@ void ShoutThread::shoutFilled(
     this->_shoutToServer(obj);
 }
 
-void ShoutThread::_shoutToServer(rapidjson::Document &incoming) {
+void ShoutThread::_shoutToServer(QJsonDocument &incoming) {
     try {
         this->_helper->writeAsJsonFile(incoming);
         this->_helper->uploadFile();
@@ -127,9 +118,6 @@ bool ShoutThread::shouldUpload(
 #include <QProcess>
 
 void ShoutThread::run() {
-    //
-    this->_inst();
-
     emit printLog(tr("Waiting for iTunes to launch..."));
 
     // define applescript to get shout values
@@ -171,7 +159,7 @@ void ShoutThread::run() {
             result[result.size() - 1] = ']';
 
             // cast to json
-            rapidjson::Document trackObj;
+            QJsonDocument trackObj;
             trackObj.Parse(result.data());
 
             // get values for shout
@@ -223,9 +211,6 @@ void ShoutThread::run() {
 #include <QDebug>
 
 void ShoutThread::run() {
-    
-    this->_inst();
-    
     //start with log
     emit printLog(tr("Waiting for iTunes to launch..."));
     

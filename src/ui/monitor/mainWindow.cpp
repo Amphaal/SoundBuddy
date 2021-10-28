@@ -6,7 +6,7 @@ MainWindow::MainWindow() {
 
     //
     this->onAppSettingsChanged();
-    this->startupConnectivityThread();
+    this->startupMBeatThread();
     this->updateWarningsMenuItem();
     this->setupAutoUpdate();
 }
@@ -22,8 +22,8 @@ void MainWindow::onAppSettingsChanged() {
 }
 
 void MainWindow::updateWarningsMenuItem() {
-    bool doEnable = PlatformHelper::fileExists(this->owHelper.getOutputPath());
-    this->openWarningsAction->setEnabled(doEnable);
+    bool hasFeederWarnings = QFileInfo(this->owHelper.getOutputPath()).exists();
+    this->openWarningsAction->setEnabled(hasFeederWarnings);
 }
 
 ///
@@ -37,8 +37,8 @@ void MainWindow::accessPlatform() {
     //
     if(platformHomeUrl.isEmpty()) {
         QMessageBox::critical(this, 
-            tr("Cannot access plaform"), 
-            tr("Plaform URL is not valid. Please check Preferences connectivity parameters are correct.")
+            tr("Cannot access %1 plaform").arg(DEST_PLATFORM_PRODUCT_NAME), 
+            tr("%1 Plaform URL is not valid. Please check Preferences connectivity parameters.").arg(DEST_PLATFORM_PRODUCT_NAME)
         );
         return;
     }
@@ -152,12 +152,12 @@ void MainWindow::updateStatusBar(const QString &message, const TLW_Colors &color
     this->statusLight->setCurrentIndex(static_cast<int>(color));
 }
 
-void MainWindow::startupConnectivityThread() {
+void MainWindow::startupMBeatThread() {
     //
-    this->cw = new ConnectivityThread(&this->appSettings);
+    this->cw = new MBeatThread(this->appSettings.getConnectivityInfos());
 
     QObject::connect(
-        this->cw, &ConnectivityThread::updateSIOStatus,
+        this->cw, &MBeatThread::updateSIOStatus,
         this, &MainWindow::updateStatusBar
     );
 
@@ -165,7 +165,7 @@ void MainWindow::startupConnectivityThread() {
 }
 
 void MainWindow::startupShoutThread() {
-    this->sw = new ShoutThread;
+    this->sw = new ShoutThread(this->appSettings.getConnectivityInfos());
     this->shoutTab->bindWithWorker(this->sw);
 
     QObject::connect(
@@ -178,7 +178,7 @@ void MainWindow::startupShoutThread() {
 
 
 void MainWindow::startupFeederThread() {
-    this->fw = new FeederThread;
+    this->fw = new FeederThread(this->appSettings.getConnectivityInfos());
     this->feederTab->bindWithWorker(this->fw);
 
     QObject::connect(

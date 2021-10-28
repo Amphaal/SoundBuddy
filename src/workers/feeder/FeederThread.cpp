@@ -1,11 +1,9 @@
 #include "FeederThread.h"
 
-FeederThread::FeederThread() {}
+FeederThread::FeederThread(const AppSettings::ConnectivityInfos &connectivityInfos) : _connectivityInfos(connectivityInfos) {}
 
 void FeederThread::run() {
-    this->_ohLib = new OutputHelper(OUTPUT_FILE_PATH, "uploadLib", "wtnz_file");
-    this->_ohWrn = new OutputHelper(WARNINGS_FILE_PATH);
-
+    //
     emit printLog(tr("WARNING ! Make sure you activated the XML file sharing in iTunes>Preferences>Advanced."));
 
     try {
@@ -79,9 +77,9 @@ void FeederThread::_processFile(const QString &xmlFileLocation) {
     this->_recCount = 0;
     this->_expectedCount = 0;
 
-    this->_libWarningsAsJSON = new rapidjson::Document;
-    this->_workingJSON = new rapidjson::Document;
-    this->_libAsJSON = new rapidjson::Document;
+    this->_libWarningsAsJSON = new QJsonDocument;
+    this->_workingJSON = new QJsonDocument;
+    this->_libAsJSON = new QJsonDocument;
 
     // set default
     this->_libWarningsAsJSON->Parse("{}");
@@ -111,7 +109,7 @@ void FeederThread::_generateJSON(const QString &xmlFileLocation) {
     delete doc;
 
     // try parse to temp JSON
-    rapidjson::Document d;
+    QJsonDocument d;
     d.Parse(xmlAsJSONString.toStdString().c_str());
     if (d.HasParseError()) {
         throw std::logic_error(XMLReadErr);

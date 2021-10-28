@@ -1,20 +1,18 @@
 #pragma once
 
 #include <QThread>
-
-#include <string>
-#include <iostream>
+#include <QWebSocket>
 
 #include "src/helpers/AppSettings.hpp"
 
 #include "src/ui/widgets/LightWidget.h"
 
 
-class ConnectivityThread : public QThread {
+class MBeatThread : public QThread {
    Q_OBJECT
 
  public:
-    ConnectivityThread(const AppSettings::ConnectivityInfos &connectivityInfos);
+    MBeatThread(const AppSettings::ConnectivityInfos &connectivityInfos);
 
     void run() override;
 
@@ -24,7 +22,7 @@ class ConnectivityThread : public QThread {
 
  private:
     bool _requestOngoing = false;
-    sio::client* _sioClient = nullptr;
+    QWebSocket* _wsClient;
     const AppSettings::ConnectivityInfos _connectivityInfos;
     QString _loggedInUser;
 

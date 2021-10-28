@@ -10,12 +10,6 @@ bool PlatformHelper::isLaunchingAtStartup() {
     return PlatformHelper::getPathToApp() == PlatformHelper::getPathToAppFromStartupSettings(settings);  // compare paths
 }
 
-// ensure a file exists
-bool PlatformHelper::fileExists(const QString &outputFileName) {
-    QFileInfo confP(outputFileName);
-    return confP.exists();
-}
-
 /* STD PATHS */
 QString PlatformHelper::getDataStorageDirectory() {
     return PlatformHelper::prepareStandardPath(QStandardPaths::AppLocalDataLocation);

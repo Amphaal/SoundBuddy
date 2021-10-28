@@ -13,8 +13,6 @@
 #include "platformHelper.h"
 #include "src/version.h"
 
-#include "src/helpers/iTunesLibParser/iTunesLibParser.h"
-
 void PlatformHelper::openFileInOS(const QString &cpURL) {
     ShellExecuteA(NULL, "open", "notepad", cpURL.toStdString().c_str(), NULL, SW_SHOWNORMAL);
 }
@@ -51,7 +49,7 @@ QString PlatformHelper::extractItunesLibLocation(const QString &pathToParamFile)
     // read it into JSON obj
     iTunesLibParser iTunesParams(destPath);
     auto xmlAsJSONString = iTunesParams.ToJSON();
-    rapidjson::Document d;
+    QJsonDocument d;
     d.Parse(xmlAsJSONString.toStdString().c_str());
 
     // decode path

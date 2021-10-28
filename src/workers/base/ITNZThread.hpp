@@ -2,6 +2,8 @@
 
 #include <QThread>
 
+#include "src/helpers/AppSettings.hpp"
+
 class ITNZThread : public QThread {
     Q_OBJECT
 

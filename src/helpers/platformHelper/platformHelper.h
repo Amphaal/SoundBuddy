@@ -13,7 +13,6 @@ class PlatformHelper {
     static QString extractItunesLibLocation(const QString &pathToParamFile);
     static bool isLaunchingAtStartup();
     static void switchStartupLaunch();
-    static bool fileExists(const QString &filename);
     static QString getDataStorageDirectory();
 
  private:
