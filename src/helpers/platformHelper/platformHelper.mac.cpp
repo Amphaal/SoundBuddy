@@ -37,12 +37,12 @@ QString PlatformHelper::getEnvironmentVariable(const char* variable) {
     return homeDir;
 }
 
-QString PlatformHelper::getITunesPrefFileProbableLocation() {
+QString PlatformHelper::getMusicAppPrefFileProbableLocation() {
     return PlatformHelper::getEnvironmentVariable("HOME") + QString("/Library/Preferences/com.apple.Music.plist");
 }
 
-QString PlatformHelper::extractItunesLibLocation(const QString &pathToParamFile) {
-    // get path to iTunes as string
+QString PlatformHelper::extractMusicAppLibLocation(const QString &pathToParamFile) {
+    // get path to Music App as string
     QSettings plist(pathToParamFile, QSettings::NativeFormat);
     auto pathToLib = plist.value("NSNavLastRootDirectory").toString();
 

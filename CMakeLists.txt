@@ -53,7 +53,7 @@ configure_file(
 ## CPP Compiler Configuration ##
 ################################
 
-SET(CMAKE_CXX_STANDARD 17)
+SET(CMAKE_CXX_STANDARD 20)
 SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 SET(CMAKE_C_STANDARD 11)
 ADD_DEFINITIONS(-DUNICODE)

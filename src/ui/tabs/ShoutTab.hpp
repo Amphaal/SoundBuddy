@@ -9,6 +9,7 @@
 #include "src/workers/shout/ShoutThread.h"
 
 #include "src/helpers/AppSettings.hpp"
+#include "src/_i18n/trad.hpp"
 
 class ShoutTab : public TemplateTab {
     Q_OBJECT
@@ -16,7 +17,7 @@ class ShoutTab : public TemplateTab {
  public:
     ShoutTab(QWidget* parent, AppSettings* appSettings) : TemplateTab(parent), _appSettings(appSettings) {
         this->checkAutoLaunch = new QCheckBox(tr("Autostart at launch"));
-        this->tButton->setText(tr("Connect to iTunes"));
+        this->tButton->setText(tr("Connect to %1").arg(musicAppName()));
 
         QObject::connect(
             this->checkAutoLaunch, &QCheckBox::stateChanged,

@@ -118,7 +118,7 @@ bool ShoutThread::shouldUpload(
 #include <QProcess>
 
 void ShoutThread::run() {
-    emit printLog(tr("Waiting for iTunes to launch..."));
+    emit printLog(tr("Waiting for %1 to launch...").arg(musicAppName()));
 
     // define applescript to get shout values
     Q_INIT_RESOURCE(resources);
@@ -192,14 +192,16 @@ void ShoutThread::run() {
     }
 
     this->shoutEmpty();
-    emit printLog(tr("Stopped listening to iTunes."));
+    emit printLog(tr("Stopped listening to %1.").arg(musicAppName()));
 }
 #endif
 
 #ifdef _WIN32
 
 #include "src/workers/shout/ShoutThread.h" 
-#include "win/iTunesCOMHandler.h"
+#include "win/MusicAppCOMHandler.h"
+
+#include "src/_i18n/trad.hpp"
 
 #include <windows.h>
 #include <combaseapi.h>
@@ -212,62 +214,62 @@ void ShoutThread::run() {
 
 void ShoutThread::run() {
     //start with log
-    emit printLog(tr("Waiting for iTunes to launch..."));
+    emit printLog(tr("Waiting for %1 to launch...").arg(musicAppName()));
     
     //prepare CLID
-    HWND currentITunesWindowsHandler;
+    HWND windowsHandler;
     DWORD currentProcessID;
 
-    //iTunes IID extracted from Apple API
+    //Music app IID extracted from Apple API
     wchar_t* wch = nullptr;
     HRESULT hr = ::StringFromCLSID({0xDC0C2640,0x1415,0x4644,{0x87,0x5C,0x6F,0x4D,0x76,0x98,0x39,0xBA}}, &wch);
-    auto iTunesCLID = QString::fromWCharArray(wch);
+    auto ComCLID = QString::fromWCharArray(wch);
 
     do {
         
-        //search for iTunes...
-        currentITunesWindowsHandler = FindWindowA(0, "iTunes");
+        //search for music app...
+        windowsHandler = FindWindowA(0, musicAppName().toUtf8());
         
         //if not found, wait and retry
-        if(!currentITunesWindowsHandler) {
+        if(!windowsHandler) {
             this->sleep(1);
             continue;
         } 
 
-        //iTunes found, store the associated PID
-        GetWindowThreadProcessId(currentITunesWindowsHandler, &currentProcessID);
+        //Music App found, store the associated PID
+        GetWindowThreadProcessId(windowsHandler, &currentProcessID);
         
         //log..
-        emit printLog(tr("Listening to iTunes !"));
+        emit printLog(tr("Listening to %1 !").arg(musicAppName()));
 
         //initiate COM object
         CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
         wchar_t* wch = nullptr;
 
-        //iTunes IID extracted from Apple API
-        QAxObject *iITunes = new QAxObject(iTunesCLID);
-        iTunesCOMHandler *handler = new iTunesCOMHandler(iITunes, this);      
+        //Music App IID extracted from Apple API
+        QAxObject *comObj = new QAxObject(ComCLID);
+        MusicAppCOMHandler *handler = new MusicAppCOMHandler(comObj, this);      
 
         //bind events to sink handler
         auto oatputqe = QObject::connect(
-            iITunes, SIGNAL(OnAboutToPromptUserToQuitEvent()), 
+            comObj, SIGNAL(OnAboutToPromptUserToQuitEvent()), 
             handler, SLOT(OnAboutToPromptUserToQuitEvent())
         );
 
         auto oppe = QObject::connect(
-            iITunes, SIGNAL(OnPlayerPlayEvent(QVariant)), 
+            comObj, SIGNAL(OnPlayerPlayEvent(QVariant)), 
             handler, SLOT(OnPlayerPlayEvent(QVariant))
         );
 
         auto opse = QObject::connect(
-            iITunes, SIGNAL(OnPlayerStopEvent(QVariant)), 
+            comObj, SIGNAL(OnPlayerStopEvent(QVariant)), 
             handler, SLOT(OnPlayerStopEvent(QVariant))
         );
 
-        //iITunes->dumpObjectInfo();
+        //comObj->dumpObjectInfo();
 
         //process events
-        while(this->_mustListen && !handler->iTunesShutdownRequested) {
+        while(this->_mustListen && !handler->musicAppShutdownRequested) {
             QCoreApplication::processEvents();
             this->msleep(20);
         }
@@ -280,23 +282,23 @@ void ShoutThread::run() {
         //clear COM related Obj
         this->shoutEmpty();
         delete handler;
-        iITunes->clear(); 
-        delete iITunes;
+        comObj->clear(); 
+        delete comObj;
 
         //uninitialize COM
         CoUninitialize();
 
-        //if iTunes is shutting down...
-        if(this->_mustListen && handler->iTunesShutdownRequested) {
+        //if Music App is shutting down...
+        if(this->_mustListen && handler->musicAppShutdownRequested) {
             
-            //say we acknoledge iTunes shutting down...
-            emit printLog(tr("iTunes shutting down !"));
+            //say we acknoledge Music App shutting down...
+            emit printLog(tr("%1 shutting down !").arg(musicAppName()));
 
-            //wait for old iTunes window to finally shutdown
+            //wait for old Music App window to finally shutdown
             do {
                 
                 //check if window still exists 
-                HWND checkHandler = FindWindowA(0, "iTunes");
+                HWND checkHandler = FindWindowA(0, musicAppName().toUtf8());
                 if(checkHandler) {
 
                     //if it exists, check the PID (shutting down window...)
@@ -321,13 +323,13 @@ void ShoutThread::run() {
             } while (this->_mustListen);
             
             //say we relooped
-            emit printLog(tr("Waiting for iTunes to launch again..."));
+            emit printLog(tr("Waiting for %1 to launch again...").arg(musicAppName()));
         }
 
     } while (this->_mustListen);
 
     //end with log
-    emit printLog(tr("Stopped listening to iTunes."));
+    emit printLog(tr("Stopped listening to %1.").arg(musicAppName()));
 
 };
 

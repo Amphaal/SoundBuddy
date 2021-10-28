@@ -1,10 +1,12 @@
 #include "FeederThread.h"
 
+#include "src/_i18n/trad.hpp"
+
 FeederThread::FeederThread(const AppSettings::ConnectivityInfos &connectivityInfos) : _connectivityInfos(connectivityInfos) {}
 
 void FeederThread::run() {
     //
-    emit printLog(tr("WARNING ! Make sure you activated the XML file sharing in iTunes>Preferences>Advanced."));
+    emit printLog(tr("WARNING ! Make sure you activated the XML file sharing in %1 > Preferences > Advanced.").arg(musicAppName()));
 
     try {
         this->_generateLibJSONFile();
@@ -24,7 +26,7 @@ void FeederThread::run() {
 
 // generate files
 void FeederThread::_generateLibJSONFile() {
-    auto itnzLibPath = this->_getITunesLibLocation();
+    auto itnzLibPath = this->_getMusicAppLibLocation();
     this->_processFile(itnzLibPath);
 
     // check warnings
@@ -96,12 +98,12 @@ void FeederThread::_generateJSON(const QString &xmlFileLocation) {
     //
     emit printLog(tr("Pre-digesting XML file..."));
 
-    const auto XMLReadErr = tr("Cannot read the XML file bound to your library. Are you sure you activated the XML file sharing in iTunes ?").toStdString();
+    const auto XMLReadErr = tr("Cannot read the XML file bound to your library. Are you sure you activated the XML file sharing in %1 ?").arg(musicAppName()).toStdString();
 
     // read xml as QString
-    iTunesLibParser *doc;
+    MusicAppLibParser *doc;
     try {
-        doc = new iTunesLibParser(xmlFileLocation);
+        doc = new MusicAppLibParser(xmlFileLocation);
     } catch(...) {
         throw std::logic_error(XMLReadErr);
     }
@@ -121,7 +123,7 @@ void FeederThread::_generateJSON(const QString &xmlFileLocation) {
     auto v = rapidjson::Pointer("/Tracks").Get(d);
     this->_expectedCount = v->MemberCount();
     if (!this->_expectedCount) {
-        throw std::logic_error(tr("No music found in your library. Please feed it some.").toStdString());
+        throw std::logic_error(tr("No music found in your %1 library. Please feed it some.".arg(musicAppName())).toStdString());
     }
     this->_workingJSON->CopyFrom(d["Tracks"], this->_workingJSON->GetAllocator());
 }
@@ -218,15 +220,15 @@ void FeederThread::_tracksEmitHelper() {
     }
 }
 
-// seek in iTunes preference file the library location
-QString FeederThread::_getITunesLibLocation() {
+// seek in Music App preference file the library location
+QString FeederThread::_getMusicAppLibLocation() {
     emit printLog(tr("Getting XML file location..."));
 
-    QString pathToPrefs = PlatformHelper::getITunesPrefFileProbableLocation();
+    QString pathToPrefs = PlatformHelper::getMusicAppPrefFileProbableLocation();
 
     try {
-        return PlatformHelper::extractItunesLibLocation(pathToPrefs);
+        return PlatformHelper::extractMusicAppLibLocation(pathToPrefs);
     } catch(...) {
-        throw std::logic_error(tr("An issue happened while fetching iTunes's XML file location. Have you installed iTunes ?").toStdString());
+        throw std::logic_error(tr("An issue happened while fetching %1's XML file location. Have you installed %1 ?").arg(musicAppName()).toStdString());
     }
 }

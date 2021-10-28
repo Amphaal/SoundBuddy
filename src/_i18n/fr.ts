@@ -15,10 +15,6 @@
         <translation>ATTENTION ! %1 fichiers dans votre bibliothèque manquent d&apos;importantes données liées aux chansons et n&apos;ont donc pas été incluse dans le fichier de sortie ! Merci de vérifier le fichier &quot;%2&quot; pour plus d&apos;informations.</translation>
     </message>
     <message>
-        <source>WARNING ! Make sure you activated the XML file sharing in iTunes&gt;Preferences&gt;Advanced.</source>
-        <translation>ATTENTION ! Assurez-vous que le partage du fichier XML de la bibliothèque est bien activé dans iTunes&gt;Préférences&gt;Avancées</translation>
-    </message>
-    <message>
         <source>OK, output file is ready for breakfast !</source>
         <translation>OK, le fichier de sorti est prêt pour le petit-dej !</translation>
     </message>
@@ -43,16 +39,12 @@
         <translation>On pré-traite le fichier XML...</translation>
     </message>
     <message>
-        <source>Cannot read the XML file bound to your library. Are you sure you activated the XML file sharing in iTunes ?</source>
-        <translation>Impossible de lire le fichier XML lié à votre bibliothèque. Assurez-vous que le partage du fichier XML de la bibliothèque est bien activé dans iTunes&gt;Préférences&gt;Avancées</translation>
-    </message>
-    <message>
         <source>Triming fat...</source>
         <translation>On dégraisse...</translation>
     </message>
     <message>
-        <source>No music found in your library. Please feed it some.</source>
-        <translation>Aucunes musiques trouvée dans iTunes. Merci de lui en fournir quelques unes !</translation>
+        <source>No music found in your %1 library. Please feed it some.</source>
+        <translation>Aucunes musiques trouvée dans %1. Merci de lui en fournir quelques unes !</translation>
     </message>
     <message>
         <source>Cooking the JSON file...</source>
@@ -67,8 +59,16 @@
         <translation>On récupère l&apos;emplacement du fichier XML...</translation>
     </message>
     <message>
-        <source>An issue happened while fetching iTunes&apos;s XML file location. Have you installed iTunes ?</source>
-        <translation>Un problème est survenu durant la recherche de l&apos;emplacement de la bibliothèque. Etes-vous sûr d&apos;avoir installé iTunes ?</translation>
+        <source>WARNING ! Make sure you activated the XML file sharing in %1 &gt; Preferences &gt; Advanced.</source>
+        <translation>ATTENTION ! Assurez-vous que le partage du fichier XML de la bibliothèque est bien activé dans %1 &gt; Préférences &gt; Avancées</translation>
+    </message>
+    <message>
+        <source>Cannot read the XML file bound to your library. Are you sure you activated the XML file sharing in %1 ?</source>
+        <translation>Impossible de lire le fichier XML lié à votre bibliothèque. Assurez-vous que le partage du fichier XML de la bibliothèque est bien activé dans %1.</translation>
+    </message>
+    <message>
+        <source>An issue happened while fetching %1&apos;s XML file location. Have you installed %1 ?</source>
+        <translation>Un problème est survenu durant la recherche de l&apos;emplacement de la bibliothèque. Etes-vous sûr d&apos;avoir installé %1 ?</translation>
     </message>
 </context>
 <context>
@@ -257,38 +257,25 @@
     </message>
 </context>
 <context>
+    <name>QObject</name>
+    <message>
+        <source>Music</source>
+        <translation>Musique</translation>
+    </message>
+</context>
+<context>
     <name>ShoutTab</name>
     <message>
         <source>Autostart at launch</source>
         <translation>Démarrage automatique</translation>
     </message>
     <message>
-        <source>Connect to iTunes</source>
-        <translation>Se connecter à iTunes</translation>
+        <source>Connect to %1</source>
+        <translation>Se connecter à %1</translation>
     </message>
 </context>
 <context>
     <name>ShoutThread</name>
-    <message>
-        <source>Waiting for iTunes to launch...</source>
-        <translation>J&apos;attends qu&apos;iTunes se lance...</translation>
-    </message>
-    <message>
-        <source>Listening to iTunes !</source>
-        <translation>J&apos;écoute iTunes !</translation>
-    </message>
-    <message>
-        <source>iTunes shutting down !</source>
-        <translation>iTunes s&apos;éteint !</translation>
-    </message>
-    <message>
-        <source>Waiting for iTunes to launch again...</source>
-        <translation>J&apos;attends qu&apos;iTunes se relance...</translation>
-    </message>
-    <message>
-        <source>Stopped listening to iTunes.</source>
-        <translation>J&apos;ai fini d&apos;écouter iTunes.</translation>
-    </message>
     <message>
         <source>%1: Shouting -&gt; Nothing</source>
         <translation>%1: Shouting -&gt; Rien</translation>
@@ -304,6 +291,26 @@
     <message>
         <source>%1: Shouting -&gt; %2 - %3 - %4 (%5)</source>
         <translation>%1: Shouting -&gt; %2 - %3 - %4 (%5)</translation>
+    </message>
+    <message>
+        <source>Waiting for %1 to launch...</source>
+        <translation>J&apos;attends qu&apos;%1 se lance...</translation>
+    </message>
+    <message>
+        <source>Stopped listening to %1.</source>
+        <translation>J&apos;ai fini d&apos;écouter %1.</translation>
+    </message>
+    <message>
+        <source>Listening to %1 !</source>
+        <translation>J&apos;écoute %1 !</translation>
+    </message>
+    <message>
+        <source>%1 shutting down !</source>
+        <translation>%1 s&apos;éteint !</translation>
+    </message>
+    <message>
+        <source>Waiting for %1 to launch again...</source>
+        <translation>J&apos;attends qu&apos;%1 se relance...</translation>
     </message>
 </context>
 </TS>

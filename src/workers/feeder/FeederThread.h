@@ -54,6 +54,6 @@ class FeederThread : public ITNZThread {
     void _tracksEmitHelper();
     void _tracksUnmolding(const char* filename);
 
-    // seek in iTunes preference file the library location
-    QString _getITunesLibLocation();
+    // seek in Music App preference file the library location
+    QString _getMusicAppLibLocation();
 };

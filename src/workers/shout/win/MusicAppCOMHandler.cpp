@@ -1,31 +1,31 @@
 #ifdef _WIN32
 
-#include "iTunesCOMHandler.h"
+#include "MusicAppCOMHandler.h"
 
-iTunesCOMHandler::iTunesCOMHandler(QAxObject *iTunesObj, ShoutThread *worker) : iTunesObj(iTunesObj), worker(worker) {
+MusicAppCOMHandler::MusicAppCOMHandler(QAxObject *MusicAppObj, ShoutThread *worker) : MusicAppObj(MusicAppObj), worker(worker) {
     this->shoutHelper();
 };
 
-void iTunesCOMHandler::OnAboutToPromptUserToQuitEvent() {
-    this->iTunesShutdownRequested = true;
+void MusicAppCOMHandler::OnAboutToPromptUserToQuitEvent() {
+    this->musicAppShutdownRequested = true;
 };
 
-void iTunesCOMHandler::OnPlayerPlayEvent(QVariant iTrack) {
+void MusicAppCOMHandler::OnPlayerPlayEvent(QVariant iTrack) {
     this->shoutHelper(iTrack);
 };
 
-void iTunesCOMHandler::OnPlayerStopEvent(QVariant iTrack) {
+void MusicAppCOMHandler::OnPlayerStopEvent(QVariant iTrack) {
     this->shoutHelper(iTrack);
 }; 
 
-void iTunesCOMHandler::shoutHelper(QVariant iTrack) {
+void MusicAppCOMHandler::shoutHelper(QVariant iTrack) {
 
     QAxObject* weilder = nullptr;
 
     //find value
     if(iTrack.isNull()) {
 
-        weilder = this->iTunesObj->querySubObject("CurrentTrack");
+        weilder = this->MusicAppObj->querySubObject("CurrentTrack");
         
         //shout empty
         if(!weilder) return this->worker->shoutEmpty();
@@ -36,7 +36,7 @@ void iTunesCOMHandler::shoutHelper(QVariant iTrack) {
 
         if(weilder->isNull()) {
             weilder->clear(); delete weilder;
-            weilder = this->iTunesObj->querySubObject("CurrentTrack");
+            weilder = this->MusicAppObj->querySubObject("CurrentTrack");
         }
 
     }
@@ -47,8 +47,8 @@ void iTunesCOMHandler::shoutHelper(QVariant iTrack) {
     auto tArtist = weilder->property("Artist").toString();
     auto tGenre = weilder->property("Genre").toString();
     auto iDuration = weilder->property("Duration").toInt();
-    auto iPlayerPos = this->iTunesObj->property("PlayerPosition").value<int>();
-    auto iPlayerState = this->iTunesObj->property("PlayerState").value<bool>();
+    auto iPlayerPos = this->MusicAppObj->property("PlayerPosition").value<int>();
+    auto iPlayerState = this->MusicAppObj->property("PlayerState").value<bool>();
     auto tDatePlayed = weilder->property("PlayedDate").toDateTime().toString(Qt::ISODate);
     auto tDateSkipped = weilder->property("SkippedDate").toDateTime().toString(Qt::ISODate);
     auto tYear = weilder->property("Year").toInt();

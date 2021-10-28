@@ -8,9 +8,9 @@ class PlatformHelper {
  public:
     static void openFileInOS(const QString &cpURL);
     static void openUrlInBrowser(const QString &cpURL);
-    static QString getITunesPrefFileProbableLocation();
+    static QString getMusicAppPrefFileProbableLocation();
     static QString getEnvironmentVariable(const char* variable);
-    static QString extractItunesLibLocation(const QString &pathToParamFile);
+    static QString extractMusicAppLibLocation(const QString &pathToParamFile);
     static bool isLaunchingAtStartup();
     static void switchStartupLaunch();
     static QString getDataStorageDirectory();

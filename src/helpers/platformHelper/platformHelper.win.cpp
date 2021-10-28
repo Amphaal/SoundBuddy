@@ -33,11 +33,11 @@ QString PlatformHelper::getEnvironmentVariable(const char* variable) {
     }
 }
 
-QString PlatformHelper::getITunesPrefFileProbableLocation() {
+QString PlatformHelper::getMusicAppPrefFileProbableLocation() {
     return PlatformHelper::getEnvironmentVariable("APPDATA") + QString("\\Apple Computer\\Preferences\\com.apple.iTunes.plist");
 }
 
-QString PlatformHelper::extractItunesLibLocation(const QString &pathToParamFile) {
+QString PlatformHelper::extractMusicAppLibLocation(const QString &pathToParamFile) {
     // get a copy of converted binary plist
     auto pathTo_plutil = PlatformHelper::getEnvironmentVariable("PROGRAMFILES") + QString("\\Common Files\\Apple\\Apple Application Support\\plutil.exe");
     auto destPath = PlatformHelper::getDataStorageDirectory() + "/temp.plist";
@@ -47,8 +47,8 @@ QString PlatformHelper::extractItunesLibLocation(const QString &pathToParamFile)
     ShellExecuteA(NULL, "open", pathTo_plutil.toStdString().c_str(), command.toStdString().c_str(), NULL, SW_HIDE);
 
     // read it into JSON obj
-    iTunesLibParser iTunesParams(destPath);
-    auto xmlAsJSONString = iTunesParams.ToJSON();
+    MusicAppLibParser musicAppParams(destPath);
+    auto xmlAsJSONString = musicAppParams.ToJSON();
     QJsonDocument d;
     d.Parse(xmlAsJSONString.toStdString().c_str());
 

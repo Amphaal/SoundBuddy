@@ -7,15 +7,15 @@
 #include <QDateTime>
 #include <QVariant>
 
-#include "iTunesCOMHandler.h"
+#include "MusicAppCOMHandler.h"
 
 #include "src/workers/shout/ShoutThread.h"
 
-class iTunesCOMHandler : public QObject {
+class MusicAppCOMHandler : public QObject {
    Q_OBJECT
 
  private:
-    QAxObject *iTunesObj;
+    QAxObject *MusicAppObj;
     ShoutThread *worker;
 
  public slots:
@@ -24,7 +24,7 @@ class iTunesCOMHandler : public QObject {
     void OnPlayerStopEvent(QVariant iTrack);
 
  public:
-    iTunesCOMHandler(QAxObject *iTunesObj, ShoutThread *worker);
+    MusicAppCOMHandler(QAxObject *MusicAppObj, ShoutThread *worker);
     void shoutHelper(QVariant iTrack = QVariant());
-    bool iTunesShutdownRequested = false;
+    bool musicAppShutdownRequested = false;
 };
