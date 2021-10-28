@@ -1,6 +1,6 @@
 #include "ConnectivityThread.h"
 
-ConnectivityThread::ConnectivityThread(const QSettings* appSettings) : _appSettings(appSettings) {}
+ConnectivityThread::ConnectivityThread(const AppSettings::ConnectivityInfos &connectivityInfos) : _connectivityInfos(connectivityInfos) {}
 
 void ConnectivityThread::run() {
     ////////////////////
@@ -51,7 +51,7 @@ void ConnectivityThread::run() {
     emit updateSIOStatus(tr("Connecting to server..."), TLW_Colors::YELLOW);
 
     // connect...
-    this->_sioClient->connect(this->_getTargetUrl().toStdString());
+    this->_sioClient->connect(this->_getPlatformHostUrl().toStdString());
 
     QObject::connect(
         this->_toWatchOverChanges, &QFileSystemWatcher::fileChanged,
@@ -124,9 +124,9 @@ void ConnectivityThread::_checkCredentials(bool forceRecheck) {
     }
 }
 
-QString ConnectivityThread::_getTargetUrl() {
+QString ConnectivityThread::_getPlatformHostUrl() {
     // extract destination url for sio connection
-    auto t_qurl = this->_aHelper->getTargetUrl();
+    auto t_qurl = this->_aHelper->getPlatformHostUrl();
     t_qurl.setPort(3000);
     auto turl = t_qurl.toString(QUrl::RemovePath);
     return turl;

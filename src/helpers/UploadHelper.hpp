@@ -1,0 +1,67 @@
+#pragma once
+
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QHttpMultiPart>
+#include <QUrl>
+#include <QFileInfo>
+#include <QLocale>
+#include <QFile>
+
+#include "src/helpers/AppSettings.hpp"
+class Uploader {
+ public:
+     struct UploadInstructions {
+        const AppSettings::ConnectivityInfos &connectivityInfos;
+        const AppSettings::UploadInfos &uploadInfos;
+        const QFileInfo &fileToUpload;
+
+        const QUrl getUploadUrl() const {
+            return QUrl(connectivityInfos.getPlaformHomeUrl() + uploadInfos.path);
+        }
+    };
+
+    Uploader(QObject* parent) : _manager(new QNetworkAccessManager(parent)) {}
+
+    void uploadDataToPlatform(const UploadInstructions &instructions) {
+        //
+        auto postData = new QHttpMultiPart(QHttpMultiPart::MixedType);
+
+            // file content first...
+            QFile *file = new QFile(instructions.fileToUpload.filePath());
+            file->open(QIODevice::ReadOnly);
+            file->setParent(postData); // we cannot delete the file now, so delete it with the multiPart
+
+            QHttpPart filePart;
+            filePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/json"));
+            filePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"" + instructions.uploadInfos.outputFileName + "\""));
+            filePart.setBodyDevice(file);
+
+            // password...
+            QHttpPart passwordPart;
+            passwordPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"password\""));
+            passwordPart.setBody(instructions.connectivityInfos.password.toUtf8());
+
+            // headless flag
+            QHttpPart headlessPart;
+            headlessPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"headless\""));
+            headlessPart.setBody("1");
+
+        postData->append(filePart);
+        postData->append(passwordPart);
+        postData->append(headlessPart);
+
+        // build request
+        QNetworkRequest request;
+        request.setUrl(instructions.getUploadUrl());
+        request.setRawHeader("Accept-Language", QLocale::system().name().toUtf8());
+
+        // handle reply and send
+        auto reply = _manager->post(request, postData);
+        postData->setParent(reply); // delete the multiPart with the reply
+    }
+ 
+ private:
+    QNetworkAccessManager* _manager;
+};

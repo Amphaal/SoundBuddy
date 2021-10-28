@@ -14,7 +14,7 @@ class ShoutTab : public TemplateTab {
     Q_OBJECT
 
  public:
-    ShoutTab(QWidget* parent, QSettings* appSettings) : TemplateTab(parent), _appSettings(appSettings) {
+    ShoutTab(QWidget* parent, AppSettings* appSettings) : TemplateTab(parent), _appSettings(appSettings) {
         this->checkAutoLaunch = new QCheckBox(tr("Autostart at launch"));
         this->tButton->setText(tr("Connect to iTunes"));
 
@@ -33,7 +33,7 @@ class ShoutTab : public TemplateTab {
     }
 
  private:
-    QSettings* _appSettings;
+    AppSettings* _appSettings;
     QCheckBox* checkAutoLaunch = nullptr;
 
     void changeAutoLaunch(bool isChecked) {

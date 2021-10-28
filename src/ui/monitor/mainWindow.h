@@ -45,8 +45,7 @@ class MainWindow : public QMainWindow {
     QSystemTrayIcon* trayIcon;
     QAction* myPlatformAction;
     QAction* openWarningsAction;
-    QSettings appSettings;
-    QString plaformFullUrl;
+    AppSettings appSettings;
 
     // statusbar
     void _initStatusBar();
@@ -65,7 +64,7 @@ class MainWindow : public QMainWindow {
     QMenu* _getFileMenu();
     QMenu* _getOptionsMenu();
 
-    void onAppSettingsChanged(const QString &path = NULL);
+    void onAppSettingsChanged();
     void updateWarningsMenuItem();
 
     ///

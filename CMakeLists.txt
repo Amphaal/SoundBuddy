@@ -68,6 +68,7 @@ find_package(Qt6 REQUIRED COMPONENTS
     Gui 
     Widgets
     WebSockets
+    Network
     LinguistTools
 )
 
@@ -181,6 +182,7 @@ target_link_libraries(appExec PRIVATE
     Qt6::Gui 
     Qt6::Widgets
     Qt6::WebSockets
+    Qt6::Network
 )
 
 # QT LIBRARIES COPY

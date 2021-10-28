@@ -161,6 +161,9 @@
         "complex": "cpp",
         "locale": "cpp",
         "queue": "cpp",
-        "stack": "cpp"
+        "stack": "cpp",
+        "qlocale": "cpp",
+        "qurl": "cpp",
+        "qhttpmultipart": "cpp"
     },
 }

@@ -1,10 +1,11 @@
 #pragma once
 
 #include <QThread>
-#include <QSettings>
 
 #include <string>
 #include <iostream>
+
+#include "src/helpers/AppSettings.hpp"
 
 #include "src/ui/widgets/LightWidget.h"
 
@@ -13,7 +14,7 @@ class ConnectivityThread : public QThread {
    Q_OBJECT
 
  public:
-    ConnectivityThread(const QSettings* appSettings);
+    ConnectivityThread(const AppSettings::ConnectivityInfos &connectivityInfos);
 
     void run() override;
 
@@ -24,13 +25,13 @@ class ConnectivityThread : public QThread {
  private:
     bool _requestOngoing = false;
     sio::client* _sioClient = nullptr;
-    const QSettings* _appSettings;
+    const AppSettings::ConnectivityInfos _connectivityInfos;
     QString _loggedInUser;
 
     // ask credentials
     void _checkCredentials(bool forceRecheck = false);
     void _checkCredentialsFromFileUpdate();
-    QString _getTargetUrl();
+    QString _getPlatformHostUrl();
 
 
     const QString _validationErrorTr(const QString& errorCode) const;

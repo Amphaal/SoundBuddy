@@ -16,15 +16,8 @@ void MainWindow::informWarningPresence() {
 }
 
 // updates the menu depending on the config values filled or not
-void MainWindow::onAppSettingsChanged(const QString &path) {
-    // check then save
-    auto myplaformFullUrl = this->aHelper.getUsersHomeUrl();
-    bool shouldActivateLink = (myplaformFullUrl != "");
-    if (shouldActivateLink) {
-        this->plaformFullUrl = myplaformFullUrl;
-    }
-
-    // update action state
+void MainWindow::onAppSettingsChanged() {
+    bool shouldActivateLink = !this->appSettings.getConnectivityInfos().getPlaformHomeUrl().isEmpty();
     this->myPlatformAction->setEnabled(shouldActivateLink);
 }
 
@@ -39,7 +32,19 @@ void MainWindow::updateWarningsMenuItem() {
 
 
 void MainWindow::accessPlatform() {
-    PlatformHelper::openUrlInBrowser(this->plaformFullUrl);
+    const auto platformHomeUrl = this->appSettings.getConnectivityInfos().getPlaformHomeUrl();
+    
+    //
+    if(platformHomeUrl.isEmpty()) {
+        QMessageBox::critical(this, 
+            tr("Cannot access plaform"), 
+            tr("Plaform URL is not valid. Please check Preferences connectivity parameters are correct.")
+        );
+        return;
+    }
+    
+    //
+    PlatformHelper::openUrlInBrowser(platformHomeUrl);
 }
 
 void MainWindow::accessPreferences() {

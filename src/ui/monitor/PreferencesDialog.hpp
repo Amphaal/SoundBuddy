@@ -14,7 +14,7 @@ class PreferencesDialog : public QDialog {
     Q_OBJECT
 
  public:
-    explicit PreferencesDialog(QSettings* appSettings, QWidget* parent = nullptr) : QDialog(parent), _appSettings(appSettings) {
+    explicit PreferencesDialog(AppSettings* appSettings, QWidget* parent = nullptr) : QDialog(parent), _appSettings(appSettings) {
         this->setWindowTitle(tr("Preferences"));
         this->setModal(true);
         auto layout = new QGridLayout;
@@ -60,7 +60,7 @@ class PreferencesDialog : public QDialog {
     }
 
  private:
-    QSettings* _appSettings;
+    AppSettings* _appSettings;
 
     QLineEdit* _PlatformURLEdit;
     QLineEdit* _PlatformUsernameEdit;
