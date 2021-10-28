@@ -33,7 +33,7 @@ class ShoutTab : public TemplateTab {
     }
 
  private:
-    QSettings* _appSettings = nullptr;
+    QSettings* _appSettings;
     QCheckBox* checkAutoLaunch = nullptr;
 
     void changeAutoLaunch(bool isChecked) {

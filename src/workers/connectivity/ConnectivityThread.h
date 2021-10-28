@@ -1,7 +1,7 @@
 #pragma once
 
-#include <QFileSystemWatcher>
 #include <QThread>
+#include <QSettings>
 
 #include <string>
 #include <iostream>
@@ -13,7 +13,7 @@ class ConnectivityThread : public QThread {
    Q_OBJECT
 
  public:
-    ConnectivityThread(AuthHelper *aHelper, QFileSystemWatcher* toWatchOverChanges);
+    ConnectivityThread(const QSettings* appSettings);
 
     void run() override;
 
@@ -24,8 +24,7 @@ class ConnectivityThread : public QThread {
  private:
     bool _requestOngoing = false;
     sio::client* _sioClient = nullptr;
-    AuthHelper* _aHelper = nullptr;
-    QFileSystemWatcher* _toWatchOverChanges = nullptr;
+    const QSettings* _appSettings;
     QString _loggedInUser;
 
     // ask credentials

@@ -65,7 +65,7 @@ class MainWindow : public QMainWindow {
     QMenu* _getFileMenu();
     QMenu* _getOptionsMenu();
 
-    void updateMenuItemsFromConfigValues(const QString &path = NULL);
+    void onAppSettingsChanged(const QString &path = NULL);
     void updateWarningsMenuItem();
 
     ///
@@ -98,7 +98,7 @@ class MainWindow : public QMainWindow {
     void UpdateSearch_switchUI(bool isSearching);
 
     // tabs
-    ShoutTab* shoutTab= nullptr;
+    ShoutTab* shoutTab = nullptr;
     FeederTab* feederTab = nullptr;
     void _initUITabs();
 

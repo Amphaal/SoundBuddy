@@ -1,6 +1,6 @@
 #include "ConnectivityThread.h"
 
-ConnectivityThread::ConnectivityThread(AuthHelper *aHelper, QFileSystemWatcher* toWatchOverChanges) : _aHelper(aHelper), _toWatchOverChanges(toWatchOverChanges) {}
+ConnectivityThread::ConnectivityThread(const QSettings* appSettings) : _appSettings(appSettings) {}
 
 void ConnectivityThread::run() {
     ////////////////////

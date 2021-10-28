@@ -5,6 +5,7 @@ MainWindow::MainWindow() {
     this->_initUI();
 
     //
+    this->onAppSettingsChanged();
     this->startupConnectivityThread();
     this->updateWarningsMenuItem();
     this->setupAutoUpdate();
@@ -14,22 +15,8 @@ void MainWindow::informWarningPresence() {
     this->updateWarningsMenuItem();
 }
 
-// set watcher on config file
-void MainWindow::setupConfigFileWatcher() {
-    this->updateMenuItemsFromConfigValues();
-
-    auto configFilePath = this->aHelper.getConfigFileFullPath();
-    auto filesToWatch = QStringList(configFilePath);
-    this->configWatcher = new QFileSystemWatcher(filesToWatch);
-
-    QObject::connect(
-        this->configWatcher, &QFileSystemWatcher::fileChanged,
-        this, &MainWindow::updateMenuItemsFromConfigValues
-    );
-}
-
 // updates the menu depending on the config values filled or not
-void MainWindow::updateMenuItemsFromConfigValues(const QString &path) {
+void MainWindow::onAppSettingsChanged(const QString &path) {
     // check then save
     auto myplaformFullUrl = this->aHelper.getUsersHomeUrl();
     bool shouldActivateLink = (myplaformFullUrl != "");
@@ -57,6 +44,7 @@ void MainWindow::accessPlatform() {
 
 void MainWindow::accessPreferences() {
     PreferencesDialog(&this->appSettings, this).exec();
+    this->onAppSettingsChanged();
 }
 
 // open the warnings file on the OS
@@ -156,12 +144,12 @@ void MainWindow::checkForAppUpdates() {
 
 void MainWindow::updateStatusBar(const QString &message, const TLW_Colors &color) {
     this->statusLabel->setText(message);
-    this->statusLight->setCurrentIndex(color);
+    this->statusLight->setCurrentIndex(static_cast<int>(color));
 }
 
 void MainWindow::startupConnectivityThread() {
     //
-    this->cw = new ConnectivityThread(&this->aHelper, this->configWatcher);
+    this->cw = new ConnectivityThread(&this->appSettings);
 
     QObject::connect(
         this->cw, &ConnectivityThread::updateSIOStatus,
