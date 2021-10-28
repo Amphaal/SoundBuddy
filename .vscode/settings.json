@@ -164,6 +164,8 @@
         "stack": "cpp",
         "qlocale": "cpp",
         "qurl": "cpp",
-        "qhttpmultipart": "cpp"
+        "qhttpmultipart": "cpp",
+        "qjsondocument": "cpp",
+        "qjsonobject": "cpp"
     },
 }

@@ -2,7 +2,7 @@
 
 #include "src/_i18n/trad.hpp"
 
-FeederThread::FeederThread(const AppSettings::ConnectivityInfos &connectivityInfos) : _connectivityInfos(connectivityInfos) {}
+FeederThread::FeederThread(const Uploader* uploder, const AppSettings::ConnectivityInfos connectivityInfos) : ITNZThread(uploder, connectivityInfos) {}
 
 void FeederThread::run() {
     //
@@ -12,16 +12,13 @@ void FeederThread::run() {
         this->_generateLibJSONFile();
         this->_uploadLibToServer();
     } catch (const std::exception& e) {
-        QString errMsg(e.what());
-        emit printLog(errMsg, false, true);
+        // emit error as log
+        emit printLog(
+            QString(e.what()),
+            false,
+            true
+        );
     }
-
-    // clear
-    delete this->_ohLib;
-    delete this->_ohWrn;
-    delete this->_workingJSON;
-    delete this->_libAsJSON;
-    delete this->_libWarningsAsJSON;
 }
 
 // generate files
@@ -101,7 +98,7 @@ void FeederThread::_generateJSON(const QString &xmlFileLocation) {
     const auto XMLReadErr = tr("Cannot read the XML file bound to your library. Are you sure you activated the XML file sharing in %1 ?").arg(musicAppName()).toStdString();
 
     // read xml as QString
-    MusicAppLibParser *doc;
+    MusicAppLibParser* doc;
     try {
         doc = new MusicAppLibParser(xmlFileLocation);
     } catch(...) {
@@ -112,7 +109,7 @@ void FeederThread::_generateJSON(const QString &xmlFileLocation) {
 
     // try parse to temp JSON
     QJsonDocument d;
-    d.Parse(xmlAsJSONString.toStdString().c_str());
+    d.Parse(xmlAsJSONString.toUtf8());
     if (d.HasParseError()) {
         throw std::logic_error(XMLReadErr);
     }
@@ -173,14 +170,14 @@ void FeederThread::_standardizeJSON() {
         if (missingAttrs.length()) {
             rapidjson::Value key(track->value["Location"].GetString(), lwajAlloc);
             auto joined = missingAttrs.join(", ");
-            rapidjson::Value val(joined.toStdString().c_str(), lwajAlloc);
+            rapidjson::Value val(joined.toUtf8(), lwajAlloc);
             this->_libWarningsAsJSON->AddMember(key, val, lwajAlloc);
             tracksIdToRemove.insert(track->name.GetString());
         }
 
         // remove useless props
         for (auto ktr : toRemove) {
-            track->value.RemoveMember(ktr.toStdString().c_str());
+            track->value.RemoveMember(ktr.toUtf8());
         }
 
         // set optionnal values default
@@ -195,7 +192,7 @@ void FeederThread::_standardizeJSON() {
 
     // remove tracks with warnings
     for(auto &idtr : tracksIdToRemove) {
-        this->_workingJSON->RemoveMember(idtr.toStdString().c_str());
+        this->_workingJSON->RemoveMember(idtr.toUtf8());
     }
 
     qDebug() << this->_workingJSON->MemberCount();

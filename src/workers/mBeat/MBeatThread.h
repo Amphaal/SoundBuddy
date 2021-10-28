@@ -23,7 +23,6 @@ class MBeatThread : public QThread {
  private:
     bool _requestOngoing = false;
     QWebSocket* _wsClient;
-    const AppSettings::ConnectivityInfos _connectivityInfos;
     QString _loggedInUser;
 
     // ask credentials

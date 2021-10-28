@@ -3,8 +3,6 @@
 #include <QCheckBox>
 #include <QString>
 
-#include <string>
-
 #include "base/TemplateTab.h"
 #include "src/workers/shout/ShoutThread.h"
 

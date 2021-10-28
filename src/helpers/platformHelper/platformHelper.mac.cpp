@@ -9,9 +9,6 @@
 #include <stdlib.h>
 #include <pwd.h>
 
-#include <string>
-#include <map>
-
 #include "platformHelper.h"
 #include "src/version.h"
 
@@ -19,7 +16,7 @@ static const QString MAC_REG_STARTUP_LAUNCH_PATH = "/Library/LaunchAgents/" APP_
 
 void PlatformHelper::openFileInOS(const QString &cpURL) {
     QString command = "open \"" + cpURL + "\"";
-    system(command.toStdString().c_str());
+    system(command.toUtf8());
 }
 
 void PlatformHelper::openUrlInBrowser(const QString &cpURL) {
@@ -90,7 +87,7 @@ void PlatformHelper::switchStartupLaunch() {
         settings->setValue("ProgramArguments", args);
     } else {
         auto cPath = PlatformHelper::getEnvironmentVariable("HOME") + MAC_REG_STARTUP_LAUNCH_PATH;  // computed path
-        remove(cPath.toStdString().c_str());
+        remove(cPath.toUtf8());
     }
 }
 

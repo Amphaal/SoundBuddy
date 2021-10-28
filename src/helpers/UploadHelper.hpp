@@ -16,7 +16,7 @@ class Uploader {
      struct UploadInstructions {
         const AppSettings::ConnectivityInfos &connectivityInfos;
         const AppSettings::UploadInfos &uploadInfos;
-        const QFileInfo &fileToUpload;
+        const QByteArray &dataToUpload;
 
         const QUrl getUploadUrl() const {
             return QUrl(connectivityInfos.getPlaformHomeUrl() + uploadInfos.path);
@@ -25,19 +25,14 @@ class Uploader {
 
     Uploader(QObject* parent) : _manager(new QNetworkAccessManager(parent)) {}
 
-    void uploadDataToPlatform(const UploadInstructions &instructions) {
+    void uploadDataToPlatform(const UploadInstructions &instructions) const {
         //
         auto postData = new QHttpMultiPart(QHttpMultiPart::MixedType);
-
-            // file content first...
-            QFile *file = new QFile(instructions.fileToUpload.filePath());
-            file->open(QIODevice::ReadOnly);
-            file->setParent(postData); // we cannot delete the file now, so delete it with the multiPart
 
             QHttpPart filePart;
             filePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/json"));
             filePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"" + instructions.uploadInfos.outputFileName + "\""));
-            filePart.setBodyDevice(file);
+            filePart.setBody(instructions.dataToUpload);
 
             // password...
             QHttpPart passwordPart;

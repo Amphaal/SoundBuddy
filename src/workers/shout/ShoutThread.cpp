@@ -1,14 +1,15 @@
 #include "ShoutThread.h"
 
-#include <string>
+#include <QJsonDocument>
+#include <QJsonObject>
 
-ShoutThread::ShoutThread(const AppSettings::ConnectivityInfos &connectivityInfos) : _connectivityInfos(connectivityInfos) {}
+ShoutThread::ShoutThread(const Uploader* uploder, const AppSettings::ConnectivityInfos connectivityInfos) : ITNZThread(uploder, connectivityInfos) {}
 
 void ShoutThread::quit() {
     this->_mustListen = false;
 }
 
-QJsonDocument ShoutThread::_createBasicShout() {
+QJsonObject ShoutThread::_createBasicShout() const {
     // get iso date
     time_t now;
     time(&now);
@@ -16,75 +17,37 @@ QJsonDocument ShoutThread::_createBasicShout() {
     strftime(buf, sizeof buf, "%FT%TZ", gmtime(&now));
 
     // return json obj
-    QJsonDocument obj;
-    obj.Parse("{}");
-    QJsonDocument::AllocatorType &alloc = obj.GetAllocator();
-    auto dateAsJSONVal = rapidjson::Value(buf, alloc);
-    obj.AddMember("date", dateAsJSONVal, alloc);
+    QJsonObject obj;
+    obj["date"] = buf;
     return obj;
 }
 
 void ShoutThread::shoutEmpty() {
-    auto obj = this->_createBasicShout();
-    const auto date = obj["date"].GetString();
-
+    //
     emit printLog(
-        tr("%1: Shouting -> Nothing").arg(date)
+        tr("%1: Shouting -> Nothing")
+            .arg(QDateTime::currentDateTime().toString())
     );
 
-    this->_shoutToServer(obj);
+    // send...
+    auto shout = this->_createBasicShout();
+    this->_shoutToServer(shout);
 }
 
-void ShoutThread::shoutFilled(
-        const QString &name,
-        const QString &album,
-        const QString &artist,
-        const QString &genre,
-        int duration,
-        int playerPosition,
-        bool playerState,
-        int year
-    ) {
-    // fill obj
-    auto obj = this->_createBasicShout();
-    QJsonDocument::AllocatorType &alloc = obj.GetAllocator();
 
-    // factory for value generation
-    auto valGen = [&alloc](QString defVal) {
-        rapidjson::Value p(defVal.toStdString().c_str(), alloc);
-        return p;
-    };
-
-    obj.AddMember("name", valGen(name), alloc);
-    obj.AddMember("album", valGen(album), alloc);
-    obj.AddMember("artist", valGen(artist), alloc);
-    obj.AddMember("genre", valGen(genre), alloc);
-    obj.AddMember("duration", duration, alloc);
-    obj.AddMember("playerPosition", playerPosition, alloc);
-    obj.AddMember("playerState", playerState, alloc);
-    obj.AddMember("year", year, alloc);
-
-    auto pState = obj["playerState"].GetBool() ? tr("playing") : tr("paused");
-
-    // log...
-    auto logMessage =
-        tr("%1: Shouting -> %2 - %3 - %4 (%5)")
-            .arg(obj["date"].GetString())
-            .arg(obj["name"].GetString())
-            .arg(obj["album"].GetString())
-            .arg(obj["artist"].GetString())
-            .arg(pState);
-
-    emit printLog(logMessage);
-
-    this->_shoutToServer(obj);
-}
-
-void ShoutThread::_shoutToServer(QJsonDocument &incoming) {
+void ShoutThread::_shoutToServer(const QJsonObject &incoming) {
     try {
-        this->_helper->writeAsJsonFile(incoming);
-        this->_helper->uploadFile();
+        //
+        Uploader::UploadInstructions instr {
+            _connectivityInfos,
+            AppSettings::getShoutUploadInfos(),
+            QJsonDocument{incoming}.toJson()
+        };
+
+        //
+        this->_uploder->uploadDataToPlatform(instr);
     } catch(const std::exception& e) {
+        // emit error
         emit printLog(e.what(), false, true);
     }
 }
@@ -109,6 +72,43 @@ bool ShoutThread::shouldUpload(
 
     // if not identical, shout !
     return !isHashIdentical;
+}
+
+void ShoutThread::shoutFilled(
+        const QString &name,
+        const QString &album,
+        const QString &artist,
+        const QString &genre,
+        int duration,
+        int playerPosition,
+        bool playerState,
+        int year
+    ) {
+    // fill obj
+    auto obj = this->_createBasicShout();
+    obj["name"] = name;
+    obj["album"] = album;
+    obj["artist"] = artist;
+    obj["genre"] = genre;
+    obj["duration"], duration;
+    obj["playerPosition"], playerPosition;
+    obj["playerState"], playerState;
+    obj["year"] = year;
+
+    auto pState = playerState ? tr("playing") : tr("paused");
+
+    // log...
+    auto logMessage =
+        tr("%1: Shouting -> %2 - %3 - %4 (%5)")
+            .arg(QDateTime::currentDateTime().toString())
+            .arg(name)
+            .arg(album)
+            .arg(artist)
+            .arg(pState);
+
+    emit printLog(logMessage);
+
+    this->_shoutToServer(obj);
 }
 
 
@@ -226,7 +226,6 @@ void ShoutThread::run() {
     auto ComCLID = QString::fromWCharArray(wch);
 
     do {
-        
         //search for music app...
         windowsHandler = FindWindowA(0, musicAppName().toUtf8());
         

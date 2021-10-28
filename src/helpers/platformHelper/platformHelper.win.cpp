@@ -6,19 +6,15 @@
 #include <shellapi.h>
 #include <stdlib.h>
 
-#include <string>
-#include <map>
-#include <vector>
-
 #include "platformHelper.h"
 #include "src/version.h"
 
 void PlatformHelper::openFileInOS(const QString &cpURL) {
-    ShellExecuteA(NULL, "open", "notepad", cpURL.toStdString().c_str(), NULL, SW_SHOWNORMAL);
+    ShellExecuteA(NULL, "open", "notepad", cpURL.toUtf8(), NULL, SW_SHOWNORMAL);
 }
 
 void PlatformHelper::openUrlInBrowser(const QString &cpURL) {
-    ShellExecuteA(NULL, "open", cpURL.toStdString().c_str(), NULL, NULL, SW_SHOWNORMAL);
+    ShellExecuteA(NULL, "open", cpURL.toUtf8(), NULL, NULL, SW_SHOWNORMAL);
 }
 
 QString PlatformHelper::getEnvironmentVariable(const char* variable) {
@@ -44,13 +40,13 @@ QString PlatformHelper::extractMusicAppLibLocation(const QString &pathToParamFil
     QString command = "-convert xml1 -o ";
             command += "\"" + destPath +"\" ";
             command +="\"" + pathToParamFile  +"\"";
-    ShellExecuteA(NULL, "open", pathTo_plutil.toStdString().c_str(), command.toStdString().c_str(), NULL, SW_HIDE);
+    ShellExecuteA(NULL, "open", pathTo_plutil.toUtf8(), command.toUtf8(), NULL, SW_HIDE);
 
     // read it into JSON obj
     MusicAppLibParser musicAppParams(destPath);
     auto xmlAsJSONString = musicAppParams.ToJSON();
     QJsonDocument d;
-    d.Parse(xmlAsJSONString.toStdString().c_str());
+    d.Parse(xmlAsJSONString.toUtf8());
 
     // decode path
     auto encodedPath = QString::fromStdString(d["LXML:1:iTunes Library XML Location"].GetString());

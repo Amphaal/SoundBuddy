@@ -16,13 +16,11 @@ class FeederThread : public ITNZThread {
    Q_OBJECT
 
  public:
-    FeederThread(const AppSettings::ConnectivityInfos &connectivityInfos);
+    FeederThread(const Uploader* uploder, const AppSettings::ConnectivityInfos connectivityInfos);
 
     void run() override;
 
  private:
-   const AppSettings::ConnectivityInfos _connectivityInfos;
-
     // generate files
     void _generateLibJSONFile();
 
@@ -56,4 +54,7 @@ class FeederThread : public ITNZThread {
 
     // seek in Music App preference file the library location
     QString _getMusicAppLibLocation();
+
+   signals:
+      void operationFinished();
 };
