@@ -13,10 +13,11 @@ void MBeatThread::run() {
     QWebSocket socket;
     QUrl url(this->_connectivityInfos.getPlaformHomeUrl());
     url.setPort(3000);
+    url.setScheme("wss");
     socket.open(url.toString(QUrl::RemovePath));
 
     //
-    emit updateConnectivityStatus(tr("Asking for credentials validation..."), TLW_Colors::YELLOW);
+    emit updateConnectivityStatus(tr("Connecting to server..."), TLW_Colors::YELLOW);
 
     // when response to pings are received
     QObject::connect(
@@ -29,16 +30,36 @@ void MBeatThread::run() {
     // handling errors
     QObject::connect(
         &socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error),
-        [this](QAbstractSocket::SocketError error){
+        [this](QAbstractSocket::SocketError error) {
             emit updateConnectivityStatus(tr("An error occured while connecting with %1 platform !"), TLW_Colors::RED);
+        }
+    );
+
+    // handling disconnect
+    QObject::connect(
+        &socket, &QWebSocket::disconnected,
+        [this]() {
+            // TODO
+        }
+    );
+
+    // handling messages
+    QObject::connect(
+        &socket, &QWebSocket::textMessageReceived,
+        [this](const QString &message) {
+            // TODO
         }
     );
     
     // on connection !
     QObject::connect(
         &socket, &QWebSocket::connected,
-        [this](){
-            emit updateConnectivityStatus(tr("An error occured while connecting with %1 platform !"), TLW_Colors::RED);
+        [this]() {
+            //
+            emit updateConnectivityStatus(tr("Asking for credentials validation..."), TLW_Colors::YELLOW);
+
+            //
+            sioClient->socket("/login")->emit("checkCredentials", p);
         }
     );
 
@@ -53,18 +74,10 @@ void MBeatThread::run() {
     );
     pingTimer.start();
 
-    this->_sioClient = new sio::client();
-
     // tell sio is trying to reconnect
     this->_sioClient->set_reconnect_listener([&](unsigned int a, unsigned int b) {
         emit updateConnectivityStatus(tr("Reconnecting to server..."), TLW_Colors::YELLOW);
     });
-
-    // on connect, check credentials
-    this->_sioClient->set_open_listener([&]() {
-        this->_checkCredentials();
-    });
-
 
     // once server checked the credentials
     this->_sioClient->socket("/login")->on("credentialsChecked", [&](sio::event& ev) {
@@ -89,25 +102,7 @@ void MBeatThread::run() {
         this->_checkCredentials(true);
     });
 
-    ////////////////////////
-    // End Event Handlers //
-    ////////////////////////
-
-    // declare waiting for connection
-    emit updateConnectivityStatus(tr("Connecting to server..."), TLW_Colors::YELLOW);
-
-    // connect...
-    this->_sioClient->connect(this->_getPlatformHostUrl().toStdString());
-
-    QObject::connect(
-        this->_toWatchOverChanges, &QFileSystemWatcher::fileChanged,
-        this, &MBeatThread::_checkCredentialsFromFileUpdate
-    );
-
     this->exec();
-
-    // clear
-    delete this->_sioClient;
 }
 
 void MBeatThread::_emitLoggedUserMsg() {
@@ -132,8 +127,4 @@ const QString MBeatThread::_validationErrorTr(const QString& returnCode) const {
     }
 
     return tr("Server responded with : \"%1\"").arg(msg);
-}
-
-void _sio_checkCredentials(sio::client* sioClient, sio::message::list& p) {
-   sioClient->socket("/login")->emit("checkCredentials", p);
 }

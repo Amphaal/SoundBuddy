@@ -8,6 +8,7 @@
 #include <QCheckBox>
 
 #include "src/helpers/AppSettings.hpp"
+#include "src/version.h"
 
 class PreferencesDialog : public QDialog {
     Q_OBJECT
@@ -52,7 +53,7 @@ class PreferencesDialog : public QDialog {
 
             QObject::connect(
                 this->_launchAppAtStartupChk, &QCheckBox::stateChanged,
-                this, &_mightAddAppToStartup
+                this, &PreferencesDialog::_mightAddAppToStartup
             );
 
         layout->addWidget(automationGroup);

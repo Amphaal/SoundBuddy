@@ -62,6 +62,10 @@ void FeederThread::_tracksUnmolding(const char* filename) {
 void FeederThread::_uploadLibToServer() {
     emit printLog(tr("Let's try to send now !"));
 
+    this->_uploder->uploadDataToPlatform(
+
+    );
+    
     QString response = this->_ohLib->uploadFile();
 
     if (!response.isEmpty()) {
@@ -120,87 +124,13 @@ void FeederThread::_generateJSON(const QString &xmlFileLocation) {
     auto v = rapidjson::Pointer("/Tracks").Get(d);
     this->_expectedCount = v->MemberCount();
     if (!this->_expectedCount) {
-        throw std::logic_error(tr("No music found in your %1 library. Please feed it some.".arg(musicAppName())).toStdString());
+        throw std::logic_error(
+            tr("No music found in your %1 library. Please feed it some.")
+            .arg(musicAppName())
+            .toStdString()
+        );
     }
     this->_workingJSON->CopyFrom(d["Tracks"], this->_workingJSON->GetAllocator());
-}
-
-// standardize
-void FeederThread::_standardizeJSON() {
-    //
-    emit printLog(tr("Cooking the JSON file..."));
-
-    //declare allocators
-    auto &lajAlloc = this->_libAsJSON->GetAllocator();
-    auto &lwajAlloc = this->_libWarningsAsJSON->GetAllocator();
-    auto &wjAlloc = this->_workingJSON->GetAllocator();
-
-    //prepare
-    QSet<QString> tracksIdToRemove = {};
-    this->_recCount = 0;
-    this->_expectedCount = this->_workingJSON->MemberCount();
-    
-    //through each tracks
-    for (auto track = this->_workingJSON->MemberBegin(); track != this->_workingJSON->MemberEnd(); ++track) {
-        
-        QSet<QString> toRemove = {};
-        std::set<QString> foundRequired;
-
-        //iterate through properties
-        for (auto prop = track->value.MemberBegin(); prop != track->value.MemberEnd(); ++prop) {
-            QString k = prop->name.GetString();
-            
-            // check presence of required attrs
-            if (_requiredAttrs.find(k) == _requiredAttrs.end()) {
-                if (k != "Disc Number") toRemove.insert(k);  // dont remove optional values !
-            } else {
-                foundRequired.insert(k);
-            }
-        }
-
-        // apply diff on required attr, dump into missingAttrs
-        QStringList missingAttrs;
-        std::set_difference(
-            _requiredAttrs.begin(), _requiredAttrs.end(),
-            foundRequired.begin(), foundRequired.end(),
-            std::inserter(missingAttrs, missingAttrs.end())
-        );
-
-        // if there are missing attrs
-        if (missingAttrs.length()) {
-            rapidjson::Value key(track->value["Location"].GetString(), lwajAlloc);
-            auto joined = missingAttrs.join(", ");
-            rapidjson::Value val(joined.toUtf8(), lwajAlloc);
-            this->_libWarningsAsJSON->AddMember(key, val, lwajAlloc);
-            tracksIdToRemove.insert(track->name.GetString());
-        }
-
-        // remove useless props
-        for (auto ktr : toRemove) {
-            track->value.RemoveMember(ktr.toUtf8());
-        }
-
-        // set optionnal values default
-        if (!track->value.HasMember("Disc Number")) {
-            track->value.AddMember("Disc Number","1", wjAlloc);
-        }
-
-        this->_tracksEmitHelper();
-    }
-
-    qDebug() << this->_workingJSON->MemberCount();
-
-    // remove tracks with warnings
-    for(auto &idtr : tracksIdToRemove) {
-        this->_workingJSON->RemoveMember(idtr.toUtf8());
-    }
-
-    qDebug() << this->_workingJSON->MemberCount();
-
-    // turn obect based container into an array one
-    for (auto track = this->_workingJSON->MemberBegin(); track != this->_workingJSON->MemberEnd(); ++track) {
-        this->_libAsJSON->PushBack(track->value, lajAlloc);
-    }
 }
 
 ///
@@ -220,11 +150,8 @@ void FeederThread::_tracksEmitHelper() {
 // seek in Music App preference file the library location
 QString FeederThread::_getMusicAppLibLocation() {
     emit printLog(tr("Getting XML file location..."));
-
-    QString pathToPrefs = PlatformHelper::_getMusicAppPrefFileProbableLocation();
-
     try {
-        return PlatformHelper::getMusicAppLibLocation(pathToPrefs);
+        return PlatformHelper::getMusicAppLibLocation();
     } catch(...) {
         throw std::logic_error(tr("An issue happened while fetching %1's XML file location. Have you installed %1 ?").arg(musicAppName()).toStdString());
     }

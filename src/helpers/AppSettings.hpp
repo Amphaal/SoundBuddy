@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QSettings>
+#include <QDir>
 
 #include "src/helpers/PlatformHelper.h"
 

@@ -121,6 +121,10 @@
         <source>Asking for credentials validation...</source>
         <translation>Demande de validation des identifiants...</translation>
     </message>
+    <message>
+        <source>An error occured while connecting with %1 platform !</source>
+        <translation>Une erreur s&apos;est produite pendant la connexion à la plateforme %1 !</translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
