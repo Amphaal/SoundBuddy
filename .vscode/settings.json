@@ -166,6 +166,8 @@
         "qurl": "cpp",
         "qhttpmultipart": "cpp",
         "qjsondocument": "cpp",
-        "qjsonobject": "cpp"
+        "qjsonobject": "cpp",
+        "qwebsocket": "cpp",
+        "qprocessenvironment": "cpp"
     },
 }

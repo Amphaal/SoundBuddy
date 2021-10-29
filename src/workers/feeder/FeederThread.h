@@ -8,7 +8,7 @@
 
 #include "src/workers/base/ITNZThread.hpp"
 
-#include "src/helpers/platformHelper/platformHelper.h"
+#include "src/helpers/PlatformHelper.h"
 
 #include <ITunesLibraryParser.hpp>
 
@@ -16,7 +16,7 @@ class FeederThread : public ITNZThread {
    Q_OBJECT
 
  public:
-    FeederThread(const Uploader* uploder, const AppSettings::ConnectivityInfos connectivityInfos);
+    FeederThread(const UploadHelper* uploder, const AppSettings::ConnectivityInfos connectivityInfos);
 
     void run() override;
 

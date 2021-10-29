@@ -10,10 +10,9 @@ class ShoutThread : public ITNZThread {
     Q_OBJECT
 
  public:
-    ShoutThread(const Uploader* uploder, const AppSettings::ConnectivityInfos connectivityInfos);
+    ShoutThread(const UploadHelper* uploder, const AppSettings::ConnectivityInfos connectivityInfos);
 
     void run() override;
-    void quit() override;
 
     void shoutEmpty();
 
@@ -39,7 +38,6 @@ class ShoutThread : public ITNZThread {
 
  private:
     QString _lastTrackHash;
-    bool _mustListen = true;
 
     QJsonObject _createBasicShout() const;
     void _shoutToServer(const QJsonObject &incoming);

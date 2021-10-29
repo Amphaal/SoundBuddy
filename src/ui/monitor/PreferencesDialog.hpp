@@ -7,7 +7,6 @@
 #include <QGridLayout>
 #include <QCheckBox>
 
-#include "src/helpers/platformHelper/platformHelper.h"
 #include "src/helpers/AppSettings.hpp"
 
 class PreferencesDialog : public QDialog {

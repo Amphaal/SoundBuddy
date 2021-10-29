@@ -3,11 +3,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-ShoutThread::ShoutThread(const Uploader* uploder, const AppSettings::ConnectivityInfos connectivityInfos) : ITNZThread(uploder, connectivityInfos) {}
-
-void ShoutThread::quit() {
-    this->_mustListen = false;
-}
+ShoutThread::ShoutThread(const UploadHelper* uploder, const AppSettings::ConnectivityInfos connectivityInfos) : ITNZThread(uploder, connectivityInfos) {}
 
 QJsonObject ShoutThread::_createBasicShout() const {
     // get iso date
@@ -38,7 +34,7 @@ void ShoutThread::shoutEmpty() {
 void ShoutThread::_shoutToServer(const QJsonObject &incoming) {
     try {
         //
-        Uploader::UploadInstructions instr {
+        UploadHelper::UploadInstructions instr {
             _connectivityInfos,
             AppSettings::getShoutUploadInfos(),
             QJsonDocument{incoming}.toJson()
@@ -90,9 +86,9 @@ void ShoutThread::shoutFilled(
     obj["album"] = album;
     obj["artist"] = artist;
     obj["genre"] = genre;
-    obj["duration"], duration;
-    obj["playerPosition"], playerPosition;
-    obj["playerState"], playerState;
+    obj["duration"] = duration;
+    obj["playerPosition"] = playerPosition;
+    obj["playerState"] = playerState;
     obj["year"] = year;
 
     auto pState = playerState ? tr("playing") : tr("paused");
@@ -288,7 +284,7 @@ void ShoutThread::run() {
         CoUninitialize();
 
         //if Music App is shutting down...
-        if(this->_mustListen && handler->musicAppShutdownRequested) {
+        if(this->stop && handler->musicAppShutdownRequested) {
             
             //say we acknoledge Music App shutting down...
             emit printLog(tr("%1 shutting down !").arg(musicAppName()));

@@ -11,7 +11,7 @@
 
 #include "src/helpers/AppSettings.hpp"
 
-class Uploader {
+class UploadHelper {
  public:
      struct UploadInstructions {
         const AppSettings::ConnectivityInfos &connectivityInfos;
@@ -23,7 +23,7 @@ class Uploader {
         }
     };
 
-    Uploader(QObject* parent) : _manager(new QNetworkAccessManager(parent)) {}
+    UploadHelper(QObject* parent) : _manager(new QNetworkAccessManager(parent)) {}
 
     void uploadDataToPlatform(const UploadInstructions &instructions) const {
         //

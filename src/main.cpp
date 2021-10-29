@@ -8,7 +8,7 @@
 
 int main(int argc, char** argv) {
     // prevent multiples instances
-    QLockFile lockFile(QDir::tempPath() + '/' + APP_NAME + ".lock");
+    QLockFile lockFile(QDir::tempPath() + QDir::separator() + APP_NAME + ".lock");
     if (!lockFile.tryLock(100)) {
         return 1;
     }

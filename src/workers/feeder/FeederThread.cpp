@@ -2,7 +2,7 @@
 
 #include "src/_i18n/trad.hpp"
 
-FeederThread::FeederThread(const Uploader* uploder, const AppSettings::ConnectivityInfos connectivityInfos) : ITNZThread(uploder, connectivityInfos) {}
+FeederThread::FeederThread(const UploadHelper* uploder, const AppSettings::ConnectivityInfos connectivityInfos) : ITNZThread(uploder, connectivityInfos) {}
 
 void FeederThread::run() {
     //
@@ -221,10 +221,10 @@ void FeederThread::_tracksEmitHelper() {
 QString FeederThread::_getMusicAppLibLocation() {
     emit printLog(tr("Getting XML file location..."));
 
-    QString pathToPrefs = PlatformHelper::getMusicAppPrefFileProbableLocation();
+    QString pathToPrefs = PlatformHelper::_getMusicAppPrefFileProbableLocation();
 
     try {
-        return PlatformHelper::extractMusicAppLibLocation(pathToPrefs);
+        return PlatformHelper::getMusicAppLibLocation(pathToPrefs);
     } catch(...) {
         throw std::logic_error(tr("An issue happened while fetching %1's XML file location. Have you installed %1 ?").arg(musicAppName()).toStdString());
     }

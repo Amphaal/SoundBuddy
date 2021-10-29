@@ -3,15 +3,61 @@
 MBeatThread::MBeatThread(const AppSettings::ConnectivityInfos &connectivityInfos) : _connectivityInfos(connectivityInfos) {}
 
 void MBeatThread::run() {
-    ////////////////////
-    // Event Handlers //
-    ////////////////////
+    //
+    if(!_connectivityInfos.areOK) {
+        emit updateConnectivityStatus(tr("Waiting for appropriate credentials."), TLW_Colors::RED);
+        return;
+    }
+
+    //
+    QWebSocket socket;
+    QUrl url(this->_connectivityInfos.getPlaformHomeUrl());
+    url.setPort(3000);
+    socket.open(url.toString(QUrl::RemovePath));
+
+    //
+    emit updateConnectivityStatus(tr("Asking for credentials validation..."), TLW_Colors::YELLOW);
+
+    // when response to pings are received
+    QObject::connect(
+        &socket, &QWebSocket::pong,
+        [](quint64 elapsedTime, const QByteArray &payload) {
+            // TODO
+        }
+    );
+
+    // handling errors
+    QObject::connect(
+        &socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error),
+        [this](QAbstractSocket::SocketError error){
+            emit updateConnectivityStatus(tr("An error occured while connecting with %1 platform !"), TLW_Colors::RED);
+        }
+    );
+    
+    // on connection !
+    QObject::connect(
+        &socket, &QWebSocket::connected,
+        [this](){
+            emit updateConnectivityStatus(tr("An error occured while connecting with %1 platform !"), TLW_Colors::RED);
+        }
+    );
+
+    /// ping/pong feature
+    QTimer pingTimer;
+    pingTimer.setInterval(10000);  // ping every 10 seconds
+    QObject::connect(
+        &pingTimer, &QTimer::timeout,
+        [&socket]() { 
+            socket.ping();
+        }
+    );
+    pingTimer.start();
 
     this->_sioClient = new sio::client();
 
     // tell sio is trying to reconnect
     this->_sioClient->set_reconnect_listener([&](unsigned int a, unsigned int b) {
-        emit updateSIOStatus(tr("Reconnecting to server..."), TLW_Colors::YELLOW);
+        emit updateConnectivityStatus(tr("Reconnecting to server..."), TLW_Colors::YELLOW);
     });
 
     // on connect, check credentials
@@ -31,7 +77,7 @@ void MBeatThread::run() {
             this->_loggedInUser = extraInfo;
             _emitLoggedUserMsg();
         } else {
-            emit updateSIOStatus(_validationErrorTr(extraInfo), TLW_Colors::RED);
+            emit updateConnectivityStatus(_validationErrorTr(extraInfo), TLW_Colors::RED);
         }
 
         // toggle flag
@@ -48,7 +94,7 @@ void MBeatThread::run() {
     ////////////////////////
 
     // declare waiting for connection
-    emit updateSIOStatus(tr("Connecting to server..."), TLW_Colors::YELLOW);
+    emit updateConnectivityStatus(tr("Connecting to server..."), TLW_Colors::YELLOW);
 
     // connect...
     this->_sioClient->connect(this->_getPlatformHostUrl().toStdString());
@@ -65,71 +111,27 @@ void MBeatThread::run() {
 }
 
 void MBeatThread::_emitLoggedUserMsg() {
-    emit updateSIOStatus(tr("Logged as \"%1\"").arg(this->_loggedInUser), TLW_Colors::GREEN);
+    emit updateConnectivityStatus(tr("Logged as \"%1\"").arg(_connectivityInfos.username), TLW_Colors::GREEN);
 }
 
-const QString MBeatThread::_validationErrorTr(const QString& errorCode) const {
-    QString errorMsg;
+const QString MBeatThread::_validationErrorTr(const QString& returnCode) const {
+    QString msg;
 
-    if(errorCode == "cdm") {
-        errorMsg = tr("Credential data missing");
-    } else if(errorCode == "eud") {
-        errorMsg = tr("Empty users database");
-    } else if(errorCode == "unfid") {
-        errorMsg = tr("Username not found in database");
-    } else if(errorCode == "nopass") {
-        errorMsg = tr("Password for the user not found in database");
-    } else if(errorCode == "pmiss") {
-        errorMsg = tr("Password missmatch");
+    if(returnCode == "cdm") {
+        msg = tr("Credential data missing");
+    } else if(returnCode == "eud") {
+        msg = tr("Empty users database");
+    } else if(returnCode == "unfid") {
+        msg = tr("Username not found in database");
+    } else if(returnCode == "nopass") {
+        msg = tr("Password for the user not found in database");
+    } else if(returnCode == "pmiss") {
+        msg = tr("Password missmatch");
     } else {
         return tr("Unknown error from the validation request");
     }
 
-    return tr("Server responded with : \"%1\"").arg(errorMsg);
-}
-
-void MBeatThread::_checkCredentialsFromFileUpdate() {
-    this->_checkCredentials(true);
-}
-
-// ask credentials
-void MBeatThread::_checkCredentials(bool forceRecheck) {
-    //
-    if(forceRecheck) {
-        this->_loggedInUser = "";
-        this->_requestOngoing = false;
-    }
-
-    if(this->_loggedInUser != "" && !forceRecheck) {
-        _emitLoggedUserMsg();
-        return;
-    }
-
-    auto prerequisitesOK = this->_aHelper->ensureConfigFileIsReadyForUpload(false);
-
-    if (!prerequisitesOK) {
-        emit updateSIOStatus(tr("Waiting for appropriate credentials."), TLW_Colors::RED);
-    } else if (prerequisitesOK && !this->_requestOngoing) {
-        // start check
-        this->_requestOngoing = true;
-        emit updateSIOStatus(tr("Asking for credentials validation..."), TLW_Colors::YELLOW);
-
-        sio::message::list p;
-        auto username = this->_aHelper->getParamValue("username");
-        auto password = this->_aHelper->getParamValue("password");
-
-        p.push(sio::string_message::create(username.toStdString()));
-        p.push(sio::string_message::create(password.toStdString()));
-        _sio_checkCredentials(this->_sioClient, p);
-    }
-}
-
-QString MBeatThread::_getPlatformHostUrl() {
-    // extract destination url for sio connection
-    auto t_qurl = this->_aHelper->getPlatformHostUrl();
-    t_qurl.setPort(3000);
-    auto turl = t_qurl.toString(QUrl::RemovePath);
-    return turl;
+    return tr("Server responded with : \"%1\"").arg(msg);
 }
 
 void _sio_checkCredentials(sio::client* sioClient, sio::message::list& p) {

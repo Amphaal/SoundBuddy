@@ -17,20 +17,11 @@ class MBeatThread : public QThread {
     void run() override;
 
  signals:
-    void updateSIOStatus(const QString &message, const TLW_Colors &color);
-    void requestCredentialCheck();
+    void updateConnectivityStatus(const QString &message, const TLW_Colors &color);
 
  private:
-    bool _requestOngoing = false;
-    QWebSocket* _wsClient;
-    QString _loggedInUser;
-
-    // ask credentials
-    void _checkCredentials(bool forceRecheck = false);
-    void _checkCredentialsFromFileUpdate();
-    QString _getPlatformHostUrl();
-
-
-    const QString _validationErrorTr(const QString& errorCode) const;
+    const AppSettings::ConnectivityInfos _connectivityInfos;
+    
+    const QString _validationErrorTr(const QString& returnCode) const;
     void _emitLoggedUserMsg();
 };

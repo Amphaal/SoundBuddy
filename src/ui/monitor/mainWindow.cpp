@@ -1,14 +1,15 @@
 #include "mainWindow.h"
 
-MainWindow::MainWindow() {
+MainWindow::MainWindow() : uploadHelper(this) {
     // generate the UI
     this->_initUI();
 
     //
     this->onAppSettingsChanged();
-    this->startupMBeatThread();
     this->updateWarningsMenuItem();
     this->setupAutoUpdate();
+
+    this->runMBeat();
 }
 
 void MainWindow::informWarningPresence() {
@@ -17,19 +18,24 @@ void MainWindow::informWarningPresence() {
 
 // updates the menu depending on the config values filled or not
 void MainWindow::onAppSettingsChanged() {
+    //
     bool shouldActivateLink = !this->appSettings.getConnectivityInfos().getPlaformHomeUrl().isEmpty();
     this->myPlatformAction->setEnabled(shouldActivateLink);
+
+    // restart threads ?
+    runMBeat();
+    if(this->sw) runShouts();
+    if(this->fw) runFeeder();
 }
 
 void MainWindow::updateWarningsMenuItem() {
-    bool hasFeederWarnings = QFileInfo(this->owHelper.getOutputPath()).exists();
+    bool hasFeederWarnings = QFileInfo(AppSettings::getFeedWarningFilePath()).exists();
     this->openWarningsAction->setEnabled(hasFeederWarnings);
 }
 
 ///
 /// Functionnalities helpers calls
 ///
-
 
 void MainWindow::accessPlatform() {
     const auto platformHomeUrl = this->appSettings.getConnectivityInfos().getPlaformHomeUrl();
@@ -54,7 +60,7 @@ void MainWindow::accessPreferences() {
 
 // open the warnings file on the OS
 void MainWindow::openWarnings() {
-    PlatformHelper::openFileInOS(this->owHelper.getOutputPath());
+    PlatformHelper::openFileInOS(AppSettings::getFeedOutputFilePath());
 }
 
 void MainWindow::setupAutoUpdate() {
@@ -152,44 +158,69 @@ void MainWindow::updateStatusBar(const QString &message, const TLW_Colors &color
     this->statusLight->setCurrentIndex(static_cast<int>(color));
 }
 
-void MainWindow::startupMBeatThread() {
+void MainWindow::threadAutoDeleter(QThread* thread) {
+    QObject::connect(
+        thread, &QThread::finished,
+        thread, &QObject::deleteLater
+    );
+
+    QObject::connect(
+        thread, &QObject::destroyed,
+        [&thread]() { thread = nullptr; }
+    );
+}
+
+void MainWindow::runMBeat() {
+    //
+    if(this->cw) {
+        this->cw->exit();
+        this->cw->wait();
+    }
+
     //
     this->cw = new MBeatThread(this->appSettings.getConnectivityInfos());
 
-    QObject::connect(
-        this->cw, &MBeatThread::updateSIOStatus,
-        this, &MainWindow::updateStatusBar
-    );
+        QObject::connect(
+            this->cw, &MBeatThread::updateConnectivityStatus,
+            this, &MainWindow::updateStatusBar
+        );
+
+        threadAutoDeleter(this->cw);
 
     this->cw->start();
 }
 
-void MainWindow::startupShoutThread() {
-    this->sw = new ShoutThread(this->appSettings.getConnectivityInfos());
-    this->shoutTab->bindWithWorker(this->sw);
+void MainWindow::runShouts() {
+    //
+    if(this->sw) {
+        this->sw->exit();
+        this->sw->wait();
+    }
+    
+    this->sw = new ShoutThread(&this->uploadHelper, this->appSettings.getConnectivityInfos());
 
-    QObject::connect(
-        this->sw, &QThread::finished,
-        this->sw, &QObject::deleteLater
-    );
+        this->shoutTab->bindWithWorker(this->sw);
+        threadAutoDeleter(this->sw);
 
     this->sw->start();
 }
 
+void MainWindow::runFeeder() {
+    //
+    if(this->fw) {
+        this->fw->exit();
+        this->fw->wait();
+    }
 
-void MainWindow::startupFeederThread() {
-    this->fw = new FeederThread(this->appSettings.getConnectivityInfos());
-    this->feederTab->bindWithWorker(this->fw);
+    this->fw = new FeederThread(&this->uploadHelper, this->appSettings.getConnectivityInfos());
 
-    QObject::connect(
-        this->fw, &ITNZThread::operationFinished,
-        this, &MainWindow::updateWarningsMenuItem
-    );
+        QObject::connect(
+            this->fw, &FeederThread::operationFinished,
+            this, &MainWindow::updateWarningsMenuItem
+        );
 
-    QObject::connect(
-        this->fw, &QThread::finished,
-        this->fw, &QObject::deleteLater
-    );
+        this->feederTab->bindWithWorker(this->fw);
+        threadAutoDeleter(this->fw);
 
     this->fw->start();
 }
@@ -271,12 +302,12 @@ void MainWindow::_initUITabs() {
 
     QObject::connect(
         this->shoutTab->tButton, &QPushButton::clicked,
-        this, &MainWindow::startupShoutThread
+        this, &MainWindow::runShouts
     );
 
     QObject::connect(
         this->feederTab->tButton, &QPushButton::clicked,
-        this, &MainWindow::startupFeederThread
+        this, &MainWindow::runFeeder
     );
 
     tabs->addTab(this->shoutTab, "Shout!");

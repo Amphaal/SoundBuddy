@@ -20,7 +20,7 @@
 #include <QIcon>
 #include <QStatusBar>
 
-#include "src/helpers/platformHelper/platformHelper.h"
+#include "src/helpers/PlatformHelper.h"
 
 #include "src/ui/tabs/ShoutTab.hpp"
 #include "src/ui/tabs/FeederTab.hpp"
@@ -31,6 +31,7 @@
 
 #include "src/helpers/AppSettings.hpp"
 #include "src/ui/monitor/PreferencesDialog.hpp"
+#include "src/helpers/UploadHelper.hpp"
 
 class MainWindow : public QMainWindow {
    Q_OBJECT
@@ -105,8 +106,10 @@ class MainWindow : public QMainWindow {
     ShoutThread* sw = nullptr;
     FeederThread* fw = nullptr;
     MBeatThread* cw = nullptr;
+    UploadHelper uploadHelper;
     UpdaterThread updateChecker;
-    void startupMBeatThread();
-    void startupShoutThread();
-    void startupFeederThread();
+    void runMBeat();
+    void runShouts();
+    void runFeeder();
+    void threadAutoDeleter(QThread* thread);
 };

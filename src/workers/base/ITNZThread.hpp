@@ -9,12 +9,12 @@ class ITNZThread : public QThread {
     Q_OBJECT
 
  public:
-    ITNZThread(const Uploader* uploder, const AppSettings::ConnectivityInfos connectivityInfos) :
+    ITNZThread(const UploadHelper* uploder, const AppSettings::ConnectivityInfos connectivityInfos) :
         _uploder(uploder), _connectivityInfos(connectivityInfos) {}
 
  protected:
     const AppSettings::ConnectivityInfos _connectivityInfos;
-    const Uploader* _uploder;
+    const UploadHelper* _uploder;
 
  signals:
     void printLog(const QString &message, const bool replacePreviousLine = false, const bool isError = false);

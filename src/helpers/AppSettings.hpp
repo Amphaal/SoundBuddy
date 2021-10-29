@@ -2,6 +2,8 @@
 
 #include <QSettings>
 
+#include "src/helpers/PlatformHelper.h"
+
 class AppSettings : public QSettings {
  public:
     struct ConnectivityInfos {
@@ -45,10 +47,21 @@ class AppSettings : public QSettings {
         return { "/uploadLib", "wtnz_file" };
     }
 
+    static const QString getFeedWarningFilePath() {
+        return PlatformHelper::getDataStorageDirectory() + QDir::separator() + _FeedWarningFileName;
+    }
+
+    static const QString getFeedOutputFilePath() {
+        return PlatformHelper::getDataStorageDirectory() + QDir::separator() + _FeedOutputFileName;
+    }
 
     static inline const char * MUST_AUTORUN_SHOUT = "AutoRunShout";
     static inline const char * PLATFORM_USERNAME = "PlatformUsername";
     static inline const char * PLATFORM_PASSWORD = "PlatformPassword";
     static inline const char * PLATFORM_HOST_URL = "PlatformHostUrl";
     static inline const char * MUST_RUN_AT_STARTUP = "MustRunAtStartup";
+ 
+ private:
+    static inline const char * _FeedWarningFileName = "warnings.json";
+    static inline const char * _FeedOutputFileName = "output.json";
 };
