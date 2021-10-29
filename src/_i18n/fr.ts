@@ -48,7 +48,7 @@
     </message>
     <message>
         <source>Cooking the JSON file...</source>
-        <translation>On cuisine le fichier JSON...</translation>
+        <translation type="vanished">On cuisine le fichier JSON...</translation>
     </message>
     <message>
         <source>%1 over %2 ...</source>
