@@ -13,7 +13,7 @@
 
 class UploadHelper {
  public:
-     struct UploadInstructions {
+    struct UploadInstructions {
         const AppSettings::ConnectivityInfos &connectivityInfos;
         const AppSettings::UploadInfos &uploadInfos;
         const QByteArray &dataToUpload;
@@ -23,7 +23,7 @@ class UploadHelper {
         }
     };
 
-    UploadHelper(QObject* parent) : _manager(new QNetworkAccessManager(parent)) {}
+    explicit UploadHelper(QObject* parent) : _manager(new QNetworkAccessManager(parent)) {}
 
     void uploadDataToPlatform(const UploadInstructions &instructions) const {
         //
@@ -55,9 +55,9 @@ class UploadHelper {
 
         // handle reply and send
         auto reply = _manager->post(request, postData);
-        postData->setParent(reply); // delete the multiPart with the reply
+        postData->setParent(reply);  // delete the multiPart with the reply
     }
- 
+
  private:
     QNetworkAccessManager* _manager;
 };

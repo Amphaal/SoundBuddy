@@ -24,7 +24,9 @@
                 "${workspaceFolder}/deps/IFWUpdateChecker/deps/StupidHTTPDownloader/include",
                 "/usr/local/Cellar/qt/6.2.0/lib/QtGui.framework/Versions/A/Headers",
                 "${workspaceFolder}/deps/IFWUpdateChecker/deps/tiny-process-library",
-                "${workspaceFolder}/deps/ItunesLibraryParser/src"
+                "${workspaceFolder}/deps/ItunesLibraryParser/src",
+                "/usr/local/Cellar/qt/6.2.0/lib/QtNetwork.framework/Versions/A/Headers",
+                "/usr/local/Cellar/qt/6.2.0/lib/QtWebSockets.framework/Versions/A/Headers"
             ]
         },
         {
