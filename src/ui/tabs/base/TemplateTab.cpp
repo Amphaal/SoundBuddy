@@ -1,4 +1,4 @@
-// FeedTNZ
+// SoundBuddy
 // Small companion app for desktop to feed or stream ITunes / Music library informations
 // Copyright (C) 2019-2021 Guillaume Vara <guillaume.vara@gmail.com>
 

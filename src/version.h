@@ -1,4 +1,4 @@
-// FeedTNZ
+// SoundBuddy
 // Small companion app for desktop to feed or stream ITunes / Music library informations
 // Copyright (C) 2019-2021 Guillaume Vara <guillaume.vara@gmail.com>
 
@@ -22,9 +22,9 @@
 #pragma once
 
 #define APP_PUBLISHER "LVWL"
-#define APP_NAME "FeedTNZ"
+#define APP_NAME "SoundBuddy"
 #define APP_CURRENT_VERSION "0.4.1"
-#define APP_FULL_DENOM "FeedTNZ 0.4.1"
+#define APP_FULL_DENOM "SoundBuddy 0.4.1"
 #define APP_REMOTE_MANIFEST_URL ""
-#define APP_PATCHNOTE_URL "https://github.com/Amphaal/feedtnz/releases"
-#define DEST_PLATFORM_PRODUCT_NAME "WTNZ"
+#define APP_PATCHNOTE_URL "https://github.com/Amphaal/SoundBuddy/releases"
+#define DEST_PLATFORM_PRODUCT_NAME "SoundVitrine"

@@ -45,7 +45,7 @@ class AppSettings : public QSettings {
     }
 
     static const UploadInfos getFeederUploadInfos() {
-        return { "/uploadLib", "wtnz_file" };
+        return { "/uploadLib", "SoundVitrine_file" };
     }
 
     static const QString getFeedWarningFilePath() {

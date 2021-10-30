@@ -10,10 +10,10 @@
             "request": "launch",
             "preLaunchTask": "2. Build",
             "cwd": "${workspaceFolder}/build",
-            "program": "${workspaceFolder}/build/out/FeedTNZ",
+            "program": "${workspaceFolder}/build/out/SoundBuddy",
             "osx": {
                 "MIMode": "lldb",
-                "program": "${workspaceFolder}/build/out/FeedTNZ.app/Contents/MacOS/FeedTNZ",
+                "program": "${workspaceFolder}/build/out/SoundBuddy.app/Contents/MacOS/SoundBuddy",
             }
         }
     ]

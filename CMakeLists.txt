@@ -26,10 +26,10 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out)
 
 cmake_minimum_required(VERSION 3.14.3)
 
-project(FeedTNZ
+project(SoundBuddy
     VERSION 0.4.1
     DESCRIPTION "Small companion app for desktop to feed or stream ITunes / Music library informations"
-    HOMEPAGE_URL "https://github.com/Amphaal/feedtnz"
+    HOMEPAGE_URL "https://github.com/Amphaal/SoundBuddy"
     LANGUAGES CXX
 )
 
@@ -39,7 +39,7 @@ project(FeedTNZ
 
 #app dest path
 SET(APP_PUBLISHER "LVWL")
-SET(DEST_PLATFORM_PRODUCT_NAME "WTNZ")
+SET(DEST_PLATFORM_PRODUCT_NAME "SoundVitrine")
 SET(APP_PATCHNOTE_URL ${PROJECT_HOMEPAGE_URL}/releases)
 SET(APP_REMOTE_MANIFEST_URL "")
 

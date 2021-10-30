@@ -35,11 +35,10 @@ cpack_ifw_configure_component("App"
     DISPLAY_NAME "${PROJECT_NAME} ${CMAKE_PROJECT_VERSION}"
     DESCRIPTION 
         ${PROJECT_DESCRIPTION}
-        fr "L'experience JdR simplifiée !"
     SCRIPT "src/_ifw/EndInstallerForm.js"
     SORTING_PRIORITY 1000
     USER_INTERFACES "src/_ifw/EndInstallerForm.ui"
-    # TRANSLATIONS ${CMAKE_BINARY_DIR}/EndInstallerForm_fr.qm
+    TRANSLATIONS ${CMAKE_BINARY_DIR}/EndInstallerForm_fr.qm
     FORCED_INSTALLATION
 )
 
@@ -87,7 +86,7 @@ cpack_ifw_configure_component("OpenSSL"
 
 # repository for updates
 cpack_ifw_add_repository(coreRepo 
-    URL "https://dl.bintray.com/amphaal/rpgrpz/ifw-${CPACK_SYSTEM_NAME}"
+    URL "https://dl.bintray.com/amphaal/${PROJECT_NAME}/ifw-${CPACK_SYSTEM_NAME}"
 )
 
 ########################
