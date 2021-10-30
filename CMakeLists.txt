@@ -28,7 +28,7 @@ cmake_minimum_required(VERSION 3.14.3)
 
 project(SoundBuddy
     VERSION 0.4.1
-    DESCRIPTION "Small companion app for desktop to feed or stream ITunes / Music library informations"
+    DESCRIPTION "Small companion app that feeds SoundVitrine with ITunes / Music library metadata"
     HOMEPAGE_URL "https://github.com/Amphaal/SoundBuddy"
     LANGUAGES CXX
 )

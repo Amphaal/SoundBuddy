@@ -1,5 +1,5 @@
 // SoundBuddy
-// Small companion app for desktop to feed or stream ITunes / Music library informations
+// Small companion app that feeds SoundVitrine with ITunes / Music library metadata
 // Copyright (C) 2019-2021 Guillaume Vara <guillaume.vara@gmail.com>
 
 // This program is free software: you can redistribute it and/or modify

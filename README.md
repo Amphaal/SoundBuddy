@@ -3,11 +3,11 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/amphaal/SoundBuddy/badge)](https://www.codefactor.io/repository/github/amphaal/SoundBuddy)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/b569eb64104e42589fd8825098562243)](https://www.codacy.com/gh/Amphaal/SoundBuddy/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Amphaal/SoundBuddy&amp;utm_campaign=Badge_Grade)
 
-Small companion app for desktop to feed or stream ITunes / Music library informations
+Small companion app that feeds SoundVitrine with ITunes / Music library metadata !
 
 ## License
     SoundBuddy
-    Small companion app for desktop to feed or stream ITunes / Music library informations
+    Small companion app that feeds SoundVitrine with ITunes / Music library metadata
     Copyright (C) 2018-2021 Guillaume Vara <guillaume.vara@gmail.com>
 
     This program is free software: you can redistribute it and/or modify
