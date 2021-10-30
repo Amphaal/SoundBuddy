@@ -34,6 +34,24 @@ int main(int argc, char** argv) {
 
     // setup app
     QApplication app(argc, argv);
+
+    // activate translations...
+        auto translationsPath = app.applicationDirPath() + QDir::separator() + "translations";
+        auto locale = QLocale::system();
+
+        // Qt
+        auto _qtTranslator = new QTranslator(&app);
+        if (_qtTranslator->load(locale, "qt", "_", translationsPath)) {
+            app.installTranslator(_qtTranslator);
+        }
+
+        // app
+        auto _appTranslator = new QTranslator(&app);
+        if (_appTranslator->load(locale, "", "", translationsPath)) {
+            app.installTranslator(_appTranslator);
+        }
+
+    //
     app.setQuitOnLastWindowClosed(false);
     app.setApplicationName(APP_NAME);
     app.setOrganizationName(APP_PUBLISHER);

@@ -170,7 +170,6 @@ void ShoutThread::run() {
     emit printLog(tr("Waiting for %1 to launch...").arg(musicAppName()));
 
     // define applescript to get shout values
-    Q_INIT_RESOURCE(resources);
     const auto scriptContent = QFile(":/mac/CurrentlyPlaying.applescript").readAll();
 
     // prepare script exec
