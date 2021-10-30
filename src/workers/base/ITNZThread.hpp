@@ -31,6 +31,8 @@ class ITNZThread : public QThread {
     ITNZThread(const UploadHelper* uploder, const AppSettings::ConnectivityInfos connectivityInfos) :
         _uploder(uploder), _connectivityInfos(connectivityInfos) {}
 
+    virtual void quit() { QThread::quit(); }
+
  protected:
     const AppSettings::ConnectivityInfos _connectivityInfos;
     const UploadHelper* _uploder;

@@ -21,10 +21,15 @@
 
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 
 #include "src/_i18n/trad.hpp"
 
 ShoutThread::ShoutThread(const UploadHelper* uploder, const AppSettings::ConnectivityInfos connectivityInfos) : ITNZThread(uploder, connectivityInfos) {}
+
+void ShoutThread::quit() {
+    this->_mustListen = false;
+}
 
 QJsonObject ShoutThread::_createBasicShout() const {
     // get iso date
@@ -175,20 +180,19 @@ void ShoutThread::run() {
             result[result.size() - 1] = ']';
 
             // cast to json
-            QJsonDocument trackObj;
-            trackObj.Parse(result.data());
+            const auto trackData = QJsonDocument::fromJson(result.data()).array();
 
             // get values for shout
-            tName = trackObj[0].GetString();
-            tAlbum = trackObj[1].GetString();
-            tArtist = trackObj[2].GetString();
-            tGenre = trackObj[3].GetString();
-            iDuration = trackObj[4].GetInt();
-            tYear = trackObj[5].GetInt();
-            iPlayerPos = trackObj[6].GetInt();
-            iPlayerState = trackObj[7].GetString() == "paused" ? 0 : 1;
-            tDateSkipped = trackObj[8].GetString();
-            tDatePlayed = trackObj[9].GetString();
+            tName = trackData[0].toString();
+            tAlbum = trackData[1].toString();
+            tArtist = trackData[2].toString();
+            tGenre = trackData[3].toString();
+            iDuration = trackData[4].toInt();
+            tYear = trackData[5].toInt();
+            iPlayerPos = trackData[6].toInt();
+            iPlayerState = trackData[7].toString() == "paused" ? 0 : 1;
+            tDateSkipped = trackData[8].toString();
+            tDatePlayed = trackData[9].toString();
         }
 
         // compare with old shout, if equivalent, don't reshout

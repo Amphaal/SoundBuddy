@@ -20,6 +20,7 @@
 #pragma once
 
 #include <QThread>
+#include <QWebSocket>
 
 #include "src/helpers/AppSettings.hpp"
 

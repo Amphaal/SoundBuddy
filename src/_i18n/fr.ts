@@ -47,10 +47,6 @@
         <translation>Aucunes musiques trouvée dans %1. Merci de lui en fournir quelques unes !</translation>
     </message>
     <message>
-        <source>Cooking the JSON file...</source>
-        <translation type="vanished">On cuisine le fichier JSON...</translation>
-    </message>
-    <message>
         <source>%1 over %2 ...</source>
         <translation>%1 sur %2 ...</translation>
     </message>
@@ -124,6 +120,10 @@
     <message>
         <source>An error occured while connecting with %1 platform !</source>
         <translation>Une erreur s&apos;est produite pendant la connexion à la plateforme %1 !</translation>
+    </message>
+    <message>
+        <source>Issue while reading response from %1 platform.</source>
+        <translation>Erreur durant la lecture de la réponse de la plateforme %1.</translation>
     </message>
 </context>
 <context>

@@ -19,7 +19,6 @@
 
 #include "MBeatThread.h"
 
-#include <QWebSocket>
 #include <QJsonObject>
 #include <QJsonDocument>
 
