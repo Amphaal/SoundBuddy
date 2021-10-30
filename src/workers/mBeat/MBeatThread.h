@@ -20,7 +20,6 @@
 #pragma once
 
 #include <QThread>
-#include <QWebSocket>
 
 #include "src/helpers/AppSettings.hpp"
 
@@ -41,6 +40,10 @@ class MBeatThread : public QThread {
  private:
     const AppSettings::ConnectivityInfos _connectivityInfos;
 
-    const QString _validationErrorTr(const QString& returnCode) const;
-    void _emitLoggedUserMsg();
+    const QString _onCredentialsErrorMsg(const QString& returnCode) const;
+    void _checkCredentials(QWebSocket &socket);
+    bool _pongReceived = true;
+    bool _pongMissed = false;
+
+    static inline qint64 HEARTBEAT_INTERVAL = 10000;  // 10 sec.
 };

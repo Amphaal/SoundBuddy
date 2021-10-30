@@ -19,6 +19,12 @@
 
 #include "MBeatThread.h"
 
+#include <QWebSocket>
+#include <QJsonObject>
+#include <QJsonDocument>
+
+#include "src/version.h"
+
 MBeatThread::MBeatThread(const AppSettings::ConnectivityInfos &connectivityInfos) : _connectivityInfos(connectivityInfos) {}
 
 void MBeatThread::run() {
@@ -38,97 +44,116 @@ void MBeatThread::run() {
     //
     emit updateConnectivityStatus(tr("Connecting to server..."), TLW_Colors::YELLOW);
 
-    // when response to pings are received
-    QObject::connect(
-        &socket, &QWebSocket::pong,
-        [](quint64 elapsedTime, const QByteArray &payload) {
-            // TODO
-        }
-    );
-
     // handling errors
     QObject::connect(
         &socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error),
         [this](QAbstractSocket::SocketError error) {
-            emit updateConnectivityStatus(tr("An error occured while connecting with %1 platform !"), TLW_Colors::RED);
-        }
-    );
-
-    // handling disconnect
-    QObject::connect(
-        &socket, &QWebSocket::disconnected,
-        [this]() {
-            // TODO
+            emit updateConnectivityStatus(tr("An error occured while connecting with %1 platform !").arg(DEST_PLATFORM_PRODUCT_NAME), TLW_Colors::RED);
         }
     );
 
     // handling messages
     QObject::connect(
         &socket, &QWebSocket::textMessageReceived,
-        [this](const QString &message) {
-            // TODO
+        [this, &socket](const QString &message) {
+            //
+            QJsonParseError parseError;
+            auto document = QJsonDocument::fromJson(message.toUtf8(), &parseError);
+
+            auto parseErr = [this]() {
+                emit updateConnectivityStatus(tr("Issue while reading response from %1 platform.").arg(DEST_PLATFORM_PRODUCT_NAME), TLW_Colors::RED);
+            };
+
+            //
+            if (parseError.error != QJsonParseError::ParseError::NoError || !document.isObject()) {
+                parseErr();
+                return;
+            }
+
+            const auto jsonObj = document.object();
+            const auto msgType = jsonObj.value("id").toString();
+            const auto msgContent = jsonObj.value("r").toString();
+
+            if(msgType.isEmpty() || msgContent.isEmpty()) {
+                parseErr();
+                return;
+            }
+
+            //
+            if(msgType == "credentialsChecked") {
+                if(msgContent == "ok") {
+                    emit updateConnectivityStatus(tr("Logged as \"%1\"").arg(_connectivityInfos.username), TLW_Colors::GREEN);
+                } else {
+                    emit updateConnectivityStatus(_onCredentialsErrorMsg(msgContent), TLW_Colors::RED);
+                }
+            } else if (msgType == "databaseUpdated") {
+                this->_checkCredentials(socket);
+            } else {
+                parseErr();
+                return;
+            }
         }
     );
 
     // on connection !
     QObject::connect(
         &socket, &QWebSocket::connected,
-        [this]() {
-            //
-            emit updateConnectivityStatus(tr("Asking for credentials validation..."), TLW_Colors::YELLOW);
-
-            //
-            sioClient->socket("/login")->emit("checkCredentials", p);
+        [this, &socket]() {
+            this->_checkCredentials(socket);
         }
     );
 
     /// ping/pong feature
     QTimer pingTimer;
-    pingTimer.setInterval(10000);  // ping every 10 seconds
+    pingTimer.setInterval(HEARTBEAT_INTERVAL);
     QObject::connect(
         &pingTimer, &QTimer::timeout,
-        [&socket]() {
+        [this, &socket]() {
+            // whenever pong has been received in the meantime
+            if(!_pongReceived) {
+                // pong missed, tell we lost connection
+                emit updateConnectivityStatus(tr("Reconnecting to server..."), TLW_Colors::YELLOW);
+                _pongMissed = true;
+            } else {
+                // reset pong flag
+                _pongReceived = false;
+            }
+
+            // ping every time
             socket.ping();
         }
     );
     pingTimer.start();
 
-    // tell sio is trying to reconnect
-    this->_sioClient->set_reconnect_listener([&](unsigned int a, unsigned int b) {
-        emit updateConnectivityStatus(tr("Reconnecting to server..."), TLW_Colors::YELLOW);
-    });
+    // when response to pings are received
+    QObject::connect(
+        &socket, &QWebSocket::pong,
+        [this, &socket](quint64 elapsedTime, const QByteArray &payload) {
+            // ack pong
+            _pongReceived = true;
 
-    // once server checked the credentials
-    this->_sioClient->socket("/login")->on("credentialsChecked", [&](sio::event& ev) {
-        // extract response
-        auto response = ev.get_messages()[0]->get_map();
-        auto isOk = response["isLoginOk"]->get_bool();
-        auto extraInfo = QString::fromStdString(response["accomp"]->get_string());
-
-        if(isOk) {
-            this->_loggedInUser = extraInfo;
-            _emitLoggedUserMsg();
-        } else {
-            emit updateConnectivityStatus(_validationErrorTr(extraInfo), TLW_Colors::RED);
+            // if heartbeat failed somehow, recheck credentials
+            if(_pongMissed) {
+                _pongMissed = false;
+                this->_checkCredentials(socket);
+            }
         }
-
-        // toggle flag
-        this->_requestOngoing = false;
-    });
-
-    // when server tell us the database has been updated, ask for revalidation
-    this->_sioClient->socket("/login")->on("databaseUpdated", [&](sio::event& ev) {
-        this->_checkCredentials(true);
-    });
+    );
 
     this->exec();
 }
 
-void MBeatThread::_emitLoggedUserMsg() {
-    emit updateConnectivityStatus(tr("Logged as \"%1\"").arg(_connectivityInfos.username), TLW_Colors::GREEN);
+void MBeatThread::_checkCredentials(QWebSocket &socket) {
+    //
+    emit updateConnectivityStatus(tr("Asking for credentials validation..."), TLW_Colors::YELLOW);
+
+    //
+    QJsonObject payload;
+    payload["checkCredentials"] = this->_connectivityInfos.password;
+    socket.sendTextMessage(QJsonDocument{payload}.toJson());
 }
 
-const QString MBeatThread::_validationErrorTr(const QString& returnCode) const {
+const QString MBeatThread::_onCredentialsErrorMsg(const QString& returnCode) const {
     QString msg;
 
     if(returnCode == "cdm") {
