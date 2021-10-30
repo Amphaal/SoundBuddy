@@ -93,13 +93,6 @@ if (APPLE)
     )
 endif (APPLE)
 
-#default source contains
-SET(SOURCES
-    ${APP_ICO}
-    ${CACERT}
-    resources/resources.qrc
-)
-
 ####################
 # Code compilation #
 ####################
@@ -115,6 +108,8 @@ file(GLOB_RECURSE APP_HPP_FILES "src/*.hpp")
 add_executable(appExec ${BUNDLE_TYPE}
     ${APP_HPP_FILES}
     ${APP_CPP_FILES}
+    ${APP_ICO}
+    resources/resources.qrc
 ) 
 
 target_include_directories(appExec PRIVATE
@@ -122,12 +117,22 @@ target_include_directories(appExec PRIVATE
 )
 
 #
+set_target_properties(appExec PROPERTIES OUTPUT_NAME ${CMAKE_PROJECT_NAME})
+
+#
 target_compile_definitions(appExec PRIVATE $<$<CONFIG:Debug>:_DEBUG>) #define _DEBUG markup if in DEBUG config
 
-#add highdpi support / menu behavior via plist template (MACOS)
-set_target_properties(appExec PROPERTIES 
-    MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/templates/Info.plist.in     
-) 
+if (APPLE)
+    #add highdpi support / menu behavior via plist template (MACOS)
+    set_target_properties(appExec PROPERTIES 
+        BUNDLE                              ON
+        MACOSX_BUNDLE_INFO_PLIST            ${CMAKE_CURRENT_SOURCE_DIR}/templates/Info.plist
+        MACOSX_BUNDLE_GUI_IDENTIFIER        com.${APP_PUBLISHER}.${CMAKE_PROJECT_NAME}
+        MACOSX_BUNDLE_BUNDLE_NAME           ${CMAKE_PROJECT_NAME}
+        MACOSX_BUNDLE_BUNDLE_VERSION        ${CMAKE_PROJECT_VERSION}
+        MACOSX_BUNDLE_SHORT_VERSION_STRING  ${CMAKE_PROJECT_VERSION} 
+    ) 
+endif()
 
 ################
 # translations #

@@ -10,10 +10,10 @@
             "request": "launch",
             "preLaunchTask": "2. Build",
             "cwd": "${workspaceFolder}/build",
-            "program": "${workspaceFolder}/build/feedtnz",
+            "program": "${workspaceFolder}/build/out/FeedTNZ",
             "osx": {
                 "MIMode": "lldb",
-                "program": "${workspaceFolder}/build/Debug/bin/FeedTNZ.app/Contents/MacOS/feedtnz",
+                "program": "${workspaceFolder}/build/out/FeedTNZ.app/Contents/MacOS/FeedTNZ",
             }
         }
     ]
