@@ -25,10 +25,9 @@
 #include "src/version.h"
 
 const QString musicAppName() {
-    #ifdef _WIN32
-        return "iTunes";
-    #endif
     #ifdef APPLE
         return QObject::tr("Music");
+    #else
+        return "iTunes";
     #endif
 }

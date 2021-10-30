@@ -25,7 +25,7 @@ class UploadHelper {
 
     explicit UploadHelper(QObject* parent) : _manager(new QNetworkAccessManager(parent)) {}
 
-    void uploadDataToPlatform(const UploadInstructions &instructions) const {
+    QNetworkReply* uploadDataToPlatform(const UploadInstructions &instructions) const {
         //
         auto postData = new QHttpMultiPart(QHttpMultiPart::MixedType);
 
@@ -56,6 +56,8 @@ class UploadHelper {
         // handle reply and send
         auto reply = _manager->post(request, postData);
         postData->setParent(reply);  // delete the multiPart with the reply
+
+        return reply;
     }
 
  private:

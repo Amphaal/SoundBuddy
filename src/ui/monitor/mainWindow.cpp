@@ -58,16 +58,16 @@ void MainWindow::updateWarningsMenuItem() {
 
 void MainWindow::accessPlatform() {
     const auto platformHomeUrl = this->appSettings.getConnectivityInfos().getPlaformHomeUrl();
-    
+
     //
     if(platformHomeUrl.isEmpty()) {
-        QMessageBox::critical(this, 
-            tr("Cannot access %1 plaform").arg(DEST_PLATFORM_PRODUCT_NAME), 
+        QMessageBox::critical(this,
+            tr("Cannot access %1 plaform").arg(DEST_PLATFORM_PRODUCT_NAME),
             tr("%1 Plaform URL is not valid. Please check Preferences connectivity parameters.").arg(DEST_PLATFORM_PRODUCT_NAME)
         );
         return;
     }
-    
+
     //
     PlatformHelper::openUrlInBrowser(platformHomeUrl);
 }
@@ -215,7 +215,7 @@ void MainWindow::runShouts() {
         this->sw->exit();
         this->sw->wait();
     }
-    
+
     this->sw = new ShoutThread(&this->uploadHelper, this->appSettings.getConnectivityInfos());
 
         this->shoutTab->bindWithWorker(this->sw);
@@ -234,7 +234,7 @@ void MainWindow::runFeeder() {
     this->fw = new FeederThread(&this->uploadHelper, this->appSettings.getConnectivityInfos());
 
         QObject::connect(
-            this->fw, &FeederThread::operationFinished,
+            this->fw, &FeederThread::filesGenerated,
             this, &MainWindow::updateWarningsMenuItem
         );
 

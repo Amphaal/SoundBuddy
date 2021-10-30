@@ -31,7 +31,7 @@ class AppSettings : public QSettings {
 
         if(username.isEmpty() || hostUrl.isEmpty() || password.isEmpty())
             return {};
-        
+
         return {
             hostUrl,
             username,
@@ -61,7 +61,7 @@ class AppSettings : public QSettings {
     static inline const char * PLATFORM_PASSWORD = "PlatformPassword";
     static inline const char * PLATFORM_HOST_URL = "PlatformHostUrl";
     static inline const char * MUST_RUN_AT_STARTUP = "MustRunAtStartup";
- 
+
  private:
     static inline const char * _FeedWarningFileName = "warnings.json";
     static inline const char * _FeedOutputFileName = "output.json";

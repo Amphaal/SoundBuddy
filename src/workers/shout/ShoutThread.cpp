@@ -22,6 +22,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QEventLoop>
+#include <QNetworkReply>
 
 #include "src/_i18n/trad.hpp"
 
@@ -29,6 +31,7 @@ ShoutThread::ShoutThread(const UploadHelper* uploder, const AppSettings::Connect
 
 void ShoutThread::quit() {
     this->_mustListen = false;
+    ITNZThread::quit();
 }
 
 QJsonObject ShoutThread::_createBasicShout() const {
@@ -67,7 +70,32 @@ void ShoutThread::_shoutToServer(const QJsonObject &incoming) {
         };
 
         //
-        this->_uploder->uploadDataToPlatform(instr);
+        auto response = this->_uploder->uploadDataToPlatform(instr);
+
+        // on error
+        QObject::connect(
+            response, &QNetworkReply::errorOccurred,
+            [this, response](QNetworkReply::NetworkError) {
+                //
+                emit printLog(
+                    tr("An error occured while shouting tracks infos to %1 platform.")
+                        .arg(DEST_PLATFORM_PRODUCT_NAME),
+                        false,
+                        true
+                );
+
+                // ask for deletion
+                response->deleteLater();
+            }
+        );
+
+        // on finished
+        QObject::connect(
+            response, &QNetworkReply::finished,
+            response, &QObject::deleteLater
+        );
+
+    //
     } catch(const std::exception& e) {
         // emit error
         emit printLog(e.what(), false, true);

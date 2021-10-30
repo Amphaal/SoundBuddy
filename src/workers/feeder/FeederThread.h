@@ -21,15 +21,7 @@
 
 #include <QString>
 
-#include <fstream>
-#include <algorithm>
-#include <set>
-
 #include "src/workers/base/ITNZThread.hpp"
-
-#include "src/helpers/PlatformHelper.h"
-
-#include <ITunesLibraryParser.hpp>
 
 class FeederThread : public ITNZThread {
   Q_OBJECT
@@ -45,8 +37,8 @@ class FeederThread : public ITNZThread {
     void _tracksUnmolding(const char* filename);
 
     // seek in Music App preference file the library location
-    QString _getMusicAppLibLocation();
+    const QString _getMusicAppLibLocation();
 
  signals:
-      void operationFinished();
+      void filesGenerated();
 };

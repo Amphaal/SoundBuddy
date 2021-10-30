@@ -19,10 +19,6 @@
         <translation>OK, le fichier de sorti est prêt pour le petit-dej !</translation>
     </message>
     <message>
-        <source>Unmolding &quot;%1&quot;...</source>
-        <translation>Démoulage du fichier &quot;%1&quot;...</translation>
-    </message>
-    <message>
         <source>Let&apos;s try to send now !</source>
         <translation>On va essayer de l&apos;envoyer !</translation>
     </message>
@@ -35,20 +31,8 @@
         <translation>Aucun retour du serveur... C&apos;est étrange, merci de vérifier que le serveur ciblé est bien le bon.</translation>
     </message>
     <message>
-        <source>Pre-digesting XML file...</source>
-        <translation>On pré-traite le fichier XML...</translation>
-    </message>
-    <message>
-        <source>Triming fat...</source>
-        <translation>On dégraisse...</translation>
-    </message>
-    <message>
         <source>No music found in your %1 library. Please feed it some.</source>
         <translation>Aucunes musiques trouvée dans %1. Merci de lui en fournir quelques unes !</translation>
-    </message>
-    <message>
-        <source>%1 over %2 ...</source>
-        <translation>%1 sur %2 ...</translation>
     </message>
     <message>
         <source>Getting XML file location...</source>
@@ -59,12 +43,32 @@
         <translation>ATTENTION ! Assurez-vous que le partage du fichier XML de la bibliothèque est bien activé dans %1 &gt; Préférences &gt; Avancées</translation>
     </message>
     <message>
-        <source>Cannot read the XML file bound to your library. Are you sure you activated the XML file sharing in %1 ?</source>
-        <translation>Impossible de lire le fichier XML lié à votre bibliothèque. Assurez-vous que le partage du fichier XML de la bibliothèque est bien activé dans %1.</translation>
-    </message>
-    <message>
         <source>An issue happened while fetching %1&apos;s XML file location. Have you installed %1 ?</source>
         <translation>Un problème est survenu durant la recherche de l&apos;emplacement de la bibliothèque. Etes-vous sûr d&apos;avoir installé %1 ?</translation>
+    </message>
+    <message>
+        <source>Collecting tracks infos...</source>
+        <translation>Récupération des informations des morceaux...</translation>
+    </message>
+    <message>
+        <source>Collection done !</source>
+        <translation>Récupération terminée !</translation>
+    </message>
+    <message>
+        <source>Parsing infos into JSON...</source>
+        <translation>Compilation des informations en JSON...</translation>
+    </message>
+    <message>
+        <source>Parsing done !</source>
+        <translation>Compilation terminée !</translation>
+    </message>
+    <message>
+        <source>Sending... Waiting for response.</source>
+        <translation>Envoi... En attente de réponse.</translation>
+    </message>
+    <message>
+        <source>An error occured while sending tracks infos to %1 platform.</source>
+        <translation>Une erreur s'est produite pendant l'envoi des informations de morceaux à la plateforme %1.</translation>
     </message>
 </context>
 <context>
@@ -315,6 +319,10 @@
     <message>
         <source>Waiting for %1 to launch again...</source>
         <translation>J&apos;attends qu&apos;%1 se relance...</translation>
+    </message>
+    <message>
+        <source>An error occured while shouting tracks infos to %1 platform.</source>
+        <translation>Une erreur s'est produite pendant le shout des informations du morceau à la plateforme %1.</translation>
     </message>
 </context>
 </TS>
