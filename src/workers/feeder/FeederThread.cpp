@@ -1,206 +1,168 @@
+// FeedTNZ
+// Small companion app for desktop to feed or stream ITunes / Music library informations
+// Copyright (C) 2019-2021 Guillaume Vara <guillaume.vara@gmail.com>
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// Any graphical or audio resources available within the source code may
+// use a different license and copyright : please refer to their metadata
+// for further details. Resources without explicit references to a
+// different license and copyright still refer to this GPL.
+
 #include "FeederThread.h"
 
-FeederThread::FeederThread() {}
+#include <QFile>
+
+#include <string>
+#include <utility>
+
+#include "src/helpers/PlatformHelper.h"
+
+#include <ITunesLibraryParser.hpp>
+
+#include "src/_i18n/trad.hpp"
+
+FeederThread::FeederThread(const UploadHelper* uploder, const AppSettings::ConnectivityInfos connectivityInfos) : ITNZThread(uploder, connectivityInfos) {}
 
 void FeederThread::run() {
-
-    this->_ohLib = new OutputHelper(OUTPUT_FILE_PATH, "uploadLib", "wtnz_file");
-    this->_ohWrn = new OutputHelper(WARNINGS_FILE_PATH);
-
-    emit printLog(I18n::tr()->Feeder_Warning());  //EMIT
+    //
+    emit printLog(tr("WARNING ! Make sure you activated the XML file sharing in %1 > Preferences > Advanced.").arg(musicAppName()));
 
     try {
-        
-        this->_generateLibJSONFile();
-        this->_uploadLibToServer();
+        //
+        const auto musicAppLibPath = this->_getMusicAppLibLocation().toStdString();
+        const auto outputPath = AppSettings::getFeedOutputFilePath().toStdString();
+        const auto warningPath = AppSettings::getFeedWarningFilePath().toStdString();
 
-    } catch (const std::exception& e) {
-
-        QString errMsg(e.what());
-        emit printLog(errMsg, false, true);  //EMIT
-
-    }
-
-    //clear
-    delete this->_ohLib;
-    delete this->_ohWrn;
-    delete this->_workingJSON;
-    delete this->_libAsJSON;
-    delete this->_libWarningsAsJSON;
-
-}
-
-//generate files
-void FeederThread::_generateLibJSONFile() {
-    auto itnzLibPath = this->_getITunesLibLocation();
-    this->_processFile(itnzLibPath);
-
-    //check warnings
-    auto warningsCount = this->_libWarningsAsJSON->MemberCount();
-    if (warningsCount) {
-        //create warning file
-        emit printLog(I18n::tr()->Feeder_NotifyWarningsExistence(warningsCount, OUTPUT_FILE_PATH));  //EMIT
-
-        emit printLog(I18n::tr()->Feeder_Unmolding(WARNINGS_FILE_PATH));  //EMIT
-        this->_ohWrn->writeAsJsonFile(*this->_libWarningsAsJSON, true);
-    } else {
-        //remove old warning file
-        auto pToRem = this->_ohWrn->getOutputPath();
-        QFile::remove(pToRem);
-    }
-
-    emit printLog(I18n::tr()->Feeder_Unmolding(OUTPUT_FILE_PATH));  //EMIT
-
-    this->_ohLib->writeAsJsonFile(*this->_libAsJSON);
-
-    emit printLog(I18n::tr()->Feeder_OutputReady());  //EMIT
-
-    emit operationFinished();  //EMIT
-}
-
-
-//upload
-void FeederThread::_uploadLibToServer() {
-    emit printLog(I18n::tr()->Feeder_StartSend());  //EMIT
-    
-    QString response = this->_ohLib->uploadFile();
-    
-    if (response != "") {
-        emit printLog(I18n::tr()->HTTP_ServerResponded(response));  //EMIT
-    } else {
-        emit printLog(I18n::tr()->HTTP_NoResponse());  //EMIT
-    }
-
-}
-
-
-void FeederThread::_processFile(const QString &xmlFileLocation) {
-    this->_recCount = 0;
-    this->_expectedCount = 0;
-
-    this->_libWarningsAsJSON = new rapidjson::Document;
-    this->_workingJSON = new rapidjson::Document;
-    this->_libAsJSON = new rapidjson::Document;
-
-    //set default
-    this->_libWarningsAsJSON->Parse("{}");
-    this->_workingJSON->Parse("{}");
-    this->_libAsJSON->Parse("[]");
-
-    //format to dict
-    this->_generateJSON(xmlFileLocation);
-    this->_standardizeJSON();    
-}
-
-//navigate through XML and generate object
-void FeederThread::_generateJSON(const QString &xmlFileLocation) {
-    
-    emit printLog(I18n::tr()->Feeder_PredigestXML()); //EMIT
-    
-    //read xml as QString
-    iTunesLibParser *doc;
-    try {
-        doc = new iTunesLibParser(xmlFileLocation);
-    } catch(...) {
-        return throw FTNZXMLLibFileUnreadableException();
-    }
-    auto xmlAsJSONString = doc->ToJSON();
-    delete doc;
-
-    //try parse to temp JSON
-    rapidjson::Document d;
-    rapidjson::ParseResult s = d.Parse(xmlAsJSONString.toStdString().c_str());
-    if(s.IsError()) {
-        return throw FTNZXMLLibFileUnreadableException();
-    }
-
-    emit printLog(I18n::tr()->Feeder_TrimingFat());  //EMIT
-    
-    //retrieve tracks and pass to workingJSON
-    auto v = rapidjson::Pointer("/Tracks").Get(d);
-    this->_expectedCount = v->MemberCount();
-    if (!this->_expectedCount) {
-        return throw FTNZNoMusicFoundException();
-    }
-    this->_workingJSON->CopyFrom(d["Tracks"], this->_workingJSON->GetAllocator());
-    
-}
-
-//standardize
-void FeederThread::_standardizeJSON() {
-    
-    emit printLog(I18n::tr()->Feeder_CookingJSON());  //EMIT
-
-    //declare allocators
-    auto &lajAlloc = this->_libAsJSON->GetAllocator();
-    auto &lwajAlloc = this->_libWarningsAsJSON->GetAllocator();
-    auto &wjAlloc = this->_workingJSON->GetAllocator();
-
-    //prepare
-    QSet<QString> tracksIdToRemove = {};
-    this->_recCount = 0;
-    this->_expectedCount = this->_workingJSON->MemberCount();
-    
-    //through each tracks
-    for (auto track = this->_workingJSON->MemberBegin(); track != this->_workingJSON->MemberEnd(); ++track) {
-        
-        QSet<QString> toRemove = {};
-        std::set<QString> foundRequired;
-
-        //iterate through properties
-        for (auto prop = track->value.MemberBegin(); prop != track->value.MemberEnd(); ++prop) {
-            QString k = prop->name.GetString();
-            
-            //check presence of required attrs
-            if (_requiredAttrs.find(k) == _requiredAttrs.end()) {
-                if (k != "Disc Number") toRemove.insert(k); //dont remove optional values !
-            } else {
-                foundRequired.insert(k);
-            }
-        }
-
-        //apply diff on required attr, dump into missingAttrs
-        QStringList missingAttrs;
-        std::set_difference(
-            _requiredAttrs.begin(), _requiredAttrs.end(), 
-            foundRequired.begin(), foundRequired.end(),
-            std::inserter(missingAttrs, missingAttrs.end())
+        //
+        ITunesLibraryParser parser (
+            musicAppLibPath.c_str(),
+            outputPath.c_str(),
+            warningPath.c_str()
         );
 
-        //if there are missing attrs
-        if (missingAttrs.length()) {
-            rapidjson::Value key(track->value["Location"].GetString(), lwajAlloc);
-            auto joined = missingAttrs.join(", ");
-            rapidjson::Value val(joined.toStdString().c_str(), lwajAlloc);
-            this->_libWarningsAsJSON->AddMember(key, val, lwajAlloc);
-            tracksIdToRemove.insert(track->name.GetString());
-        }
+        //
+        emit printLog(tr("Collecting tracks infos..."));
+            auto results = parser.getStoragedResults();
+        emit printLog(tr("Collection done !"));
 
-        //remove useless props
-        for(auto ktr : toRemove) {
-            track->value.RemoveMember(ktr.toStdString().c_str());
-        }
+        //
+        emit printLog(tr("Parsing infos into JSON..."));
 
-        //set optionnal values default
-        if (!track->value.HasMember("Disc Number")) {
-            track->value.AddMember("Disc Number","1", wjAlloc);
-        }
+            // if has missing fields tracks
+            if(results.missingFieldsTracks.size()) {
+                //
+                emit printLog(
+                    tr("WARNING ! %1 files in your library are missing important "
+                    "metadata and consequently were removed from the output file ! "
+                    "Please check the \"%2\" file for more informations.")
+                        .arg(results.missingFieldsTracks.size())
+                        .arg(warningPath.c_str()));
+                //
+                MissingFieldsJSONParser { std::move(results.missingFieldsTracks) }
+                    .copyToFile(warningPath.c_str());
+            } else {
+                // else remove warning file
+                QFile::remove(warningPath.c_str());
+            }
 
-        this->_tracksEmitHelper();
-    }
+            //
+            if(!results.allTracksCount()) {
+                //
+                emit printLog(
+                    tr("No music found in your %1 library. Please feed it some.")
+                        .arg(musicAppName()),
+                    false,
+                    true
+                );
 
-    qDebug() << this->_workingJSON->MemberCount();
+                //
+                return;
+            }
 
-    //remove tracks with warnings
-    for(auto &idtr : tracksIdToRemove) {
-        this->_workingJSON->RemoveMember(idtr.toStdString().c_str());
-    }
+            //
+            SuccessfulJSONParser outputParser { std::move(results.OKTracks) };
+            outputParser.copyToFile(outputPath.c_str());
 
-    qDebug() << this->_workingJSON->MemberCount();
+        emit printLog(tr("Parsing done !"));
 
-    //turn obect based container into an array one
-    for (auto track = this->_workingJSON->MemberBegin(); track != this->_workingJSON->MemberEnd(); ++track) {
-        this->_libAsJSON->PushBack(track->value, lajAlloc);
+        // send results
+        emit printLog(tr("OK, output file is ready for breakfast !"));
+
+        emit filesGenerated();
+
+        emit printLog(tr("Let's try to send now !"));
+            //
+            auto buffer_str_view = outputParser.dataBuffer().str();
+            auto qb_array =  QByteArray::fromRawData(buffer_str_view.data(), buffer_str_view.size());
+
+            //
+            auto response = this->_uploder->uploadDataToPlatform({
+                this->_connectivityInfos,
+                AppSettings::getFeederUploadInfos(),
+                qb_array
+            });
+
+        emit printLog(tr("Sending... Waiting for response."));
+
+            // on finished
+            QObject::connect(
+                response, &QNetworkReply::finished,
+                [this, response]() {
+                    //
+                    auto rOutput = response->readAll();
+
+                    //
+                    if (!rOutput.isEmpty()) {
+                        emit printLog(tr("Server responded: %1").arg(rOutput));
+                    } else {
+                        emit printLog(tr("No feedback from the server ? Strange... Please check the targeted host."));
+                    }
+
+                    // back to exec
+                    this->quit();
+                }
+            );
+
+            // on error
+            QObject::connect(
+                response, &QNetworkReply::errorOccurred,
+                [this](QNetworkReply::NetworkError) {
+                    //
+                    emit printLog(
+                        tr("An error occured while sending tracks infos to %1 platform.")
+                            .arg(DEST_PLATFORM_PRODUCT_NAME),
+                        false,
+                        true
+                    );
+
+                    // back to exec
+                    this->quit();
+                }
+            );
+
+        // wait for network reply
+        exec();
+
+        // ask for deletion
+        response->deleteLater();
+
+    //
+    } catch (const std::exception& e) {
+        // emit error as log
+        emit printLog(
+            QString(e.what()),
+            false,
+            true
+        );
     }
 }
 
@@ -208,26 +170,16 @@ void FeederThread::_standardizeJSON() {
 /// Other Helpers
 ///
 
-//log...
-void FeederThread::_tracksEmitHelper() {
-    bool mustReplacePrevious = this->_recCount;
-    this->_recCount++;
-    bool canLog = ((this->_recCount % 100) == 0 && this->_recCount <= this->_expectedCount) || this->_recCount == this->_expectedCount || !mustReplacePrevious;
-    if(canLog) {
-        emit printLog(I18n::tr()->Feeder_LogTrackEmit(this->_recCount, this->_expectedCount), mustReplacePrevious);  //EMIT
-    }
-}
-
-//seek in iTunes preference file the library location
-QString FeederThread::_getITunesLibLocation() {
-    emit printLog(I18n::tr()->Feeder_GetXMLFileLoc());  //EMIT
-
-    QString pathToPrefs = PlatformHelper::getITunesPrefFileProbableLocation();
-    
+// seek in Music App preference file the library location
+const QString FeederThread::_getMusicAppLibLocation() {
+    emit printLog(tr("Getting XML file location..."));
     try {
-        return PlatformHelper::extractItunesLibLocation(pathToPrefs);
+        return PlatformHelper::getMusicAppLibLocation();
     } catch(...) {
-        throw FTNZMissingItunesConfigException();
+        throw std::logic_error(
+            tr("An issue happened while fetching %1's XML file location. Have you installed %1 ?")
+                .arg(musicAppName())
+                .toStdString()
+        );
     }
-    
 }

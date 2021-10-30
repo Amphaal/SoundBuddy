@@ -6,90 +6,33 @@
         "cwd": "${workspaceRoot}"
     },
     "tasks": [
-        /*DEBUG*/
         {
-            "label": "Debug - 0. Create build folder",
-            "group": "test",
+            "label": "0. Download submodules",
             "type": "shell",
-            "command": "rm build/Debug -r -fo; mkdir build/Debug",
-            "osx": {
-                "command": "rm -rf build/Debug; mkdir build; mkdir build/Debug",
-            }
+            "command": "git submodule update --init --recursive",
+            "problemMatcher": []
         },
         {
-            "label": "Debug - 0a. add Conan remote",
-            "dependsOn" : "Debug - 0. Create build folder",
-            "group": "test",
-            "type": "shell",
-            "command": "conan remote add --force bincrafters https://api.bintray.com/conan/bincrafters/public-conan"
-        },
-        {
-            "label": "Debug - 1. Download Dependencies",
-            "dependsOn" : "Debug - 0a. add Conan remote",
-            "group": "test",
-            "type": "shell",
-            "command": "conan install ../.. -s build_type=Debug --build missing",
-            "options": {
-                "cwd": "${workspaceRoot}/build/Debug"
-            }
-        },
-        {
-            "label": "Debug - 2a. Generate Project files",
-            "dependsOn" : "Debug - 1. Download Dependencies",
+            "label": "1. Generate Project files",
             "group": {
                 "isDefault": true,
                 "kind" : "test"
             },
             "type": "shell",
-            "command": "cmake -DCMAKE_BUILD_TYPE=Debug ../..",
-            "options": {
-                "cwd": "${workspaceRoot}/build/Debug"
-            }
-        },
-        {
-            "label": "Debug - 3. Build",
-            "type": "shell",
-            "command": "cmake --build ./build/Debug --config Debug"
-        },
-        /*RELEASE*/
-        {
-            "label": "Release - 0. Create build folder",
-            "group": "build",
-            "type": "shell",
-            "command": "rm build/Release -r -fo; mkdir build/Release",
-            "osx": {
-                "command": "rm -rf build/Release; mkdir build; mkdir build/Release"
-            }
-        },
-        {
-            "label": "Release - 1. Download Dependencies",
-            "dependsOn" : "Release - 0. Create build folder",
-            "group": "build",
-            "type": "shell",
-            "command": "conan install ../.. -s build_type=Release --build missing",
-            "options": {
-                "cwd": "${workspaceRoot}/build/Release"
-            }
-        },
-        {
-            "label": "Release - 2. Generate Project files",
-            "dependsOn" : "Release - 1. Download Dependencies",
-            "group": "build",
-            "type": "shell",
-            "command": "cmake -DCMAKE_BUILD_TYPE=Release ../..",
-            "options": {
-                "cwd": "${workspaceRoot}/build/Release"
-            }
-        },
-        {
-            "label": "Release - 3. Build",
-            "dependsOn" : "Release - 2. Generate Project files",   
-            "group": {
-                "isDefault": true,
-                "kind" : "build"
+            "windows": {
+                "command": "cmake -GNinja -Bbuild -H. -DCMAKE_TOOLCHAIN_FILE=toolchains/msys2.cmake"
             },
+            "osx":{
+                "command": "cmake -GNinja -Bbuild -H. -DCMAKE_TOOLCHAIN_FILE=toolchains/osx.cmake"
+            }
+        },
+        {
+            "label": "2. Build",
             "type": "shell",
-            "command" : "cmake --build ./build/Release --config Release --target publishPackage"
-        }
+            "options": {
+                "cwd": "${workspaceRoot}/build"
+            },
+            "command": "ninja"
+        },
     ]
 }

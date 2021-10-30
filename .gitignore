@@ -1,5 +1,3 @@
 /build/
-src/version.h
-src/cacert.pem
 .vscode/ipch
 .DS_Store

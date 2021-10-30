@@ -1,42 +1,60 @@
+// FeedTNZ
+// Small companion app for desktop to feed or stream ITunes / Music library informations
+// Copyright (C) 2019-2021 Guillaume Vara <guillaume.vara@gmail.com>
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// Any graphical or audio resources available within the source code may
+// use a different license and copyright : please refer to their metadata
+// for further details. Resources without explicit references to a
+// different license and copyright still refer to this GPL.
+
 #pragma once
 
-#include <string>
-#include <QtWidgets/QCheckBox>
-#include <QtCore/QString>
-#include <Qt>
+#include <QCheckBox>
+#include <QString>
 
-#include <rapidjson/document.h>
-
-#include "src/helpers/configHelper/configHelper.hpp"
-#include "./base/TemplateTab.h"
+#include "base/TemplateTab.h"
 #include "src/workers/shout/ShoutThread.h"
-#include "src/helpers/_const.hpp"
+
+#include "src/helpers/AppSettings.hpp"
+#include "src/_i18n/trad.hpp"
 
 class ShoutTab : public TemplateTab {
-    
-    public:
-        ShoutTab(QWidget *parent = 0) : TemplateTab(parent), cHelper(new ConfigHelper)
-          {
-            this->checkAutoLaunch = new QCheckBox(I18n::tr()->Shout_Autolaunch().toStdString().c_str());
-            this->tButton->setText(QString(I18n::tr()->Shout_Button().toStdString().c_str()));
+    Q_OBJECT
 
-            QObject::connect(this->checkAutoLaunch, &QCheckBox::stateChanged,
-            this, &ShoutTab::changeAutoLaunch);
+ public:
+    ShoutTab(QWidget* parent, AppSettings* appSettings) : TemplateTab(parent), _appSettings(appSettings) {
+        this->checkAutoLaunch = new QCheckBox(tr("Autostart at launch"));
+        this->tButton->setText(tr("Connect to %1").arg(musicAppName()));
 
-            this->layout()->addWidget(this->scrollArea);
-            this->layout()->addWidget(this->tButton);
-            this->layout()->addWidget(this->checkAutoLaunch);
+        QObject::connect(
+            this->checkAutoLaunch, &QCheckBox::stateChanged,
+            this, &ShoutTab::changeAutoLaunch
+        );
 
-            if (this->cHelper->getParamValue(AUTO_RUN_SHOUT_PARAM_NAME) == "true") {
-                this->checkAutoLaunch->setCheckState(Qt::CheckState::Checked);
-            }
+        this->layout()->addWidget(this->scrollArea);
+        this->layout()->addWidget(this->tButton);
+        this->layout()->addWidget(this->checkAutoLaunch);
+
+        if (_appSettings->value(AppSettings::MUST_AUTORUN_SHOUT).toBool()) {
+            this->checkAutoLaunch->setCheckState(Qt::CheckState::Checked);
         }
+    }
 
-    private:
-        ConfigHelper *cHelper = nullptr;
-        QCheckBox *checkAutoLaunch = nullptr;
+ private:
+    AppSettings* _appSettings;
+    QCheckBox* checkAutoLaunch = nullptr;
 
-        void changeAutoLaunch(bool isChecked) {
-            this->cHelper->updateParamValue(AUTO_RUN_SHOUT_PARAM_NAME, isChecked ? "true" : "false");
-        }
+    void changeAutoLaunch(bool isChecked) {
+        _appSettings->setValue(AppSettings::MUST_AUTORUN_SHOUT, isChecked);
+    }
 };

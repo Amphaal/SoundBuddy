@@ -17,37 +17,35 @@
 // for further details. Resources without explicit references to a
 // different license and copyright still refer to this GPL.
 
-#include "LightWidget.h"
+#ifdef _WIN32
 
-LightWidget::LightWidget(const QColor &color, QWidget* parent) : QWidget(parent), m_color(color), m_on(true) {
-    this->setLayout(new QHBoxLayout);
-}
+#pragma once
 
-bool LightWidget::isOn() const { return m_on; }
+#include <QMetaObject>
+#include <QMetaMethod>
+#include <QCoreApplication>
+#include <QDateTime>
+#include <QVariant>
 
-void LightWidget::setOn(bool on) {
-    if (on == m_on)
-        return;
-    m_on = on;
-    update();
-}
+#include "MusicAppCOMHandler.h"
 
-void LightWidget::turnOff() { setOn(false); }
-void LightWidget::turnOn() { setOn(true); }
+#include "src/workers/shout/ShoutThread.h"
 
-void LightWidget::paintEvent(QPaintEvent *) {
-    if (!m_on) return;
+class MusicAppCOMHandler : public QObject {
+    Q_OBJECT
 
-    QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing);
-    painter.setBrush(m_color);
+ private:
+    QAxObject *MusicAppObj;
+    ShoutThread *worker;
 
-    auto height = this->height();
+    void OnAboutToPromptUserToQuitEvent();
+    void OnPlayerPlayEvent(QVariant iTrack);
+    void OnPlayerStopEvent(QVariant iTrack);
 
-    painter.drawEllipse(
-        qFloor(height * .25),
-        qFloor(height * .25),
-        qFloor(height * .75),
-        qFloor(height * .75)
-    );
-}
+ public:
+    MusicAppCOMHandler(QAxObject *MusicAppObj, ShoutThread *worker);
+    void shoutHelper(QVariant iTrack = QVariant());
+    bool musicAppShutdownRequested = false;
+};
+
+#endif

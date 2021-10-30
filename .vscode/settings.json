@@ -1,6 +1,40 @@
 {
-    "terminal.integrated.shell.windows": "C:/Program Files/PowerShell/6/pwsh.exe",
+    "terminal.integrated.profiles.windows": {
+        "PowerShell": {
+            "source": "PowerShell",
+            "icon": "terminal-powershell"
+        },
+        "Command Prompt": {
+            "path": [
+                "${env:windir}\\Sysnative\\cmd.exe",
+                "${env:windir}\\System32\\cmd.exe"
+            ],
+            "args": [],
+            "icon": "terminal-cmd"
+        },
+        "Git Bash": {
+            "source": "Git Bash"
+        },
+        "Msys2 Shell" : {
+            "path" : "${env:MINGW64_ROOT}\\..\\usr\\bin\\bash.exe",
+            "args": [        
+                "--login",
+                "-i"
+            ],
+            "env": {
+                "MSYSTEM": "MINGW64",
+                "MSYS2_PATH_TYPE": "inherit",
+                "CHERE_INVOKING": "1",
+                "MSVSCODE": "1"
+            }
+        }
+    },
+    "terminal.integrated.defaultProfile.windows": "Command Prompt",
+    "search.exclude": {
+        "deps" : true
+    },
     "files.associations": {
+        "*.ts": "xml",
         "algorithm": "cpp",
         "atomic": "cpp",
         "cctype": "cpp",
@@ -71,6 +105,69 @@
         "qvboxlayout": "cpp",
         "qlabel": "cpp",
         "qcoreapplication": "cpp",
-        "qfileinfo": "cpp"
+        "qfileinfo": "cpp",
+        "*.in": "cpp",
+        "qsystemtrayicon": "cpp",
+        "*.inc": "cpp",
+        "*.ipp": "cpp",
+        "*.tcc": "cpp",
+        "qvariant": "cpp",
+        "any": "cpp",
+        "array": "cpp",
+        "hash_map": "cpp",
+        "hash_set": "cpp",
+        "strstream": "cpp",
+        "bit": "cpp",
+        "bitset": "cpp",
+        "cinttypes": "cpp",
+        "clocale": "cpp",
+        "codecvt": "cpp",
+        "concepts": "cpp",
+        "coroutine": "cpp",
+        "csignal": "cpp",
+        "cstdarg": "cpp",
+        "ctime": "cpp",
+        "cwctype": "cpp",
+        "deque": "cpp",
+        "unordered_set": "cpp",
+        "memory_resource": "cpp",
+        "optional": "cpp",
+        "regex": "cpp",
+        "source_location": "cpp",
+        "string_view": "cpp",
+        "iomanip": "cpp",
+        "numbers": "cpp",
+        "semaphore": "cpp",
+        "shared_mutex": "cpp",
+        "stop_token": "cpp",
+        "filesystem": "cpp",
+        "qcheckbox": "cpp",
+        "__bit_reference": "cpp",
+        "__bits": "cpp",
+        "__config": "cpp",
+        "__debug": "cpp",
+        "__errc": "cpp",
+        "__functional_base": "cpp",
+        "__hash_table": "cpp",
+        "__locale": "cpp",
+        "__mutex_base": "cpp",
+        "__node_handle": "cpp",
+        "__nullptr": "cpp",
+        "__split_buffer": "cpp",
+        "__string": "cpp",
+        "__threading_support": "cpp",
+        "__tree": "cpp",
+        "__tuple": "cpp",
+        "complex": "cpp",
+        "locale": "cpp",
+        "queue": "cpp",
+        "stack": "cpp",
+        "qlocale": "cpp",
+        "qurl": "cpp",
+        "qhttpmultipart": "cpp",
+        "qjsondocument": "cpp",
+        "qjsonobject": "cpp",
+        "qwebsocket": "cpp",
+        "qprocessenvironment": "cpp"
     },
 }

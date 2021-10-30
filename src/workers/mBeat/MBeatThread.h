@@ -17,37 +17,34 @@
 // for further details. Resources without explicit references to a
 // different license and copyright still refer to this GPL.
 
-#include "LightWidget.h"
+#pragma once
 
-LightWidget::LightWidget(const QColor &color, QWidget* parent) : QWidget(parent), m_color(color), m_on(true) {
-    this->setLayout(new QHBoxLayout);
-}
+#include <QThread>
+#include <QWebSocket>
 
-bool LightWidget::isOn() const { return m_on; }
+#include "src/helpers/AppSettings.hpp"
 
-void LightWidget::setOn(bool on) {
-    if (on == m_on)
-        return;
-    m_on = on;
-    update();
-}
+#include "src/ui/widgets/LightWidget.h"
 
-void LightWidget::turnOff() { setOn(false); }
-void LightWidget::turnOn() { setOn(true); }
 
-void LightWidget::paintEvent(QPaintEvent *) {
-    if (!m_on) return;
+class MBeatThread : public QThread {
+    Q_OBJECT
 
-    QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing);
-    painter.setBrush(m_color);
+ public:
+    explicit MBeatThread(const AppSettings::ConnectivityInfos &connectivityInfos);
 
-    auto height = this->height();
+    void run() override;
 
-    painter.drawEllipse(
-        qFloor(height * .25),
-        qFloor(height * .25),
-        qFloor(height * .75),
-        qFloor(height * .75)
-    );
-}
+ signals:
+    void updateConnectivityStatus(const QString &message, const TLW_Colors &color);
+
+ private:
+    const AppSettings::ConnectivityInfos _connectivityInfos;
+
+    const QString _onCredentialsErrorMsg(const QString& returnCode) const;
+    void _checkCredentials(QWebSocket &socket);
+    bool _pongReceived = true;
+    bool _pongMissed = false;
+
+    static inline qint64 HEARTBEAT_INTERVAL = 10000;  // 10 sec.
+};

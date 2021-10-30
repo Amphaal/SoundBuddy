@@ -1,66 +1,44 @@
+// FeedTNZ
+// Small companion app for desktop to feed or stream ITunes / Music library informations
+// Copyright (C) 2019-2021 Guillaume Vara <guillaume.vara@gmail.com>
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// Any graphical or audio resources available within the source code may
+// use a different license and copyright : please refer to their metadata
+// for further details. Resources without explicit references to a
+// different license and copyright still refer to this GPL.
+
 #pragma once
-
-#include <rapidjson/document.h>
-#include <rapidjson/pointer.h>
-
-#include <fstream>
-#include <algorithm>
-#include <exception>
-#include <set>
 
 #include <QString>
 
-#include "_exceptions.hpp"
-
 #include "src/workers/base/ITNZThread.hpp"
-#include "src/helpers/_const.hpp"
-#include "src/helpers/platformHelper/platformHelper.h"
-#include "src/helpers/stringHelper/stringHelper.hpp"
-#include "src/helpers/outputHelper/outputHelper.hpp"
-#include "src/helpers/iTunesLibParser/iTunesLibParser.h"
 
 class FeederThread : public ITNZThread {
+  Q_OBJECT
 
-    public:
-		FeederThread();
+ public:
+    FeederThread(const UploadHelper* uploder, const AppSettings::ConnectivityInfos connectivityInfos);
 
-        void run() override;
+    void run() override;
 
-    private:
-        OutputHelper* _ohLib = nullptr;
-        OutputHelper* _ohWrn = nullptr;
+ private:
+    // log...
+    void _tracksEmitHelper();
+    void _tracksUnmolding(const char* filename);
 
-        //generate files
-        void _generateLibJSONFile();
+    // seek in Music App preference file the library location
+    const QString _getMusicAppLibLocation();
 
-        //upload
-        void _uploadLibToServer();
-
-        ///
-        /// XML / JSON Helpers
-        ///
-
-        size_t _recCount;
-        size_t _expectedCount;
-        rapidjson::Document* _workingJSON = nullptr;
-        rapidjson::Document* _libAsJSON = nullptr;
-        rapidjson::Document* _libWarningsAsJSON = nullptr;
-        
-        static const inline std::set<QString> _requiredAttrs {"Track ID", "Track Number", "Year", "Name", "Album Artist", "Album", "Genre", "Date Added"};
-        static const inline std::set<QString> _ucwordsAttrs {"Album Artist", "Album", "Genre"};
-
-        void _processFile(const QString &xmlFileLocation);
-        void _generateJSON(const QString &xmlFileLocation);
-        void _standardizeJSON();
-
-        ///
-        /// Other Helpers
-        ///
-
-        //log...
-        void _tracksEmitHelper();
-
-        //seek in iTunes preference file the library location
-        QString _getITunesLibLocation();
-
+ signals:
+      void filesGenerated();
 };

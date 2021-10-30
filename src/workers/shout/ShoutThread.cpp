@@ -1,111 +1,373 @@
+// FeedTNZ
+// Small companion app for desktop to feed or stream ITunes / Music library informations
+// Copyright (C) 2019-2021 Guillaume Vara <guillaume.vara@gmail.com>
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// Any graphical or audio resources available within the source code may
+// use a different license and copyright : please refer to their metadata
+// for further details. Resources without explicit references to a
+// different license and copyright still refer to this GPL.
+
 #include "ShoutThread.h"
 
-ShoutThread::ShoutThread() {};
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QEventLoop>
+#include <QNetworkReply>
 
-ShoutThread::~ShoutThread() {
-    if(this->_helper) delete this->_helper;
-}
+#include "src/_i18n/trad.hpp"
 
-void ShoutThread::_inst() {
-    this->_helper = new OutputHelper(SHOUT_FILE_PATH, "uploadShout", "shout_file");
-}
+ShoutThread::ShoutThread(const UploadHelper* uploder, const AppSettings::ConnectivityInfos connectivityInfos) : ITNZThread(uploder, connectivityInfos) {}
 
 void ShoutThread::quit() {
     this->_mustListen = false;
+    ITNZThread::quit();
 }
 
-rapidjson::Document ShoutThread::_createBasicShout() {
-    
-    //get iso date
+QJsonObject ShoutThread::_createBasicShout() const {
+    // get iso date
     time_t now;
     time(&now);
     char buf[sizeof "2011-10-08T07:07:09Z"];
     strftime(buf, sizeof buf, "%FT%TZ", gmtime(&now));
-    
-    //return json obj
-    rapidjson::Document obj;
-    obj.Parse("{}");
-    rapidjson::Document::AllocatorType &alloc = obj.GetAllocator();
-    auto dateAsJSONVal = rapidjson::Value(buf, alloc);
-    obj.AddMember("date", dateAsJSONVal, alloc);
-    return obj;
-};
 
-void ShoutThread::shoutEmpty(){
-    auto obj = this->_createBasicShout();
-    emit printLog(I18n::tr()->Shout_Nothing(obj["date"].GetString()));
-    this->_shoutToServer(obj);
-};
+    // return json obj
+    QJsonObject obj;
+    obj["date"] = buf;
+    return obj;
+}
+
+void ShoutThread::shoutEmpty() {
+    //
+    emit printLog(
+        tr("%1: Shouting -> Nothing")
+            .arg(QDateTime::currentDateTime().toString())
+    );
+
+    // send...
+    auto shout = this->_createBasicShout();
+    this->_shoutToServer(shout);
+}
+
+
+void ShoutThread::_shoutToServer(const QJsonObject &incoming) {
+    try {
+        //
+        UploadHelper::UploadInstructions instr {
+            _connectivityInfos,
+            AppSettings::getShoutUploadInfos(),
+            QJsonDocument{incoming}.toJson()
+        };
+
+        //
+        auto response = this->_uploder->uploadDataToPlatform(instr);
+
+        // on error
+        QObject::connect(
+            response, &QNetworkReply::errorOccurred,
+            [this, response](QNetworkReply::NetworkError) {
+                //
+                emit printLog(
+                    tr("An error occured while shouting tracks infos to %1 platform.")
+                        .arg(DEST_PLATFORM_PRODUCT_NAME),
+                        false,
+                        true
+                );
+
+                // ask for deletion
+                response->deleteLater();
+            }
+        );
+
+        // on finished
+        QObject::connect(
+            response, &QNetworkReply::finished,
+            response, &QObject::deleteLater
+        );
+
+    //
+    } catch(const std::exception& e) {
+        // emit error
+        emit printLog(e.what(), false, true);
+    }
+}
+
+// compare with old shout, if equivalent, don't reshout
+bool ShoutThread::shouldUpload(
+        bool iPlayerState,
+        const QString &tName,
+        const QString &tAlbum,
+        const QString &tArtist,
+        const QString &tDatePlayed,
+        const QString &tDateSkipped
+    ) {
+    // hash blueprint
+    const auto currHash = QString::number(iPlayerState) + tName + tAlbum + tArtist + (tDatePlayed >= tDateSkipped ? tDatePlayed : tDateSkipped);
+
+    // check if strings are identical
+    bool isHashIdentical = (this->_lastTrackHash == currHash);
+
+    // replace old hash with new
+    this->_lastTrackHash = currHash;
+
+    // if not identical, shout !
+    return !isHashIdentical;
+}
 
 void ShoutThread::shoutFilled(
-        const QString &name, 
-        const QString &album, 
-        const QString &artist, 
-        const QString &genre, 
-        int duration, 
-        int playerPosition, 
-        bool playerState, 
+        const QString &name,
+        const QString &album,
+        const QString &artist,
+        const QString &genre,
+        int duration,
+        int playerPosition,
+        bool playerState,
         int year
     ) {
-    
-    //fill obj
+    // fill obj
     auto obj = this->_createBasicShout();
-    rapidjson::Document::AllocatorType &alloc = obj.GetAllocator();
+    obj["name"] = name;
+    obj["album"] = album;
+    obj["artist"] = artist;
+    obj["genre"] = genre;
+    obj["duration"] = duration;
+    obj["playerPosition"] = playerPosition;
+    obj["playerState"] = playerState;
+    obj["year"] = year;
 
-    //factory for value generation
-    auto valGen = [&alloc](QString defVal) {
-        rapidjson::Value p(defVal.toStdString().c_str(), alloc);
-        return p;
-    };
+    auto pState = playerState ? tr("playing") : tr("paused");
 
-    obj.AddMember("name", valGen(name), alloc);
-    obj.AddMember("album", valGen(album), alloc);
-    obj.AddMember("artist", valGen(artist), alloc);
-    obj.AddMember("genre", valGen(genre), alloc);
-    obj.AddMember("duration", duration, alloc);
-    obj.AddMember("playerPosition", playerPosition, alloc);
-    obj.AddMember("playerState", playerState, alloc);
-    obj.AddMember("year", year, alloc);
+    // log...
+    auto logMessage =
+        tr("%1: Shouting -> %2 - %3 - %4 (%5)")
+            .arg(QDateTime::currentDateTime().toString())
+            .arg(name)
+            .arg(album)
+            .arg(artist)
+            .arg(pState);
 
-    //log...
-    QString logMessage = I18n::tr()->Shout(
-        obj["date"].GetString(),
-        obj["name"].GetString(),
-        obj["album"].GetString(),
-        obj["artist"].GetString(),
-        obj["playerState"].GetBool()
-    );
     emit printLog(logMessage);
 
     this->_shoutToServer(obj);
-};
-
-void ShoutThread::_shoutToServer(rapidjson::Document &incoming) {
-    try {
-        this->_helper->writeAsJsonFile(incoming);
-        this->_helper->uploadFile();
-    } catch(const std::exception& e) {
-        emit printLog(e.what(), false, true);
-    }
-};
-
-//compare with old shout, if equivalent, don't reshout
-bool ShoutThread::shouldUpload(
-        bool iPlayerState, 
-        const QString &tName, 
-        const QString &tAlbum, 
-        const QString &tArtist, 
-        const QString &tDatePlayed, 
-        const QString &tDateSkipped
-    ) {
-    
-    auto concatedStr = StringHelper::boolToString(iPlayerState) + tName + tAlbum + tArtist + (tDatePlayed >= tDateSkipped ? tDatePlayed : tDateSkipped);
-    
-    std::hash<std::string> hashFunc;
-    size_t currHash = hashFunc(concatedStr.toStdString());
-
-    bool isHashIdentical = this->_lastTrackHash == currHash;
-    this->_lastTrackHash = currHash;
-
-    return !isHashIdentical;
 }
+
+#ifdef __APPLE__
+
+#include <unistd.h>
+#include <QProcess>
+
+void ShoutThread::run() {
+    emit printLog(tr("Waiting for %1 to launch...").arg(musicAppName()));
+
+    // define applescript to get shout values
+    const auto scriptContent = QFile(":/mac/CurrentlyPlaying.applescript").readAll();
+
+    // prepare script exec
+    QProcess p;
+    p.setProgram("/usr/bin/osascript");
+    p.setArguments({ "-l", "AppleScript", "-s", "s"});
+    p.write(scriptContent);
+    p.closeWriteChannel();
+
+    // loop until user said not to
+    while (this->_mustListen) {
+        // get shout results
+        p.start();
+        p.waitForReadyRead();
+        auto result = p.readAll();
+        p.waitForFinished();
+
+        // default values and inst
+        QString tName;
+        QString tAlbum;
+        QString tArtist;
+        QString tGenre;
+        int iDuration;
+        int iPlayerPos;
+        bool iPlayerState = false;
+        // bool iRepeatMode;
+        QString tDateSkipped;
+        QString tDatePlayed;
+        int tYear;
+
+        // if has result
+        if (result.size()) {
+            // turn results into array
+            result[0] = '[';
+            result[result.size() - 1] = ']';
+
+            // cast to json
+            const auto trackData = QJsonDocument::fromJson(result.data()).array();
+
+            // get values for shout
+            tName = trackData[0].toString();
+            tAlbum = trackData[1].toString();
+            tArtist = trackData[2].toString();
+            tGenre = trackData[3].toString();
+            iDuration = trackData[4].toInt();
+            tYear = trackData[5].toInt();
+            iPlayerPos = trackData[6].toInt();
+            iPlayerState = trackData[7].toString() == "paused" ? 0 : 1;
+            tDateSkipped = trackData[8].toString();
+            tDatePlayed = trackData[9].toString();
+        }
+
+        // compare with old shout, if equivalent, don't reshout
+        if (this->shouldUpload(iPlayerState, tName, tAlbum, tArtist, tDatePlayed, tDateSkipped)) {
+            // if had results
+            if (result.size()) {
+                // say track infos
+                this->shoutFilled(tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState, tYear);
+            } else {
+                // say nothing happens
+                this->shoutEmpty();
+            }
+        }
+
+       // wait a bit before re-asking
+       this->sleep(1);
+    }
+
+    this->shoutEmpty();
+    emit printLog(tr("Stopped listening to %1.").arg(musicAppName()));
+}
+#endif
+
+#ifdef _WIN32
+
+#include <QMetaObject>
+#include <QMetaMethod>
+#include <QObject>
+#include <QCoreApplication>
+#include <QDebug>
+
+#include <windows.h>
+#include <combaseapi.h>
+
+#include "src/workers/shout/ShoutThread.h"
+#include "win/MusicAppCOMHandler.h"
+
+void ShoutThread::run() {
+    // start with log
+    emit printLog(tr("Waiting for %1 to launch...").arg(musicAppName()));
+
+    // prepare CLID
+    HWND windowsHandler;
+    DWORD currentProcessID;
+
+    // Music app IID extracted from Apple API
+    wchar_t* wch = nullptr;
+    HRESULT hr = ::StringFromCLSID({0xDC0C2640, 0x1415, 0x4644, {0x87, 0x5C, 0x6F, 0x4D, 0x76, 0x98, 0x39, 0xBA}}, &wch);
+    auto ComCLID = QString::fromWCharArray(wch);
+
+    do {
+        // search for music app...
+        windowsHandler = FindWindowA(0, musicAppName().toUtf8());
+
+        // if not found, wait and retry
+        if(!windowsHandler) {
+            this->sleep(1);
+            continue;
+        }
+
+        // Music App found, store the associated PID
+        GetWindowThreadProcessId(windowsHandler, &currentProcessID);
+
+        // log..
+        emit printLog(tr("Listening to %1 !").arg(musicAppName()));
+
+        // initiate COM object
+        CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+        wchar_t* wch = nullptr;
+
+        // Music App IID extracted from Apple API
+        QAxObject *comObj = new QAxObject(ComCLID);
+        MusicAppCOMHandler *handler = new MusicAppCOMHandler(comObj, this);
+
+        // bind events to sink handler
+        auto oatputqe = QObject::connect(
+            comObj, SIGNAL(OnAboutToPromptUserToQuitEvent()),
+            handler, SLOT(OnAboutToPromptUserToQuitEvent())
+        );
+
+        auto oppe = QObject::connect(
+            comObj, SIGNAL(OnPlayerPlayEvent(QVariant)),
+            handler, SLOT(OnPlayerPlayEvent(QVariant))
+        );
+
+        auto opse = QObject::connect(
+            comObj, SIGNAL(OnPlayerStopEvent(QVariant)),
+            handler, SLOT(OnPlayerStopEvent(QVariant))
+        );
+
+        // comObj->dumpObjectInfo();
+
+        // process events
+        while(this->_mustListen && !handler->musicAppShutdownRequested) {
+            QCoreApplication::processEvents();
+            this->msleep(20);
+        }
+
+        // disconnect events
+        QObject::disconnect(oatputqe);
+        QObject::disconnect(oppe);
+        QObject::disconnect(opse);
+
+        // clear COM related Obj
+        this->shoutEmpty();
+        delete handler;
+        comObj->clear();
+        delete comObj;
+
+        // uninitialize COM
+        CoUninitialize();
+
+        // if Music App is shutting down...
+        if(this->stop && handler->musicAppShutdownRequested) {
+            // say we acknoledge Music App shutting down...
+            emit printLog(tr("%1 shutting down !").arg(musicAppName()));
+
+            // wait for old Music App window to finally shutdown
+            do {
+                // check if window still exists
+                HWND checkHandler = FindWindowA(0, musicAppName().toUtf8());
+                if(checkHandler) {
+                    // if it exists, check the PID (shutting down window...)
+                    DWORD checkProcessID;
+                    DWORD checkProcessID_worked = GetWindowThreadProcessId(checkHandler, &checkProcessID);
+                    if(checkProcessID_worked) {
+                        // if old ID <> checked ID, means a new window has been opened, so we can close
+                        if(checkProcessID != currentProcessID) {
+                            break;
+                        }
+                    }
+
+                // if no window found, break...
+                } else {
+                    break;
+                }
+
+                // finally, sleep
+                this->sleep(1);
+            } while (this->_mustListen);
+
+            // say we relooped
+            emit printLog(tr("Waiting for %1 to launch again...").arg(musicAppName()));
+        }
+    } while (this->_mustListen);
+
+    // end with log
+    emit printLog(tr("Stopped listening to %1.").arg(musicAppName()));
+}
+
+#endif
