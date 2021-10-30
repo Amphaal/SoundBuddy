@@ -68,7 +68,7 @@
     </message>
     <message>
         <source>An error occured while sending tracks infos to %1 platform.</source>
-        <translation>Une erreur s'est produite pendant l'envoi des informations de morceaux à la plateforme %1.</translation>
+        <translation>Une erreur s&apos;est produite pendant l&apos;envoi des informations de morceaux à la plateforme %1.</translation>
     </message>
 </context>
 <context>
@@ -322,7 +322,7 @@
     </message>
     <message>
         <source>An error occured while shouting tracks infos to %1 platform.</source>
-        <translation>Une erreur s'est produite pendant le shout des informations du morceau à la plateforme %1.</translation>
+        <translation>Une erreur s&apos;est produite pendant le shout des informations du morceau à la plateforme %1.</translation>
     </message>
 </context>
 </TS>

@@ -56,7 +56,6 @@ configure_file(
 SET(CMAKE_CXX_STANDARD 20)
 SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 SET(CMAKE_C_STANDARD 11)
-ADD_DEFINITIONS(-DUNICODE)
 
 # Qt
 SET(CMAKE_AUTOMOC ON)
@@ -168,6 +167,12 @@ HandleQtTranslation(appExec
 ####################
 
 add_subdirectory(deps/IFWUpdateChecker)
+
+# https://github.com/chriskohlhoff/asio/pull/910
+target_compile_definitions(IFWUpdateChecker 
+    INTERFACE 
+        ASIO_HAS_STD_INVOKE_RESULT=1
+)
 
 target_link_libraries(appExec PRIVATE
     IFWUpdateChecker

@@ -1,4 +1,4 @@
-#ifdef APPLE
+#ifdef __APPLE__
 
 #include <QSettings>
 #include <QCoreApplication>

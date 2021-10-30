@@ -6,8 +6,7 @@
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE",
-                "SPDLOG_FMT_EXTERNAL",
-                "APPLE"
+                "SPDLOG_FMT_EXTERNAL"
             ],
             "compilerPath": "/usr/bin/clang",
             "cStandard": "c11",

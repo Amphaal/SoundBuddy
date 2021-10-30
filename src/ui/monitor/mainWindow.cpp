@@ -281,12 +281,14 @@ void MainWindow::_initUITray() {
         this, &MainWindow::iconActivated
     );
 
+    QMenu* cMenu;
+
     #ifdef _WIN32
-        auto cMenu = this->_getFileMenu();
+        cMenu = this->_getFileMenu();
     #endif
 
-    #ifdef APPLE
-        auto cMenu = new QMenu("");
+    #ifdef __APPLE__
+        cMenu = new QMenu("");
         cMenu->addMenu(this->_getFileMenu());
         cMenu->addMenu(this->_getOptionsMenu());
     #endif
@@ -455,7 +457,7 @@ QMenu* MainWindow::_getFileMenu() {
 
 void MainWindow::closeEvent(QCloseEvent *event) {
     // apple specific behaviour, prevent closing
-    #ifdef APPLE
+    #ifdef __APPLE__
         if (!this->forceQuitOnMacOS) {
             return this->trueHide(event);
         }

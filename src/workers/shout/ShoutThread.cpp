@@ -161,7 +161,7 @@ void ShoutThread::shoutFilled(
     this->_shoutToServer(obj);
 }
 
-#ifdef APPLE
+#ifdef __APPLE__
 
 #include <unistd.h>
 #include <QProcess>

@@ -17,6 +17,8 @@
 // for further details. Resources without explicit references to a
 // different license and copyright still refer to this GPL.
 
+#ifdef _WIN32
+
 #pragma once
 
 #include <QMetaObject>
@@ -45,3 +47,5 @@ class MusicAppCOMHandler : public QObject {
     void shoutHelper(QVariant iTrack = QVariant());
     bool musicAppShutdownRequested = false;
 };
+
+#endif
