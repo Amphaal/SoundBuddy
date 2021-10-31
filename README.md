@@ -10,9 +10,9 @@ Small companion app that feeds SoundVitrine with ITunes / Music library metadata
 Available for MacOS (BigSur 11.0+) and Windows 10+. Usage of Visual Studio Code (https://code.visualstudio.com) as IDE is recommanded.
 Requires a C++20 enabled compiler. We assume you have Git installed on your system.
 
-- Run command in terminal to clone this repository: "git clone --recurse-submodules -j8 https://github.com/Amphaal/SoundBuddy"
-- In VS Code, use the command palette to run "Tasks : Run Tests Task", which will configure the build
-- In VS Code, simply run "Launch" in the "Execute and Debug" tab to build the executable 
+- Run command in terminal to clone this repository: `git clone --recurse-submodules -j8 https://github.com/Amphaal/SoundBuddy`
+- In VS Code, use the command palette to run `Tasks : Run Tests Task`, which will configure the build
+- In VS Code, simply run `Launch` in the `Execute and Debug` tab to build the executable 
 
 SoundBuddy have some dependencies that are external and thus need to be installed on your system. Here is how to proceed on each handled platform :
 
@@ -20,16 +20,16 @@ SoundBuddy have some dependencies that are external and thus need to be installe
 
 All dependencies are fetched via Homebrew (https://brew.sh), make sure you have it properly installed on your build system.
 
-    - Run command in terminal to fetch depedencies : "brew install ninja cmake llvm openssl@3 qt asio spdlog catch2"
+- Run command in terminal to fetch depedencies : `brew install ninja cmake llvm openssl@3 qt asio spdlog catch2`
 
 ### Windows (MSYS MinGW)
 
 We use MSYS2 build system (https://www.msys2.org) as our build platform. Make sure to install it if it is not.
 
-    - Define "MINGW64_ROOT" as environment variable, as the path of MinGW64 installed by MSYS2 (Ex: "C:\msys2\mingw64").
-    - From VS Code, use the "Msys2 Shell" terminal to run the following commands.
-    - Run command in terminal to update obsolete packages : "pacman -Syyu"
-    - Run command in terminal to fetch depedencies : "pacman -S ninja cmake llvm openssl qt6 asio spdlog catch2"
+- Define `MINGW64_ROOT` as environment variable, as the path of MinGW64 installed by MSYS2 (Ex: `C:\msys2\mingw64`).
+- From VS Code, use the `Msys2 Shell` terminal to run the following commands.
+- Run command in terminal to update obsolete packages : `pacman -Syyu`
+- Run command in terminal to fetch depedencies : `pacman -S ninja cmake llvm openssl qt6 asio spdlog catch2`
 
 ## License
     SoundBuddy
