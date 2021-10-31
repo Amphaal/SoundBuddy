@@ -71,6 +71,12 @@ find_package(Qt6 REQUIRED COMPONENTS
     LinguistTools
 )
 
+if(WIN32)
+    find_package(Qt6 REQUIRED COMPONENTS 
+        ActiveQt
+    )
+endif()
+
 ##########################
 ## Bundle configuration ##
 ##########################
@@ -80,7 +86,7 @@ if (WIN32)
     SET(BUNDLE_TYPE WIN32) 
     #add icon
     SET(APP_ICO ${CMAKE_CURRENT_SOURCE_DIR}/resources/resources.rc) 
-endif (WIN32)
+endif()
 
 if (APPLE)
     #set bundle type
@@ -91,7 +97,7 @@ if (APPLE)
     set_source_files_properties(${APP_ICO} PROPERTIES 
         MACOSX_PACKAGE_LOCATION "Resources"                                                    
     )
-endif (APPLE)
+endif()
 
 ####################
 # Code compilation #
@@ -204,6 +210,12 @@ target_link_libraries(appExec PRIVATE
     Qt6::WebSockets
     Qt6::Network
 )
+
+if(WIN32)
+    target_link_libraries(appExec PRIVATE
+        Qt6::ActiveQt
+    )
+endif()
 
 # QT LIBRARIES COPY
 include(DeployQt)
