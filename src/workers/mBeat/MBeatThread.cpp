@@ -36,9 +36,9 @@ void MBeatThread::run() {
     //
     QWebSocket socket;
     QUrl url(this->_connectivityInfos.getPlaformHomeUrl());
-    url.setPort(3000);
+    url.setPort(80);
     url.setScheme("wss");
-    socket.open(url.toString(QUrl::RemovePath));
+    socket.open(url);
 
     //
     emit updateConnectivityStatus(tr("Connecting to server..."), TLW_Colors::YELLOW);
@@ -148,7 +148,8 @@ void MBeatThread::_checkCredentials(QWebSocket &socket) {
 
     //
     QJsonObject payload;
-    payload["checkCredentials"] = this->_connectivityInfos.password;
+    payload["id"] = "checkCredentials";
+    payload["r"] = this->_connectivityInfos.password;
     socket.sendTextMessage(QJsonDocument{payload}.toJson());
 }
 
