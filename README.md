@@ -29,7 +29,7 @@ We use MSYS2 build system (https://www.msys2.org) as our build platform. Make su
 - Define `MINGW64_ROOT` as environment variable, as the path of MinGW64 installed by MSYS2 (Ex: `C:\msys2\mingw64`).
 - From VS Code, use the `Msys2 Shell` terminal to run the following commands.
 - Run command in terminal to update obsolete packages : `pacman -Syyu`
-- Run command in terminal to fetch depedencies : `pacman -S ninja cmake llvm openssl qt6 asio spdlog catch2`
+- Run command in terminal to fetch depedencies : `pacman -S ninja cmake llvm lld clang openssl qt6 asio spdlog catch2`
 
 ## License
     SoundBuddy
