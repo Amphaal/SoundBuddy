@@ -20,7 +20,7 @@ SoundBuddy have some dependencies that are external and thus need to be installe
 
 All dependencies are fetched via Homebrew (https://brew.sh), make sure you have it properly installed on your build system.
 
-- Run command in terminal to fetch depedencies : `brew install ninja cmake llvm openssl@3 qt asio spdlog catch2`
+- Run command in terminal to fetch depedencies : `brew install $(cat ./prerequisites/brew.txt)`
 
 ### Windows (MSYS MinGW)
 
@@ -29,8 +29,7 @@ We use MSYS2 build system (https://www.msys2.org) as our build platform. Make su
 - Define `MINGW64_ROOT` as environment variable, as the path of MinGW64 installed by MSYS2 (Ex: `C:\msys2\mingw64`).
 - From VS Code, use the `Msys2 Shell` terminal to run the following commands.
 - Run command in terminal to update obsolete packages : `pacman -Syyu`
-- Run command in terminal to fetch depedencies : `pacman -S ninja cmake llvm lld clang openssl qt6 asio spdlog catch2`
-
+- Run command in terminal to fetch depedencies : `pacman -S --needed - < ./prerequisites/msys.txt`
 ## License
     SoundBuddy
     Small companion app that feeds SoundVitrine with ITunes / Music library metadata
