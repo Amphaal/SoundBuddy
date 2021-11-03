@@ -313,16 +313,16 @@
         <translation>J&apos;écoute %1 !</translation>
     </message>
     <message>
-        <source>%1 shutting down !</source>
-        <translation>%1 s&apos;éteint !</translation>
-    </message>
-    <message>
         <source>Waiting for %1 to launch again...</source>
         <translation>J&apos;attends qu&apos;%1 se relance...</translation>
     </message>
     <message>
         <source>An error occured while shouting tracks infos to %1 platform.</source>
         <translation>Une erreur s&apos;est produite pendant le shout des informations du morceau à la plateforme %1.</translation>
+    </message>
+    <message>
+        <source>Connecting to %1 ...</source>
+        <translation>Connexion à %1 ...</translation>
     </message>
 </context>
 </TS>

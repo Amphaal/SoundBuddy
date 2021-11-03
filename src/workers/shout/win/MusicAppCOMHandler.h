@@ -21,31 +21,28 @@
 
 #pragma once
 
-#include <QMetaObject>
-#include <QMetaMethod>
-#include <QCoreApplication>
-#include <QDateTime>
-#include <QVariant>
+#include <QAxObject>
+#include <QEventLoop>
 
-#include "MusicAppCOMHandler.h"
-
-#include "src/workers/shout/ShoutThread.h"
+class ShoutThread;
 
 class MusicAppCOMHandler : public QObject {
     Q_OBJECT
 
  private:
-    QAxObject *MusicAppObj;
-    ShoutThread *worker;
-
-    void OnAboutToPromptUserToQuitEvent();
-    void OnPlayerPlayEvent(QVariant iTrack);
-    void OnPlayerStopEvent(QVariant iTrack);
+    QAxObject* _musicAppObj;
+    ShoutThread* _worker;
+    QEventLoop _evtLoop;
 
  public:
-    MusicAppCOMHandler(QAxObject *MusicAppObj, ShoutThread *worker);
-    void shoutHelper(QVariant iTrack = QVariant());
-    bool musicAppShutdownRequested = false;
+    MusicAppCOMHandler(QAxObject* musicAppObj, ShoutThread* worker);
+    
+    //
+    void shoutTrackAsVariant(QVariant iTrack = QVariant());
+    
+    //
+    void listenUntilShutdown();
+    void stopListening();
 };
 
 #endif

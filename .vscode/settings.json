@@ -168,6 +168,8 @@
         "qjsondocument": "cpp",
         "qjsonobject": "cpp",
         "qwebsocket": "cpp",
-        "qprocessenvironment": "cpp"
+        "qprocessenvironment": "cpp",
+        "qaxobject": "cpp",
+        "qeventloop": "cpp"
     },
 }

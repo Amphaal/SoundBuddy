@@ -22,15 +22,21 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
-#include <QEventLoop>
 #include <QNetworkReply>
 
 #include "src/_i18n/trad.hpp"
+
+#ifdef _WIN32
+#include "src/workers/shout/win/MusicAppCOMHandler.h"
+#endif
 
 ShoutThread::ShoutThread(const UploadHelper* uploder, const AppSettings::ConnectivityInfos connectivityInfos) : ITNZThread(uploder, connectivityInfos) {}
 
 void ShoutThread::quit() {
     this->_mustListen = false;
+    #ifdef _WIN32
+        if(this->_handler) this->_handler->stopListening();
+    #endif
     ITNZThread::quit();
 }
 
@@ -245,129 +251,134 @@ void ShoutThread::run() {
 
 #ifdef _WIN32
 
-#include <QMetaObject>
-#include <QMetaMethod>
-#include <QObject>
-#include <QCoreApplication>
-#include <QDebug>
-
 #include <windows.h>
 #include <combaseapi.h>
 
-#include "src/workers/shout/ShoutThread.h"
 #include "win/MusicAppCOMHandler.h"
+#include "win/iTunesCOMInterface_i.c"
 
 void ShoutThread::run() {
     // start with log
     emit printLog(tr("Waiting for %1 to launch...").arg(musicAppName()));
 
-    // prepare CLID
-    HWND windowsHandler;
-    DWORD currentProcessID;
+    // prepare
+    DWORD oldProcessID = NULL;
 
-    // Music app IID extracted from Apple API
-    wchar_t* wch = nullptr;
-    HRESULT hr = ::StringFromCLSID({0xDC0C2640, 0x1415, 0x4644, {0x87, 0x5C, 0x6F, 0x4D, 0x76, 0x98, 0x39, 0xBA}}, &wch);
-    auto ComCLID = QString::fromWCharArray(wch);
+    //
+    //
+    //
 
-    do {
-        // search for music app...
-        windowsHandler = FindWindowA(0, musicAppName().toUtf8());
+    // bind method
+    auto bindWithMusicApp = [this]() {
+        // log..
+        emit printLog(tr("Connecting to %1 ...").arg(musicAppName()));
 
-        // if not found, wait and retry
-        if(!windowsHandler) {
-            this->sleep(1);
-            continue;
-        }
+        // Music app IID extracted from Apple API
+        wchar_t* wch;
+        HRESULT hr = ::StringFromCLSID(CLSID_iTunesApp, &wch);
+        const auto ComCLID = QString::fromWCharArray(wch);
 
-        // Music App found, store the associated PID
-        GetWindowThreadProcessId(windowsHandler, &currentProcessID);
+        // initiate COM object
+        CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+
+        // Music App IID extracted from Apple API
+        QAxObject *comObj = new QAxObject(ComCLID);
+        this->_handler = new MusicAppCOMHandler(comObj, this);
+
+        // bind events to sink handler
+            auto oatputqe = QObject::connect(
+                comObj, SIGNAL(OnAboutToPromptUserToQuitEvent()),
+                this->_handler, SLOT(stopListening())
+            );
+
+            auto oppe = QObject::connect(
+                comObj, SIGNAL(OnPlayerPlayEvent(QVariant)),
+                this->_handler, SLOT(shoutTrackAsVariant(QVariant))
+            );
+
+            auto opse = QObject::connect(
+                comObj, SIGNAL(OnPlayerStopEvent(QVariant)),
+                this->_handler, SLOT(shoutTrackAsVariant(QVariant))
+            );
 
         // log..
         emit printLog(tr("Listening to %1 !").arg(musicAppName()));
 
-        // initiate COM object
-        CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
-        wchar_t* wch = nullptr;
+            // process events
+            this->_handler->listenUntilShutdown();
 
-        // Music App IID extracted from Apple API
-        QAxObject *comObj = new QAxObject(ComCLID);
-        MusicAppCOMHandler *handler = new MusicAppCOMHandler(comObj, this);
-
-        // bind events to sink handler
-        auto oatputqe = QObject::connect(
-            comObj, SIGNAL(OnAboutToPromptUserToQuitEvent()),
-            handler, SLOT(OnAboutToPromptUserToQuitEvent())
-        );
-
-        auto oppe = QObject::connect(
-            comObj, SIGNAL(OnPlayerPlayEvent(QVariant)),
-            handler, SLOT(OnPlayerPlayEvent(QVariant))
-        );
-
-        auto opse = QObject::connect(
-            comObj, SIGNAL(OnPlayerStopEvent(QVariant)),
-            handler, SLOT(OnPlayerStopEvent(QVariant))
-        );
-
-        // comObj->dumpObjectInfo();
-
-        // process events
-        while(this->_mustListen && !handler->musicAppShutdownRequested) {
-            QCoreApplication::processEvents();
-            this->msleep(20);
-        }
+        // say we acknoledge Music App shutting down...
+        emit printLog(tr("Stopped listening to %1.").arg(musicAppName()));
 
         // disconnect events
-        QObject::disconnect(oatputqe);
-        QObject::disconnect(oppe);
-        QObject::disconnect(opse);
+            QObject::disconnect(oatputqe);
+            QObject::disconnect(oppe);
+            QObject::disconnect(opse);
+
+        // send last shout
+        this->shoutEmpty();
 
         // clear COM related Obj
-        this->shoutEmpty();
-        delete handler;
-        comObj->clear();
-        delete comObj;
+            //
+            delete this->_handler;
+            this->_handler = nullptr;
+            
+            //
+            comObj->clear();
+            delete comObj;
 
         // uninitialize COM
         CoUninitialize();
+    };
 
-        // if Music App is shutting down...
-        if(this->stop && handler->musicAppShutdownRequested) {
-            // say we acknoledge Music App shutting down...
-            emit printLog(tr("%1 shutting down !").arg(musicAppName()));
+    // search for music app method
+    auto waitForMusicAppRunning = [this, &oldProcessID, bindWithMusicApp]() {
+        do {
+            // search for music app...
+            auto windowHandler = FindWindowA(0, musicAppName().toUtf8());
 
-            // wait for old Music App window to finally shutdown
-            do {
-                // check if window still exists
-                HWND checkHandler = FindWindowA(0, musicAppName().toUtf8());
-                if(checkHandler) {
-                    // if it exists, check the PID (shutting down window...)
-                    DWORD checkProcessID;
-                    DWORD checkProcessID_worked = GetWindowThreadProcessId(checkHandler, &checkProcessID);
-                    if(checkProcessID_worked) {
-                        // if old ID <> checked ID, means a new window has been opened, so we can close
-                        if(checkProcessID != currentProcessID) {
-                            break;
-                        }
-                    }
-
-                // if no window found, break...
-                } else {
-                    break;
-                }
-
-                // finally, sleep
+            // if not found, wait and retry
+            if(!windowHandler) {
                 this->sleep(1);
-            } while (this->_mustListen);
+                continue;
+            }
 
-            // say we relooped
-            emit printLog(tr("Waiting for %1 to launch again...").arg(musicAppName()));
-        }
-    } while (this->_mustListen);
+            // Music App found, store the associated PID
+            DWORD currentProcessID;
+            auto success = GetWindowThreadProcessId(windowHandler, &currentProcessID);
+            
+            // if cannot fetch, wait and retry
+            if(!success) {
+                this->sleep(1);
+                continue;
+            }
 
-    // end with log
-    emit printLog(tr("Stopped listening to %1.").arg(musicAppName()));
+            // if has already been ran and iTunes is still the same instance...
+            if(oldProcessID != NULL && currentProcessID == oldProcessID) {
+                this->sleep(1);
+                continue;
+            }
+
+            // store process ID
+            oldProcessID = currentProcessID;
+
+            // start to listen
+            bindWithMusicApp();
+
+            // if must still listen, means user prompted for app quit 
+            if(this->_mustListen) {
+                emit printLog(tr("Waiting for %1 to launch again...").arg(musicAppName()));
+            }
+
+        //
+        } while (this->_mustListen);
+    };
+
+    //
+    //
+    //
+
+    waitForMusicAppRunning();
 }
 
 #endif

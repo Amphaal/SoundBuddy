@@ -25,6 +25,8 @@
 
 #include "src/workers/base/ITNZThread.hpp"
 
+class MusicAppCOMHandler;
+
 class ShoutThread : public ITNZThread {
     Q_OBJECT
 
@@ -59,6 +61,10 @@ class ShoutThread : public ITNZThread {
  private:
     QString _lastTrackHash;
     bool _mustListen = true;
+
+    #ifdef _WIN32
+        MusicAppCOMHandler* _handler = nullptr;
+    #endif
 
     QJsonObject _createBasicShout() const;
     void _shoutToServer(const QJsonObject &incoming);

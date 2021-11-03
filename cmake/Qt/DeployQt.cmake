@@ -10,7 +10,6 @@ macro(DeployQt target)
         add_custom_command(TARGET ${target}
             COMMAND ${DEPLOYQT_EXE}
                     --verbose 0
-                    --no-angle
                     --no-opengl-sw
                     --dir QtRuntime
                     --translations fr,en
