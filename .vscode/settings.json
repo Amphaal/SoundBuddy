@@ -170,6 +170,7 @@
         "qwebsocket": "cpp",
         "qprocessenvironment": "cpp",
         "qaxobject": "cpp",
-        "qeventloop": "cpp"
+        "qeventloop": "cpp",
+        "qdir": "cpp"
     },
 }

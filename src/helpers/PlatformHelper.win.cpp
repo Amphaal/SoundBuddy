@@ -1,6 +1,8 @@
 #ifdef _WIN32
 
-#include <QCoreApplication>
+#include <QString>
+#include <QDir>
+#include <QFile>
 
 #include <windows.h>
 #include <shellapi.h>
@@ -10,29 +12,56 @@
 #include "src/version.h"
 
 const QString PlatformHelper::_getMusicAppPrefFileProbableLocation() {
-    return _getEnvironmentVariable("APPDATA") + "\\Apple Computer\\Preferences\\com.apple.iTunes.plist";
+    const auto ePath = QString ("\\Apple Computer\\Preferences\\com.apple.iTunes.plist");
+    
+    // check the WindowsApp install path first
+    const auto packagesPath = _getEnvironmentVariable("LOCALAPPDATA") + "\\Packages";
+    const auto foundItunesPackage = QDir(packagesPath).entryInfoList({"AppleInc.iTunes*"}, QDir::Dirs | QDir::NoDotAndDotDot | QDir::CaseSensitive);
+    
+    // if found...
+    if(foundItunesPackage.length()) {
+        return foundItunesPackage[0].filePath() + "\\LocalCache\\Roaming" + ePath;
+    }
+
+    // else, return standard expected path
+    const auto standardPath = _getEnvironmentVariable("APPDATA") + ePath;
+    return standardPath;
+
 }
 
 const QString PlatformHelper::getMusicAppLibLocation() {
-    // get a copy of converted binary plist
-    auto pathTo_plutil = _getEnvironmentVariable("PROGRAMFILES") + "\\Common Files\\Apple\\Apple Application Support\\plutil.exe";
-    auto destPath = getDataStorageDirectory() + "/temp.plist";
-    QString command = "-convert xml1 -o ";
-            command += "\"" + destPath +"\" ";
-            command +="\"" + _getMusicAppPrefFileProbableLocation()  +"\"";
-    ShellExecuteA(NULL, "open", pathTo_plutil.toUtf8(), command.toUtf8(), NULL, SW_HIDE);
+    const auto pListContent = QFile(_getMusicAppPrefFileProbableLocation()).readAll();
+    
+    //
+    qsizetype pathStartI = 0;
+    const char* hint = "file://localhost/";
 
-    // read it into JSON obj
-    MusicAppLibParser musicAppParams(destPath);
-    auto xmlAsJSONString = musicAppParams.ToJSON();
-    QJsonDocument d;
-    d.Parse(xmlAsJSONString.toUtf8());
+    // search for db path
+    while((pathStartI = pListContent.indexOf(hint)) != -1) {   
+        // hint found, update pathStart index
+        pathStartI = pathStartI + strlen(hint);
 
-    // decode path
-    auto encodedPath = QString::fromStdString(d["LXML:1:iTunes Library XML Location"].GetString());
-    auto decodedData = encodedPath.toUtf8().toBase64();
+        // find tab that marks the end of path
+        auto pathEndI = pListContent.indexOf('\t', pathStartI);
 
-    return decodedData;
+        // should not happen, means missformated url
+        if(pathEndI == -1) break;
+
+        // get path
+        const auto path = pListContent.mid(pathStartI, pathEndI - pathStartI);
+
+        // search for db
+        auto isDbPath = path.indexOf("iTunes%20Library.itl");
+        
+        //
+        if(isDbPath > -1) {
+            // remove db Path and append music library file name
+            return path.mid(0, isDbPath + 1) + "iTunes Music Library.xml";
+        }
+    }
+
+    // no hint found at all, just sadly return nothing
+    return {};
 }
 
 QSettings* PlatformHelper::_getStartupSettingsHandler() {

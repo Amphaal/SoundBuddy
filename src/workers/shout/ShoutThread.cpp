@@ -282,22 +282,22 @@ void ShoutThread::run() {
         CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
 
         // Music App IID extracted from Apple API
-        QAxObject *comObj = new QAxObject(ComCLID);
-        this->_handler = new MusicAppCOMHandler(comObj, this);
+        auto musicAppObj = new QAxObject(ComCLID);
+        this->_handler = new MusicAppCOMHandler(musicAppObj, this);
 
         // bind events to sink handler
             auto oatputqe = QObject::connect(
-                comObj, SIGNAL(OnAboutToPromptUserToQuitEvent()),
+                musicAppObj, SIGNAL(OnAboutToPromptUserToQuitEvent()),
                 this->_handler, SLOT(stopListening())
             );
 
             auto oppe = QObject::connect(
-                comObj, SIGNAL(OnPlayerPlayEvent(QVariant)),
+                musicAppObj, SIGNAL(OnPlayerPlayEvent(QVariant)),
                 this->_handler, SLOT(shoutTrackAsVariant(QVariant))
             );
 
             auto opse = QObject::connect(
-                comObj, SIGNAL(OnPlayerStopEvent(QVariant)),
+                musicAppObj, SIGNAL(OnPlayerStopEvent(QVariant)),
                 this->_handler, SLOT(shoutTrackAsVariant(QVariant))
             );
 
@@ -324,8 +324,8 @@ void ShoutThread::run() {
             this->_handler = nullptr;
             
             //
-            comObj->clear();
-            delete comObj;
+            musicAppObj->clear();
+            delete musicAppObj;
 
         // uninitialize COM
         CoUninitialize();

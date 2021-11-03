@@ -21,6 +21,7 @@
 
 #include <QString>
 
+#include <QAxObject>
 #include <functional>
 
 #include "src/workers/base/ITNZThread.hpp"
