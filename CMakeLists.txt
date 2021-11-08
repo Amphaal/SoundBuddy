@@ -74,6 +74,7 @@ find_package(Qt6 REQUIRED COMPONENTS
 if(WIN32)
     find_package(Qt6 REQUIRED COMPONENTS 
         ActiveQt
+        AxContainer
     )
 endif()
 
@@ -214,6 +215,7 @@ target_link_libraries(appExec PRIVATE
 if(WIN32)
     target_link_libraries(appExec PRIVATE
         Qt6::ActiveQt
+        Qt6::AxContainer
     )
 endif()
 

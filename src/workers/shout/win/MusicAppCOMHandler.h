@@ -23,6 +23,7 @@
 
 #include <QAxObject>
 #include <QEventLoop>
+#include <QVariant>
 
 class ShoutThread;
 
