@@ -40,20 +40,20 @@ void FeederThread::run() {
         //
         emit printLog(tr("Getting XML file location..."));
 
-        const auto musicAppLibPath = PlatformHelper::getMusicAppLibLocation().toStdString();
-        const auto outputPath = AppSettings::getFeedOutputFilePath().toStdString();
-        const auto warningPath = AppSettings::getFeedWarningFilePath().toStdString();
+            const auto musicAppLibPath = PlatformHelper::getMusicAppLibLocation().toStdString();
+            const auto outputPath = AppSettings::getFeedOutputFilePath().toStdString();
+            const auto warningPath = AppSettings::getFeedWarningFilePath().toStdString();
 
-        //
-        ITunesLibraryParser parser (
-            musicAppLibPath.c_str(),
-            outputPath.c_str(),
-            warningPath.c_str()
-        );
+            //
+            ITunesLibraryParser parser (
+                musicAppLibPath.c_str(),
+                outputPath.c_str(),
+                warningPath.c_str()
+            );
 
         //
         emit printLog(tr("Collecting tracks infos..."));
-            auto results = parser.getStoragedResults();
+            auto [libFile, results] = parser.getStoragedResults();
         emit printLog(tr("Collection done !"));
 
         //
@@ -103,8 +103,8 @@ void FeederThread::run() {
 
         emit printLog(tr("Let's try to send now !"));
             //
-            auto buffer_str_view = outputParser.dataBuffer().str();
-            auto qb_array =  QByteArray::fromRawData(buffer_str_view.data(), buffer_str_view.size());
+            const auto output_view = outputParser.dataBuffer().view();
+            auto qb_array = QByteArray::fromRawData(output_view.data(), output_view.size());
 
             //
             auto response = this->_uploder->uploadDataToPlatform({
@@ -119,6 +119,9 @@ void FeederThread::run() {
             QObject::connect(
                 response, &QNetworkReply::finished,
                 [this, response]() {
+                    // if an error occured, nothing else to do
+                    if(response->error()) return;
+
                     //
                     auto rOutput = response->readAll();
 

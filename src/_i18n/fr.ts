@@ -27,14 +27,14 @@
         <translation>On va essayer de l&apos;envoyer !</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="127"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="130"/>
         <source>Server responded: %1</source>
         <translation>Le serveur a répondu: %1</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="129"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="132"/>
         <source>No feedback from the server ? Strange... Please check the targeted host.</source>
-        <translation>Aucun retour du serveur... C&apos;est étrange, merci de vérifier que le serveur ciblé est bien le bon.</translation>
+        <translation>Aucun retour du serveur, c&apos;est étrange... Merci de vérifier que le serveur ciblé est bien le bon.</translation>
     </message>
     <message>
         <location filename="../workers/feeder/FeederThread.cpp" line="83"/>
@@ -77,7 +77,7 @@
         <translation>Envoi... En attente de réponse.</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="143"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="146"/>
         <source>An error occured while sending tracks infos to %1 platform.</source>
         <translation>Une erreur s&apos;est produite pendant l&apos;envoi des informations de morceaux à la plateforme %1.</translation>
     </message>
