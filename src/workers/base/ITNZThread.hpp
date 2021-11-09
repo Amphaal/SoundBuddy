@@ -24,6 +24,14 @@
 #include "src/helpers/AppSettings.hpp"
 #include "src/helpers/UploadHelper.hpp"
 
+enum class MessageType {
+   STANDARD,
+   ISSUE,
+   WARNING
+};
+
+Q_DECLARE_METATYPE(MessageType)
+
 class ITNZThread : public QThread {
     Q_OBJECT
 
@@ -36,5 +44,5 @@ class ITNZThread : public QThread {
     const AppSettings::ConnectivityInfos _connectivityInfos;
 
  signals:
-    void printLog(const QString &message, const bool replacePreviousLine = false, const bool isError = false);
+    void printLog(const QString &message, const MessageType msgType = MessageType::STANDARD, const bool replacePreviousLine = false);
 };

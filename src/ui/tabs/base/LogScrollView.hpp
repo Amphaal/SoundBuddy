@@ -48,29 +48,54 @@ class LogScrollView : public QWidget {
         this->setPalette(palette);
     }
 
-    void addMessage(const QString & newMessage, const bool isError = false) {
+    void addMessage(const QString &newMessage, const MessageType &msgType) {
+        //
         auto label = new QLabel(newMessage);
         label->setWordWrap(true);
 
+        //
+        Qt::GlobalColor color;
+        switch(msgType) {
+            case MessageType::ISSUE:
+                color = Qt::red;
+            break;
+
+            case MessageType::WARNING:
+                color = Qt::darkYellow;
+            break;
+
+            default:
+                color = Qt::black;
+            break;
+        }
+
+        //
         QPalette palette = label->palette();
-        auto color = isError ? Qt::red : Qt::black;
         palette.setColor(label->foregroundRole(), color);
         label->setPalette(palette);
 
+        //
         this->limitLogSize();
 
+        //
         this->layout()->addWidget(label);
     }
 
-    void updateLatestMessage(const QString & newMessage) {
-        // count items in layout
-        auto i = this->layout()->count() - 1;
+    void updateLatestMessage(const QString &newMessage, const MessageType &msgType) {
+        //
+        auto latestLabelIndex = this->layout()->count() - 1;
 
         // if no message, add message
-        if(i < 0) {
-            return this->addMessage(newMessage);
+        if(latestLabelIndex < 0) {
+            return this->addMessage(newMessage, msgType);
         }
-        auto lbl = reinterpret_cast<QLabel*>(this->layout()->itemAt(i)->widget());
+
+        // get label
+        auto lbl = reinterpret_cast<QLabel*>(
+            this->layout()->itemAt(latestLabelIndex)->widget()
+        );
+
+        // update its content
         lbl->setText(newMessage);
     }
 };

@@ -40,25 +40,31 @@ class PreferencesDialog : public QDialog {
         this->setLayout(layout);
 
         // Platform connectivity
-        auto connectivityGroup = new QGroupBox(tr("Connectivity"), this);
+        auto connectivityGroup = new QGroupBox(tr("%1 connectivity").arg(DEST_PLATFORM_PRODUCT_NAME), this);
+        connectivityGroup->setLayout(new QVBoxLayout);
 
-            this->_PlatformURLEdit = new QLineEdit(tr("%1 Host URL").arg(DEST_PLATFORM_PRODUCT_NAME), this);
-            this->_PlatformUsernameEdit = new QLineEdit(tr("%1 username").arg(DEST_PLATFORM_PRODUCT_NAME), this);
-            this->_PlatformPasswordEdit = new QLineEdit(tr("%1 user password").arg(DEST_PLATFORM_PRODUCT_NAME), this);
+            this->_PlatformURLEdit = new QLineEdit(this);
+            this->_PlatformUsernameEdit = new QLineEdit(this);
+            this->_PlatformPasswordEdit = new QLineEdit(this);
             this->_PlatformPasswordEdit->setEchoMode(QLineEdit::Password);
+
+            this->_PlatformURLEdit->setPlaceholderText(tr("Host URL"));
+            this->_PlatformUsernameEdit->setPlaceholderText(tr("Username"));
+            this->_PlatformPasswordEdit->setPlaceholderText(tr("Password"));
 
             this->_PlatformURLEdit->setText(this->_appSettings->value(AppSettings::PLATFORM_HOST_URL).toString());
             this->_PlatformUsernameEdit->setText(this->_appSettings->value(AppSettings::PLATFORM_USERNAME).toString());
             this->_PlatformPasswordEdit->setText(this->_appSettings->value(AppSettings::PLATFORM_PASSWORD).toString());
 
             connectivityGroup->layout()->addWidget(this->_PlatformURLEdit);
-            connectivityGroup->layout()->addWidget(this->_PlatformPasswordEdit);
+            connectivityGroup->layout()->addWidget(this->_PlatformUsernameEdit);
             connectivityGroup->layout()->addWidget(this->_PlatformPasswordEdit);
 
         layout->addWidget(connectivityGroup);
 
         // Automation
         auto automationGroup = new QGroupBox(tr("Automation"), this);
+        automationGroup->setLayout(new QVBoxLayout);
 
             this->_launchAppAtStartupChk = new QCheckBox(tr("Launch %1 at system boot").arg(APP_NAME), this);
 

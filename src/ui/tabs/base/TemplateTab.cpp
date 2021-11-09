@@ -38,12 +38,12 @@ void TemplateTab::createNewLog() {
     this->scrollArea->setWidget(this->lsv);
 }
 
-void TemplateTab::printLog(const QString &message, const bool replacePreviousLine, const bool isError) {
+void TemplateTab::printLog(const QString &message, const MessageType &msgType, const bool replacePreviousLine) {
     //
     if(replacePreviousLine) {
-        this->lsv->updateLatestMessage(message);
+        this->lsv->updateLatestMessage(message, msgType);
     } else {
-        this->lsv->addMessage(message, isError);
+        this->lsv->addMessage(message, msgType);
     }
 }
 

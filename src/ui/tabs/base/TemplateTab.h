@@ -31,7 +31,6 @@
 
 #include "LogScrollView.hpp"
 
-
 class TemplateTab : public QWidget {
  public:
     explicit TemplateTab(QWidget* parent = nullptr);
@@ -46,7 +45,7 @@ class TemplateTab : public QWidget {
     void scrollUpdate(int min, int max);
 
     void createNewLog();
-    void printLog(const QString &message, const bool replacePreviousLine = false, const bool isError = false);
+    void printLog(const QString &message, const MessageType &msgType, const bool replacePreviousLine);
     void onThreadEnd();
     void onThreadStart();
 };

@@ -91,8 +91,7 @@ void ShoutThread::_shoutToServer(const QJsonObject &incoming) {
                 emit printLog(
                     tr("An error occured while shouting tracks infos to %1 platform.")
                         .arg(DEST_PLATFORM_PRODUCT_NAME),
-                        false,
-                        true
+                    MessageType::ISSUE
                 );
 
                 // ask for deletion
@@ -109,7 +108,7 @@ void ShoutThread::_shoutToServer(const QJsonObject &incoming) {
     //
     } catch(const std::exception& e) {
         // emit error
-        emit printLog(e.what(), false, true);
+        emit printLog(e.what(), MessageType::ISSUE);
     }
 }
 
@@ -178,7 +177,10 @@ void ShoutThread::shoutFilled(
 #include <QProcess>
 
 void ShoutThread::_startShouting() {
-    emit printLog(tr("Waiting for %1 to launch...").arg(musicAppName()));
+    emit printLog(
+        tr("Waiting for %1 to launch...")
+            .arg(musicAppName())
+    );
 
     // define applescript to get shout values
     const auto scriptContent = QFile(":/mac/CurrentlyPlaying.applescript").readAll();
@@ -250,7 +252,10 @@ void ShoutThread::_startShouting() {
     }
 
     this->shoutEmpty();
-    emit printLog(tr("Stopped listening to %1.").arg(musicAppName()));
+    emit printLog(
+        tr("Stopped listening to %1.")
+            .arg(musicAppName())
+    );
 }
 #endif
 
@@ -264,7 +269,10 @@ void ShoutThread::_startShouting() {
 
 void ShoutThread::_startShouting() {
     // start with log
-    emit printLog(tr("Waiting for %1 to launch...").arg(musicAppName()));
+    emit printLog(
+        tr("Waiting for %1 to launch...")
+            .arg(musicAppName())
+    );
 
     // prepare
     DWORD oldProcessID = NULL;
@@ -276,7 +284,10 @@ void ShoutThread::_startShouting() {
     // bind method
     auto bindWithMusicApp = [this]() {
         // log..
-        emit printLog(tr("Connecting to %1 ...").arg(musicAppName()));
+        emit printLog(
+            tr("Connecting to %1 ...")
+                .arg(musicAppName())
+        );
 
         // Music app IID extracted from Apple API
         wchar_t* wch;
@@ -307,13 +318,19 @@ void ShoutThread::_startShouting() {
             );
 
         // log..
-        emit printLog(tr("Listening to %1 !").arg(musicAppName()));
+        emit printLog(
+            tr("Listening to %1 !")
+                .arg(musicAppName())
+        );
 
             // process events
             this->_handler->listenUntilShutdown();
 
         // say we acknoledge Music App shutting down...
-        emit printLog(tr("Stopped listening to %1.").arg(musicAppName()));
+        emit printLog(
+            tr("Stopped listening to %1.")
+                .arg(musicAppName())
+        );
 
         // disconnect events
             QObject::disconnect(oatputqe);
@@ -372,7 +389,10 @@ void ShoutThread::_startShouting() {
 
             // if must still listen, means user prompted for app quit 
             if(this->_mustListen) {
-                emit printLog(tr("Waiting for %1 to launch again...").arg(musicAppName()));
+                emit printLog(
+                    tr("Waiting for %1 to launch again...")
+                        .arg(musicAppName())
+                );
             }
 
         //

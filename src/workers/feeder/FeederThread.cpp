@@ -34,7 +34,10 @@ FeederThread::FeederThread(const AppSettings::ConnectivityInfos connectivityInfo
 
 void FeederThread::run() {
     //
-    emit printLog(tr("WARNING ! Make sure you activated the XML file sharing in %1 > Preferences > Advanced.").arg(musicAppName()));
+    emit printLog(
+        tr("WARNING ! Make sure you activated the XML file sharing in %1 > Preferences > Advanced.")
+            .arg(musicAppName())
+    );
 
     try {
         //
@@ -67,7 +70,10 @@ void FeederThread::run() {
                     "metadata and consequently were removed from the output file ! "
                     "Please check the \"%2\" file for more informations.")
                         .arg(results.missingFieldsTracks.size())
-                        .arg(warningPath.c_str()));
+                        .arg(warningPath.c_str()),
+                    MessageType::WARNING
+                );
+
                 //
                 MissingFieldsJSONParser { std::move(results.missingFieldsTracks) }
                     .copyToFile(warningPath.c_str());
@@ -82,8 +88,7 @@ void FeederThread::run() {
                 emit printLog(
                     tr("No music found in your %1 library. Please feed it some.")
                         .arg(musicAppName()),
-                    false,
-                    true
+                    MessageType::ISSUE
                 );
 
                 //
@@ -129,9 +134,15 @@ void FeederThread::run() {
 
                     //
                     if (!rOutput.isEmpty()) {
-                        emit printLog(tr("Server responded: %1").arg(rOutput));
+                        emit printLog(
+                            tr("Server responded: %1")
+                                .arg(rOutput)
+                        );
                     } else {
-                        emit printLog(tr("No feedback from the server ? Strange... Please check the targeted host."));
+                        emit printLog(
+                            tr("No feedback from the server ? Strange... Please check the targeted host."),
+                            MessageType::WARNING
+                        );
                     }
 
                     // back to exec
@@ -147,8 +158,7 @@ void FeederThread::run() {
                     emit printLog(
                         tr("An error occured while sending tracks infos to %1 platform.")
                             .arg(DEST_PLATFORM_PRODUCT_NAME),
-                        false,
-                        true
+                        MessageType::ISSUE
                     );
 
                     // back to exec
@@ -167,8 +177,7 @@ void FeederThread::run() {
         // emit error as log
         emit printLog(
             QString(e.what()),
-            false,
-            true
+            MessageType::ISSUE
         );
     }
 }

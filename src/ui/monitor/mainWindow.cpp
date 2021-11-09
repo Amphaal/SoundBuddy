@@ -124,7 +124,7 @@ void MainWindow::onUpdateChecked(const UpdateChecker::CheckResults checkResults)
 
             //
             QMessageBox::critical(this,
-                tr("%1 - Error while checking updates").arg(APP_NAME),
+                tr("Error while checking updates"),
                 errMsg,
                 QMessageBox::Ok,
                 QMessageBox::Ok);
@@ -132,7 +132,7 @@ void MainWindow::onUpdateChecked(const UpdateChecker::CheckResults checkResults)
         // no updates
         } else if (!checkResults.hasNewerVersion) {
             QMessageBox::information(this,
-                tr("%1 - Checking updates").arg(APP_NAME),
+                tr("Checking updates"),
                 tr("No updates available at the time."),
                 QMessageBox::Ok,
                 QMessageBox::Ok);
@@ -147,7 +147,7 @@ void MainWindow::onUpdateChecked(const UpdateChecker::CheckResults checkResults)
 
     // if has update
     auto msgboxRslt = QMessageBox::information(this,
-        tr("%1 - Update Available").arg(APP_NAME),
+        tr("Update Available").arg(APP_NAME),
         tr("An update is available for %1. Would you like to install it now ?").arg(APP_NAME),
         QMessageBox::Yes | QMessageBox::No,
         QMessageBox::Yes);
