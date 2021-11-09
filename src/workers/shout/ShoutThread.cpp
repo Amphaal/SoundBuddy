@@ -53,7 +53,7 @@ QJsonObject ShoutThread::_createBasicShout() const {
     return obj;
 }
 
-void ShoutThread::shoutEmpty() {
+void ShoutThread::shoutEmpty(bool waitForResponse) {
     //
     emit printLog(
         tr("%1: Shouting -> Nothing")
@@ -62,7 +62,7 @@ void ShoutThread::shoutEmpty() {
 
     // send...
     auto shout = this->_createBasicShout();
-    this->_shoutToServer(shout);
+    this->_shoutToServer(shout, waitForResponse);
 }
 
 void ShoutThread::run() {
@@ -71,7 +71,7 @@ void ShoutThread::run() {
     delete _uploader;
 }
 
-void ShoutThread::_shoutToServer(const QJsonObject &incoming) {
+void ShoutThread::_shoutToServer(const QJsonObject &incoming, bool waitForResponse) {
     try {
         //
         UploadHelper::UploadInstructions instr {
@@ -86,7 +86,7 @@ void ShoutThread::_shoutToServer(const QJsonObject &incoming) {
         // on error
         QObject::connect(
             response, &QNetworkReply::errorOccurred,
-            [this, response](QNetworkReply::NetworkError) {
+            [this, response, waitForResponse](QNetworkReply::NetworkError) {
                 //
                 emit printLog(
                     tr("An error occured while shouting tracks infos to %1 platform : %2")
@@ -97,14 +97,31 @@ void ShoutThread::_shoutToServer(const QJsonObject &incoming) {
 
                 // ask for deletion
                 response->deleteLater();
+
+                // if must be sync, quit loop
+                if(waitForResponse) this->_syncLp->quit();
             }
         );
 
         // on finished
         QObject::connect(
             response, &QNetworkReply::finished,
-            response, &QObject::deleteLater
+            [this, response, waitForResponse]() {
+                // delete
+                response->deleteLater();
+
+                // if must be sync, quit loop
+                if(waitForResponse) this->_syncLp->quit();
+            }
         );
+
+        // wait for response
+        if(waitForResponse) {
+            _syncLp = new QEventLoop;
+            this->_syncLp->exec();
+            delete _syncLp;
+            _syncLp = nullptr;
+        }
 
     //
     } catch(const std::exception& e) {
@@ -143,7 +160,8 @@ void ShoutThread::shoutFilled(
         int duration,
         int playerPosition,
         bool playerState,
-        int year
+        int year,
+        bool waitForResponse
     ) {
     // fill obj
     auto obj = this->_createBasicShout();
@@ -169,7 +187,7 @@ void ShoutThread::shoutFilled(
 
     emit printLog(logMessage);
 
-    this->_shoutToServer(obj);
+    this->_shoutToServer(obj, waitForResponse);
 }
 
 #ifdef __APPLE__
@@ -209,7 +227,6 @@ void ShoutThread::_startShouting() {
         int iDuration;
         int iPlayerPos;
         bool iPlayerState = false;
-        // bool iRepeatMode;
         QString tDateSkipped;
         QString tDatePlayed;
         int tYear;
@@ -241,10 +258,13 @@ void ShoutThread::_startShouting() {
             // if had results
             if (result.size()) {
                 // say track infos
-                this->shoutFilled(tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState, tYear);
+                this->shoutFilled(
+                    tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState, tYear,
+                    true
+                );
             } else {
                 // say nothing happens
-                this->shoutEmpty();
+                this->shoutEmpty(true);
             }
         }
 
@@ -298,6 +318,9 @@ void ShoutThread::_startShouting() {
         // initiate COM object
         CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
 
+        // log..
+        emit printLog(tr("Initializing communication..."));
+
         // Music App IID extracted from Apple API
         auto musicAppObj = new QAxObject(ComCLID);
         this->_handler = new MusicAppCOMHandler(musicAppObj, this);
@@ -339,7 +362,7 @@ void ShoutThread::_startShouting() {
             QObject::disconnect(opse);
 
         // send last shout
-        this->shoutEmpty();
+        this->shoutEmpty(true);
 
         // clear COM related Obj
             //

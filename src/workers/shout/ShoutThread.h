@@ -20,8 +20,9 @@
 #pragma once
 
 #include <QString>
-
 #include <QAxObject>
+#include <QEventLoop>
+
 #include <functional>
 
 #include "src/workers/base/ITNZThread.hpp"
@@ -37,7 +38,7 @@ class ShoutThread : public ITNZThread {
     void run() override;
     void quit() override;
 
-    void shoutEmpty();
+    void shoutEmpty(bool waitForResponse = false);
 
     void shoutFilled(
         const QString &name,
@@ -47,7 +48,8 @@ class ShoutThread : public ITNZThread {
         int duration,
         int playerPosition,
         bool playerState,
-        int year
+        int year,
+        bool waitForResponse = false
     );
 
     bool shouldUpload(
@@ -71,5 +73,7 @@ class ShoutThread : public ITNZThread {
     void _startShouting();
 
     QJsonObject _createBasicShout() const;
-    void _shoutToServer(const QJsonObject &incoming);
+
+    QEventLoop* _syncLp = nullptr;
+    void _shoutToServer(const QJsonObject &incoming, bool waitForResponse = false);
 };

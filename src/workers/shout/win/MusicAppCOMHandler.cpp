@@ -39,6 +39,12 @@ void MusicAppCOMHandler::_shoutCurrentTrack() {
     this->_shoutFromCOMObj(currentTrack);
 }
 
+bool MusicAppCOMHandler::_isMusicAppPlaying() const {
+    const auto prop = this->_musicAppObj->property("PlayerState");
+    auto value = prop.data_ptr().data.data[0];
+    return value > 0;
+}
+
 void MusicAppCOMHandler::_shoutFromCOMObj(QAxObject* obj) {
     // get values for shout
     auto tName = obj->property("Name").toString();
@@ -47,8 +53,7 @@ void MusicAppCOMHandler::_shoutFromCOMObj(QAxObject* obj) {
     auto tGenre = obj->property("Genre").toString();
     auto iDuration = obj->property("Duration").toInt();
     auto iPlayerPos = this->_musicAppObj->property("PlayerPosition").toInt();
-    auto iPlayerState = this->_musicAppObj->property("PlayerState").toInt();
-    qDebug() << this->_musicAppObj->property("PlayerState");
+    auto iPlayerState = this->_isMusicAppPlaying();
     auto tDatePlayed = obj->property("PlayedDate").toDateTime().toString(Qt::ISODate);
     auto tDateSkipped = obj->property("SkippedDate").toDateTime().toString(Qt::ISODate);
     auto tYear = obj->property("Year").toInt();

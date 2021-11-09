@@ -48,6 +48,7 @@ class MusicAppCOMHandler : public QObject {
  private:
     void _shoutCurrentTrack();
     void _shoutFromCOMObj(QAxObject* obj);
+    bool _isMusicAppPlaying() const;
 };
 
 #endif
