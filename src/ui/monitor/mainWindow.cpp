@@ -170,9 +170,9 @@ void MainWindow::checkForAppUpdates() {
     this->updateCheckerWorker.start();
 }
 
-void MainWindow::updateStatusBar(const QString &message, const TLW_Colors &color) {
+void MainWindow::updateStatusBar(const QString &message, const ConnectivityIndicator &indic) {
     this->statusLabel->setText(message);
-    this->statusLight->setCurrentIndex(static_cast<int>(color));
+    this->statusLight->setCurrentIndex(static_cast<int>(indic));
 }
 
 void MainWindow::runMBeat() {

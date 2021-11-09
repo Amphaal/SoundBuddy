@@ -68,9 +68,9 @@ class MainWindow : public QMainWindow {
 
     // statusbar
     void _initStatusBar();
-    void updateStatusBar(const QString &message, const TLW_Colors &color);
+    void updateStatusBar(const QString &message, const ConnectivityIndicator &indic);
     QLabel* statusLabel;
-    TrafficLightWidget *statusLight;
+    TrafficLightWidget* statusLight;
 
     ///
     /// UI instanciation

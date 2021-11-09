@@ -21,13 +21,13 @@
 
 #include <QtWidgets>
 
-enum class TLW_Colors {
-    RED = 0,
-    YELLOW = 1,
-    GREEN = 2
+enum class ConnectivityIndicator {
+    NOK = 0,
+    ONGOING = 1,
+    OK = 2
 };
 
-Q_DECLARE_METATYPE(TLW_Colors)
+Q_DECLARE_METATYPE(ConnectivityIndicator)
 
 class LightWidget : public QWidget {
     Q_OBJECT

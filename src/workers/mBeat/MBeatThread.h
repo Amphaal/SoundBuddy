@@ -36,15 +36,16 @@ class MBeatThread : public QThread {
     void run() override;
 
  signals:
-    void updateConnectivityStatus(const QString &message, const TLW_Colors &color);
+    void updateConnectivityStatus(const QString &message, const ConnectivityIndicator &indic);
 
  private:
     const AppSettings::ConnectivityInfos _connectivityInfos;
 
     const QString _onCredentialsErrorMsg(const QString& returnCode) const;
     void _checkCredentials(QWebSocket &socket);
+    
+    // heartbeats
     bool _pongReceived = true;
     bool _pongMissed = false;
-
     static inline qint64 HEARTBEAT_INTERVAL = 10000;  // 10 sec.
 };

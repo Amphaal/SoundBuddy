@@ -29,7 +29,10 @@ MBeatThread::MBeatThread(const AppSettings::ConnectivityInfos &connectivityInfos
 void MBeatThread::run() {
     //
     if(!_connectivityInfos.areOK) {
-        emit updateConnectivityStatus(tr("Waiting for appropriate credentials."), TLW_Colors::RED);
+        emit updateConnectivityStatus(
+            tr("Waiting for appropriate credentials."),
+            ConnectivityIndicator::NOK
+        );
         return;
     }
 
@@ -41,13 +44,20 @@ void MBeatThread::run() {
     socket.open(url);
 
     //
-    emit updateConnectivityStatus(tr("Connecting to server..."), TLW_Colors::YELLOW);
+    emit updateConnectivityStatus(
+        tr("Connecting to server..."),
+        ConnectivityIndicator::ONGOING
+    );
 
     // handling errors
     QObject::connect(
         &socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error),
         [this](QAbstractSocket::SocketError error) {
-            emit updateConnectivityStatus(tr("An error occured while connecting with %1 platform !").arg(DEST_PLATFORM_PRODUCT_NAME), TLW_Colors::RED);
+            emit updateConnectivityStatus(
+                tr("An error occured while connecting with %1 platform !")
+                    .arg(DEST_PLATFORM_PRODUCT_NAME),
+                ConnectivityIndicator::NOK
+            );
         }
     );
 
@@ -60,7 +70,11 @@ void MBeatThread::run() {
             auto document = QJsonDocument::fromJson(message.toUtf8(), &parseError);
 
             auto parseErr = [this]() {
-                emit updateConnectivityStatus(tr("Issue while reading response from %1 platform.").arg(DEST_PLATFORM_PRODUCT_NAME), TLW_Colors::RED);
+                emit updateConnectivityStatus(
+                    tr("Issue while reading response from %1 platform.")
+                        .arg(DEST_PLATFORM_PRODUCT_NAME),
+                    ConnectivityIndicator::NOK
+                );
             };
 
             //
@@ -81,9 +95,16 @@ void MBeatThread::run() {
             //
             if(msgType == "credentialsChecked") {
                 if(msgContent == "ok") {
-                    emit updateConnectivityStatus(tr("Logged as \"%1\"").arg(_connectivityInfos.username), TLW_Colors::GREEN);
+                    emit updateConnectivityStatus(
+                        tr("Logged as \"%1\"")
+                            .arg(_connectivityInfos.username),
+                        ConnectivityIndicator::OK
+                    );
                 } else {
-                    emit updateConnectivityStatus(_onCredentialsErrorMsg(msgContent), TLW_Colors::RED);
+                    emit updateConnectivityStatus(
+                        _onCredentialsErrorMsg(msgContent),
+                        ConnectivityIndicator::NOK
+                    );
                 }
             } else if (msgType == "databaseUpdated") {
                 this->_checkCredentials(socket);
@@ -94,57 +115,66 @@ void MBeatThread::run() {
         }
     );
 
+    // ping/pong feature
+    QTimer pingTimer;
+    pingTimer.setInterval(HEARTBEAT_INTERVAL);
+
+        // on heartbeat intervals...
+        QObject::connect(
+            &pingTimer, &QTimer::timeout,
+            [this, &socket]() {
+                // whenever pong has been received in the meantime
+                if(!_pongReceived) {
+                    // pong missed, tell we lost connection
+                    emit updateConnectivityStatus(
+                        tr("Reconnecting to server..."),
+                        ConnectivityIndicator::ONGOING
+                    );
+                    _pongMissed = true;
+                } else {
+                    // reset pong flag
+                    _pongReceived = false;
+                }
+
+                // ping every time
+                socket.ping();
+            }
+        );
+
+        // when response to pings are received
+        QObject::connect(
+            &socket, &QWebSocket::pong,
+            [this, &socket](quint64 elapsedTime, const QByteArray &payload) {
+                // ack pong
+                _pongReceived = true;
+
+                // if heartbeat failed somehow, recheck credentials
+                if(_pongMissed) {
+                    _pongMissed = false;
+                    this->_checkCredentials(socket);
+                }
+            }
+        );
+
     // on connection !
     QObject::connect(
         &socket, &QWebSocket::connected,
-        [this, &socket]() {
+        [this, &socket, &pingTimer]() {
+            pingTimer.start(); // can start tracking for heartbeats
             this->_checkCredentials(socket);
         }
     );
 
-    /// ping/pong feature
-    QTimer pingTimer;
-    pingTimer.setInterval(HEARTBEAT_INTERVAL);
-    QObject::connect(
-        &pingTimer, &QTimer::timeout,
-        [this, &socket]() {
-            // whenever pong has been received in the meantime
-            if(!_pongReceived) {
-                // pong missed, tell we lost connection
-                emit updateConnectivityStatus(tr("Reconnecting to server..."), TLW_Colors::YELLOW);
-                _pongMissed = true;
-            } else {
-                // reset pong flag
-                _pongReceived = false;
-            }
-
-            // ping every time
-            socket.ping();
-        }
-    );
-    pingTimer.start();
-
-    // when response to pings are received
-    QObject::connect(
-        &socket, &QWebSocket::pong,
-        [this, &socket](quint64 elapsedTime, const QByteArray &payload) {
-            // ack pong
-            _pongReceived = true;
-
-            // if heartbeat failed somehow, recheck credentials
-            if(_pongMissed) {
-                _pongMissed = false;
-                this->_checkCredentials(socket);
-            }
-        }
-    );
 
     this->exec();
 }
 
 void MBeatThread::_checkCredentials(QWebSocket &socket) {
     //
-    emit updateConnectivityStatus(tr("Asking for credentials validation..."), TLW_Colors::YELLOW);
+    emit updateConnectivityStatus(
+        tr("Asking for credentials validation..."),
+        ConnectivityIndicator::ONGOING
+    );
 
     //
     QJsonObject payload;
