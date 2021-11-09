@@ -38,7 +38,9 @@ void FeederThread::run() {
 
     try {
         //
-        const auto musicAppLibPath = this->_getMusicAppLibLocation().toStdString();
+        emit printLog(tr("Getting XML file location..."));
+
+        const auto musicAppLibPath = PlatformHelper::getMusicAppLibLocation().toStdString();
         const auto outputPath = AppSettings::getFeedOutputFilePath().toStdString();
         const auto warningPath = AppSettings::getFeedWarningFilePath().toStdString();
 
@@ -162,24 +164,6 @@ void FeederThread::run() {
             QString(e.what()),
             false,
             true
-        );
-    }
-}
-
-///
-/// Other Helpers
-///
-
-// seek in Music App preference file the library location
-const QString FeederThread::_getMusicAppLibLocation() {
-    emit printLog(tr("Getting XML file location..."));
-    try {
-        return PlatformHelper::getMusicAppLibLocation();
-    } catch(...) {
-        throw std::logic_error(
-            tr("An issue happened while fetching %1's XML file location. Have you installed %1 ?")
-                .arg(musicAppName())
-                .toStdString()
         );
     }
 }

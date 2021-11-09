@@ -12,37 +12,37 @@
 <context>
     <name>FeederThread</name>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="64"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="66"/>
         <source>WARNING ! %1 files in your library are missing important metadata and consequently were removed from the output file ! Please check the &quot;%2&quot; file for more informations.</source>
         <translation>ATTENTION ! %1 fichiers dans votre bibliothèque manquent d&apos;importantes données liées aux chansons et n&apos;ont donc pas été incluse dans le fichier de sortie ! Merci de vérifier le fichier &quot;%2&quot; pour plus d&apos;informations.</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="98"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="100"/>
         <source>OK, output file is ready for breakfast !</source>
         <translation>OK, le fichier de sorti est prêt pour le petit-dej !</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="102"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="104"/>
         <source>Let&apos;s try to send now !</source>
         <translation>On va essayer de l&apos;envoyer !</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="125"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="127"/>
         <source>Server responded: %1</source>
         <translation>Le serveur a répondu: %1</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="127"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="129"/>
         <source>No feedback from the server ? Strange... Please check the targeted host.</source>
         <translation>Aucun retour du serveur... C&apos;est étrange, merci de vérifier que le serveur ciblé est bien le bon.</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="81"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="83"/>
         <source>No music found in your %1 library. Please feed it some.</source>
         <translation>Aucunes musiques trouvée dans %1. Merci de lui en fournir quelques unes !</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="175"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="41"/>
         <source>Getting XML file location...</source>
         <translation>On récupère l&apos;emplacement du fichier XML...</translation>
     </message>
@@ -52,37 +52,32 @@
         <translation>ATTENTION ! Assurez-vous que le partage du fichier XML de la bibliothèque est bien activé dans %1 &gt; Préférences &gt; Avancées</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="180"/>
-        <source>An issue happened while fetching %1&apos;s XML file location. Have you installed %1 ?</source>
-        <translation>Un problème est survenu durant la recherche de l&apos;emplacement de la bibliothèque. Etes-vous sûr d&apos;avoir installé %1 ?</translation>
-    </message>
-    <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="53"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="55"/>
         <source>Collecting tracks infos...</source>
         <translation>Récupération des informations des morceaux...</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="55"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="57"/>
         <source>Collection done !</source>
         <translation>Récupération terminée !</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="58"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="60"/>
         <source>Parsing infos into JSON...</source>
         <translation>Compilation des informations en JSON...</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="95"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="97"/>
         <source>Parsing done !</source>
         <translation>Compilation terminée !</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="114"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="116"/>
         <source>Sending... Waiting for response.</source>
         <translation>Envoi... En attente de réponse.</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="141"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="143"/>
         <source>An error occured while sending tracks infos to %1 platform.</source>
         <translation>Une erreur s&apos;est produite pendant l&apos;envoi des informations de morceaux à la plateforme %1.</translation>
     </message>
@@ -163,127 +158,127 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="360"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="385"/>
         <source>Options</source>
         <translation>Options</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="363"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="388"/>
         <source>Check for updates</source>
         <translation>Vérification de mises à jour</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="385"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="410"/>
         <source>Searching for updates...</source>
         <translation>Recherche des mises à jour...</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="393"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="418"/>
         <source>File</source>
         <translation>Fichier</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="396"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="421"/>
         <source>Open monitor...</source>
         <translation>Ouvrir le tableau de bord</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="403"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="428"/>
         <source>My %1</source>
         <translation>Mon %1</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="418"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="443"/>
         <source>Read latest upload warnings report</source>
         <translation>Visualiser les derniers avertissements d&apos;export</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="426"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="451"/>
         <source>Access upload data folder</source>
         <translation>Accéder aux données d&apos;export</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="432"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="457"/>
         <source>Quit</source>
         <translation>Quitter</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="469"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="494"/>
         <source>Shout worker running !</source>
         <translation>Shout en cours !</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="470"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="495"/>
         <source>Shout worker is actually running : Are you sure you want to exit ?</source>
         <translation>Les shouts sont actuellement scannés : Voulez-vous vraiment quitter ?</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="137"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="135"/>
         <source>%1 - Checking updates</source>
         <translation>%1 - Vérifier les mises à jour</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="138"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="136"/>
         <source>No updates available at the time.</source>
         <translation>Pas de mises à jour disponibles pour le moment.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="152"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="150"/>
         <source>%1 - Update Available</source>
         <translation>%1 - Mise à jour disponible</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="153"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="151"/>
         <source>An update is available for %1. Would you like to install it now ?</source>
         <translation>Une mise à jour a été trouvé pour %1. Voulez-vous l&apos;installer maintenant ?</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="107"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="105"/>
         <source>No remote URL given, probably because of an issue with the executable. Contact the developpers.</source>
         <translation>Aucune URL distante trouvée, probablement parce qu&apos;il y a un problème avec l&apos;executable. Contactez les développeurs.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="110"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="108"/>
         <source>Issue while finding the local package manifest.</source>
         <translation>Problème durant la recherche du manifeste de package local.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="113"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="111"/>
         <source>Issue while reading the local package manifest.</source>
         <translation>Problème durant la lecture du manifeste de package local.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="116"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="114"/>
         <source>Issue while finding the remote package update manifest.</source>
         <translation>Problème durant la recherche du manifeste de package distant.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="119"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="117"/>
         <source>Issue while reading the remote package update manifest.</source>
         <translation>Problème durant la lecture du manifeste de package distant.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="123"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="121"/>
         <source>No specified code linked to the error happening. Contact the developpers.</source>
         <translation>Aucun code erreur lié au problème en cours. Contactez les développeurs.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="129"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="127"/>
         <source>%1 - Error while checking updates</source>
         <translation>%1 - Erreur durant la verification des mises à jour</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="411"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="436"/>
         <source>Preferences</source>
         <translation>Paramètres</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="65"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="63"/>
         <source>Cannot access %1 plaform</source>
         <translation>Impossible d&apos;accéder à la plateforme %1</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="66"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="64"/>
         <source>%1 Plaform URL is not valid. Please check Preferences connectivity parameters.</source>
         <translation>L&apos;URL de la plateforme %1 n&apos;est pas valide. Merci de vérifier les paramètres de connectivité.</translation>
     </message>
@@ -332,6 +327,16 @@
         <location filename="trad.hpp" line="29"/>
         <source>Music</source>
         <translation>Musique</translation>
+    </message>
+    <message>
+        <location filename="../helpers/PlatformHelper.win.cpp" line="39"/>
+        <source>Could not open %1 preferences file.</source>
+        <translation>Impossible d&apos;ouvrir le fichier de préférences de %1.</translation>
+    </message>
+    <message>
+        <location filename="../helpers/PlatformHelper.win.cpp" line="80"/>
+        <source>%1 XML library location could not be deduced.</source>
+        <translation>L&apos;emplacement du fichier XML de bibliothèque de %1 n&apos;a pas pu être déduit.</translation>
     </message>
 </context>
 <context>

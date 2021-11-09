@@ -10,34 +10,47 @@
 
 #include "PlatformHelper.h"
 #include "src/version.h"
+#include "src/_i18n/trad.hpp"
 
 const QString PlatformHelper::_getMusicAppPrefFileProbableLocation() {
-    const auto ePath = QString ("\\Apple Computer\\Preferences\\com.apple.iTunes.plist");
+    const auto ePath = QString (R"(\Apple Computer\Preferences\com.apple.iTunes.plist)");
     
     // check the WindowsApp install path first
-    const auto packagesPath = _getEnvironmentVariable("LOCALAPPDATA") + "\\Packages";
+    const auto packagesPath = _getEnvironmentVariable("LOCALAPPDATA") + R"(\Packages)";
+
     const auto foundItunesPackage = QDir(packagesPath).entryInfoList({"AppleInc.iTunes*"}, QDir::Dirs | QDir::NoDotAndDotDot | QDir::CaseSensitive);
     
     // if found...
     if(foundItunesPackage.length()) {
-        return foundItunesPackage[0].filePath() + "\\LocalCache\\Roaming" + ePath;
+        const auto foundPath = QDir::toNativeSeparators(foundItunesPackage[0].filePath());
+        return foundPath + R"(\LocalCache\Roaming)" + ePath;
     }
 
     // else, return standard expected path
     const auto standardPath = _getEnvironmentVariable("APPDATA") + ePath;
     return standardPath;
-
 }
 
 const QString PlatformHelper::getMusicAppLibLocation() {
-    const auto pListContent = QFile(_getMusicAppPrefFileProbableLocation()).readAll();
+    // try to open preferences file
+    QFile file(_getMusicAppPrefFileProbableLocation());
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        throw std::logic_error(
+            QObject::tr("Could not open %1 preferences file.")
+                .arg(musicAppName())
+                .toStdString()
+        );
+    }
+
+    // read its content
+    const auto pListContent = file.readAll();
     
-    //
+    // prepare for url search
     qsizetype pathStartI = 0;
     const char* hint = "file://localhost/";
 
     // search for db path
-    while((pathStartI = pListContent.indexOf(hint)) != -1) {   
+    while((pathStartI = pListContent.indexOf(hint, pathStartI)) != -1) {   
         // hint found, update pathStart index
         pathStartI = pathStartI + strlen(hint);
 
@@ -45,7 +58,9 @@ const QString PlatformHelper::getMusicAppLibLocation() {
         auto pathEndI = pListContent.indexOf('\t', pathStartI);
 
         // should not happen, means missformated url
-        if(pathEndI == -1) break;
+        if(pathEndI == -1) {
+            break;
+        }
 
         // get path
         const auto path = pListContent.mid(pathStartI, pathEndI - pathStartI);
@@ -56,12 +71,16 @@ const QString PlatformHelper::getMusicAppLibLocation() {
         //
         if(isDbPath > -1) {
             // remove db Path and append music library file name
-            return path.mid(0, isDbPath + 1) + "iTunes Music Library.xml";
+            return path.mid(0, isDbPath) + "iTunes Music Library.xml";
         }
     }
 
     // no hint found at all, just sadly return nothing
-    return {};
+    throw std::logic_error(
+        QObject::tr("%1 XML library location could not be deduced.")
+            .arg(musicAppName())
+            .toStdString()
+    );
 }
 
 QSettings* PlatformHelper::_getStartupSettingsHandler() {

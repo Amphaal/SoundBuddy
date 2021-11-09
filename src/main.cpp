@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
     app.setQuitOnLastWindowClosed(false);
     app.setApplicationName(APP_NAME);
     app.setOrganizationName(APP_PUBLISHER);
-    app.setStyle(QStyleFactory::create("Fusion"));
+    app.setApplicationDisplayName(APP_NAME);
 
     // fetch main window
     MainWindow mw;

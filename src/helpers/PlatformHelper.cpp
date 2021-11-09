@@ -31,9 +31,9 @@ const QString PlatformHelper::getDataStorageDirectory() {
     //
     auto path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
 
-        //
-        QDir destDir(path);
-        if (!destDir.exists()) destDir.mkpath(".");
+    // create dir if not existing
+    QDir destDir(path);
+    if (!destDir.exists()) destDir.mkpath(".");
     
     //
     return path;

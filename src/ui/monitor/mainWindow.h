@@ -122,13 +122,15 @@ class MainWindow : public QMainWindow {
     void _initUITabs();
 
     // workers
-    ShoutThread* sw = nullptr;
-    FeederThread* fw = nullptr;
-    MBeatThread* cw = nullptr;
+    ShoutThread* shoutWorker = nullptr;
+    FeederThread* feederWorker = nullptr;
+    MBeatThread* mbeatWorker = nullptr;
+    UpdaterThread updateCheckerWorker;
+    
+    // uploader
     UploadHelper uploadHelper;
-    UpdaterThread updateChecker;
+
     void runMBeat();
     void runShouts();
     void runFeeder();
-    void threadAutoDeleter(QThread* thread);
 };

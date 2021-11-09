@@ -82,9 +82,14 @@ endif()
 ## Bundle configuration ##
 ##########################
 
+SET(BUNDLE_TYPE "")
+
 if (WIN32)
-    #set bundle type
-    SET(BUNDLE_TYPE WIN32) 
+    #set bundle type for release only (bypasses log into terminal)
+    if(CMAKE_BUILD_TYPE STREQUAL "Release")
+        SET(BUNDLE_TYPE WIN32)
+    endif()
+
     #add icon
     SET(APP_ICO ${CMAKE_CURRENT_SOURCE_DIR}/resources/resources.rc) 
 endif()

@@ -27,8 +27,6 @@ MainWindow::MainWindow() : uploadHelper(this) {
     this->onAppSettingsChanged();
     this->updateWarningsMenuItem();
     this->setupAutoUpdate();
-
-    this->runMBeat();
 }
 
 void MainWindow::informWarningPresence() {
@@ -43,8 +41,8 @@ void MainWindow::onAppSettingsChanged() {
 
     // restart threads ?
     runMBeat();
-    if(this->sw) runShouts();
-    if(this->fw) runFeeder();
+    if(this->shoutWorker && this->shoutWorker->isRunning()) runShouts();
+    if(this->feederWorker && this->feederWorker->isRunning()) runFeeder();
 }
 
 void MainWindow::updateWarningsMenuItem() {
@@ -84,7 +82,7 @@ void MainWindow::openWarnings() {
 
 void MainWindow::setupAutoUpdate() {
     QObject::connect(
-        &this->updateChecker, &UpdaterThread::isNewerVersionAvailable,
+        &this->updateCheckerWorker, &UpdaterThread::isNewerVersionAvailable,
         this, &MainWindow::onUpdateChecked
     );
 
@@ -169,7 +167,7 @@ void MainWindow::requireUpdateCheckFromUser() {
 
 void MainWindow::checkForAppUpdates() {
     this->UpdateSearch_switchUI(true);
-    this->updateChecker.start();
+    this->updateCheckerWorker.start();
 }
 
 void MainWindow::updateStatusBar(const QString &message, const TLW_Colors &color) {
@@ -177,71 +175,98 @@ void MainWindow::updateStatusBar(const QString &message, const TLW_Colors &color
     this->statusLight->setCurrentIndex(static_cast<int>(color));
 }
 
-void MainWindow::threadAutoDeleter(QThread* thread) {
-    QObject::connect(
-        thread, &QThread::finished,
-        thread, &QObject::deleteLater
-    );
-
-    QObject::connect(
-        thread, &QObject::destroyed,
-        [&thread]() { thread = nullptr; }
-    );
-}
-
 void MainWindow::runMBeat() {
     //
-    if(this->cw) {
-        this->cw->exit();
-        this->cw->wait();
+    auto &thread = this->mbeatWorker;
+
+    //
+    if(thread && thread->isRunning()) {
+        thread->quit();
+        thread->wait();
     }
 
     //
-    this->cw = new MBeatThread(this->appSettings.getConnectivityInfos());
+    thread = new MBeatThread(this->appSettings.getConnectivityInfos());
 
         QObject::connect(
-            this->cw, &MBeatThread::updateConnectivityStatus,
+            thread, &MBeatThread::updateConnectivityStatus,
             this, &MainWindow::updateStatusBar
         );
 
-        threadAutoDeleter(this->cw);
+        QObject::connect(
+            thread, &QThread::finished,
+            thread, &QObject::deleteLater
+        );
 
-    this->cw->start();
+        QObject::connect(
+            thread, &QObject::destroyed,
+            [&thread]() { 
+                thread = nullptr; 
+            }
+        );
+
+    thread->start();
 }
 
 void MainWindow::runShouts() {
+    auto &thread = this->shoutWorker;
+
     //
-    if(this->sw) {
-        this->sw->exit();
-        this->sw->wait();
+    if(thread && thread->isRunning()) {
+        thread->quit();
+        thread->wait();
     }
 
-    this->sw = new ShoutThread(&this->uploadHelper, this->appSettings.getConnectivityInfos());
+    thread = new ShoutThread(&this->uploadHelper, this->appSettings.getConnectivityInfos());
 
-        this->shoutTab->bindWithWorker(this->sw);
-        threadAutoDeleter(this->sw);
+        this->shoutTab->bindWithWorker(thread);
+        QObject::connect(
+            thread, &QThread::finished,
+            thread, &QObject::deleteLater
+        );
 
-    this->sw->start();
+        QObject::connect(
+            thread, &QObject::destroyed,
+            [&thread]() { 
+                thread = nullptr; 
+            }
+        );
+
+    thread->start();
 }
 
 void MainWindow::runFeeder() {
     //
-    if(this->fw) {
-        this->fw->exit();
-        this->fw->wait();
+    auto &thread = this->feederWorker;
+
+    //
+    if(thread && thread->isRunning()) {
+        thread->quit();
+        thread->wait();
     }
 
-    this->fw = new FeederThread(&this->uploadHelper, this->appSettings.getConnectivityInfos());
+    thread = new FeederThread(&this->uploadHelper, this->appSettings.getConnectivityInfos());
 
         QObject::connect(
-            this->fw, &FeederThread::filesGenerated,
+            thread, &FeederThread::filesGenerated,
             this, &MainWindow::updateWarningsMenuItem
         );
 
-        this->feederTab->bindWithWorker(this->fw);
-        threadAutoDeleter(this->fw);
+        this->feederTab->bindWithWorker(thread);
 
-    this->fw->start();
+        QObject::connect(
+            thread, &QThread::finished,
+            thread, &QObject::deleteLater
+        );
+
+        QObject::connect(
+            thread, &QObject::destroyed,
+            [&thread]() { 
+                thread = nullptr;
+            }
+        );
+
+    thread->start();
 }
 
 //
@@ -464,7 +489,7 @@ void MainWindow::closeEvent(QCloseEvent *event) {
     #endif
 
     // if running shout thread
-    if (this->sw && this->sw->isRunning()) {
+    if (this->shoutWorker && this->shoutWorker->isRunning()) {
         auto msgboxRslt = QMessageBox::warning(this,
             tr("Shout worker running !"),
             tr("Shout worker is actually running : Are you sure you want to exit ?"),
@@ -473,17 +498,22 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 
         if (msgboxRslt == QMessageBox::Yes) {
             // makes sure to wait for shoutThread to end. Limits COM app retention on Windows
-            this->sw->quit();
-            this->sw->wait();
+            this->shoutWorker->quit();
+            this->shoutWorker->wait();
         } else {
             event->ignore();
             return;
         }
     }
 
+    // if running 
+    if (this->mbeatWorker && this->mbeatWorker->isRunning()) {
+        this->mbeatWorker->quit();   
+    }
+    
     // hide trayicon on shutdown for Windows, refereshes the UI frames of system tray
     this->trayIcon->hide();
-    QCoreApplication::quit();
+    QApplication::quit();
 }
 
 void MainWindow::trueShow() {

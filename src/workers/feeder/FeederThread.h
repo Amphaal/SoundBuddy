@@ -36,9 +36,6 @@ class FeederThread : public ITNZThread {
     void _tracksEmitHelper();
     void _tracksUnmolding(const char* filename);
 
-    // seek in Music App preference file the library location
-    const QString _getMusicAppLibLocation();
-
  signals:
       void filesGenerated();
 };

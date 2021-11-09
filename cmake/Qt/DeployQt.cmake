@@ -6,22 +6,28 @@ macro(DeployQt target)
         #
         find_program(DEPLOYQT_EXE "windeployqt-qt6" REQUIRED)
 
+        #
+        SET(QT_DEPS_OUTPUT_DIRNAME "QtRuntime")
+
         # Run deployqt immediately after build to determine Qt dependencies
         add_custom_command(TARGET ${target}
             COMMAND ${DEPLOYQT_EXE}
                     --verbose 0
                     --no-opengl-sw
-                    --dir QtRuntime
+                    --no-quick-import
+                    --no-system-d3d-compiler
+                    --no-virtualkeyboard
+                    --dir ${QT_DEPS_OUTPUT_DIRNAME}
                     --translations fr,en
                     $<TARGET_FILE:${target}>
             COMMENT "Create dummy folder with matching Qt runtime components"
         )
 
-    # install rule
-    install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/QtRuntime/"
-        TYPE BIN
-        COMPONENT "Qt"
-    )
+        # install rule
+        install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${QT_DEPS_OUTPUT_DIRNAME}
+            TYPE BIN
+            COMPONENT "Qt"
+        )
 
     # FOR MACOS
     elseif(APPLE)
