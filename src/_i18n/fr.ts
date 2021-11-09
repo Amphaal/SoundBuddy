@@ -78,54 +78,54 @@
     </message>
     <message>
         <location filename="../workers/feeder/FeederThread.cpp" line="159"/>
-        <source>An error occured while sending tracks infos to %1 platform.</source>
-        <translation>Une erreur s&apos;est produite pendant l&apos;envoi des informations de morceaux à la plateforme %1.</translation>
+        <source>An error occured while sending tracks infos to %1 platform : %2</source>
+        <translation>Une erreur s&apos;est produite pendant l&apos;envoi des informations de morceaux à la plateforme %1 : %2</translation>
     </message>
 </context>
 <context>
     <name>MBeatThread</name>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="99"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="100"/>
         <source>Logged as &quot;%1&quot;</source>
         <translation>Connecté en tant que &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="190"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="191"/>
         <source>Credential data missing</source>
         <translation>Données manquantes pour l&apos;identification</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="192"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="193"/>
         <source>Empty users database</source>
         <translation>Base de données utilisateur vide</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="194"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="195"/>
         <source>Username not found in database</source>
         <translation>Utilisateur introuvable dans la base de données</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="196"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="197"/>
         <source>Password for the user not found in database</source>
         <translation>Mot de passe de l&apos;utilisateur introuvable</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="198"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="199"/>
         <source>Password missmatch</source>
         <translation>Mot de passe incorrect</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="200"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="201"/>
         <source>Unknown error from the validation request</source>
         <translation>Erreur inconnue suite à la tentative de validation</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="203"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="204"/>
         <source>Server responded with : &quot;%1&quot;</source>
         <translation>Reponse serveur : &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="130"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="131"/>
         <source>Reconnecting to server...</source>
         <translation>Reconnexion au serveur...</translation>
     </message>
@@ -140,17 +140,17 @@
         <translation>En attente d&apos;identifiants appropriés.</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="175"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="176"/>
         <source>Asking for credentials validation...</source>
         <translation>Demande de validation des identifiants...</translation>
     </message>
     <message>
         <location filename="../workers/mBeat/MBeatThread.cpp" line="57"/>
-        <source>An error occured while connecting with %1 platform !</source>
-        <translation>Une erreur s&apos;est produite pendant la connexion à la plateforme %1 !</translation>
+        <source>An error occured while connecting with %1 platform : %2</source>
+        <translation>Une erreur s&apos;est produite pendant la connexion à la plateforme %1 : %2</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="74"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="75"/>
         <source>Issue while reading response from %1 platform.</source>
         <translation>Erreur durant la lecture de la réponse de la plateforme %1.</translation>
     </message>
@@ -213,57 +213,57 @@
         <translation>Les shouts sont actuellement scannés : Voulez-vous vraiment quitter ?</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="135"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="140"/>
         <source>Checking updates</source>
         <translation>Vérifier les mises à jour</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="136"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="141"/>
         <source>No updates available at the time.</source>
         <translation>Pas de mises à jour disponibles pour le moment.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="150"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="155"/>
         <source>Update Available</source>
         <translation>Mise à jour disponible</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="151"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="156"/>
         <source>An update is available for %1. Would you like to install it now ?</source>
         <translation>Une mise à jour a été trouvé pour %1. Voulez-vous l&apos;installer maintenant ?</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="105"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="110"/>
         <source>No remote URL given, probably because of an issue with the executable. Contact the developpers.</source>
         <translation>Aucune URL distante trouvée, probablement parce qu&apos;il y a un problème avec l&apos;executable. Contactez les développeurs.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="108"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="113"/>
         <source>Issue while finding the local package manifest.</source>
         <translation>Problème durant la recherche du manifeste de package local.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="111"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="116"/>
         <source>Issue while reading the local package manifest.</source>
         <translation>Problème durant la lecture du manifeste de package local.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="114"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="119"/>
         <source>Issue while finding the remote package update manifest.</source>
         <translation>Problème durant la recherche du manifeste de package distant.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="117"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="122"/>
         <source>Issue while reading the remote package update manifest.</source>
         <translation>Problème durant la lecture du manifeste de package distant.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="121"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="126"/>
         <source>No specified code linked to the error happening. Contact the developpers.</source>
         <translation>Aucun code erreur lié au problème en cours. Contactez les développeurs.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="127"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="132"/>
         <source>Error while checking updates</source>
         <translation>Erreur durant la vérification des mises à jour</translation>
     </message>
@@ -273,12 +273,12 @@
         <translation>Paramètres</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="63"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="68"/>
         <source>Cannot access %1 plaform</source>
         <translation>Impossible d&apos;accéder à la plateforme %1</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="64"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="69"/>
         <source>%1 Plaform URL is not valid. Please check Preferences connectivity parameters.</source>
         <translation>L&apos;URL de la plateforme %1 n&apos;est pas valide. Merci de vérifier les paramètres de connectivité.</translation>
     </message>
@@ -360,49 +360,49 @@
         <translation>%1: Shouting -&gt; Rien</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="158"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="92"/>
+        <source>An error occured while shouting tracks infos to %1 platform : %2</source>
+        <translation>Une erreur s&apos;est produite pendant le shout des informations du morceau à la plateforme %1 : %2</translation>
+    </message>
+    <message>
+        <location filename="../workers/shout/ShoutThread.cpp" line="159"/>
         <source>playing</source>
         <translation>joue</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="158"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="159"/>
         <source>paused</source>
         <translation>en pause</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="162"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="163"/>
         <source>%1: Shouting -&gt; %2 - %3 - %4 (%5)</source>
         <translation>%1: Shouting -&gt; %2 - %3 - %4 (%5)</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="181"/>
-        <location filename="../workers/shout/ShoutThread.cpp" line="273"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="182"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="274"/>
         <source>Waiting for %1 to launch...</source>
         <translation>J&apos;attends qu&apos;%1 se lance...</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="256"/>
-        <location filename="../workers/shout/ShoutThread.cpp" line="331"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="257"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="332"/>
         <source>Stopped listening to %1.</source>
         <translation>J&apos;ai fini d&apos;écouter %1.</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="322"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="323"/>
         <source>Listening to %1 !</source>
         <translation>J&apos;écoute %1 !</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="393"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="394"/>
         <source>Waiting for %1 to launch again...</source>
         <translation>J&apos;attends qu&apos;%1 se relance...</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="92"/>
-        <source>An error occured while shouting tracks infos to %1 platform.</source>
-        <translation>Une erreur s&apos;est produite pendant le shout des informations du morceau à la plateforme %1.</translation>
-    </message>
-    <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="288"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="289"/>
         <source>Connecting to %1 ...</source>
         <translation>Connexion à %1 ...</translation>
     </message>

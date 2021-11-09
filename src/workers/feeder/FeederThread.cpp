@@ -153,11 +153,12 @@ void FeederThread::run() {
             // on error
             QObject::connect(
                 response, &QNetworkReply::errorOccurred,
-                [this](QNetworkReply::NetworkError) {
+                [this, response](QNetworkReply::NetworkError) {
                     //
                     emit printLog(
-                        tr("An error occured while sending tracks infos to %1 platform.")
-                            .arg(DEST_PLATFORM_PRODUCT_NAME),
+                        tr("An error occured while sending tracks infos to %1 platform : %2")
+                            .arg(DEST_PLATFORM_PRODUCT_NAME)
+                            .arg(response->errorString()),
                         MessageType::ISSUE
                     );
 

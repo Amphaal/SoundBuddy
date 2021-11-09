@@ -39,11 +39,15 @@ class MusicAppCOMHandler : public QObject {
     MusicAppCOMHandler(QAxObject* musicAppObj, ShoutThread* worker);
     
     //
-    void shoutTrackAsVariant(QVariant iTrack = QVariant());
-    
-    //
     void listenUntilShutdown();
+ 
+ public slots:
+    void onCurrentTrackStateChanged(QVariant trackAsCOM);
     void stopListening();
+ 
+ private:
+    void _shoutCurrentTrack();
+    void _shoutFromCOMObj(QAxObject* obj);
 };
 
 #endif

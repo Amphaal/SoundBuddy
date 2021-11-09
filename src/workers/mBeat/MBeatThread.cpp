@@ -52,10 +52,11 @@ void MBeatThread::run() {
     // handling errors
     QObject::connect(
         &socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error),
-        [this](QAbstractSocket::SocketError error) {
+        [this, &socket](QAbstractSocket::SocketError error) {
             emit updateConnectivityStatus(
-                tr("An error occured while connecting with %1 platform !")
-                    .arg(DEST_PLATFORM_PRODUCT_NAME),
+                tr("An error occured while connecting with %1 platform : %2")
+                    .arg(DEST_PLATFORM_PRODUCT_NAME)
+                    .arg(socket.errorString()),
                 ConnectivityIndicator::NOK
             );
         }

@@ -24,53 +24,49 @@
 #include "src/workers/shout/ShoutThread.h"
 
 MusicAppCOMHandler::MusicAppCOMHandler(QAxObject *musicAppObj, ShoutThread *worker) : _musicAppObj(musicAppObj), _worker(worker) {
-    this->shoutTrackAsVariant();
+    this->_shoutCurrentTrack();
 }
 
-void MusicAppCOMHandler::shoutTrackAsVariant(QVariant iTrack) {
+void MusicAppCOMHandler::_shoutCurrentTrack() {
     //
-    QAxObject* weilder = nullptr;
+    auto currentTrack = this->_musicAppObj->querySubObject("CurrentTrack");
+    
+    // no current track, shout empty
+    if(!currentTrack || currentTrack->isNull()) 
+        return this->_worker->shoutEmpty();
+    
+    //
+    this->_shoutFromCOMObj(currentTrack);
+}
 
-    // find value
-    if(iTrack.isNull()) {
-        //
-        weilder = this->_musicAppObj->querySubObject("CurrentTrack");
-
-        // shout empty
-        if(!weilder) return this->_worker->shoutEmpty();
-
-    } else {
-        //
-        weilder = new QAxObject(iTrack.value<IUnknown*>());
-
-        if(weilder->isNull()) {
-            weilder->clear();
-            delete weilder;
-            weilder = this->_musicAppObj->querySubObject("CurrentTrack");
-        }
-    }
-
+void MusicAppCOMHandler::_shoutFromCOMObj(QAxObject* obj) {
     // get values for shout
-    auto tName = weilder->property("Name").value<QString>();
-    auto tAlbum = weilder->property("Album").toString();
-    auto tArtist = weilder->property("Artist").toString();
-    auto tGenre = weilder->property("Genre").toString();
-    auto iDuration = weilder->property("Duration").toInt();
-    auto iPlayerPos = this->_musicAppObj->property("PlayerPosition").value<int>();
-    auto iPlayerState = this->_musicAppObj->property("PlayerState").value<bool>();
-    auto tDatePlayed = weilder->property("PlayedDate").toDateTime().toString(Qt::ISODate);
-    auto tDateSkipped = weilder->property("SkippedDate").toDateTime().toString(Qt::ISODate);
-    auto tYear = weilder->property("Year").toInt();
+    auto tName = obj->property("Name").toString();
+    auto tAlbum = obj->property("Album").toString();
+    auto tArtist = obj->property("Artist").toString();
+    auto tGenre = obj->property("Genre").toString();
+    auto iDuration = obj->property("Duration").toInt();
+    auto iPlayerPos = this->_musicAppObj->property("PlayerPosition").toInt();
+    auto iPlayerState = this->_musicAppObj->property("PlayerState").toInt();
+    qDebug() << this->_musicAppObj->property("PlayerState");
+    auto tDatePlayed = obj->property("PlayedDate").toDateTime().toString(Qt::ISODate);
+    auto tDateSkipped = obj->property("SkippedDate").toDateTime().toString(Qt::ISODate);
+    auto tYear = obj->property("Year").toInt();
 
     // clear
-    weilder->clear();
-    delete weilder;
+    obj->clear();
+    delete obj;
 
     // compare with old shout, if equivalent, don't reshout
-    if(this->_worker->shouldUpload(iPlayerState, tName, tAlbum, tArtist, tDatePlayed, tDateSkipped)) {
-        // shout !
-        this->_worker->shoutFilled(tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState, tYear);
-    }
+    if(!this->_worker->shouldUpload(iPlayerState, tName, tAlbum, tArtist, tDatePlayed, tDateSkipped)) 
+        return;
+
+    // shout !
+    this->_worker->shoutFilled(tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState, tYear);
+}
+
+void MusicAppCOMHandler::onCurrentTrackStateChanged(QVariant trackAsCOM) {
+    _shoutCurrentTrack();
 }
 
 void MusicAppCOMHandler::listenUntilShutdown() {

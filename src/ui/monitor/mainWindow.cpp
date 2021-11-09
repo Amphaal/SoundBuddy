@@ -27,6 +27,11 @@ MainWindow::MainWindow() {
     this->onAppSettingsChanged();
     this->updateWarningsMenuItem();
     this->setupAutoUpdate();
+
+    // autostart shout thread ?
+    if (this->appSettings.value(AppSettings::MUST_AUTORUN_SHOUT).toBool()) {
+        this->shoutTab->tButton->click();
+    }
 }
 
 void MainWindow::informWarningPresence() {
@@ -359,11 +364,6 @@ void MainWindow::_initUITabs() {
     tabs->addTab(this->shoutTab, "Shout!");
     tabs->addTab(this->feederTab, "Feeder");
     this->setCentralWidget(tabs);
-
-    // autostart shout thread ?
-    if (this->appSettings.value(AppSettings::MUST_AUTORUN_SHOUT).toBool()) {
-        this->shoutTab->tButton->click();
-    }
 }
 
 void MainWindow::_initUIMenu() {

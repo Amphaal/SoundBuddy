@@ -89,8 +89,9 @@ void ShoutThread::_shoutToServer(const QJsonObject &incoming) {
             [this, response](QNetworkReply::NetworkError) {
                 //
                 emit printLog(
-                    tr("An error occured while shouting tracks infos to %1 platform.")
-                        .arg(DEST_PLATFORM_PRODUCT_NAME),
+                    tr("An error occured while shouting tracks infos to %1 platform : %2")
+                        .arg(DEST_PLATFORM_PRODUCT_NAME)
+                        .arg(response->errorString()),
                     MessageType::ISSUE
                 );
 
@@ -309,12 +310,12 @@ void ShoutThread::_startShouting() {
 
             auto oppe = QObject::connect(
                 musicAppObj, SIGNAL(OnPlayerPlayEvent(QVariant)),
-                this->_handler, SLOT(shoutTrackAsVariant(QVariant))
+                this->_handler, SLOT(onCurrentTrackStateChanged(QVariant))
             );
 
             auto opse = QObject::connect(
                 musicAppObj, SIGNAL(OnPlayerStopEvent(QVariant)),
-                this->_handler, SLOT(shoutTrackAsVariant(QVariant))
+                this->_handler, SLOT(onCurrentTrackStateChanged(QVariant))
             );
 
         // log..
