@@ -30,7 +30,7 @@
 
 #include "src/_i18n/trad.hpp"
 
-FeederThread::FeederThread(const UploadHelper* uploder, const AppSettings::ConnectivityInfos connectivityInfos) : ITNZThread(uploder, connectivityInfos) {}
+FeederThread::FeederThread(const AppSettings::ConnectivityInfos connectivityInfos) : ITNZThread(connectivityInfos) {}
 
 void FeederThread::run() {
     //
@@ -107,7 +107,9 @@ void FeederThread::run() {
             auto qb_array = QByteArray::fromRawData(output_view.data(), output_view.size());
 
             //
-            auto response = this->_uploder->uploadDataToPlatform({
+            UploadHelper uploader;
+
+            auto response = uploader.uploadDataToPlatform({
                 this->_connectivityInfos,
                 AppSettings::getFeederUploadInfos(),
                 qb_array

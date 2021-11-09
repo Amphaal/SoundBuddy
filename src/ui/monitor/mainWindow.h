@@ -50,7 +50,6 @@
 
 #include "src/helpers/AppSettings.hpp"
 #include "src/ui/monitor/PreferencesDialog.hpp"
-#include "src/helpers/UploadHelper.hpp"
 
 class MainWindow : public QMainWindow {
    Q_OBJECT
@@ -81,7 +80,7 @@ class MainWindow : public QMainWindow {
     void _initUIMenu();
     void _initUITray();
 
-    QMenu* _getFileMenu();
+    QMenu* _getFileMenu(bool withMonitor);
     QMenu* _getOptionsMenu();
 
     void onAppSettingsChanged();
@@ -126,9 +125,6 @@ class MainWindow : public QMainWindow {
     FeederThread* feederWorker = nullptr;
     MBeatThread* mbeatWorker = nullptr;
     UpdaterThread updateCheckerWorker;
-    
-    // uploader
-    UploadHelper uploadHelper;
 
     void runMBeat();
     void runShouts();

@@ -30,7 +30,7 @@
 #include "src/workers/shout/win/MusicAppCOMHandler.h"
 #endif
 
-ShoutThread::ShoutThread(const UploadHelper* uploder, const AppSettings::ConnectivityInfos connectivityInfos) : ITNZThread(uploder, connectivityInfos) {}
+ShoutThread::ShoutThread(const AppSettings::ConnectivityInfos connectivityInfos) : ITNZThread(connectivityInfos) {}
 
 void ShoutThread::quit() {
     this->_mustListen = false;
@@ -65,6 +65,11 @@ void ShoutThread::shoutEmpty() {
     this->_shoutToServer(shout);
 }
 
+void ShoutThread::run() {
+    _uploader = new UploadHelper;
+    _startShouting();
+    delete _uploader;
+}
 
 void ShoutThread::_shoutToServer(const QJsonObject &incoming) {
     try {
@@ -76,7 +81,7 @@ void ShoutThread::_shoutToServer(const QJsonObject &incoming) {
         };
 
         //
-        auto response = this->_uploder->uploadDataToPlatform(instr);
+        auto response = _uploader->uploadDataToPlatform(instr);
 
         // on error
         QObject::connect(
@@ -172,7 +177,7 @@ void ShoutThread::shoutFilled(
 #include <unistd.h>
 #include <QProcess>
 
-void ShoutThread::run() {
+void ShoutThread::_startShouting() {
     emit printLog(tr("Waiting for %1 to launch...").arg(musicAppName()));
 
     // define applescript to get shout values
@@ -257,7 +262,7 @@ void ShoutThread::run() {
 #include "win/MusicAppCOMHandler.h"
 #include "win/iTunesCOMInterface_i.c"
 
-void ShoutThread::run() {
+void ShoutThread::_startShouting() {
     // start with log
     emit printLog(tr("Waiting for %1 to launch...").arg(musicAppName()));
 

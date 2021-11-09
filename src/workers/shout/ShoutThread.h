@@ -32,7 +32,7 @@ class ShoutThread : public ITNZThread {
     Q_OBJECT
 
  public:
-    ShoutThread(const UploadHelper* uploder, const AppSettings::ConnectivityInfos connectivityInfos);
+    ShoutThread(const AppSettings::ConnectivityInfos connectivityInfos);
 
     void run() override;
     void quit() override;
@@ -66,6 +66,9 @@ class ShoutThread : public ITNZThread {
     #ifdef _WIN32
         MusicAppCOMHandler* _handler = nullptr;
     #endif
+
+    UploadHelper* _uploader;
+    void _startShouting();
 
     QJsonObject _createBasicShout() const;
     void _shoutToServer(const QJsonObject &incoming);

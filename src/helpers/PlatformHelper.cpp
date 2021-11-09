@@ -20,7 +20,9 @@ void PlatformHelper::openUrlInBrowser(const QString &url) {
 void PlatformHelper::openFileInOS(const QString &filePath) {
     QUrl url(filePath);
     url.setScheme("file");
-    QDesktopServices::openUrl(url);
+    QDesktopServices::openUrl(
+        QDir::fromNativeSeparators(filePath) // takes URI, Windows backslashes are not welcomed
+    );
 }
 
 const QString PlatformHelper::_getEnvironmentVariable(const char* variable) {
@@ -36,7 +38,7 @@ const QString PlatformHelper::getDataStorageDirectory() {
     if (!destDir.exists()) destDir.mkpath(".");
     
     //
-    return path;
+    return QDir::toNativeSeparators(path);
 }
 
 const QString PlatformHelper::_getPathToApp() {

@@ -28,14 +28,12 @@ class ITNZThread : public QThread {
     Q_OBJECT
 
  public:
-    ITNZThread(const UploadHelper* uploder, const AppSettings::ConnectivityInfos connectivityInfos) :
-        _uploder(uploder), _connectivityInfos(connectivityInfos) {}
+    ITNZThread(const AppSettings::ConnectivityInfos connectivityInfos) : _connectivityInfos(connectivityInfos) {}
 
     virtual void quit() { QThread::quit(); }
 
  protected:
     const AppSettings::ConnectivityInfos _connectivityInfos;
-    const UploadHelper* _uploder;
 
  signals:
     void printLog(const QString &message, const bool replacePreviousLine = false, const bool isError = false);

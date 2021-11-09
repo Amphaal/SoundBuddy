@@ -27,7 +27,7 @@ class FeederThread : public ITNZThread {
   Q_OBJECT
 
  public:
-    FeederThread(const UploadHelper* uploder, const AppSettings::ConnectivityInfos connectivityInfos);
+    FeederThread(const AppSettings::ConnectivityInfos connectivityInfos);
 
     void run() override;
 

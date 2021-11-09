@@ -23,7 +23,8 @@ class UploadHelper {
         }
     };
 
-    explicit UploadHelper(QObject* parent) : _manager(new QNetworkAccessManager(parent)) {}
+    explicit UploadHelper(QObject* parent = nullptr) : _manager(new QNetworkAccessManager(parent)) {}
+    ~UploadHelper() { _manager->deleteLater(); }
 
     QNetworkReply* uploadDataToPlatform(const UploadInstructions &instructions) const {
         //

@@ -19,7 +19,7 @@
 
 #include "mainWindow.h"
 
-MainWindow::MainWindow() : uploadHelper(this) {
+MainWindow::MainWindow() {
     // generate the UI
     this->_initUI();
 
@@ -77,7 +77,7 @@ void MainWindow::accessPreferences() {
 
 // open the warnings file on the OS
 void MainWindow::openWarnings() {
-    PlatformHelper::openFileInOS(AppSettings::getFeedOutputFilePath());
+    PlatformHelper::openFileInOS(AppSettings::getFeedWarningFilePath());
 }
 
 void MainWindow::setupAutoUpdate() {
@@ -217,7 +217,7 @@ void MainWindow::runShouts() {
         thread->wait();
     }
 
-    thread = new ShoutThread(&this->uploadHelper, this->appSettings.getConnectivityInfos());
+    thread = new ShoutThread(this->appSettings.getConnectivityInfos());
 
         this->shoutTab->bindWithWorker(thread);
         QObject::connect(
@@ -245,7 +245,7 @@ void MainWindow::runFeeder() {
         thread->wait();
     }
 
-    thread = new FeederThread(&this->uploadHelper, this->appSettings.getConnectivityInfos());
+    thread = new FeederThread(this->appSettings.getConnectivityInfos());
 
         QObject::connect(
             thread, &FeederThread::filesGenerated,
@@ -309,12 +309,12 @@ void MainWindow::_initUITray() {
     QMenu* cMenu;
 
     #ifdef _WIN32
-        cMenu = this->_getFileMenu();
+        cMenu = this->_getFileMenu(true);
     #endif
 
     #ifdef __APPLE__
         cMenu = new QMenu("");
-        cMenu->addMenu(this->_getFileMenu());
+        cMenu->addMenu(this->_getFileMenu(true));
         cMenu->addMenu(this->_getOptionsMenu());
     #endif
 
@@ -368,7 +368,7 @@ void MainWindow::_initUITabs() {
 
 void MainWindow::_initUIMenu() {
     auto menuBar = new QMenuBar;
-    menuBar->addMenu(this->_getFileMenu());
+    menuBar->addMenu(this->_getFileMenu(false));
     menuBar->addMenu(this->_getOptionsMenu());
     this->setMenuWidget(menuBar);
 }
@@ -413,16 +413,9 @@ void MainWindow::UpdateSearch_switchUI(bool isSearching) {
     this->versionAction->setText(descr);
 }
 
-QMenu* MainWindow::_getFileMenu() {
+QMenu* MainWindow::_getFileMenu(bool withMonitor) {
     //
     auto fileMenuItem = new QMenu(tr("File"));
-
-    // monitorAction
-    auto monitorAction = new QAction(tr("Open monitor..."), fileMenuItem);
-    QObject::connect(
-        monitorAction, &QAction::triggered,
-        this, &MainWindow::trueShow
-    );
 
     // myPlatformAction
     this->myPlatformAction = new QAction(tr("My %1").arg(DEST_PLATFORM_PRODUCT_NAME), fileMenuItem);
@@ -460,10 +453,21 @@ QMenu* MainWindow::_getFileMenu() {
         this, &MainWindow::forcedClose
     );
 
-    fileMenuItem->addAction(monitorAction);
-    fileMenuItem->addSeparator();
-    fileMenuItem->addAction(myPlatformAction);
+    if(withMonitor) {
+        // monitorAction
+        auto monitorAction = new QAction(tr("Open monitor..."), fileMenuItem);
+        QObject::connect(
+            monitorAction, &QAction::triggered,
+            this, &MainWindow::trueShow
+        );
+
+        fileMenuItem->addAction(monitorAction);
+        fileMenuItem->addSeparator();
+    }
+
     fileMenuItem->addAction(accessPreferencesAction);
+    fileMenuItem->addAction(myPlatformAction);
+    fileMenuItem->addSeparator();
     fileMenuItem->addAction(openWarningsAction);
     fileMenuItem->addAction(openDataFolder);
     fileMenuItem->addSeparator();

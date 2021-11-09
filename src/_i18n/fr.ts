@@ -27,12 +27,12 @@
         <translation>On va essayer de l&apos;envoyer !</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="130"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="132"/>
         <source>Server responded: %1</source>
         <translation>Le serveur a répondu: %1</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="132"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="134"/>
         <source>No feedback from the server ? Strange... Please check the targeted host.</source>
         <translation>Aucun retour du serveur, c&apos;est étrange... Merci de vérifier que le serveur ciblé est bien le bon.</translation>
     </message>
@@ -72,12 +72,12 @@
         <translation>Compilation terminée !</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="116"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="118"/>
         <source>Sending... Waiting for response.</source>
         <translation>Envoi... En attente de réponse.</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="146"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="148"/>
         <source>An error occured while sending tracks infos to %1 platform.</source>
         <translation>Une erreur s&apos;est produite pendant l&apos;envoi des informations de morceaux à la plateforme %1.</translation>
     </message>
@@ -178,37 +178,37 @@
         <translation>Fichier</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="421"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="458"/>
         <source>Open monitor...</source>
         <translation>Ouvrir le tableau de bord</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="428"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="421"/>
         <source>My %1</source>
         <translation>Mon %1</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="443"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="436"/>
         <source>Read latest upload warnings report</source>
         <translation>Visualiser les derniers avertissements d&apos;export</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="451"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="444"/>
         <source>Access upload data folder</source>
         <translation>Accéder aux données d&apos;export</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="457"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="450"/>
         <source>Quit</source>
         <translation>Quitter</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="494"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="498"/>
         <source>Shout worker running !</source>
         <translation>Shout en cours !</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="495"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="499"/>
         <source>Shout worker is actually running : Are you sure you want to exit ?</source>
         <translation>Les shouts sont actuellement scannés : Voulez-vous vraiment quitter ?</translation>
     </message>
@@ -268,7 +268,7 @@
         <translation>%1 - Erreur durant la verification des mises à jour</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="436"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="429"/>
         <source>Preferences</source>
         <translation>Paramètres</translation>
     </message>
@@ -360,49 +360,49 @@
         <translation>%1: Shouting -&gt; Rien</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="154"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="159"/>
         <source>playing</source>
         <translation>joue</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="154"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="159"/>
         <source>paused</source>
         <translation>en pause</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="158"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="163"/>
         <source>%1: Shouting -&gt; %2 - %3 - %4 (%5)</source>
         <translation>%1: Shouting -&gt; %2 - %3 - %4 (%5)</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="176"/>
-        <location filename="../workers/shout/ShoutThread.cpp" line="262"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="181"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="267"/>
         <source>Waiting for %1 to launch...</source>
         <translation>J&apos;attends qu&apos;%1 se lance...</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="248"/>
-        <location filename="../workers/shout/ShoutThread.cpp" line="311"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="253"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="316"/>
         <source>Stopped listening to %1.</source>
         <translation>J&apos;ai fini d&apos;écouter %1.</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="305"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="310"/>
         <source>Listening to %1 !</source>
         <translation>J&apos;écoute %1 !</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="370"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="375"/>
         <source>Waiting for %1 to launch again...</source>
         <translation>J&apos;attends qu&apos;%1 se relance...</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="87"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="92"/>
         <source>An error occured while shouting tracks infos to %1 platform.</source>
         <translation>Une erreur s&apos;est produite pendant le shout des informations du morceau à la plateforme %1.</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="274"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="279"/>
         <source>Connecting to %1 ...</source>
         <translation>Connexion à %1 ...</translation>
     </message>
