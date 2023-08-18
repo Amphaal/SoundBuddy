@@ -27,7 +27,7 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out)
 cmake_minimum_required(VERSION 3.14.3)
 
 project(SoundBuddy
-    VERSION 0.4.1
+    VERSION 0.4.2
     DESCRIPTION "Small companion app that feeds SoundVitrine with ITunes / Music library metadata"
     HOMEPAGE_URL "https://github.com/Amphaal/SoundBuddy"
     LANGUAGES CXX
@@ -41,13 +41,6 @@ project(SoundBuddy
 SET(APP_PUBLISHER "LVWL")
 SET(DEST_PLATFORM_PRODUCT_NAME "SoundVitrine")
 SET(APP_PATCHNOTE_URL ${PROJECT_HOMEPAGE_URL}/releases)
-SET(APP_REMOTE_MANIFEST_URL "")
-
-#config file to source code
-configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/templates/_version.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/version.h
-)
 
 ################################
 ## CPP Compiler Configuration ##
@@ -127,6 +120,7 @@ add_executable(appExec ${BUNDLE_TYPE}
 #
 target_include_directories(appExec PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}/generated
 )
 
 #

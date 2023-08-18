@@ -9,7 +9,7 @@
 #include <stdlib.h>
 
 #include "PlatformHelper.h"
-#include "src/version.h"
+#include "version.h"
 #include "src/_i18n/trad.hpp"
 
 const QString PlatformHelper::_getMusicAppPrefFileProbableLocation() {

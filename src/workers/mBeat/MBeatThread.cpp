@@ -22,7 +22,7 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 
-#include "src/version.h"
+#include "version.h"
 
 MBeatThread::MBeatThread(const AppSettings::ConnectivityInfos &connectivityInfos) : _connectivityInfos(connectivityInfos) {}
 

@@ -22,7 +22,7 @@
 #include <QString>
 #include <QObject>
 
-#include "src/version.h"
+#include "version.h"
 
 static const QString musicAppName() {
     #ifdef __APPLE__

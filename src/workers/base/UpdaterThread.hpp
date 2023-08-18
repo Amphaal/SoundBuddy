@@ -23,7 +23,7 @@
 #include <IFWUpdateChecker.hpp>
 Q_DECLARE_METATYPE(UpdateChecker::CheckResults)
 
-#include "src/version.h"
+#include "version.h"
 
 class UpdaterThread : public QThread {
     Q_OBJECT

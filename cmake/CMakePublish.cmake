@@ -72,9 +72,18 @@ cpack_ifw_configure_component("QtRuntime"
 # CPACK IFW COMPONENTS CONFIGURATION #
 ######################################
 
+#
+SET(APP_REMOTE_IFW_DIR "https://ifw.to2x.ovh/${PROJECT_NAME}/${CPACK_SYSTEM_NAME}")
+SET(APP_REMOTE_MANIFEST_URL ${APP_REMOTE_IFW_DIR}/Updates.xml)
+
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/templates/_version.h
+    ${CMAKE_CURRENT_BINARY_DIR}/generated/version.h
+)
+
 # repository for updates
 cpack_ifw_add_repository(coreRepo 
-    URL "https://ifw.to2x.ovh/${PROJECT_NAME}/ifw-${CPACK_SYSTEM_NAME}"
+    URL ${APP_REMOTE_IFW_DIR}
 )
 
 ########################

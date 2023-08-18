@@ -43,6 +43,7 @@
             "includePath": [
                 "${default}",
                 "${workspaceFolder}",
+                "${workspaceFolder}/build_debug/generated",
                 "${env:MINGW64_ROOT}/include",
                 "${env:MINGW64_ROOT}/include/qt6",
                 "${env:MINGW64_ROOT}/include/qt6/QtCore",

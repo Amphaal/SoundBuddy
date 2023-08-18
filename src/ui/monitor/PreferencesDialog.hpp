@@ -27,7 +27,7 @@
 #include <QCheckBox>
 
 #include "src/helpers/AppSettings.hpp"
-#include "src/version.h"
+#include "version.h"
 
 class PreferencesDialog : public QDialog {
     Q_OBJECT

@@ -10,7 +10,7 @@
 #include <pwd.h>
 
 #include "PlatformHelper.h"
-#include "src/version.h"
+#include "version.h"
 
 static const QString MAC_REG_STARTUP_LAUNCH_PATH = "/Library/LaunchAgents/" APP_NAME ".plist";
 
