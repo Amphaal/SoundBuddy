@@ -124,6 +124,7 @@ add_executable(appExec ${BUNDLE_TYPE}
     resources/resources.qrc
 ) 
 
+#
 target_include_directories(appExec PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
@@ -228,8 +229,17 @@ endif()
 include(DeployQt)
 DeployQt(appExec)
 
+#
+include(CMakeDependencies)
+DeployPEDependencies(appExec "AppRuntime")
+
 ######################
 # add Publish target #
 ######################
 
 include(CMakePublish)
+
+#
+install(TARGETS appExec
+    COMPONENT "App"
+)

@@ -1,3 +1,4 @@
-/build/
+/build_debug/
+/build_release/
 .vscode/ipch
 .DS_Store

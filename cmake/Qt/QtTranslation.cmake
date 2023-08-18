@@ -26,6 +26,7 @@ function(HandleQtTranslation target installComponent filesToScan)
         install(FILES ${QM_FILES}
             DESTINATION ${CMAKE_INSTALL_BINDIR}/translations
             COMPONENT ${installComponent}
+            COMPONENT "App"
         )
     endif()
 

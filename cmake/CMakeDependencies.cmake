@@ -44,9 +44,6 @@ function(DeployPEDependencies target component)
     # define output directory for main script
     set(PEDeps_${component}_DIR ${CMAKE_BINARY_DIR}/PEDeps_${component} PARENT_SCOPE)
 
-    # generate script for copying dependencies of target
-    string(REPLACE ";" " " pattern_ "${ARGN}")
-
     configure_file(
         ${CMAKE_SOURCE_DIR}/cmake/CMakeDependencies.in.sh
         PEDeps_${component}.sh
@@ -55,12 +52,12 @@ function(DeployPEDependencies target component)
 
     # run script once target is built
     add_custom_command(TARGET ${target} POST_BUILD
-        COMMAND bash PEDeps_${component}.sh
+        COMMAND bash PEDeps_${component}.sh $<TARGET_FILE_DIR:${target}>
+        COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different ${CMAKE_CURRENT_BINARY_DIR}/PEDeps_${component} $<TARGET_FILE_DIR:${target}>
     )
 
     # install
-    install(
-        DIRECTORY ${CMAKE_BINARY_DIR}/PEDeps_${component}/
+    install(DIRECTORY ${CMAKE_BINARY_DIR}/PEDeps_${component}/
         TYPE BIN
         COMPONENT ${component}
     )

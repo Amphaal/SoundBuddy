@@ -38,8 +38,8 @@
             ],
             "windowsSdkVersion": "10.0.18362.0",
             "cStandard": "c11",
-            "cppStandard": "c++17",
-            "intelliSenseMode": "gcc-x64",
+            "cppStandard": "c++20",
+            "intelliSenseMode": "clang-x64",
             "includePath": [
                 "${default}",
                 "${workspaceFolder}",
@@ -50,13 +50,13 @@
                 "${env:MINGW64_ROOT}/include/qt6/QtGui",
                 "${env:MINGW64_ROOT}/include/qt6/QtNetwork",
                 "${env:MINGW64_ROOT}/include/qt6/QtWebSockets",
+                "${env:MINGW64_ROOT}/include/qt6/QtAxContainer",
                 "${workspaceFolder}/deps/ItunesLibraryParser/src",
                 "${workspaceFolder}/deps/IFWUpdateChecker/src",
                 "${workspaceFolder}/deps/IFWUpdateChecker/deps/StupidHTTPDownloader/include",
                 "${workspaceFolder}/deps/IFWUpdateChecker/deps/tiny-process-library",
-                "${env:MINGW64_ROOT}/include/c++/11.2.0",
-                "${env:MINGW64_ROOT}/include/c++/11.2.0/x86_64-w64-mingw32",
-                "E:/DEV/msys64/mingw64/include/qt6/QtAxContainer"
+                "${env:MINGW64_ROOT}/include/c++/13.2.0",
+                "${env:MINGW64_ROOT}/include/c++/13.2.0/x86_64-w64-mingw32"
             ]
         }
     ],

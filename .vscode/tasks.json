@@ -13,26 +13,59 @@
             "problemMatcher": []
         },
         {
-            "label": "1. Generate Project files",
-            "group": {
-                "isDefault": true,
-                "kind" : "test"
-            },
+            "label": "1. Generate Project files (Debug)",
             "type": "shell",
             "windows": {
-                "command": "cmake -GNinja -Bbuild -H. -DCMAKE_TOOLCHAIN_FILE=toolchains/msys2.cmake"
+                "command": "cmake -GNinja -Bbuild_debug -H. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=toolchains/msys2.cmake"
             },
             "osx":{
-                "command": "cmake -GNinja -Bbuild -H. -DCMAKE_TOOLCHAIN_FILE=toolchains/osx.cmake"
+                "command": "cmake -GNinja -Bbuild_debug -H. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=toolchains/osx.cmake"
             }
         },
         {
-            "label": "2. Build",
+            "label": "1*. Generate Project files (Release)",
+            "type": "shell",
+            "windows": {
+                "command": "cmake -GNinja -Bbuild_release -H. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=toolchains/msys2.cmake"
+            },
+            "osx":{
+                "command": "cmake -GNinja -Bbuild_release -H. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=toolchains/osx.cmake"
+            }
+        },
+        {
+            "label": "2. Build (Debug)",
             "type": "shell",
             "options": {
-                "cwd": "${workspaceRoot}/build"
+                "cwd": "${workspaceRoot}/build_debug"
             },
             "command": "ninja"
+        },
+        {
+            "label": "2*. Build (Release)",
+            "dependsOn": "1*. Generate Project files (Release)",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceRoot}/build_release"
+            },
+            "command": "ninja"
+        },
+        {
+            "label": "3a. Generate package (ZIP)",
+            "dependsOn": "2*. Build (Release)",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceRoot}/build_release"
+            },
+            "command": "cpack -G ZIP"
+        },
+        {
+            "label": "3b. Generate package (IFW)",
+            "dependsOn": "2*. Build (Release)",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceRoot}/build_release"
+            },
+            "command": "cpack -G IFW"
         },
     ]
 }

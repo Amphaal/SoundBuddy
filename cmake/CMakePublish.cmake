@@ -43,8 +43,8 @@ cpack_ifw_configure_component("App"
 )
 
 # Runtime 
-cpack_add_component("Runtime" DOWNLOADED)
-cpack_ifw_configure_component("Runtime"
+cpack_add_component("AppRuntime" DOWNLOADED)
+cpack_ifw_configure_component("AppRuntime"
     DISPLAY_NAME 
         "Runtime" 
         fr "Composants de base"
@@ -57,26 +57,14 @@ cpack_ifw_configure_component("Runtime"
 )
 
 # Qt
-cpack_add_component("Qt" DOWNLOADED)
-cpack_ifw_configure_component("Qt"
-    DISPLAY_NAME "Qt ${Qt6Core_VERSION_STRING}"
+cpack_add_component("QtRuntime" DOWNLOADED)
+cpack_ifw_configure_component("QtRuntime"
+    DISPLAY_NAME "Qt ${Qt6Core_VERSION}"
     DESCRIPTION 
         "Essential framework used by ${PROJECT_NAME}"
         fr "Framework essentiel utilisé par ${PROJECT_NAME}"
     SORTING_PRIORITY 98
-    VERSION ${Qt6Core_VERSION_STRING}
-    FORCED_INSTALLATION
-)
-
-# OpenSSL
-cpack_add_component("OpenSSL" DOWNLOADED)
-cpack_ifw_configure_component("OpenSSL"
-    DISPLAY_NAME "OpenSSL ${OPENSSL_VERSION}"
-    DESCRIPTION
-        "Library allowing secure networking"
-        fr "Librairie permettant de sécuriser les communications"
-    SORTING_PRIORITY 97
-    VERSION ${OPENSSL_VERSION}
+    VERSION ${Qt6Core_VERSION}
     FORCED_INSTALLATION
 )
 
@@ -86,7 +74,7 @@ cpack_ifw_configure_component("OpenSSL"
 
 # repository for updates
 cpack_ifw_add_repository(coreRepo 
-    URL "https://dl.bintray.com/amphaal/${PROJECT_NAME}/ifw-${CPACK_SYSTEM_NAME}"
+    URL "https://ifw.to2x.ovh/${PROJECT_NAME}/ifw-${CPACK_SYSTEM_NAME}"
 )
 
 ########################

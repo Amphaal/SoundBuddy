@@ -6,14 +6,18 @@
     "configurations": [
         {
             "type": "cppdbg",
-            "name" : "Launch",
+            "name" : "Build & Launch",
             "request": "launch",
-            "preLaunchTask": "2. Build",
-            "cwd": "${workspaceFolder}/build",
-            "program": "${workspaceFolder}/build/out/SoundBuddy",
+            "preLaunchTask": "2. Build (Debug)",
+            "cwd": "${workspaceFolder}/build_debug",
+            "program": "${workspaceFolder}/build_debug/out/SoundBuddy",
+            "windows": {
+                "MIMode": "gdb",
+                "miDebuggerPath": "${env:MINGW64_ROOT}/bin/gdb.exe"
+            },
             "osx": {
                 "MIMode": "lldb",
-                "program": "${workspaceFolder}/build/out/SoundBuddy.app/Contents/MacOS/SoundBuddy",
+                "program": "${workspaceFolder}/build_debug/out/SoundBuddy.app/Contents/MacOS/SoundBuddy",
             }
         }
     ]

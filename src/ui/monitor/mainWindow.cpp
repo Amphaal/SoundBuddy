@@ -281,7 +281,12 @@ void MainWindow::runFeeder() {
 // main initialization
 void MainWindow::_initUI() {
     // values specific to this
-    QString stdTitle = _DEBUG ? (QString)"DEBUG - " + APP_NAME : APP_NAME;
+    #ifdef _DEBUG
+        QString stdTitle = (QString)"DEBUG - " + APP_NAME;
+    #else
+        QString stdTitle = APP_NAME;
+    #endif
+    
     this->setWindowTitle(stdTitle);
     this->setMinimumSize(QSize(480, 400));
     this->setWindowIcon(QIcon(":/icons/app.png"));
@@ -292,7 +297,9 @@ void MainWindow::_initUI() {
     this->_initUIMenu();
     this->_initStatusBar();
 
-    if (_DEBUG) this->trueShow();
+    #ifdef _DEBUG
+        this->trueShow();
+    #endif
 }
 
 

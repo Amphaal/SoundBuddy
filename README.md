@@ -30,6 +30,7 @@ We use MSYS2 build system (https://www.msys2.org) as our build platform. Make su
 - From VS Code, use the `Msys2 Shell` terminal to run the following commands.
 - Run command in terminal to update obsolete packages : `pacman -Syyu`
 - Run command in terminal to fetch depedencies : `pacman -S --needed - < ./prerequisites/msys.txt`
+
 ## License
     SoundBuddy
     Small companion app that feeds SoundVitrine with ITunes / Music library metadata
