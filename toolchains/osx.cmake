@@ -15,3 +15,5 @@ SET (CMAKE_CXX_COMPILER         "clang++")
 
 SET (CMAKE_CXX_FLAGS            "")
 SET (CMAKE_CXX_FLAGS_DEBUG      "-O0 -g")
+
+SET (OPENSSL_ROOT_DIR /opt/homebrew/opt/openssl@3)

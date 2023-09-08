@@ -23,11 +23,11 @@ function(HandleQtTranslation target installComponent filesToScan)
 
         #install
         include(GNUInstallDirs)
-        install(FILES ${QM_FILES}
-            DESTINATION ${CMAKE_INSTALL_BINDIR}/translations
-            COMPONENT ${installComponent}
-            COMPONENT "App"
-        )
+        #install(FILES ${QM_FILES}
+        #    DESTINATION ${CMAKE_INSTALL_BINDIR}/translations
+        #    COMPONENT ${installComponent}
+        #    COMPONENT "App"
+        #)
     endif()
 
 endfunction()

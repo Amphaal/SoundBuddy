@@ -26,8 +26,8 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out)
 
 cmake_minimum_required(VERSION 3.14.3)
 
-project(SoundBuddy
-    VERSION 0.4.3
+### PLEASE LET VERSION NEXT TO PROJECT NAME !!! since cmake has no documented way to do this, We use grep to ack project version on this specific line 
+project(SoundBuddy VERSION 0.4.4
     DESCRIPTION "Small companion app that feeds SoundVitrine with ITunes / Music library metadata"
     HOMEPAGE_URL "https://github.com/Amphaal/SoundBuddy"
     LANGUAGES CXX
@@ -254,5 +254,5 @@ include(CMakePublish)
 #
 install(TARGETS appExec
     COMPONENT "App"
-    BUNDLE DESTINATION "bin"
+    BUNDLE DESTINATION "."
 )

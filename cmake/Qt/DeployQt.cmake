@@ -44,7 +44,7 @@ macro(DeployQt target)
             COMMAND ${DEPLOYQT_EXE}
                 $<TARGET_BUNDLE_DIR:${target}>
                 -libpath=$<TARGET_BUNDLE_CONTENT_DIR:${target}>
-                -verbose=2
+                -verbose=0
             COMMENT "Create dummy folder with matching Qt runtime components"
         )
 

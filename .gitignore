@@ -2,3 +2,4 @@
 /build_release/
 .vscode/ipch
 .DS_Store
+_CPack_Packages

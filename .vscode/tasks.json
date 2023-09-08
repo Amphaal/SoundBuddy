@@ -19,7 +19,7 @@
                 "command": "cmake -GNinja -Bbuild_debug -H. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=toolchains/msys2.cmake"
             },
             "osx": {
-                "command": "cmake -GNinja -Bbuild_debug -H. -DOPENSSL_ROOT_DIR=/opt/homebrew/opt/openssl@3 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=toolchains/osx.cmake"
+                "command": "cmake -GNinja -Bbuild_debug -H. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=toolchains/osx.cmake"
             },
             "problemMatcher": []
         },
@@ -30,7 +30,7 @@
                 "command": "cmake -GNinja -Bbuild_release -H. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=toolchains/msys2.cmake"
             },
             "osx": {
-                "command": "cmake -GNinja -Bbuild_release -H. -DOPENSSL_ROOT_DIR=/opt/homebrew/opt/openssl@3 -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=toolchains/osx.cmake"
+                "command": "cmake -GNinja -Bbuild_release -H. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=toolchains/osx.cmake"
             },
             "problemMatcher": []
         },
@@ -71,6 +71,14 @@
                 "cwd": "${workspaceRoot}/build_release"
             },
             "command": "cpack -G IFW"
+        },
+        {
+            "label": "00. Push release and artifacts to Github",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceRoot}"
+            },
+            "command": "./toolchains/push_release_and_artefact_github.sh"
         }
     ]
 }
