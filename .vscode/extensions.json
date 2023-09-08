@@ -1,0 +1,6 @@
+{
+    "recommendations": [
+        "josetr.cmake-language-support-vscode",
+        "ms-vscode.cpptools-extension-pack"
+    ]
+}

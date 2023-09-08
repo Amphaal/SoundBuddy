@@ -41,12 +41,15 @@ macro(DeployQt target)
 
         # Run deployqt immediately after build to determine Qt dependencies
         add_custom_command(TARGET ${target}
-        COMMAND ${DEPLOYQT_EXE}
+            COMMAND ${DEPLOYQT_EXE}
                 $<TARGET_BUNDLE_DIR:${target}>
                 -libpath=$<TARGET_BUNDLE_CONTENT_DIR:${target}>
-                -verbose=0
+                -verbose=2
             COMMENT "Create dummy folder with matching Qt runtime components"
         )
+
+        #
+
     endif()
 
 endmacro()

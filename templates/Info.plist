@@ -36,5 +36,10 @@
 	<true/>
 	<key>LSUIElement</key>
 	<string>1</string>
+	<key>CFBundleLocalizations<key>
+	<array>
+    <string>en</string>
+    <string>fr</string>
+	</array>
 </dict>
 </plist>

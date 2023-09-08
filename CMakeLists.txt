@@ -27,7 +27,7 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out)
 cmake_minimum_required(VERSION 3.14.3)
 
 project(SoundBuddy
-    VERSION 0.4.2
+    VERSION 0.4.3
     DESCRIPTION "Small companion app that feeds SoundVitrine with ITunes / Music library metadata"
     HOMEPAGE_URL "https://github.com/Amphaal/SoundBuddy"
     LANGUAGES CXX
@@ -71,6 +71,12 @@ if(WIN32)
     )
 endif()
 
+if(APPLE)
+    find_package(Qt6 REQUIRED COMPONENTS 
+        DBus
+    )
+endif()
+
 ##########################
 ## Bundle configuration ##
 ##########################
@@ -88,6 +94,8 @@ if (WIN32)
 endif()
 
 if (APPLE)
+    # enforce searching for OpenSSL from explicit Homebrew path
+    find_package(OpenSSL REQUIRED)
     #set bundle type
     SET(BUNDLE_TYPE MACOSX_BUNDLE) 
     #add icons
@@ -219,13 +227,23 @@ if(WIN32)
     )
 endif()
 
+if(APPLE)
+    target_link_libraries(appExec PRIVATE
+        Qt6::DBus
+    )
+endif()
+
 # QT LIBRARIES COPY
 include(DeployQt)
 DeployQt(appExec)
 
 #
 include(CMakeDependencies)
-DeployPEDependencies(appExec "AppRuntime")
+
+
+if(MINGW)
+    DeployPEDependencies(appExec "AppRuntime")
+endif()
 
 ######################
 # add Publish target #
@@ -236,4 +254,5 @@ include(CMakePublish)
 #
 install(TARGETS appExec
     COMPONENT "App"
+    BUNDLE DESTINATION "bin"
 )

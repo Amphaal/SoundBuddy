@@ -19,6 +19,8 @@
 
 #ifdef _WIN32
 
+#include <QAxObject>
+
 #include "MusicAppCOMHandler.h"
 
 #include "src/workers/shout/ShoutThread.h"

@@ -18,9 +18,10 @@
             "windows": {
                 "command": "cmake -GNinja -Bbuild_debug -H. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=toolchains/msys2.cmake"
             },
-            "osx":{
-                "command": "cmake -GNinja -Bbuild_debug -H. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=toolchains/osx.cmake"
-            }
+            "osx": {
+                "command": "cmake -GNinja -Bbuild_debug -H. -DOPENSSL_ROOT_DIR=/opt/homebrew/opt/openssl@3 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=toolchains/osx.cmake"
+            },
+            "problemMatcher": []
         },
         {
             "label": "1*. Generate Project files (Release)",
@@ -28,17 +29,20 @@
             "windows": {
                 "command": "cmake -GNinja -Bbuild_release -H. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=toolchains/msys2.cmake"
             },
-            "osx":{
-                "command": "cmake -GNinja -Bbuild_release -H. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=toolchains/osx.cmake"
-            }
+            "osx": {
+                "command": "cmake -GNinja -Bbuild_release -H. -DOPENSSL_ROOT_DIR=/opt/homebrew/opt/openssl@3 -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=toolchains/osx.cmake"
+            },
+            "problemMatcher": []
         },
         {
             "label": "2. Build (Debug)",
+            "dependsOn": "1. Generate Project files (Debug)",
             "type": "shell",
             "options": {
                 "cwd": "${workspaceRoot}/build_debug"
             },
-            "command": "ninja"
+            "command": "ninja",
+            "problemMatcher": []
         },
         {
             "label": "2*. Build (Release)",
@@ -47,7 +51,8 @@
             "options": {
                 "cwd": "${workspaceRoot}/build_release"
             },
-            "command": "ninja"
+            "command": "ninja",
+            "problemMatcher": []
         },
         {
             "label": "3a. Generate package (ZIP)",
@@ -66,6 +71,6 @@
                 "cwd": "${workspaceRoot}/build_release"
             },
             "command": "cpack -G IFW"
-        },
+        }
     ]
 }

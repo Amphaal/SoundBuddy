@@ -20,7 +20,6 @@
 #pragma once
 
 #include <QString>
-#include <QAxObject>
 #include <QEventLoop>
 
 #include <functional>

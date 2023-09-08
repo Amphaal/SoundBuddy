@@ -16,7 +16,7 @@
     },
     "terminal.integrated.defaultProfile.windows": "Msys2 Shell",
     "search.exclude": {
-        "deps" : true
+        "deps" : false
     },
     "files.associations": {
         "*.ts": "xml" // Qt translation files 

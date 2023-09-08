@@ -9,7 +9,7 @@
             "name" : "Build & Launch",
             "request": "launch",
             "preLaunchTask": "2. Build (Debug)",
-            "cwd": "${workspaceFolder}/build_debug",
+            "cwd": "${workspaceFolder}",
             "program": "${workspaceFolder}/build_debug/out/SoundBuddy",
             "windows": {
                 "MIMode": "gdb",

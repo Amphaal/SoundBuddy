@@ -381,33 +381,33 @@
     </message>
     <message>
         <location filename="../workers/shout/ShoutThread.cpp" line="200"/>
-        <location filename="../workers/shout/ShoutThread.cpp" line="294"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="295"/>
         <source>Waiting for %1 to launch...</source>
         <translation>J&apos;attends qu&apos;%1 se lance...</translation>
     </message>
     <message>
         <location filename="../workers/shout/ShoutThread.cpp" line="277"/>
-        <location filename="../workers/shout/ShoutThread.cpp" line="355"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="356"/>
         <source>Stopped listening to %1.</source>
         <translation>J&apos;ai fini d&apos;écouter %1.</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="322"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="323"/>
         <source>Initializing communication...</source>
         <translation>Initialisation de la communication...</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="346"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="347"/>
         <source>Listening to %1 !</source>
         <translation>J&apos;écoute %1 !</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="417"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="418"/>
         <source>Waiting for %1 to launch again...</source>
         <translation>J&apos;attends qu&apos;%1 se relance...</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="309"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="310"/>
         <source>Connecting to %1 ...</source>
         <translation>Connexion à %1 ...</translation>
     </message>

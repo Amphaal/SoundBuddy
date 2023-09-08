@@ -282,6 +282,7 @@ void ShoutThread::_startShouting() {
 
 #ifdef _WIN32
 
+#include <QAxObject>
 #include <windows.h>
 #include <combaseapi.h>
 
