@@ -18,6 +18,7 @@
 // different license and copyright still refer to this GPL.
 
 #include "mainWindow.h"
+#include "version.h"
 
 MainWindow::MainWindow() {
     // generate the UI
@@ -158,8 +159,16 @@ void MainWindow::onUpdateChecked(const UpdateChecker::CheckResults checkResults)
         QMessageBox::Yes);
 
     if (msgboxRslt == QMessageBox::Yes) {
-        UpdateChecker::tryToLaunchUpdater();
-        this->forcedClose();
+        switch (checkResults.source) {
+        case UpdateChecker::CheckSource::GithubCheck:
+            QDesktopServices::openUrl(QUrl(APP_PATCHNOTE_URL));
+        break;
+        
+        case UpdateChecker::CheckSource::IFWCheck:
+            UpdateChecker::tryToLaunchUpdater();
+            this->forcedClose();
+        break;
+        }
     }
 
     this->UpdateSearch_switchUI(false);

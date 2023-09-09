@@ -26,10 +26,13 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out)
 
 cmake_minimum_required(VERSION 3.14.3)
 
+SET(GITHUB_REPO_OWNER "Amphaal")
+SET(GITHUB_REPO_NAME "SoundBuddy")
+
 ### PLEASE LET VERSION NEXT TO PROJECT NAME !!! since cmake has no documented way to do this, We use grep to ack project version on this specific line 
-project(SoundBuddy VERSION 0.4.4
+project(${GITHUB_REPO_NAME} VERSION 0.4.4
     DESCRIPTION "Small companion app that feeds SoundVitrine with ITunes / Music library metadata"
-    HOMEPAGE_URL "https://github.com/Amphaal/SoundBuddy"
+    HOMEPAGE_URL https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}
     LANGUAGES CXX
 )
 
@@ -41,6 +44,7 @@ project(SoundBuddy VERSION 0.4.4
 SET(APP_PUBLISHER "LVWL")
 SET(DEST_PLATFORM_PRODUCT_NAME "SoundVitrine")
 SET(APP_PATCHNOTE_URL ${PROJECT_HOMEPAGE_URL}/releases)
+
 
 ################################
 ## CPP Compiler Configuration ##
@@ -100,7 +104,7 @@ if (APPLE)
     SET(BUNDLE_TYPE MACOSX_BUNDLE) 
     #add icons
     SET(MACOSX_BUNDLE_ICON_FILE "app.icns")
-    SET(APP_ICO ${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/app.icns)
+    SET(APP_ICO ${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/${MACOSX_BUNDLE_ICON_FILE})
     set_source_files_properties(${APP_ICO} PROPERTIES 
         MACOSX_PACKAGE_LOCATION "Resources"                                                    
     )

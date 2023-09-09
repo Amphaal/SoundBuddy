@@ -158,127 +158,127 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="392"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="401"/>
         <source>Options</source>
         <translation>Options</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="395"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="404"/>
         <source>Check for updates</source>
         <translation>Vérification de mises à jour</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="417"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="426"/>
         <source>Searching for updates...</source>
         <translation>Recherche des mises à jour...</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="425"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="434"/>
         <source>File</source>
         <translation>Fichier</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="465"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="474"/>
         <source>Open monitor...</source>
         <translation>Ouvrir le tableau de bord</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="428"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="437"/>
         <source>My %1</source>
         <translation>Mon %1</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="443"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="452"/>
         <source>Read latest upload warnings report</source>
         <translation>Visualiser les derniers avertissements d&apos;export</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="451"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="460"/>
         <source>Access upload data folder</source>
         <translation>Accéder aux données d&apos;export</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="457"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="466"/>
         <source>Quit</source>
         <translation>Quitter</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="505"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="514"/>
         <source>Shout worker running !</source>
         <translation>Shout en cours !</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="506"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="515"/>
         <source>Shout worker is actually running : Are you sure you want to exit ?</source>
         <translation>Les shouts sont actuellement scannés : Voulez-vous vraiment quitter ?</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="140"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="141"/>
         <source>Checking updates</source>
         <translation>Vérifier les mises à jour</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="141"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="142"/>
         <source>No updates available at the time.</source>
         <translation>Pas de mises à jour disponibles pour le moment.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="155"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="156"/>
         <source>Update Available</source>
         <translation>Mise à jour disponible</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="156"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="157"/>
         <source>An update is available for %1. Would you like to install it now ?</source>
         <translation>Une mise à jour a été trouvé pour %1. Voulez-vous l&apos;installer maintenant ?</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="110"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="111"/>
         <source>No remote URL given, probably because of an issue with the executable. Contact the developpers.</source>
         <translation>Aucune URL distante trouvée, probablement parce qu&apos;il y a un problème avec l&apos;executable. Contactez les développeurs.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="113"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="114"/>
         <source>Issue while finding the local package manifest.</source>
         <translation>Problème durant la recherche du manifeste de package local.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="116"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="117"/>
         <source>Issue while reading the local package manifest.</source>
         <translation>Problème durant la lecture du manifeste de package local.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="119"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="120"/>
         <source>Issue while finding the remote package update manifest.</source>
         <translation>Problème durant la recherche du manifeste de package distant.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="122"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="123"/>
         <source>Issue while reading the remote package update manifest.</source>
         <translation>Problème durant la lecture du manifeste de package distant.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="126"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="127"/>
         <source>No specified code linked to the error happening. Contact the developpers.</source>
         <translation>Aucun code erreur lié au problème en cours. Contactez les développeurs.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="132"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="133"/>
         <source>Error while checking updates</source>
         <translation>Erreur durant la vérification des mises à jour</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="436"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="445"/>
         <source>Preferences</source>
         <translation>Paramètres</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="68"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="69"/>
         <source>Cannot access %1 plaform</source>
         <translation>Impossible d&apos;accéder à la plateforme %1</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="69"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="70"/>
         <source>%1 Plaform URL is not valid. Please check Preferences connectivity parameters.</source>
         <translation>L&apos;URL de la plateforme %1 n&apos;est pas valide. Merci de vérifier les paramètres de connectivité.</translation>
     </message>
