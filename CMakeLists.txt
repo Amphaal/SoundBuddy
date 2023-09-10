@@ -142,7 +142,6 @@ add_executable(appExec ${BUNDLE_TYPE}
 if (APPLE)
     add_custom_command(TARGET appExec
         COMMAND xcrun dsymutil $<TARGET_FILE:appExec> -o $<TARGET_BUNDLE_DIR:appExec>/../$<TARGET_FILE_NAME:appExec>.dSYM
-        COMMAND_EXPAND_LISTS
     )
 endif()
 

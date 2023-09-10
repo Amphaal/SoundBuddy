@@ -381,33 +381,33 @@
     </message>
     <message>
         <location filename="../workers/shout/ShoutThread.cpp" line="200"/>
-        <location filename="../workers/shout/ShoutThread.cpp" line="318"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="307"/>
         <source>Waiting for %1 to launch...</source>
         <translation>J&apos;attends que l&apos;app %1 se lance...</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="300"/>
-        <location filename="../workers/shout/ShoutThread.cpp" line="379"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="289"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="368"/>
         <source>Stopped listening to %1.</source>
         <translation>J&apos;ai fini d&apos;écouter %1.</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="346"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="335"/>
         <source>Initializing communication...</source>
         <translation>Initialisation de la communication...</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="370"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="359"/>
         <source>Listening to %1 !</source>
         <translation>J&apos;écoute %1 !</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="441"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="430"/>
         <source>Waiting for %1 to launch again...</source>
         <translation>J&apos;attends qu&apos;%1 se relance...</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="333"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="322"/>
         <source>Connecting to %1 ...</source>
         <translation>Connexion à %1 ...</translation>
     </message>

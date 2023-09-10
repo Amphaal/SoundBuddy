@@ -211,89 +211,78 @@ void ShoutThread::_startShouting() {
     p.write(scriptContent);
     p.closeWriteChannel();
 
-    QEventLoop q;
-
-    QObject::connect(&p, &QProcess::readyRead, [&q]() {
-        q.exit();
-    });
-
-    p.start();
-    q.exec();
-
     // loop until user said not to
-    // while (this->_mustListen) {
-    //     // get shout results
-    //     p.start();
+    while (this->_mustListen) {
+        // get shout results
+        p.start();
 
-    //     emit printLog(
-    //         "nique poop"
-    //     );
+        auto isReady = p.waitForReadyRead(200);
+        if (!isReady || !this->_mustListen) {
+            // wait a bit before re-asking
+            if(this->_mustListen) this->sleep(1);
+            continue;
+        }
 
-    //     p.waitForReadyRead(1000);
+        auto result = p.readAll();
+        auto readFinished = p.waitForFinished(100);
+        if (!readFinished || !this->_mustListen) {
+            // wait a bit before re-asking
+            if(this->_mustListen) this->sleep(1);
+            continue;
+        }
 
-    //     emit printLog(
-    //         "nique pep"
-    //     );
+        // default values and inst
+        QString tName;
+        QString tAlbum;
+        QString tArtist;
+        QString tGenre;
+        int iDuration;
+        int iPlayerPos;
+        bool iPlayerState = false;
+        QString tDateSkipped;
+        QString tDatePlayed;
+        int tYear;
 
-    //     auto result = p.readAll();
-    //     p.waitForFinished(1000);
+        // if has result
+        if (result.size()) {
+            // turn results into array
+            result[0] = '[';
+            result[result.size() - 1] = ']';
 
-    //     emit printLog(
-    //         "nique OK"
-    //     );
+            // cast to json
+            const auto trackData = QJsonDocument::fromJson(result.data()).array();
 
-    //     // default values and inst
-    //     QString tName;
-    //     QString tAlbum;
-    //     QString tArtist;
-    //     QString tGenre;
-    //     int iDuration;
-    //     int iPlayerPos;
-    //     bool iPlayerState = false;
-    //     QString tDateSkipped;
-    //     QString tDatePlayed;
-    //     int tYear;
+            // get values for shout
+            tName = trackData[0].toString();
+            tAlbum = trackData[1].toString();
+            tArtist = trackData[2].toString();
+            tGenre = trackData[3].toString();
+            iDuration = trackData[4].toInt();
+            tYear = trackData[5].toInt();
+            iPlayerPos = trackData[6].toInt();
+            iPlayerState = trackData[7].toString() == "paused" ? 0 : 1;
+            tDateSkipped = trackData[8].toString();
+            tDatePlayed = trackData[9].toString();
+        }
 
-    //     // if has result
-    //     if (result.size()) {
-    //         // turn results into array
-    //         result[0] = '[';
-    //         result[result.size() - 1] = ']';
+        // compare with old shout, if equivalent, don't reshout
+        if (this->shouldUpload(iPlayerState, tName, tAlbum, tArtist, tDatePlayed, tDateSkipped)) {
+            // if had results
+            if (result.size()) {
+                // say track infos
+                this->shoutFilled(
+                    tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState, tYear,
+                    true
+                );
+            } else {
+                // say nothing happens
+                this->shoutEmpty(true);
+            }
+        }
 
-    //         // cast to json
-    //         const auto trackData = QJsonDocument::fromJson(result.data()).array();
-
-    //         // get values for shout
-    //         tName = trackData[0].toString();
-    //         tAlbum = trackData[1].toString();
-    //         tArtist = trackData[2].toString();
-    //         tGenre = trackData[3].toString();
-    //         iDuration = trackData[4].toInt();
-    //         tYear = trackData[5].toInt();
-    //         iPlayerPos = trackData[6].toInt();
-    //         iPlayerState = trackData[7].toString() == "paused" ? 0 : 1;
-    //         tDateSkipped = trackData[8].toString();
-    //         tDatePlayed = trackData[9].toString();
-    //     }
-
-    //     // compare with old shout, if equivalent, don't reshout
-    //     if (this->shouldUpload(iPlayerState, tName, tAlbum, tArtist, tDatePlayed, tDateSkipped)) {
-    //         // if had results
-    //         if (result.size()) {
-    //             // say track infos
-    //             this->shoutFilled(
-    //                 tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState, tYear,
-    //                 true
-    //             );
-    //         } else {
-    //             // say nothing happens
-    //             this->shoutEmpty(true);
-    //         }
-    //     }
-
-    //    // wait a bit before re-asking
-    //    this->sleep(1);
-    // }
+       // wait a bit before re-asking
+       this->sleep(1);
+    }
 
     this->shoutEmpty();
     emit printLog(
