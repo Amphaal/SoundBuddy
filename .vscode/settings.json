@@ -95,6 +95,8 @@
         "concepts": "cpp",
         "numeric": "cpp",
         "random": "cpp",
-        "algorithm": "cpp"
-    }
+        "algorithm": "cpp",
+        "qlockfile": "cpp"
+    },
+    "terminal.integrated.scrollback": 10000
 }

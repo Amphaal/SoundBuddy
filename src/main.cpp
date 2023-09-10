@@ -25,6 +25,14 @@
 
 #include "ui/monitor/mainWindow.h"
 
+QString getResourcesPath() {
+    #if defined(Q_OS_OSX)
+        return QApplication::applicationDirPath() + QDir::separator() + ".." + QDir::separator() + "Resources" + QDir::separator();
+    #else
+        return QApplication::applicationDirPath() + QDir::separator();
+    #endif
+}
+
 int main(int argc, char** argv) {
     // prevent multiples instances
     QLockFile lockFile(QDir::tempPath() + QDir::separator() + APP_NAME + ".lock");
@@ -36,18 +44,19 @@ int main(int argc, char** argv) {
     QApplication app(argc, argv);
 
     // activate translations...
-        auto translationsPath = app.applicationDirPath() + QDir::separator() + "translations";
+        auto expectedBinaryTranslationsDir = getResourcesPath() + "translations";
+
         auto locale = QLocale::system();
 
         // Qt
         auto _qtTranslator = new QTranslator(&app);
-        if (_qtTranslator->load(locale, "qt", "_", translationsPath)) {
+        if (_qtTranslator->load(locale, "qt", "_", expectedBinaryTranslationsDir)) {
             app.installTranslator(_qtTranslator);
         }
 
         // app
         auto _appTranslator = new QTranslator(&app);
-        if (_appTranslator->load(locale, "", "", translationsPath)) {
+        if (_appTranslator->load(locale, "", "", expectedBinaryTranslationsDir)) {
             app.installTranslator(_appTranslator);
         }
 

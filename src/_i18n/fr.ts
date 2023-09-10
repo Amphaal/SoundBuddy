@@ -381,33 +381,33 @@
     </message>
     <message>
         <location filename="../workers/shout/ShoutThread.cpp" line="200"/>
-        <location filename="../workers/shout/ShoutThread.cpp" line="295"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="318"/>
         <source>Waiting for %1 to launch...</source>
-        <translation>J&apos;attends qu&apos;%1 se lance...</translation>
+        <translation>J&apos;attends que l&apos;app %1 se lance...</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="277"/>
-        <location filename="../workers/shout/ShoutThread.cpp" line="356"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="300"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="379"/>
         <source>Stopped listening to %1.</source>
         <translation>J&apos;ai fini d&apos;écouter %1.</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="323"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="346"/>
         <source>Initializing communication...</source>
         <translation>Initialisation de la communication...</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="347"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="370"/>
         <source>Listening to %1 !</source>
         <translation>J&apos;écoute %1 !</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="418"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="441"/>
         <source>Waiting for %1 to launch again...</source>
         <translation>J&apos;attends qu&apos;%1 se relance...</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="310"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="333"/>
         <source>Connecting to %1 ...</source>
         <translation>Connexion à %1 ...</translation>
     </message>

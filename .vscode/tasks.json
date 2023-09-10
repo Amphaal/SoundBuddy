@@ -61,7 +61,8 @@
             "options": {
                 "cwd": "${workspaceRoot}/build_release"
             },
-            "command": "cpack -G ZIP"
+            "command": "cpack -G ZIP",
+            "problemMatcher": []
         },
         {
             "label": "3b. Generate package (IFW)",

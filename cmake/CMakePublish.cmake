@@ -21,6 +21,12 @@ endif()
 SET(CPACK_IFW_PACKAGE_LOGO "${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/app_64.png")
 SET(CPACK_IFW_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/package.ico")
 
+
+# https://cmake.org/cmake/help/v3.2/module/CPackBundle.html#variable:CPACK_BUNDLE_APPLE_CERT_APP
+# https://github.com/ziglang/zig/issues/6971
+# Since recent SDK, if not signed, any executable will silently crash
+SET(CPACK_BUNDLE_APPLE_CERT_APP ${APPLE_CERT_APP_CODE_SIGN_IDENTITY})
+
 ##############
 ### INSTALL ##
 ##############

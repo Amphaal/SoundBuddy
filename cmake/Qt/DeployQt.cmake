@@ -39,17 +39,19 @@ macro(DeployQt target)
         #
         find_program(DEPLOYQT_EXE "macdeployqt" REQUIRED)
 
+        ##
+        ## Code signing is now required on OSX 13+, make sure to provide APPLE_CODESIGN_ID
+        ##
+
         # Run deployqt immediately after build to determine Qt dependencies
         add_custom_command(TARGET ${target}
             COMMAND ${DEPLOYQT_EXE}
                 $<TARGET_BUNDLE_DIR:${target}>
-                -libpath=$<TARGET_BUNDLE_CONTENT_DIR:${target}>
-                -verbose=0
+                -codesign=${APPLE_CODESIGN_ID}
+                -always-overwrite
+                # -verbose=3
             COMMENT "Create dummy folder with matching Qt runtime components"
         )
-
-        #
-
     endif()
 
 endmacro()

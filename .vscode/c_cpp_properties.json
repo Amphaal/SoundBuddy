@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "Mac",
+            "name": "MacOS-Silicon",
             "defines": [
                 "_DEBUG",
                 "UNICODE",
@@ -16,10 +16,21 @@
                 "${default}",
                 "${workspaceFolder}",
                 "${workspaceFolder}/src",
+                "${workspaceFolder}/build_debug/generated",
                 "${workspaceFolder}/deps/IFWUpdateChecker/src",
                 "${workspaceFolder}/deps/IFWUpdateChecker/deps/StupidHTTPDownloader/include",
                 "${workspaceFolder}/deps/IFWUpdateChecker/deps/tiny-process-library",
-                "${workspaceFolder}/deps/ItunesLibraryParser/src"
+                "${workspaceFolder}/deps/ItunesLibraryParser/src",
+                "/opt/homebrew/opt/spdlog/include",
+                "/opt/homebrew/opt/fmt/include",
+                "/opt/homebrew/opt/asio/include",
+                "/opt/homebrew/opt/qt/include", 
+                "/opt/homebrew/opt/qt/include/QtCore",
+                "/opt/homebrew/opt/qt/include/QtWidgets",
+                "/opt/homebrew/opt/qt/include/QtGui",
+                "/opt/homebrew/opt/qt/include/QtNetwork",
+                "/opt/homebrew/opt/qt/include/QtWebSockets",
+                "/opt/homebrew/opt/qt/include/QtDBus"
             ]
         },
         {

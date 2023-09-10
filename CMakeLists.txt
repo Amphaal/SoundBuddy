@@ -36,6 +36,12 @@ project(${GITHUB_REPO_NAME} VERSION 0.4.4
     LANGUAGES CXX
 )
 
+# https://cmake.org/cmake/help/v3.2/module/CPackBundle.html#variable:CPACK_BUNDLE_APPLE_CERT_APP
+# https://github.com/ziglang/zig/issues/6971
+# Since recent SDK, if not signed, any executable will silently crash
+SET(APPLE_CODESIGN_ID "U2T7J2AC52")
+SET(APPLE_CERT_APP_CODE_SIGN_IDENTITY "Apple Development: Guillaume VARA (${APPLE_CODESIGN_ID})")
+
 ########################
 ## VERSION.H HANDLING ##
 ########################
@@ -117,6 +123,10 @@ endif()
 file(GLOB_RECURSE APP_CPP_FILES "src/*.cpp")
 file(GLOB_RECURSE APP_HPP_FILES "src/*.hpp")
 
+if (APPLE)
+    list(REMOVE_ITEM APP_CPP_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/workers/shout/win/MusicAppCOMHandler.cpp)
+endif()
+
 #########################
 # Executable Generation #
 #########################
@@ -128,6 +138,13 @@ add_executable(appExec ${BUNDLE_TYPE}
     ${APP_ICO}
     resources/resources.qrc
 ) 
+
+if (APPLE)
+    add_custom_command(TARGET appExec
+        COMMAND xcrun dsymutil $<TARGET_FILE:appExec> -o $<TARGET_BUNDLE_DIR:appExec>/../$<TARGET_FILE_NAME:appExec>.dSYM
+        COMMAND_EXPAND_LISTS
+    )
+endif()
 
 #
 target_include_directories(appExec PRIVATE
@@ -167,10 +184,11 @@ list(APPEND TS_SOURCE_FILES
 list(APPEND TS_FILES
     "src/_i18n/fr.ts"
 )
-HandleQtTranslation(appExec
-    "App"
-    "${TS_SOURCE_FILES}"
-    ${TS_FILES}
+HandleQtTranslation(
+    TARGET appExec
+    INSTALL_COMPONENT "App"
+    SOURCES ${TS_SOURCE_FILES}
+    TRANSLATION_FILES ${TS_FILES}
 )
 
 # IFW sources
@@ -180,10 +198,10 @@ list(APPEND TS_INSTALL_SOURCE_FILES
 list(APPEND TS_INSTALL_FILES
     "src/_i18n/EndInstallerForm_fr.ts"
 )
-HandleQtTranslation(appExec
-    OFF
-    "${TS_INSTALL_SOURCE_FILES}"
-    ${TS_INSTALL_FILES}
+HandleQtTranslation(
+    TARGET appExec
+    SOURCES ${TS_INSTALL_SOURCE_FILES}
+    TRANSLATION_FILES ${TS_INSTALL_FILES}
 )
 
 ####################

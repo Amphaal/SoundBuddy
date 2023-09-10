@@ -17,7 +17,7 @@
             },
             "osx": {
                 "MIMode": "lldb",
-                "program": "${workspaceFolder}/build_debug/out/SoundBuddy.app/Contents/MacOS/SoundBuddy",
+                "program": "${workspaceFolder}/build_debug/out/SoundBuddy.app",
             }
         }
     ]
