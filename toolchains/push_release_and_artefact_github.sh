@@ -61,13 +61,16 @@ fi
 
 # Get the operating system name
 os_name=$(uname -s)
+machine_arch=$(uname -m)
 
 # Check if the operating system is Windows (MINGW)
-if [ "$os_name" == "MINGW64_NT-10.0" ]; then
-  os_type="msys2"
+if [[ $os_name = "MINGW64_NT"* ]]; then
+  toolchain_os_type="msys2"
+  descriptive_build_str="windows_$machine_arch"
 # Check if the operating system is macOS
 elif [ "$os_name" == "Darwin" ]; then
-  os_type="osx"
+  toolchain_os_type="osx"
+  descriptive_build_str="windows_$machine_arch"
 # Exit with an error message for any other operating system
 else
   echo "Unsupported operating system: $os_name"
@@ -80,7 +83,7 @@ fi
 
 build_directory="build_release"
 artifacts_directory="./$build_directory/artifacts"
-package_name="$(basename `git rev-parse --show-toplevel`)-$app_version-$(uname)-$(uname -m)"
+package_name="$(basename `git rev-parse --show-toplevel`)-v$app_version-$descriptive_build_str"
 generated_artifact_path="$artifacts_directory/$package_name.zip"
 
 echo "====> Configuring ... <====="
@@ -99,10 +102,10 @@ cpack --config ./$build_directory/CPackConfig.cmake -G ZIP -B $artifacts_directo
 ##
 ##
 
-if ! gh release view $app_version; then
-  echo "Creating release + upload on $app_version..."
-  gh release create $app_version --generate-notes $generated_artifact_path
+if ! gh release view v$app_version; then
+  echo "Creating release + upload on v$app_version..."
+  gh release create v$app_version --generate-notes $generated_artifact_path
 else
-  echo "Uploading release ONLY on $app_version (may override existing artifact with same name)..."
+  echo "Uploading release ONLY on v$app_version (may override existing artifact with same name)..."
   gh release upload --clobber $app_version $generated_artifact_path
 fi

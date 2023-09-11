@@ -153,7 +153,7 @@ void MainWindow::onUpdateChecked(const UpdateChecker::CheckResults checkResults)
 
     // if has update
     auto msgboxRslt = QMessageBox::information(this,
-        tr("Update Available").arg(APP_NAME),
+        tr("Update Available"),
         tr("An update is available for %1. Would you like to install it now ?").arg(APP_NAME),
         QMessageBox::Yes | QMessageBox::No,
         QMessageBox::Yes);
