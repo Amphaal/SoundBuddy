@@ -1,5 +1,8 @@
 #! /bin/bash
 
+# stops if any command fails
+set -e
+
 ##
 ##
 ##
@@ -97,7 +100,7 @@ generated_artifact_path="$artifacts_directory/$package_name.$package_output_ext"
 
 echo "====> Configuring ... <====="
 
-cmake -GNinja -B$build_directory -H. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=toolchains/$os_type.cmake
+cmake -GNinja -B$build_directory -H. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=toolchains/$toolchain_os_type.cmake
 
 echo "====> Building ... <====="
 

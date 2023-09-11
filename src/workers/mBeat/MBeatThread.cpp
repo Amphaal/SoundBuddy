@@ -40,7 +40,7 @@ void MBeatThread::run() {
     QWebSocket socket;
     QUrl url(this->_connectivityInfos.getPlaformHomeUrl());
     auto url_host = url.host();
-    if(url_host == "localhost" || url_host == '127.0.0.1') {
+    if(url_host == "localhost" || url_host == "127.0.0.1") {
         url.setPort(80);
         url.setScheme("ws");
     } else {

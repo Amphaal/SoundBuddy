@@ -85,52 +85,52 @@
 <context>
     <name>MBeatThread</name>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="100"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="108"/>
         <source>Logged as &quot;%1&quot;</source>
         <translation>Connecté en tant que &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="191"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="199"/>
         <source>Credential data missing</source>
         <translation>Données manquantes pour l&apos;identification</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="193"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="201"/>
         <source>Empty users database</source>
         <translation>Base de données utilisateur vide</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="195"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="203"/>
         <source>Username not found in database</source>
         <translation>Utilisateur introuvable dans la base de données</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="197"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="205"/>
         <source>Password for the user not found in database</source>
         <translation>Mot de passe de l&apos;utilisateur introuvable</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="199"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="207"/>
         <source>Password missmatch</source>
         <translation>Mot de passe incorrect</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="201"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="209"/>
         <source>Unknown error from the validation request</source>
         <translation>Erreur inconnue suite à la tentative de validation</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="204"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="212"/>
         <source>Server responded with : &quot;%1&quot;</source>
         <translation>Reponse serveur : &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="131"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="139"/>
         <source>Reconnecting to server...</source>
         <translation>Reconnexion au serveur...</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="48"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="56"/>
         <source>Connecting to server...</source>
         <translation>Connexion au serveur...</translation>
     </message>
@@ -140,17 +140,17 @@
         <translation>En attente d&apos;identifiants appropriés.</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="176"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="184"/>
         <source>Asking for credentials validation...</source>
         <translation>Demande de validation des identifiants...</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="57"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="65"/>
         <source>An error occured while connecting with %1 platform : %2</source>
         <translation>Une erreur s&apos;est produite pendant la connexion à la plateforme %1 : %2</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="75"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="83"/>
         <source>Issue while reading response from %1 platform.</source>
         <translation>Erreur durant la lecture de la réponse de la plateforme %1.</translation>
     </message>
