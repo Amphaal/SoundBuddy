@@ -36,7 +36,9 @@ INCLUDE(CPack)
 INCLUDE(CPackIFW)
 
 # App
-cpack_add_component("App" DOWNLOADED)
+cpack_add_component(
+    "App" #DOWNLOADED
+)
 cpack_ifw_configure_component("App"
     DISPLAY_NAME "${PROJECT_NAME} ${CMAKE_PROJECT_VERSION}"
     DESCRIPTION 
@@ -49,7 +51,9 @@ cpack_ifw_configure_component("App"
 )
 
 # Runtime 
-cpack_add_component("AppRuntime" DOWNLOADED)
+cpack_add_component(
+    "AppRuntime" #DOWNLOADED
+)
 cpack_ifw_configure_component("AppRuntime"
     DISPLAY_NAME 
         "Runtime" 
@@ -63,7 +67,9 @@ cpack_ifw_configure_component("AppRuntime"
 )
 
 # Qt
-cpack_add_component("QtRuntime" DOWNLOADED)
+cpack_add_component(
+    "QtRuntime" #DOWNLOADED
+)
 cpack_ifw_configure_component("QtRuntime"
     DISPLAY_NAME "Qt ${Qt6Core_VERSION}"
     DESCRIPTION 
@@ -88,9 +94,9 @@ configure_file(
 )
 
 # repository for updates
-cpack_ifw_add_repository(coreRepo 
-    URL ${APP_REMOTE_IFW_DIR}
-)
+#cpack_ifw_add_repository(coreRepo 
+#    URL ${APP_REMOTE_IFW_DIR}
+#)
 
 ########################
 ## ZIP FOR DEPLOYMENT ## 

@@ -14,7 +14,7 @@ if [ -z "$app_version" ]; then
 fi
 
 #
-echo "Detected app version: $app_version"
+echo "Detected app version: v$app_version"
 
 ##
 ##
@@ -65,12 +65,21 @@ machine_arch=$(uname -m)
 
 # Check if the operating system is Windows (MINGW)
 if [[ $os_name = "MINGW64_NT"* ]]; then
+  
+  #
   toolchain_os_type="msys2"
   descriptive_build_str="windows_$machine_arch"
+  cpack_generator="IFW"
+  package_output_ext="exe"
+
 # Check if the operating system is macOS
 elif [ "$os_name" == "Darwin" ]; then
+  #
   toolchain_os_type="osx"
-  descriptive_build_str="windows_$machine_arch"
+  descriptive_build_str="macos_$machine_arch"
+  cpack_generator="ZIP"
+  package_output_ext="zip"
+
 # Exit with an error message for any other operating system
 else
   echo "Unsupported operating system: $os_name"
@@ -84,7 +93,7 @@ fi
 build_directory="build_release"
 artifacts_directory="./$build_directory/artifacts"
 package_name="$(basename `git rev-parse --show-toplevel`)-v$app_version-$descriptive_build_str"
-generated_artifact_path="$artifacts_directory/$package_name.zip"
+generated_artifact_path="$artifacts_directory/$package_name.$package_output_ext"
 
 echo "====> Configuring ... <====="
 
@@ -96,7 +105,7 @@ ninja -C $build_directory
 
 echo "====> Shipping Bundle ... <====="
 
-cpack --config ./$build_directory/CPackConfig.cmake -G ZIP -B $artifacts_directory -D CPACK_PACKAGE_FILE_NAME=$package_name
+cpack --config ./$build_directory/CPackConfig.cmake -G $cpack_generator -B $artifacts_directory -D CPACK_PACKAGE_FILE_NAME=$package_name
 
 ##
 ##
@@ -107,5 +116,5 @@ if ! gh release view v$app_version; then
   gh release create v$app_version --generate-notes $generated_artifact_path
 else
   echo "Uploading release ONLY on v$app_version (may override existing artifact with same name)..."
-  gh release upload --clobber $app_version $generated_artifact_path
+  gh release upload --clobber v$app_version $generated_artifact_path
 fi

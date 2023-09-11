@@ -96,7 +96,9 @@
         "numeric": "cpp",
         "random": "cpp",
         "algorithm": "cpp",
-        "qlockfile": "cpp"
+        "qlockfile": "cpp",
+        "format": "cpp",
+        "span": "cpp"
     },
     "terminal.integrated.scrollback": 10000
 }
