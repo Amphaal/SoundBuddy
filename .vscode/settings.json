@@ -98,7 +98,8 @@
         "algorithm": "cpp",
         "qlockfile": "cpp",
         "format": "cpp",
-        "span": "cpp"
+        "span": "cpp",
+        "*.ipp": "cpp"
     },
     "terminal.integrated.scrollback": 10000
 }
