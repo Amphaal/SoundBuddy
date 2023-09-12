@@ -81,7 +81,7 @@ void ShoutThread::_shoutToServer(const QJsonObject &incoming, bool waitForRespon
         };
 
         //
-        auto response = _uploader->uploadDataToPlatform(instr);
+        auto response = _uploader->uploadDataToPlatform(instr, false);
 
         // on error
         QObject::connect(

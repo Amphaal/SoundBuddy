@@ -12,72 +12,82 @@
 <context>
     <name>FeederThread</name>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="69"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="74"/>
         <source>WARNING ! %1 files in your library are missing important metadata and consequently were removed from the output file ! Please check the &quot;%2&quot; file for more informations.</source>
         <translation>ATTENTION ! %1 fichiers dans votre bibliothèque manquent d&apos;importantes données liées aux chansons et n&apos;ont donc pas été incluse dans le fichier de sortie ! Merci de vérifier le fichier &quot;%2&quot; pour plus d&apos;informations.</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="105"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="110"/>
         <source>OK, output file is ready for breakfast !</source>
         <translation>OK, le fichier de sorti est prêt pour le petit-dej !</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="109"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="143"/>
         <source>Let&apos;s try to send now !</source>
         <translation>On va essayer de l&apos;envoyer !</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="138"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="172"/>
         <source>Server responded: %1</source>
         <translation>Le serveur a répondu: %1</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="143"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="177"/>
         <source>No feedback from the server ? Strange... Please check the targeted host.</source>
         <translation>Aucun retour du serveur, c&apos;est étrange... Merci de vérifier que le serveur ciblé est bien le bon.</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="89"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="94"/>
         <source>No music found in your %1 library. Please feed it some.</source>
         <translation>Aucunes musiques trouvée dans %1. Merci de lui en fournir quelques unes !</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="44"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="49"/>
         <source>Getting XML file location...</source>
         <translation>On récupère l&apos;emplacement du fichier XML...</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="38"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="43"/>
         <source>WARNING ! Make sure you activated the XML file sharing in %1 &gt; Preferences &gt; Advanced.</source>
         <translation>ATTENTION ! Assurez-vous que le partage du fichier XML de la bibliothèque est bien activé dans %1 &gt; Préférences &gt; Avancées</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="58"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="63"/>
         <source>Collecting tracks infos...</source>
         <translation>Récupération des informations des morceaux...</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="60"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="65"/>
         <source>Collection done !</source>
         <translation>Récupération terminée !</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="63"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="68"/>
         <source>Parsing infos into JSON...</source>
         <translation>Compilation des informations en JSON...</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="102"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="107"/>
         <source>Parsing done !</source>
         <translation>Compilation terminée !</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="123"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="114"/>
+        <source>Now we try to compress it...</source>
+        <translation>On va maintenant essayer de le compresser...</translation>
+    </message>
+    <message>
+        <location filename="../workers/feeder/FeederThread.cpp" line="138"/>
+        <source>Went from %1 to %2</source>
+        <translation type="unfinished">On passe de %1 à %2</translation>
+    </message>
+    <message>
+        <location filename="../workers/feeder/FeederThread.cpp" line="156"/>
         <source>Sending... Waiting for response.</source>
         <translation>Envoi... En attente de réponse.</translation>
     </message>
     <message>
-        <location filename="../workers/feeder/FeederThread.cpp" line="159"/>
+        <location filename="../workers/feeder/FeederThread.cpp" line="193"/>
         <source>An error occured while sending tracks infos to %1 platform : %2</source>
         <translation>Une erreur s&apos;est produite pendant l&apos;envoi des informations de morceaux à la plateforme %1 : %2</translation>
     </message>
@@ -178,7 +188,7 @@
         <translation>Fichier</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="474"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="475"/>
         <source>Open monitor...</source>
         <translation>Ouvrir le tableau de bord</translation>
     </message>
@@ -198,17 +208,17 @@
         <translation>Accéder aux données d&apos;export</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="466"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="467"/>
         <source>Quit</source>
         <translation>Quitter</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="514"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="515"/>
         <source>Shout worker running !</source>
         <translation>Shout en cours !</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="515"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="516"/>
         <source>Shout worker is actually running : Are you sure you want to exit ?</source>
         <translation>Les shouts sont actuellement scannés : Voulez-vous vraiment quitter ?</translation>
     </message>
@@ -410,6 +420,10 @@
         <location filename="../workers/shout/ShoutThread.cpp" line="322"/>
         <source>Connecting to %1 ...</source>
         <translation>Connexion à %1 ...</translation>
+    </message>
+    <message>
+        <source>Went from %1 to %2</source>
+        <translation type="vanished">On passe de %1 à %2</translation>
     </message>
 </context>
 </TS>

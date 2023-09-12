@@ -459,7 +459,8 @@ QMenu* MainWindow::_getFileMenu(bool withMonitor) {
     // openData
     auto openDataFolder = new QAction(tr("Access upload data folder"), fileMenuItem);
     QObject::connect(openDataFolder, &QAction::triggered, [=]() {
-        PlatformHelper::openUrlInBrowser(PlatformHelper::getDataStorageDirectory());
+        auto directory = PlatformHelper::getDataStorageDirectory();
+        PlatformHelper::openFileInOS(directory);
     });
 
     // quit

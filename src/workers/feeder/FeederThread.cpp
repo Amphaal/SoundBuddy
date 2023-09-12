@@ -23,6 +23,11 @@
 
 #include <string>
 #include <utility>
+#include <exception>
+
+#include <zlib.h>
+#include <stdlib.h>
+#include <malloc.h>
 
 #include "src/helpers/PlatformHelper.h"
 
@@ -106,10 +111,38 @@ void FeederThread::run() {
 
         emit filesGenerated();
 
+        emit printLog(tr("Now we try to compress it..."));
+
+            const auto output_view = outputParser.dataBuffer().view();
+            auto compressedDataSize = compressBound(output_view.size()); // must be at least source len for starters, may be updated by zlib after sucessful compression
+            auto compressedData = (unsigned char *)malloc(compressedDataSize);
+
+            const auto compressionResult = compress(
+                compressedData, 
+                &compressedDataSize, 
+                reinterpret_cast<const unsigned char *>(output_view.data()), 
+                output_view.size()
+            );
+
+            if (compressionResult != Z_OK) {
+                throw std::domain_error("zLib failed");
+            }
+
+            // write into file
+            QFile file(AppSettings::getCompressedFeedOutputFilePath());
+            file.open(QIODevice::WriteOnly);
+            file.write(reinterpret_cast<const char *>(compressedData), compressedDataSize);
+            file.close();
+
+        emit printLog(
+            tr("Went from %1 to %2")
+            .arg(QLocale::system().formattedDataSize(output_view.size()))
+            .arg(QLocale::system().formattedDataSize(compressedDataSize))
+        );
+
         emit printLog(tr("Let's try to send now !"));
             //
-            const auto output_view = outputParser.dataBuffer().view();
-            auto qb_array = QByteArray::fromRawData(output_view.data(), output_view.size());
+            auto qb_array = QByteArray::fromRawData(reinterpret_cast<const char *>(compressedData), compressedDataSize);
 
             //
             UploadHelper uploader;
@@ -117,15 +150,16 @@ void FeederThread::run() {
             auto response = uploader.uploadDataToPlatform({
                 this->_connectivityInfos,
                 AppSettings::getFeederUploadInfos(),
-                qb_array
-            });
+                qb_array,
+            }, true);
 
         emit printLog(tr("Sending... Waiting for response."));
 
             // on finished
             QObject::connect(
                 response, &QNetworkReply::finished,
-                [this, response]() {
+                [this, response, &compressedData]() {
+
                     // if an error occured, nothing else to do
                     if(response->error()) return;
 
@@ -169,6 +203,9 @@ void FeederThread::run() {
 
         // wait for network reply
         exec();
+
+        // cleanup compressed data
+        free(compressedData);
 
         // ask for deletion
         response->deleteLater();

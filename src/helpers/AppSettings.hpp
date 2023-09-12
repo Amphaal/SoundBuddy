@@ -4,6 +4,7 @@
 #include <QDir>
 
 #include "src/helpers/PlatformHelper.h"
+#include "version.h"
 
 class AppSettings : public QSettings {
  public:
@@ -45,7 +46,7 @@ class AppSettings : public QSettings {
     }
 
     static const UploadInfos getFeederUploadInfos() {
-        return { "/uploadLib", "SoundVitrine_file" };
+        return { "/uploadMusicLibrary", QString(DEST_PLATFORM_PRODUCT_NAME) + "_file" };
     }
 
     static const QString getFeedWarningFilePath() {
@@ -54,6 +55,10 @@ class AppSettings : public QSettings {
 
     static const QString getFeedOutputFilePath() {
         return PlatformHelper::getDataStorageDirectory() + QDir::separator() + _FeedOutputFileName;
+    }
+
+        static const QString getCompressedFeedOutputFilePath() {
+        return PlatformHelper::getDataStorageDirectory() + QDir::separator() + _ZippedFeedOutputFileName;
     }
 
     static inline const char * MUST_AUTORUN_SHOUT = "AutoRunShout";
@@ -65,4 +70,5 @@ class AppSettings : public QSettings {
  private:
     static inline const char * _FeedWarningFileName = "warnings.json";
     static inline const char * _FeedOutputFileName = "output.json";
+    static inline const char * _ZippedFeedOutputFileName = "output.zmlib";
 };

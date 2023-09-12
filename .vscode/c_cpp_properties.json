@@ -45,6 +45,7 @@
             "cStandard": "c11",
             "cppStandard": "c++20",
             "intelliSenseMode": "clang-x64",
+            "compilerPath": "${env:MINGW64_ROOT}/bin/clang++.exe",
             "includePath": [
                 "${default}",
                 "${workspaceFolder}",
@@ -62,7 +63,9 @@
                 "${workspaceFolder}/deps/IFWUpdateChecker/deps/StupidHTTPDownloader/include",
                 "${workspaceFolder}/deps/IFWUpdateChecker/deps/tiny-process-library",
                 "${env:MINGW64_ROOT}/include/c++/13.2.0",
-                "${env:MINGW64_ROOT}/include/c++/13.2.0/x86_64-w64-mingw32"
+                "${env:MINGW64_ROOT}/include/c++/13.2.0/tr1",
+                "${env:MINGW64_ROOT}/include/c++/13.2.0/x86_64-w64-mingw32",
+                "${env:MINGW64_ROOT}/lib/clang/16/include"
             ]
         }
     ],

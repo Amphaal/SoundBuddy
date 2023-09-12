@@ -99,7 +99,14 @@
         "qlockfile": "cpp",
         "format": "cpp",
         "span": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "qdebug": "cpp",
+        "qcoreapplication": "cpp",
+        "qtwidgets": "cpp",
+        "qtwidgetsdepends": "cpp",
+        "qtcore": "cpp",
+        "any": "cpp"
     },
-    "terminal.integrated.scrollback": 10000
+    "terminal.integrated.scrollback": 10000,
+    "cmake.configureOnOpen": false
 }

@@ -26,12 +26,12 @@ class UploadHelper {
     explicit UploadHelper(QObject* parent = nullptr) : _manager(new QNetworkAccessManager(parent)) {}
     ~UploadHelper() { _manager->deleteLater(); }
 
-    QNetworkReply* uploadDataToPlatform(const UploadInstructions &instructions) const {
+    QNetworkReply* uploadDataToPlatform(const UploadInstructions &instructions, const bool isCompressed) const {
         //
         auto postData = new QHttpMultiPart(QHttpMultiPart::MixedType);
 
             QHttpPart filePart;
-            filePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/json"));
+            filePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant(isCompressed ? "application/compressed-mlib" : "application/json"));
             filePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"" + instructions.uploadInfos.outputFileName + "\""));
             filePart.setBody(instructions.dataToUpload);
 
