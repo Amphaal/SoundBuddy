@@ -91,10 +91,9 @@ void MBeatThread::run() {
             const auto msgType = jsonObj.value("id").toString();
             const auto msgContent = jsonObj.value("r").toString();
 
-            if(msgType.isEmpty() || msgContent.isEmpty()) {
-                parseErr();
-                return;
-            }
+            //
+            //
+            //
 
             //
             if(msgType == "credentialsChecked") {
@@ -114,7 +113,6 @@ void MBeatThread::run() {
                 this->_checkCredentials(socket);
             } else {
                 parseErr();
-                return;
             }
         }
     );

@@ -95,47 +95,47 @@
 <context>
     <name>MBeatThread</name>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="103"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="102"/>
         <source>Logged as &quot;%1&quot;</source>
         <translation>Connecté en tant que &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="194"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="192"/>
         <source>Credential data missing</source>
         <translation>Données manquantes pour l&apos;identification</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="196"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="194"/>
         <source>Empty users database</source>
         <translation>Base de données utilisateur vide</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="198"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="196"/>
         <source>Username not found in database</source>
         <translation>Utilisateur introuvable dans la base de données</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="200"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="198"/>
         <source>Password for the user not found in database</source>
         <translation>Mot de passe de l&apos;utilisateur introuvable</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="202"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="200"/>
         <source>Password missmatch</source>
         <translation>Mot de passe incorrect</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="204"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="202"/>
         <source>Unknown error from the validation request</source>
         <translation>Erreur inconnue suite à la tentative de validation</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="207"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="205"/>
         <source>Server responded with : &quot;%1&quot;</source>
         <translation>Reponse serveur : &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="134"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="132"/>
         <source>Reconnecting to server...</source>
         <translation>Reconnexion au serveur...</translation>
     </message>
@@ -150,7 +150,7 @@
         <translation>En attente d&apos;identifiants appropriés.</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="179"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="177"/>
         <source>Asking for credentials validation...</source>
         <translation>Demande de validation des identifiants...</translation>
     </message>
