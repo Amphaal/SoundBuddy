@@ -37,7 +37,7 @@ void MBeatThread::run() {
     }
 
     //
-    QUrl url(this->_connectivityInfos.getPlaformHomeUrl());
+    QUrl url(this->_connectivityInfos.getPlaformHomeUrl() + "/login");
     url.setPort(3000);
     auto url_host = url.host();
     url.setScheme(url_host == "localhost" || url_host == "127.0.0.1" ? "ws" : "wss");
