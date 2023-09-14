@@ -105,7 +105,10 @@
         "qtwidgets": "cpp",
         "qtwidgetsdepends": "cpp",
         "qtcore": "cpp",
-        "any": "cpp"
+        "any": "cpp",
+        "qjsonarray": "cpp",
+        "qjsonobject": "cpp",
+        "qjsondocument": "cpp"
     },
     "terminal.integrated.scrollback": 10000,
     "cmake.configureOnOpen": false

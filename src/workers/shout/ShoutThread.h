@@ -26,6 +26,10 @@
 
 #include "src/workers/base/ITNZThread.hpp"
 
+#ifdef _WIN32
+    #include "src/workers/shout/win/MusicAppCOMHandler.h"
+#endif
+
 class MusicAppCOMHandler;
 
 class ShoutThread : public ITNZThread {

@@ -28,11 +28,16 @@ class UploadHelper {
 
     QNetworkReply* uploadDataToPlatform(const UploadInstructions &instructions, const bool isCompressed) const {
         //
-        auto postData = new QHttpMultiPart(QHttpMultiPart::MixedType);
+        auto postData = new QHttpMultiPart(QHttpMultiPart::FormDataType);
 
             QHttpPart filePart;
-            filePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant(isCompressed ? "application/compressed-mlib" : "application/json"));
-            filePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"" + instructions.uploadInfos.outputFileName + "\""));
+            filePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant(AppSettings::getFeedOutputContentType(isCompressed)));
+            filePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant(
+                    "form-data;"
+                    " name=\"" + instructions.uploadInfos.outputFileName + "\";"
+                    " filename=\"" + instructions.uploadInfos.outputFileName + AppSettings::getFeedOutputExtension(isCompressed) + "\""
+                )
+            );
             filePart.setBody(instructions.dataToUpload);
 
             // password...

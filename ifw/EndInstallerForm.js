@@ -1,5 +1,8 @@
 function Component() {
+    installer.gainAdminRights();  // must gain admin rights to auto-uninstall
     component.loaded.connect(this, this.installerLoaded);
+
+    //
     installer.installationFinished.connect(this, Component.prototype.installationFinishedPageIsShown);
     installer.finishButtonClicked.connect(this, Component.prototype.installationFinished);
 }

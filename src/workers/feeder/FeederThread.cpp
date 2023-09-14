@@ -48,7 +48,7 @@ void FeederThread::run() {
         emit printLog(tr("Getting XML file location..."));
 
             const auto musicAppLibPath = PlatformHelper::getMusicAppLibLocation().toStdString();
-            const auto outputPath = AppSettings::getFeedOutputFilePath().toStdString();
+            const auto outputPath = AppSettings::getFeedOutputFilePath(false).toStdString();
             const auto warningPath = AppSettings::getFeedWarningFilePath().toStdString();
 
             //
@@ -128,7 +128,7 @@ void FeederThread::run() {
             }
 
             // write into file
-            QFile file(AppSettings::getCompressedFeedOutputFilePath());
+            QFile file(AppSettings::getFeedOutputFilePath(true));
             file.open(QIODevice::WriteOnly);
             file.write(reinterpret_cast<const char *>(compressedData), compressedDataSize);
             file.close();
@@ -191,7 +191,7 @@ void FeederThread::run() {
                     emit printLog(
                         tr("An error occured while sending tracks infos to %1 platform : %2")
                             .arg(DEST_PLATFORM_PRODUCT_NAME)
-                            .arg(response->errorString()),
+                            .arg(prettyPrintErrorNetworkMessage(response)),
                         MessageType::ISSUE
                     );
 

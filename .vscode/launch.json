@@ -4,16 +4,30 @@
     // Pour plus d'informations, visitez : https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        /**
+        * using native LLDB debugger under Windows allow correct detection of system language somehow
+        */
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Launch (lldb)",
+            "windows": {
+                "program": "${workspaceFolder}/build_debug/out/SoundBuddy",
+            },
+            "program": "${workspaceFolder}/build_debug/out/SoundBuddy",
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
         {
             "type": "cppdbg",
-            "name" : "Build & Launch",
+            "name" : "Build & Launch (cppdbg)",
             "request": "launch",
             "preLaunchTask": "2. Build (Debug)",
             "cwd": "${workspaceFolder}",
             "program": "${workspaceFolder}/build_debug/out/SoundBuddy",
             "windows": {
                 "MIMode": "gdb",
-                "miDebuggerPath": "${env:MINGW64_ROOT}/bin/gdb.exe"
+                "miDebuggerPath": "${env:MINGW64_ROOT}/bin/gdb.exe",
             },
             "osx": {
                 "MIMode": "lldb",

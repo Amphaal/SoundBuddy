@@ -21,14 +21,9 @@
 
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QJsonArray>
 #include <QNetworkReply>
 
 #include "src/i18n/trad.hpp"
-
-#ifdef _WIN32
-#include "src/workers/shout/win/MusicAppCOMHandler.h"
-#endif
 
 ShoutThread::ShoutThread(const AppSettings::ConnectivityInfos connectivityInfos) : ITNZThread(connectivityInfos) {}
 
@@ -41,15 +36,13 @@ void ShoutThread::quit() {
 }
 
 QJsonObject ShoutThread::_createBasicShout() const {
-    // get iso date
-    time_t now;
-    time(&now);
-    char buf[sizeof "2011-10-08T07:07:09Z"];
-    strftime(buf, sizeof buf, "%FT%TZ", gmtime(&now));
+    // get ISO date, JS compatible (2011-10-08T07:07:09Z)
+    auto currentTime = QDateTime::currentDateTime();
+    currentTime.setTimeSpec(Qt::TimeSpec::UTC);
 
     // return json obj
     QJsonObject obj;
-    obj["date"] = buf;
+    obj["date"] = currentTime.toString(Qt::DateFormat::ISODate);
     return obj;
 }
 
@@ -91,7 +84,7 @@ void ShoutThread::_shoutToServer(const QJsonObject &incoming, bool waitForRespon
                 emit printLog(
                     tr("An error occured while shouting tracks infos to %1 platform : %2")
                         .arg(DEST_PLATFORM_PRODUCT_NAME)
-                        .arg(response->errorString()),
+                        .arg(prettyPrintErrorNetworkMessage(response)),
                     MessageType::ISSUE
                 );
 
@@ -103,11 +96,11 @@ void ShoutThread::_shoutToServer(const QJsonObject &incoming, bool waitForRespon
             }
         );
 
-        // on finished
+        // on finished (WITH or WITHOUT error)
         QObject::connect(
             response, &QNetworkReply::finished,
             [this, response, waitForResponse]() {
-                // delete
+                // ask for deletion
                 response->deleteLater();
 
                 // if must be sync, quit loop
@@ -189,258 +182,3 @@ void ShoutThread::shoutFilled(
 
     this->_shoutToServer(obj, waitForResponse);
 }
-
-#ifdef __APPLE__
-
-#include <unistd.h>
-#include <QProcess>
-
-void ShoutThread::_startShouting() {
-    emit printLog(
-        tr("Waiting for %1 to launch...")
-            .arg(musicAppName())
-    );
-
-    // define applescript to get shout values
-    const auto scriptContent = QFile(":/mac/CurrentlyPlaying.applescript").readAll();
-
-    // prepare script exec
-    QProcess p;
-    p.setProgram("/usr/bin/osascript");
-    p.setArguments({ "-l", "AppleScript", "-s", "s"});
-    p.write(scriptContent);
-    p.closeWriteChannel();
-
-    // loop until user said not to
-    while (this->_mustListen) {
-        // get shout results
-        p.start();
-
-        auto isReady = p.waitForReadyRead(200);
-        if (!isReady || !this->_mustListen) {
-            // wait a bit before re-asking
-            if(this->_mustListen) this->sleep(1);
-            continue;
-        }
-
-        auto result = p.readAll();
-        auto readFinished = p.waitForFinished(100);
-        if (!readFinished || !this->_mustListen) {
-            // wait a bit before re-asking
-            if(this->_mustListen) this->sleep(1);
-            continue;
-        }
-
-        // default values and inst
-        QString tName;
-        QString tAlbum;
-        QString tArtist;
-        QString tGenre;
-        int iDuration;
-        int iPlayerPos;
-        bool iPlayerState = false;
-        QString tDateSkipped;
-        QString tDatePlayed;
-        int tYear;
-
-        // if has result
-        if (result.size()) {
-            // turn results into array
-            result[0] = '[';
-            result[result.size() - 1] = ']';
-
-            // cast to json
-            const auto trackData = QJsonDocument::fromJson(result.data()).array();
-
-            // get values for shout
-            tName = trackData[0].toString();
-            tAlbum = trackData[1].toString();
-            tArtist = trackData[2].toString();
-            tGenre = trackData[3].toString();
-            iDuration = trackData[4].toInt();
-            tYear = trackData[5].toInt();
-            iPlayerPos = trackData[6].toInt();
-            iPlayerState = trackData[7].toString() == "paused" ? 0 : 1;
-            tDateSkipped = trackData[8].toString();
-            tDatePlayed = trackData[9].toString();
-        }
-
-        // compare with old shout, if equivalent, don't reshout
-        if (this->shouldUpload(iPlayerState, tName, tAlbum, tArtist, tDatePlayed, tDateSkipped)) {
-            // if had results
-            if (result.size()) {
-                // say track infos
-                this->shoutFilled(
-                    tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState, tYear,
-                    true
-                );
-            } else {
-                // say nothing happens
-                this->shoutEmpty(true);
-            }
-        }
-
-       // wait a bit before re-asking
-       this->sleep(1);
-    }
-
-    this->shoutEmpty();
-    emit printLog(
-        tr("Stopped listening to %1.")
-            .arg(musicAppName())
-    );
-}
-#endif
-
-#ifdef _WIN32
-
-#include <QAxObject>
-#include <windows.h>
-#include <combaseapi.h>
-
-#include "win/MusicAppCOMHandler.h"
-#include "win/iTunesCOMInterface_i.c"
-
-void ShoutThread::_startShouting() {
-    // start with log
-    emit printLog(
-        tr("Waiting for %1 to launch...")
-            .arg(musicAppName())
-    );
-
-    // prepare
-    DWORD oldProcessID = NULL;
-
-    //
-    //
-    //
-
-    // bind method
-    auto bindWithMusicApp = [this]() {
-        // log..
-        emit printLog(
-            tr("Connecting to %1 ...")
-                .arg(musicAppName())
-        );
-
-        // Music app IID extracted from Apple API
-        wchar_t* wch;
-        HRESULT hr = ::StringFromCLSID(CLSID_iTunesApp, &wch);
-        const auto ComCLID = QString::fromWCharArray(wch);
-
-        // initiate COM object
-        CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
-
-        // log..
-        emit printLog(tr("Initializing communication..."));
-
-        // Music App IID extracted from Apple API
-        auto musicAppObj = new QAxObject(ComCLID);
-        this->_handler = new MusicAppCOMHandler(musicAppObj, this);
-
-        // bind events to sink handler
-            auto oatputqe = QObject::connect(
-                musicAppObj, SIGNAL(OnAboutToPromptUserToQuitEvent()),
-                this->_handler, SLOT(stopListening())
-            );
-
-            auto oppe = QObject::connect(
-                musicAppObj, SIGNAL(OnPlayerPlayEvent(QVariant)),
-                this->_handler, SLOT(onCurrentTrackStateChanged(QVariant))
-            );
-
-            auto opse = QObject::connect(
-                musicAppObj, SIGNAL(OnPlayerStopEvent(QVariant)),
-                this->_handler, SLOT(onCurrentTrackStateChanged(QVariant))
-            );
-
-        // log..
-        emit printLog(
-            tr("Listening to %1 !")
-                .arg(musicAppName())
-        );
-
-            // process events
-            this->_handler->listenUntilShutdown();
-
-        // say we acknoledge Music App shutting down...
-        emit printLog(
-            tr("Stopped listening to %1.")
-                .arg(musicAppName())
-        );
-
-        // disconnect events
-            QObject::disconnect(oatputqe);
-            QObject::disconnect(oppe);
-            QObject::disconnect(opse);
-
-        // send last shout
-        this->shoutEmpty(true);
-
-        // clear COM related Obj
-            //
-            delete this->_handler;
-            this->_handler = nullptr;
-            
-            //
-            musicAppObj->clear();
-            delete musicAppObj;
-
-        // uninitialize COM
-        CoUninitialize();
-    };
-
-    // search for music app method
-    auto waitForMusicAppRunning = [this, &oldProcessID, bindWithMusicApp]() {
-        do {
-            // search for music app...
-            auto windowHandler = FindWindowA(0, musicAppName().toUtf8());
-
-            // if not found, wait and retry
-            if(!windowHandler) {
-                this->sleep(1);
-                continue;
-            }
-
-            // Music App found, store the associated PID
-            DWORD currentProcessID;
-            auto success = GetWindowThreadProcessId(windowHandler, &currentProcessID);
-            
-            // if cannot fetch, wait and retry
-            if(!success) {
-                this->sleep(1);
-                continue;
-            }
-
-            // if has already been ran and iTunes is still the same instance...
-            if(oldProcessID != NULL && currentProcessID == oldProcessID) {
-                this->sleep(1);
-                continue;
-            }
-
-            // store process ID
-            oldProcessID = currentProcessID;
-
-            // start to listen
-            bindWithMusicApp();
-
-            // if must still listen, means user prompted for app quit 
-            if(this->_mustListen) {
-                emit printLog(
-                    tr("Waiting for %1 to launch again...")
-                        .arg(musicAppName())
-                );
-            }
-
-        //
-        } while (this->_mustListen);
-    };
-
-    //
-    //
-    //
-
-    waitForMusicAppRunning();
-}
-
-#endif

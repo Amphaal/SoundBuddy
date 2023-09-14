@@ -1,6 +1,7 @@
 {
     "recommendations": [
         "josetr.cmake-language-support-vscode",
-        "ms-vscode.cpptools"
+        "ms-vscode.cpptools",
+        "vadimcn.vscode-lldb"
     ]
 }

@@ -20,6 +20,7 @@
 #pragma once
 
 #include <QThread>
+#include <QNetworkReply>
 
 #include "src/helpers/AppSettings.hpp"
 #include "src/helpers/UploadHelper.hpp"
@@ -41,7 +42,22 @@ class ITNZThread : public QThread {
     virtual void quit() { QThread::quit(); }
 
  protected:
-    const AppSettings::ConnectivityInfos _connectivityInfos;
+   const AppSettings::ConnectivityInfos _connectivityInfos;
+
+   static QString prettyPrintErrorNetworkMessage(QNetworkReply* replyThatFailed) {
+      //
+      auto qtAutoformatedErrorString = replyThatFailed->errorString().trimmed();
+      auto maybeMoreInfos = QString(replyThatFailed->readAll());
+
+      //
+      if(maybeMoreInfos.isEmpty()) {
+         return qtAutoformatedErrorString;
+      } else if (qtAutoformatedErrorString.endsWith(':')) { // in case of unconventionnal HTTP status code, Qt cannot document it automatically, thus this akward print...
+         return qtAutoformatedErrorString + ' ' + maybeMoreInfos;
+      } else {
+         return qtAutoformatedErrorString + " >> " + maybeMoreInfos;
+      }
+   }
 
  signals:
     void printLog(const QString &message, const MessageType msgType = MessageType::STANDARD, const bool replacePreviousLine = false);

@@ -22,6 +22,7 @@
 #include <QStyleFactory>
 #include <QDir>
 #include <QLockFile>
+#include <QDebug>
 
 #include "ui/monitor/mainWindow.h"
 
@@ -46,6 +47,9 @@ int main(int argc, char** argv) {
     // activate translations...
         auto expectedBinaryTranslationsDir = getResourcesPath() + "translations";
 
+        //
+        // CAREFUL ! Debugging with GDB / LLVM from MINGW / MSYS will retrive lang from shell (LC_ALL...) !
+        //
         auto locale = QLocale::system();
 
         // Qt

@@ -53,12 +53,16 @@ class AppSettings : public QSettings {
         return PlatformHelper::getDataStorageDirectory() + QDir::separator() + _FeedWarningFileName;
     }
 
-    static const QString getFeedOutputFilePath() {
-        return PlatformHelper::getDataStorageDirectory() + QDir::separator() + _FeedOutputFileName;
+    static const QString getFeedOutputFilePath(bool isCompressed) {
+        return PlatformHelper::getDataStorageDirectory() + QDir::separator() + _FeedOutputBaseFileName + getFeedOutputExtension(isCompressed);
     }
 
-        static const QString getCompressedFeedOutputFilePath() {
-        return PlatformHelper::getDataStorageDirectory() + QDir::separator() + _ZippedFeedOutputFileName;
+    static const QString getFeedOutputExtension(bool isCompressed) {
+        return isCompressed ? QString(_ZippedFeedOutputExtension) : QString(_BasicFeedOutputExtension);
+    }
+
+    static const QVariant getFeedOutputContentType(bool isCompressed) {
+        return QVariant(isCompressed ? "application/compressed-mlib" : "application/json");
     }
 
     static inline const char * MUST_AUTORUN_SHOUT = "AutoRunShout";
@@ -69,6 +73,8 @@ class AppSettings : public QSettings {
 
  private:
     static inline const char * _FeedWarningFileName = "warnings.json";
-    static inline const char * _FeedOutputFileName = "output.json";
-    static inline const char * _ZippedFeedOutputFileName = "output.zmlib";
+
+    static inline const char * _FeedOutputBaseFileName = "output";
+    static inline const char * _ZippedFeedOutputExtension = ".zmlib";
+    static inline const char * _BasicFeedOutputExtension = ".json";
 };
