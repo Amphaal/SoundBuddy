@@ -39,16 +39,19 @@ INCLUDE(CPackIFW)
 cpack_add_component(
     "App" #DOWNLOADED
 )
+
+#
 cpack_ifw_configure_component("App"
     DISPLAY_NAME "${PROJECT_NAME} ${CMAKE_PROJECT_VERSION}"
     DESCRIPTION 
         ${PROJECT_DESCRIPTION}
-    SCRIPT "src/_ifw/EndInstallerForm.js"
+    SCRIPT "ifw/EndInstallerForm.js"
     SORTING_PRIORITY 1000
-    USER_INTERFACES "src/_ifw/EndInstallerForm.ui"
-    TRANSLATIONS ${CMAKE_SOURCE_DIR}/src/_i18n/EndInstallerForm_fr.qm
+    USER_INTERFACES "ifw/EndInstallerForm.ui"
+    TRANSLATIONS "ifw/i18n/fr.qm" # as IFW binary translation file must be in file system when configuring, ensure copy of said file
     FORCED_INSTALLATION
 )
+
 
 # Runtime 
 cpack_add_component(

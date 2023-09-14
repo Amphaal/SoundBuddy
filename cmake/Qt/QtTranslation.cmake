@@ -6,22 +6,40 @@ function(HandleQtTranslation)
     cmake_parse_arguments(
         HandleQtTranslation
         "" # Options
-        "TARGET;INSTALL_COMPONENT" # Single Value
+        "TARGET;INSTALL_COMPONENT;OUTPUT_LOCATION" # Single Value
         "SOURCES;TRANSLATION_FILES" # Multiple Values
         ${ARGN} # mandatory
     )
 
-    #updates TS files from sources
-    qt_create_translation(HandleQtTranslation_QM_FILES
-        ${HandleQtTranslation_SOURCES}
-        ${HandleQtTranslation_TRANSLATION_FILES}
+    #
+    if(NOT HandleQtTranslation_OUTPUT_LOCATION)
+        message(FATAL_ERROR "OUTPUT_LOCATION is required on all HandleQtTranslation() calls.")
+    endif()
+
+    # lupdate: update .ts files against source files
+    qt_add_lupdate(${HandleQtTranslation_TARGET} 
+        TS_FILES
+            ${HandleQtTranslation_TRANSLATION_FILES}
+        SOURCES
+            ${HandleQtTranslation_SOURCES}
     )
 
-    #generate QM files from TS
-    target_sources(${HandleQtTranslation_TARGET} PRIVATE
-        ${HandleQtTranslation_QM_FILES}
+    # lrelease: turn .ts into .qm
+    qt_add_lrelease(${HandleQtTranslation_TARGET} 
+        TS_FILES
+            ${HandleQtTranslation_TRANSLATION_FILES}
+        QM_FILES_OUTPUT_VARIABLE
+            "HandleQtTranslation_QM_FILES"
     )
 
+    # define build folder output location of .qm generated files
+    target_sources(${HandleQtTranslation_TARGET} PRIVATE ${HandleQtTranslation_TRANSLATION_FILES})
+    set_source_files_properties(${HandleQtTranslation_TRANSLATION_FILES}
+        PROPERTIES 
+            OUTPUT_LOCATION ${HandleQtTranslation_OUTPUT_LOCATION}
+    )
+
+    # 
     if (HandleQtTranslation_INSTALL_COMPONENT)
         if (APPLE)
             set_source_files_properties(${HandleQtTranslation_QM_FILES} PROPERTIES 

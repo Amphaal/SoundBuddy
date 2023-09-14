@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
 
         // app
         auto _appTranslator = new QTranslator(&app);
-        if (_appTranslator->load(locale, "", "", expectedBinaryTranslationsDir)) {
+        if (_appTranslator->load(locale, "app", "_", expectedBinaryTranslationsDir)) {
             app.installTranslator(_appTranslator);
         }
 

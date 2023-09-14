@@ -19,6 +19,6 @@
                 "MIMode": "lldb",
                 "program": "${workspaceFolder}/build_debug/out/SoundBuddy.app",
             }
-        }
+        },
     ]
 }

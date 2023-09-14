@@ -32,7 +32,7 @@
 
 #include <ITunesLibraryParser.hpp>
 
-#include "src/_i18n/trad.hpp"
+#include "src/i18n/trad.hpp"
 
 FeederThread::FeederThread(const AppSettings::ConnectivityInfos connectivityInfos) : ITNZThread(connectivityInfos) {}
 

@@ -26,7 +26,7 @@
 #include "src/workers/shout/ShoutThread.h"
 
 #include "src/helpers/AppSettings.hpp"
-#include "src/_i18n/trad.hpp"
+#include "src/i18n/trad.hpp"
 
 class ShoutTab : public TemplateTab {
     Q_OBJECT

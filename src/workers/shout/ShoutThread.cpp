@@ -24,7 +24,7 @@
 #include <QJsonArray>
 #include <QNetworkReply>
 
-#include "src/_i18n/trad.hpp"
+#include "src/i18n/trad.hpp"
 
 #ifdef _WIN32
 #include "src/workers/shout/win/MusicAppCOMHandler.h"

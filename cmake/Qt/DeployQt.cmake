@@ -28,6 +28,15 @@ macro(DeployQt target)
             COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different ${CMAKE_CURRENT_BINARY_DIR}/${QT_DEPS_OUTPUT_DIRNAME} $<TARGET_FILE_DIR:${target}>
         )
 
+        #
+        install(
+            FILES 
+                $<TARGET_FILE_DIR:${target}>/translations/qt_fr.qm
+                $<TARGET_FILE_DIR:${target}>/translations/qt_en.qm
+            DESTINATION ${CMAKE_INSTALL_BINDIR}/translations
+            COMPONENT "App"
+        )
+
         # install rule
         install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${QT_DEPS_OUTPUT_DIRNAME}/
             TYPE BIN

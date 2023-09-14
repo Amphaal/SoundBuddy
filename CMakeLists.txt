@@ -176,31 +176,33 @@ endif()
 include(QtTranslation)
 
 # app sources
-list(APPEND TS_SOURCE_FILES
-    ${APP_CPP_FILES}
-    ${APP_HPP_FILES}
-)
-list(APPEND TS_FILES
-    "src/_i18n/fr.ts"
-)
 HandleQtTranslation(
     TARGET appExec
     INSTALL_COMPONENT "App"
-    SOURCES ${TS_SOURCE_FILES}
-    TRANSLATION_FILES ${TS_FILES}
+    OUTPUT_LOCATION ${CMAKE_CURRENT_BINARY_DIR}/app_qm
+    SOURCES 
+        ${APP_CPP_FILES}
+        ${APP_HPP_FILES}
+    TRANSLATION_FILES
+        "src/i18n/app_fr.ts"
 )
 
+add_library(ifw INTERFACE)
+target_sources(ifw INTERFACE "ifw/EndInstallerForm.ui")
+
+#
+# as IFW binary translation file must be in file system when configuring, ensure copy of said file
+#
+
 # IFW sources
-list(APPEND TS_INSTALL_SOURCE_FILES
-    "src/_ifw/EndInstallerForm.ui"
-)
-list(APPEND TS_INSTALL_FILES
-    "src/_i18n/EndInstallerForm_fr.ts"
-)
+# for .qm file to work with IFW auto-translation, file must be manually renamed to ts.qm, en.qm, de.qm...
 HandleQtTranslation(
-    TARGET appExec
-    SOURCES ${TS_INSTALL_SOURCE_FILES}
-    TRANSLATION_FILES ${TS_INSTALL_FILES}
+    TARGET ifw
+    OUTPUT_LOCATION "ifw/i18n"
+    SOURCES 
+        "ifw/EndInstallerForm.ui"
+    TRANSLATION_FILES 
+        "ifw/i18n/custom_ifw_fr.ts"
 )
 
 ####################

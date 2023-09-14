@@ -1,6 +1,19 @@
 function Component() {
+    component.loaded.connect(this, this.installerLoaded);
     installer.installationFinished.connect(this, Component.prototype.installationFinishedPageIsShown);
     installer.finishButtonClicked.connect(this, Component.prototype.installationFinished);
+}
+
+Component.prototype.installerLoaded = function() {
+    gui.pageById(QInstaller.TargetDirectory).entered.connect(this, this.componentSelectionPageEntered);
+}
+
+// auto-uninstall before installing
+Component.prototype.componentSelectionPageEntered = function() {
+    var dir = installer.value("TargetDir");
+    if (installer.fileExists(dir) && installer.fileExists(dir + "/maintenancetool.exe")) {
+        installer.execute(dir + "/maintenancetool.exe", ["purge", "-c"]);
+    }
 }
 
 Component.prototype.getPathToApp = function() {

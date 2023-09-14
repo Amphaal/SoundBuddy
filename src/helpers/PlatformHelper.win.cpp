@@ -10,7 +10,7 @@
 
 #include "PlatformHelper.h"
 #include "version.h"
-#include "src/_i18n/trad.hpp"
+#include "src/i18n/trad.hpp"
 
 const QString PlatformHelper::_getMusicAppPrefFileProbableLocation() {
     const auto ePath = QString (R"(\Apple Computer\Preferences\com.apple.iTunes.plist)");
