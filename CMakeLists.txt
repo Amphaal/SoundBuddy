@@ -30,7 +30,7 @@ SET(GITHUB_REPO_OWNER "Amphaal")
 SET(GITHUB_REPO_NAME "SoundBuddy")
 
 ### PLEASE LET VERSION NEXT TO PROJECT NAME !!! since cmake has no documented way to do this, We use grep to ack project version on this specific line 
-project(${GITHUB_REPO_NAME} VERSION 0.4.6
+project(${GITHUB_REPO_NAME} VERSION 0.4.7
     DESCRIPTION "Small companion app that feeds SoundVitrine with ITunes / Music library metadata"
     HOMEPAGE_URL https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}
     LANGUAGES CXX
@@ -233,7 +233,7 @@ target_link_libraries(appExec PRIVATE
 # Zlib #
 ########
 
-find_package(zlib REQUIRED)
+find_package(ZLIB REQUIRED)
 
 target_link_libraries(appExec PRIVATE
     ZLIB::ZLIB

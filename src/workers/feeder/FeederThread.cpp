@@ -27,7 +27,6 @@
 
 #include <zlib.h>
 #include <stdlib.h>
-#include <malloc.h>
 
 #include "src/helpers/PlatformHelper.h"
 

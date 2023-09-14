@@ -1,6 +1,6 @@
 SET(CMAKE_OSX_DEPLOYMENT_TARGET 13.2)
 
-list(APPEND CMAKE_MODULE_PATH 
+list(APPEND CMAKE_MODULE_PATH
     "/opt/homebrew/opt/llvm/lib/cmake"
 )
 

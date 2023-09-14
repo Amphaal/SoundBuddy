@@ -37,18 +37,13 @@ void MBeatThread::run() {
     }
 
     //
-    QWebSocket socket;
     QUrl url(this->_connectivityInfos.getPlaformHomeUrl());
+    url.setPort(3000);
     auto url_host = url.host();
-    if(url_host == "localhost" || url_host == "127.0.0.1") {
-        url.setPort(80);
-        url.setScheme("ws");
-    } else {
-        url.setPort(443);
-        url.setScheme("wss");
-    }
+    url.setScheme(url_host == "localhost" || url_host == "127.0.0.1" ? "ws" : "wss");
 
     //
+    QWebSocket socket;
     socket.open(url);
 
     //
