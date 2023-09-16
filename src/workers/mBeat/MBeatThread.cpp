@@ -44,14 +44,35 @@ void MBeatThread::run() {
 
     //
     QWebSocket socket;
-    socket.open(url);
-
     //
-    _hbState.basicMessage();
-    emit updateConnectivityStatus(
-        tr("Connecting to server..."),
-        ConnectivityIndicator::ONGOING
+    QObject::connect(
+        &socket, &QWebSocket::stateChanged,
+        [this, &socket, &url](QAbstractSocket::SocketState state) {
+            switch(state) {
+                case QAbstractSocket::SocketState::HostLookupState:
+                case QAbstractSocket::SocketState::ConnectingState: {
+                    _hbState.basicMessage();
+                    emit updateConnectivityStatus(
+                        tr("Connecting to server..."),
+                        ConnectivityIndicator::ONGOING
+                    );
+                }  
+                break;
+
+                case QAbstractSocket::SocketState::UnconnectedState: {
+                    _hbState.registerReconnection();
+                }
+                break;
+
+                default: {
+                    // nothing to do
+                }
+                break;
+            }
+        }
     );
+
+    socket.open(url);
 
     // handling errors
     QObject::connect(
@@ -129,21 +150,26 @@ void MBeatThread::run() {
     // ping/pong feature
     QTimer pingTimer;
     pingTimer.setInterval(HEARTBEAT_INTERVAL);
+    pingTimer.start();
 
         // on heartbeat intervals...
         QObject::connect(
             &pingTimer, &QTimer::timeout,
-            [this, &socket]() {
+            [this, &socket, &url]() {
                 //
-                _hbState.cycled([this]{
+                _hbState.cycled([this, &socket, &url]{
+                    //
+                    _hbState.pongOrReconnect([&socket] () {
+                        socket.ping();
+                    }, [&socket, &url] () {
+                        socket.open(url);
+                    });
+
                     emit updateConnectivityStatus(
                         tr("Reconnecting to server..."),
                         ConnectivityIndicator::ONGOING
                     );
                 });
-
-                // ping every time
-                socket.ping();
             }
         );
 
@@ -163,7 +189,10 @@ void MBeatThread::run() {
     QObject::connect(
         &socket, &QWebSocket::connected,
         [this, &socket, &pingTimer]() {
-             // will start periodically ping service for heartbeats
+            //
+            _hbState.resetAnyReconnectionRegistered();
+
+             // will (re)start periodically ping service for heartbeats
             pingTimer.start();
 
             // 
