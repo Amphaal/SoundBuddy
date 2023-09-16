@@ -47,6 +47,7 @@ void MBeatThread::run() {
     socket.open(url);
 
     //
+    _hbState.basicMessage();
     emit updateConnectivityStatus(
         tr("Connecting to server..."),
         ConnectivityIndicator::ONGOING
@@ -56,6 +57,8 @@ void MBeatThread::run() {
     QObject::connect(
         &socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::errorOccurred),
         [this, &socket](QAbstractSocket::SocketError error) {
+            //
+            _hbState.errorHappened();
             emit updateConnectivityStatus(
                 tr("An error occured while connecting with %1 platform : %2")
                     .arg(DEST_PLATFORM_PRODUCT_NAME)
@@ -74,6 +77,8 @@ void MBeatThread::run() {
             auto document = QJsonDocument::fromJson(message.toUtf8(), &parseError);
 
             auto parseErr = [this]() {
+                //
+                _hbState.errorHappened();
                 emit updateConnectivityStatus(
                     tr("Issue while reading response from %1 platform.")
                         .arg(DEST_PLATFORM_PRODUCT_NAME),
@@ -98,12 +103,16 @@ void MBeatThread::run() {
             //
             if(msgType == "credentialsChecked") {
                 if(msgContent == "ok") {
+                    //
+                    _hbState.basicMessage();
                     emit updateConnectivityStatus(
                         tr("Logged as \"%1\"")
                             .arg(_connectivityInfos.username),
                         ConnectivityIndicator::OK
                     );
                 } else {
+                    //
+                    _hbState.errorHappened();
                     emit updateConnectivityStatus(
                         _onCredentialsErrorMsg(msgContent),
                         ConnectivityIndicator::NOK
@@ -125,18 +134,13 @@ void MBeatThread::run() {
         QObject::connect(
             &pingTimer, &QTimer::timeout,
             [this, &socket]() {
-                // whenever pong has been received in the meantime
-                if(!_pongReceived) {
-                    // pong missed, tell we lost connection
+                //
+                _hbState.cycled([this]{
                     emit updateConnectivityStatus(
                         tr("Reconnecting to server..."),
                         ConnectivityIndicator::ONGOING
                     );
-                    _pongMissed = true;
-                } else {
-                    // reset pong flag
-                    _pongReceived = false;
-                }
+                });
 
                 // ping every time
                 socket.ping();
@@ -147,14 +151,11 @@ void MBeatThread::run() {
         QObject::connect(
             &socket, &QWebSocket::pong,
             [this, &socket](quint64 elapsedTime, const QByteArray &payload) {
-                // ack pong
-                _pongReceived = true;
-
-                // if heartbeat failed somehow, recheck credentials
-                if(_pongMissed) {
-                    _pongMissed = false;
+                // tell we received pong
+                _hbState.ackPong([this, &socket]() {
+                    // if heartbeat failed somehow, recheck credentials
                     this->_checkCredentials(socket);
-                }
+                });
             }
         );
 
@@ -162,7 +163,10 @@ void MBeatThread::run() {
     QObject::connect(
         &socket, &QWebSocket::connected,
         [this, &socket, &pingTimer]() {
-            pingTimer.start(); // can start tracking for heartbeats
+             // will start periodically ping service for heartbeats
+            pingTimer.start();
+
+            // 
             this->_checkCredentials(socket);
         }
     );
@@ -173,6 +177,7 @@ void MBeatThread::run() {
 
 void MBeatThread::_checkCredentials(QWebSocket &socket) {
     //
+    _hbState.basicMessage();
     emit updateConnectivityStatus(
         tr("Asking for credentials validation..."),
         ConnectivityIndicator::ONGOING
