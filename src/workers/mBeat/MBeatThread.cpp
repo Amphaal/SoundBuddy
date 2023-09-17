@@ -40,10 +40,19 @@ void MBeatThread::run() {
     QUrl url(this->_connectivityInfos.getPlaformHomeUrl() + "/login");
     url.setPort(3000);
     auto url_host = url.host();
-    url.setScheme(url_host == "localhost" || url_host == "127.0.0.1" ? "ws" : "wss");
+    const auto wantsUnsecure = url_host == "localhost" || url_host == "127.0.0.1";
+    url.setScheme(wantsUnsecure ? "ws" : "wss");
 
     //
     QWebSocket socket;
+
+    //
+    if(!wantsUnsecure) {
+        QSslConfiguration sslConfig;
+        sslConfig.setProtocol(QSsl::SslProtocol::TlsV1_2OrLater);
+        socket.setSslConfiguration(sslConfig);
+    }
+
     //
     QObject::connect(
         &socket, &QWebSocket::stateChanged,
