@@ -14,6 +14,12 @@ class AppSettings : public QSettings {
         const QString password = QString();
         bool areOK = false;
 
+
+        const QString getSoundSentryUrl() const {
+            if(!areOK) return QString();
+            return platformHostUrl + "/sentry/" + username;
+        }
+
         const QString getPlaformHomeUrl() const {
             if(!areOK) return QString();
             return platformHostUrl + '/' + username;

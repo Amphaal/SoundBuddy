@@ -37,7 +37,7 @@ void MBeatThread::run() {
     }
 
     //
-    QUrl url(this->_connectivityInfos.getPlaformHomeUrl() + "/sentry/login");
+    QUrl url(this->_connectivityInfos.getSoundSentryUrl() + "/login");
     auto url_host = url.host();
     const auto wantsUnsecure = url_host == "localhost" || url_host == "127.0.0.1";
     url.setScheme(wantsUnsecure ? "ws" : "wss");
