@@ -22,7 +22,7 @@ class AppSettings : public QSettings {
 
         const QString getPlaformHomeUrl() const {
             if(!areOK) return QString();
-            return platformHostUrl + '/' + username;
+            return platformHostUrl + "/u/" + username;
         }
     };
 
