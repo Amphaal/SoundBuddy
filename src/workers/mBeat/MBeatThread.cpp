@@ -46,13 +46,6 @@ void MBeatThread::run() {
     QWebSocket socket;
 
     //
-    if(!wantsUnsecure) {
-        QSslConfiguration sslConfig;
-        sslConfig.setProtocol(QSsl::SslProtocol::TlsV1_2OrLater);
-        socket.setSslConfiguration(sslConfig);
-    }
-
-    //
     QObject::connect(
         &socket, &QWebSocket::stateChanged,
         [this, &socket, &url](QAbstractSocket::SocketState state) {
