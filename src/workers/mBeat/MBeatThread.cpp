@@ -164,10 +164,9 @@ void MBeatThread::run() {
         QObject::connect(
             &pingTimer, &QTimer::timeout,
             [this, &socket, &url]() {
-                //
                 _hbState.cycled([this, &socket, &url]{
                     //
-                    _hbState.pongOrReconnect([&socket] () {
+                    _hbState.pingOrReconnect([&socket] () {
                         socket.ping();
                     }, [&socket, &url] () {
                         socket.open(url);
@@ -177,6 +176,8 @@ void MBeatThread::run() {
                         tr("Reconnecting to server..."),
                         ConnectivityIndicator::ONGOING
                     );
+                }, [&socket]() {
+                    socket.ping();
                 });
             }
         );
@@ -201,6 +202,7 @@ void MBeatThread::run() {
             _hbState.resetAnyReconnectionRegistered();
 
              // will (re)start periodically ping service for heartbeats
+            socket.ping();
             pingTimer.start();
 
             // 

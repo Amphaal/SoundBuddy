@@ -29,33 +29,34 @@ class HeartbeatState {
         reconnectionRegistered = false;
       }
 
-      void pongOrReconnect(const std::function<void()>& onPong, const std::function<void()>& onReconnect) {
+      void pingOrReconnect(const std::function<void()>& goPing, const std::function<void()>& goReconnect) {
         if (reconnectionRegistered) {
             reconnectionRegistered = false;
-            onReconnect();
+            goReconnect();
         } else {
-            onPong();
+            goPing();
         }
       }
 
       //
-      void ackPong(const std::function<void()>& onRecovery) {
+      void ackPong(const std::function<void()>& goRecovery) {
          //
          pongReceivedInPreviousCycle = true;
 
          //
          if (pongMissedInPreviousCycle) {
             pongMissedInPreviousCycle = false;
-            onRecovery();
+            goRecovery();
          }
       }
 
       //
-      void cycled(const std::function<void()>& beReconnecting) {
+      void cycled(const std::function<void()>& goReconnecting, const std::function<void()>& goPing) {
             // whenever pong has been received or not...
             if(pongReceivedInPreviousCycle) {
                // reset pong flag
                pongReceivedInPreviousCycle = false;
+               goPing();
             } else {
                //
                // pong missed...
@@ -63,7 +64,7 @@ class HeartbeatState {
                
                // if latest message wasnt an error, or if already cycled once on the error (so the user had time to see it)
                if (!latestMessageIsError || (latestMessageIsError && cycledThroughLatestError)) {
-                  beReconnecting();
+                  goReconnecting();
                } else {
                   cycledThroughLatestError = true;
                }
