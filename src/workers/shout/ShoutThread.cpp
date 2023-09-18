@@ -22,6 +22,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QNetworkReply>
+#include <QTimeZone>
 
 #include "src/i18n/trad.hpp"
 
@@ -37,8 +38,7 @@ void ShoutThread::quit() {
 
 QJsonObject ShoutThread::_createBasicShout() const {
     // get ISO date, JS compatible (2011-10-08T07:07:09Z)
-    auto currentTime = QDateTime::currentDateTime();
-    currentTime.setTimeSpec(Qt::TimeSpec::UTC);
+    auto currentTime = QDateTime::currentDateTimeUtc(); // Important ! we should not use local time, only UTC+0 !
 
     // return json obj
     QJsonObject obj;
