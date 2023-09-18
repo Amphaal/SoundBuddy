@@ -28,6 +28,9 @@ MBeatThread::MBeatThread(const AppSettings::ConnectivityInfos &connectivityInfos
 
 void MBeatThread::run() {
     //
+    qDebug("MBeat: Start");
+
+    //
     if(!_connectivityInfos.areOK) {
         emit updateConnectivityStatus(
             tr("Waiting for appropriate credentials."),
@@ -61,6 +64,7 @@ void MBeatThread::run() {
                 break;
 
                 case QAbstractSocket::SocketState::UnconnectedState: {
+                    qDebug("MBeat: Cannot connect.");
                     _hbState.registerReconnection();
                 }
                 break;
@@ -73,6 +77,7 @@ void MBeatThread::run() {
         }
     );
 
+    qDebug("MBeat: Open...");
     socket.open(url);
 
     // handling errors
@@ -141,6 +146,7 @@ void MBeatThread::run() {
                     );
                 }
             } else if (msgType == "databaseUpdated") {
+                qDebug("MBeat: Must Refresh credentials.");
                 this->_checkCredentials(socket);
             } else {
                 parseErr();
@@ -157,6 +163,7 @@ void MBeatThread::run() {
         QObject::connect(
             &pingTimer, &QTimer::timeout,
             [this, &socket, &url]() {
+                qDebug("MBeat: Checking pulse...");
                 _hbState.cycled([this, &socket, &url]{
                     //
                     _hbState.pingOrReconnect([&socket] () {
@@ -191,10 +198,12 @@ void MBeatThread::run() {
     QObject::connect(
         &socket, &QWebSocket::connected,
         [this, &socket, &pingTimer]() {
+            qDebug("MBeat: Connected !");
             //
             _hbState.resetAnyReconnectionRegistered();
 
              // will (re)start periodically ping service for heartbeats
+             qDebug("MBeat: Ping...");
             socket.ping();
             pingTimer.start();
 
@@ -205,10 +214,13 @@ void MBeatThread::run() {
 
 
     this->exec();
+
+    qDebug("MBeat: Shutdown");
 }
 
 void MBeatThread::_checkCredentials(QWebSocket &socket) {
     //
+    qDebug("MBeat: Checking credentials...");
     _hbState.basicMessage();
     emit updateConnectivityStatus(
         tr("Asking for credentials validation..."),
@@ -238,6 +250,8 @@ const QString MBeatThread::_onCredentialsErrorMsg(const QString& returnCode) con
     } else {
         return tr("Unknown error from the validation request");
     }
+
+    qDebug("MBeat: Credentials issue.");
 
     return tr("Server responded with : \"%1\"").arg(msg);
 }

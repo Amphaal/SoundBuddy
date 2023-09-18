@@ -17,11 +17,13 @@ class HeartbeatState {
 
       //
       void errorHappened() {
+         qDebug("MBeat: Error");
          latestMessageIsError = true;
          cycledThroughLatestError = false;
       }
 
       void registerReconnection() {
+        qDebug("MBeat: Reconnection registered");
         reconnectionRegistered = true;
       }
 
@@ -32,19 +34,23 @@ class HeartbeatState {
       void pingOrReconnect(const std::function<void()>& goPing, const std::function<void()>& goReconnect) {
         if (reconnectionRegistered) {
             reconnectionRegistered = false;
+            qDebug("MBeat: Reconnect...");
             goReconnect();
         } else {
+            qDebug("MBeat: Ping...");
             goPing();
         }
       }
 
       //
       void ackPong(const std::function<void()>& goRecovery) {
+         qDebug("MBeat: ...Pong.");
          //
          pongReceivedInPreviousCycle = true;
 
          //
          if (pongMissedInPreviousCycle) {
+            qDebug("MBeat: Connected again, Recovering.");
             pongMissedInPreviousCycle = false;
             goRecovery();
          }
@@ -56,6 +62,7 @@ class HeartbeatState {
             if(pongReceivedInPreviousCycle) {
                // reset pong flag
                pongReceivedInPreviousCycle = false;
+               qDebug("MBeat: Ping...");
                goPing();
             } else {
                //
@@ -66,10 +73,12 @@ class HeartbeatState {
                if (!latestMessageIsError || (latestMessageIsError && cycledThroughLatestError)) {
                   goReconnecting();
                } else {
+                  qDebug("MBeat: Error shown 1 cycle, will be reset next.");
                   cycledThroughLatestError = true;
                }
 
                // ack that we missed at last 1 pong on cycle
+               qDebug("MBeat: Pong missed...");
                pongMissedInPreviousCycle = true;
             }
       }
