@@ -77,6 +77,5 @@ class ShoutThread : public ITNZThread {
 
     QJsonObject _createBasicShout() const;
 
-    QEventLoop* _syncLp = nullptr;
     void _shoutToServer(const QJsonObject &incoming, bool waitForResponse = false);
 };

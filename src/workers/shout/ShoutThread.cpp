@@ -29,10 +29,22 @@
 ShoutThread::ShoutThread(const AppSettings::ConnectivityInfos connectivityInfos) : ITNZThread(connectivityInfos) {}
 
 void ShoutThread::quit() {
+    //
     this->_mustListen = false;
+
+    //
     #ifdef _WIN32
-        if(this->_handler) this->_handler->stopListening();
+        // send last shout before shutting down QThread's QEventLoop, which will prevent waiting for last shout to be sent
+        // Only on Windows, since OSX "scan" behavior is "poll" like and does not require QEventLoop thread-blocking
+        this->shoutEmpty(true);
+
+        //
+        if(this->_handler) {
+            this->_handler->stopListening();
+        }
     #endif
+
+    //
     ITNZThread::quit();
 }
 
@@ -64,6 +76,7 @@ void ShoutThread::run() {
     delete _uploader;
 }
 
+/** careful wait for response would only work if master QEventLoop is still running ! If shutting down, exits with -1 instantly at */
 void ShoutThread::_shoutToServer(const QJsonObject &incoming, bool waitForResponse) {
     try {
         //
@@ -76,10 +89,23 @@ void ShoutThread::_shoutToServer(const QJsonObject &incoming, bool waitForRespon
         //
         auto response = _uploader->uploadDataToPlatform(instr, false);
 
+        //
+        QEventLoop _syncLp;
+
+        // will exit event loop on response discard
+        if (waitForResponse) {
+             QObject::connect(
+                response, &QObject::destroyed,
+                [&_syncLp]() {
+                    _syncLp.quit();
+                }
+            );
+        }
+
         // on error
         QObject::connect(
             response, &QNetworkReply::errorOccurred,
-            [this, response, waitForResponse](QNetworkReply::NetworkError) {
+            [this, response, waitForResponse, &_syncLp](QNetworkReply::NetworkError) {
                 //
                 emit printLog(
                     tr("An error occured while shouting tracks infos to %1 platform : %2")
@@ -90,30 +116,21 @@ void ShoutThread::_shoutToServer(const QJsonObject &incoming, bool waitForRespon
 
                 // ask for deletion
                 response->deleteLater();
-
-                // if must be sync, quit loop
-                if(waitForResponse) this->_syncLp->quit();
             }
         );
 
         // on finished (WITH or WITHOUT error)
         QObject::connect(
             response, &QNetworkReply::finished,
-            [this, response, waitForResponse]() {
-                // ask for deletion
+            [response]() {
                 response->deleteLater();
-
-                // if must be sync, quit loop
-                if(waitForResponse) this->_syncLp->quit();
             }
         );
 
+
         // wait for response
         if(waitForResponse) {
-            _syncLp = new QEventLoop;
-            this->_syncLp->exec();
-            delete _syncLp;
-            _syncLp = nullptr;
+            const auto exec = _syncLp.exec();
         }
 
     //

@@ -114,7 +114,10 @@ void ShoutThread::_startShouting() {
        this->sleep(1);
     }
 
+    // says we disconnect !
     this->shoutEmpty();
+
+    //
     emit printLog(
         tr("Stopped listening to %1.")
             .arg(musicAppName())

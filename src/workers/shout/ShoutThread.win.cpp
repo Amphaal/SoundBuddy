@@ -103,9 +103,6 @@ void ShoutThread::_startShouting() {
             QObject::disconnect(oppe);
             QObject::disconnect(opse);
 
-        // send last shout
-        this->shoutEmpty(true);
-
         // clear COM related Obj
             //
             delete this->_handler;
