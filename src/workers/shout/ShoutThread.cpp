@@ -34,11 +34,6 @@ void ShoutThread::quit() {
 
     //
     #ifdef _WIN32
-        // send last shout before shutting down QThread's QEventLoop, which will prevent waiting for last shout to be sent
-        // Only on Windows, since OSX "scan" behavior is "poll" like and does not require QEventLoop thread-blocking
-        this->shoutEmpty(true);
-
-        //
         if(this->_handler) {
             this->_handler->stopListening();
         }

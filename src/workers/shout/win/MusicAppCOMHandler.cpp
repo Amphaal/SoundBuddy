@@ -81,6 +81,11 @@ void MusicAppCOMHandler::listenUntilShutdown() {
 }
 
 void MusicAppCOMHandler::stopListening() {
+    // send last shout before shutting down QThread's QEventLoop, which will prevent waiting for last shout to be sent
+    // Only on Windows, since OSX "scan" behavior is "poll" like and does not require QEventLoop thread-blocking
+    this->_worker->shoutEmpty(true);
+
+    //
     this->_evtLoop.quit();
 }
 
