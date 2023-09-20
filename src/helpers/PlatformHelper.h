@@ -11,6 +11,7 @@ class PlatformHelper {
 
     /* Platform specific, unhandled by Qt */
       static void switchStartupLaunch();
+      static QString _switchStartupLaunch();
       static bool isLaunchingAtStartup();
 
       static const QString getMusicAppLibLocation();

@@ -95,15 +95,20 @@ const QString PlatformHelper::_getPathToAppFromStartupSettings(QSettings *settin
     return settings->value(APP_NAME, "").toString();
 }
 
-void PlatformHelper::switchStartupLaunch() {
+QString PlatformHelper::_switchStartupLaunch() {
     //
     auto settings = _getStartupSettingsHandler();
+    const auto pathToApp = _getPathToApp();
 
+    //
     if (!isLaunchingAtStartup()) {
-        settings->setValue(APP_NAME, _getPathToApp());
+        settings->setValue(APP_NAME, pathToApp);
     } else {
         settings->remove(APP_NAME);
     }
+
+    //
+    return pathToApp;
 }
 
 #endif

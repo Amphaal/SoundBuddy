@@ -44,3 +44,8 @@ const QString PlatformHelper::getDataStorageDirectory() {
 const QString PlatformHelper::_getPathToApp() {
     return QCoreApplication::applicationFilePath();
 }
+
+void PlatformHelper::switchStartupLaunch() {
+    const auto changedFile = PlatformHelper::_switchStartupLaunch();
+    qDebug() << changedFile << "startup behavior changed";
+}

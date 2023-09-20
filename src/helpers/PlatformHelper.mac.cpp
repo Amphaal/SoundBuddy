@@ -49,7 +49,7 @@ const QString PlatformHelper::_getPathToAppFromStartupSettings(QSettings *settin
     return c.takeFirst();
 }
 
-void PlatformHelper::switchStartupLaunch() {
+QString PlatformHelper::_switchStartupLaunch() {
     //
     auto settings = _getStartupSettingsHandler();
 
@@ -64,6 +64,9 @@ void PlatformHelper::switchStartupLaunch() {
         auto cPath = _getEnvironmentVariable("HOME") + MAC_REG_STARTUP_LAUNCH_PATH;  // computed path
         remove(cPath.toUtf8());
     }
+
+    //
+    return settings->fileName;
 }
 
 #endif
