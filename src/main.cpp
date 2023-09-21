@@ -67,7 +67,7 @@ int main(int argc, char** argv) {
     //
     app.setQuitOnLastWindowClosed(false);
     app.setApplicationName(APP_NAME);
-    app.setOrganizationName(APP_PUBLISHER);
+    app.setOrganizationName(APP_PUBLISHER_ORG);
     app.setApplicationDisplayName(APP_NAME);
 
     // fetch main window

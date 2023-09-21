@@ -25,73 +25,6 @@ This will define the following variables:
 
 #]=======================================================================]
 
-if (WIN32 AND CMAKE_HOST_SYSTEM_NAME MATCHES "CYGWIN.*")
-  find_program(CYGPATH
-      NAMES cygpath
-      HINTS [HKEY_LOCAL_MACHINE\\Software\\Cygwin\\setup;rootdir]/bin
-      PATHS C:/cygwin64/bin
-            C:/cygwin/bin
-  )
-endif ()
-
-function(convert_cygwin_path _pathvar)
-  if (WIN32 AND CYGPATH)
-    execute_process(
-        COMMAND         "${CYGPATH}" -m "${${_pathvar}}"
-        OUTPUT_VARIABLE ${_pathvar}
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-    set(${_pathvar} "${${_pathvar}}" PARENT_SCOPE)
-  endif ()
-endfunction()
-
-function(convert_windows_path _pathvar)
-  if (CYGPATH)
-    execute_process(
-        COMMAND         "${CYGPATH}" "${${_pathvar}}"
-        OUTPUT_VARIABLE ${_pathvar}
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-    set(${_pathvar} "${${_pathvar}}" PARENT_SCOPE)
-  endif ()
-endfunction()
-
-# Make a list of Windows Kit versions with newer versions first.
-#
-# _winver   string          Windows version whose signtool to find.
-# _versions variable name   Variable in which to return the list of versions.
-#
-function(find_kits _winver _kit_versions)
-  set(${_kit_versions})
-  set(_kit_root "KitsRoot${_winver}")
-  set(regkey "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows Kits\\Installed Roots")
-  set(regval ${_kit_root})
-  if(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
-    # Note: must be a cache operation in order to read from the registry.
-    get_filename_component(_kits_path "[${regkey};${regval}]"
-        ABSOLUTE CACHE
-    )
-  elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "CYGWIN.*")
-    # On Cygwin, CMake's built-in registry query won't work.
-    # Use Cygwin utility "regtool" instead.
-    execute_process(COMMAND regtool get "\\${regkey}\\${regval}"
-      OUTPUT_VARIABLE _kits_path}
-      ERROR_QUIET
-      OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-    if (_kits_path)
-      convert_windows_path(_kits_path)
-    endif ()
-  endif()
-  if (_kits_path)
-      file(GLOB ${_kit_versions} "${_kits_path}/bin/${_winver}.*")
-      # Reverse list, so newer versions (higher-numbered) appear first.
-      list(REVERSE ${_kit_versions})
-  endif ()
-  unset(_kits_path CACHE)
-  set(${_kit_versions} ${${_kit_versions}} PARENT_SCOPE)
-endfunction()
-
 if (WIN32 AND NOT signtool_EXECUTABLE)
   if(${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL "AMD64")
     set(arch "x64")
@@ -99,28 +32,30 @@ if (WIN32 AND NOT signtool_EXECUTABLE)
     set(arch ${CMAKE_HOST_SYSTEM_PROCESSOR})
   endif()
 
+  # Note: must be a cache operation in order to read from the registry.
+  get_filename_component(WIN_SDK_DIR "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows Kits\\Installed Roots;KitsRoot10]"
+      ABSOLUTE CACHE
+  )
+
   # Look for latest signtool
-  foreach(winver 11 10)
-    find_kits(${winver} kit_versions)
-    if (kit_versions)
-      find_program(signtool_EXECUTABLE
-          NAMES           signtool
-          PATHS           ${kit_versions}
-          PATH_SUFFIXES   ${arch}
-                          bin/${arch}
-                          bin
-          NO_DEFAULT_PATH
-      )
-      if (signtool_EXECUTABLE)
-        break()
-      endif()
-    endif()
-  endforeach()
+  if (WIN_SDK_DIR)
+    #
+    find_program(signtool_EXECUTABLE
+        NAMES           signtool
+        PATHS           ${WIN_SDK_DIR}
+        PATH_SUFFIXES   "App Certification Kit"
+        NO_DEFAULT_PATH
+    )
 
-  if (signtool_EXECUTABLE)
-    mark_as_advanced (signtool_EXECUTABLE)
-  endif ()
+    #
+    if (signtool_EXECUTABLE)
+      mark_as_advanced (signtool_EXECUTABLE)
+    endif ()
+  endif()
 
+  #
+  unset(WIN_SDK_DIR CACHE)
+  
   # handle the QUIETLY and REQUIRED arguments and set *_FOUND to TRUE
   # if all listed variables are found or TRUE
   include (FindPackageHandleStandardArgs)

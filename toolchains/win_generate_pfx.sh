@@ -21,9 +21,9 @@ if [[ ! -f "$KEY_PATH" || ! -f "$CERT_PATH" ]]; then
     openssl req -x509 -new -nodes -key $KEY_PATH -sha256 -days 10000 -out $CERT_PATH
 fi
 
-#
+# generate .pfx without empty password
 if [[ ! -f "$PFX_PATH" ]]; then
-    openssl pkcs12 -export -out $PFX_PATH -inkey $KEY_PATH -in $CERT_PATH
+    openssl pkcs12 -export -out $PFX_PATH -inkey $KEY_PATH -in $CERT_PATH -passout pass:
 fi
 
 

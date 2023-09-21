@@ -20,7 +20,7 @@
 #endif
 
 #ifndef RC_COMPANY_NAME
-#define RC_COMPANY_NAME "@APP_PUBLISHER@"
+#define RC_COMPANY_NAME "@APP_PUBLISHER_ORG@"
 #endif
 
 // has to be project name

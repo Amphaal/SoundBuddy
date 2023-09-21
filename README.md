@@ -41,9 +41,11 @@ We use MSYS2 build system (https://www.msys2.org) as our build platform. Make su
 #### Security
 On Windows, if installer is not signed, Chrome + Windows Defender will ring alarms all over the place.
 - How-to: https://learn.microsoft.com/en-US/windows/msix/package/create-certificate-package-signing
-- Download required Windows App Certification App via Windows SDK Setup (`mingw-w64-x86_64-nss` does not seems to work atm): https://go.microsoft.com/fwlink/?LinkID=698771
+- Download required Windows App Certification App via Windows SDK Setup (`mingw-w64-x86_64-nss` does not seems to work atm): https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/
 
-
+- First, generate `.pfx` file by running `toolchains/win_generate_pfx.sh`. Script will ask for publisher infos: give required infos if relevant.
+  - Make sure that the Organisation Name is the same as the `APP_PUBLISHER_ORG` in `CMakeLists.txt` !
+- Then, build and run the project as usual
 
 ## License
     SoundBuddy

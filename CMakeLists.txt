@@ -35,6 +35,7 @@ SET(GITHUB_REPO_OWNER "Amphaal")
 SET(GITHUB_REPO_NAME "SoundBuddy")
 
 ### PLEASE LET VERSION NEXT TO PROJECT NAME !!! since cmake has no documented way to do this, We use grep to ack project version on this specific line 
+### please make sure that project name is without whitespaces !!!
 project(${GITHUB_REPO_NAME} VERSION 0.6.2
     DESCRIPTION "Small companion app that feeds SoundVitrine with iTunes / Music library metadata"
     HOMEPAGE_URL https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}
@@ -61,8 +62,7 @@ endif()
 ## VERSION.H HANDLING ##
 ########################
 
-#app dest path
-SET(APP_PUBLISHER "LVWL")
+SET(APP_PUBLISHER_ORG "LVWL") # please make sure that it without whitespaces !!!
 SET(DEST_PLATFORM_PRODUCT_NAME "SoundVitrine")
 SET(APP_PATCHNOTE_URL ${PROJECT_HOMEPAGE_URL}/releases)
 
@@ -181,6 +181,23 @@ if (WIN32)
 endif()
 
 #
+if (WIN32)
+    find_package(signtool REQUIRED)
+    
+    SET(EXPECTED_PFX_PATH ${CMAKE_CURRENT_SOURCE_DIR}/certs/all.pfx)
+
+    if(NOT EXISTS "${EXPECTED_PFX_PATH}")
+        message(FATAL_ERROR ".pfx file is expected to be generated first on Windows targets to sign executables and installers. Please run toolchains/win_generate_pfx.sh in its folder first !")
+    endif()
+
+    add_custom_command(TARGET appExec
+        POST_BUILD
+        COMMAND ${signtool_EXECUTABLE} sign /f "${EXPECTED_PFX_PATH}" /tr http://sha256timestamp.ws.symantec.com/sha256/timestamp /td SHA256 /fd SHA256 $<TARGET_FILE:appExec>
+        VERBATIM
+    )
+endif()
+
+#
 target_include_directories(appExec PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}/generated
@@ -197,7 +214,7 @@ if (APPLE)
     set_target_properties(appExec PROPERTIES 
         BUNDLE                              ON
         MACOSX_BUNDLE_INFO_PLIST            ${CMAKE_CURRENT_SOURCE_DIR}/templates/osx/Info.plist
-        MACOSX_BUNDLE_GUI_IDENTIFIER        com.${APP_PUBLISHER}.${CMAKE_PROJECT_NAME}
+        MACOSX_BUNDLE_GUI_IDENTIFIER        com.${APP_PUBLISHER_ORG}.${CMAKE_PROJECT_NAME}
         MACOSX_BUNDLE_BUNDLE_NAME           ${CMAKE_PROJECT_NAME}
         MACOSX_BUNDLE_BUNDLE_VERSION        ${CMAKE_PROJECT_VERSION}
         MACOSX_BUNDLE_SHORT_VERSION_STRING  ${CMAKE_PROJECT_VERSION} 
