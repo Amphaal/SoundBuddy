@@ -42,7 +42,8 @@ const QString PlatformHelper::getDataStorageDirectory() {
 }
 
 const QString PlatformHelper::_getPathToApp() {
-    return QCoreApplication::applicationFilePath();
+    const auto applicationFilePath = QCoreApplication::applicationFilePath();
+    return QDir::toNativeSeparators(applicationFilePath); // depending on context (or is this a bug ?), QCoreApplication::applicationFilePath uses Unix style separator...
 }
 
 void PlatformHelper::switchStartupLaunch() {

@@ -102,7 +102,7 @@ QString PlatformHelper::_switchStartupLaunch() {
 
     //
     if (!isLaunchingAtStartup()) {
-        settings->setValue(APP_NAME, pathToApp);
+        settings->setValue(APP_NAME, QString('"') + pathToApp + '"'); // we add quotation marks to sticks to Windows stadards (OneDrive does it...)
     } else {
         settings->remove(APP_NAME);
     }
