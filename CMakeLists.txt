@@ -1,3 +1,6 @@
+# https://stackoverflow.com/a/51444436/3021058
+MESSAGE(STATUS "Using toolchain file: ${CMAKE_TOOLCHAIN_FILE}")
+
 # policies first
 if(COMMAND cmake_policy)
     # cmake_policy(SET CMP0011 NEW)
@@ -36,7 +39,7 @@ SET(GITHUB_REPO_NAME "SoundBuddy")
 
 ### PLEASE LET VERSION NEXT TO PROJECT NAME !!! since cmake has no documented way to do this, We use grep to ack project version on this specific line 
 ### please make sure that project name is without whitespaces !!!
-project(${GITHUB_REPO_NAME} VERSION 0.6.2
+project(${GITHUB_REPO_NAME} VERSION 0.6.3
     DESCRIPTION "Small companion app that feeds SoundVitrine with iTunes / Music library metadata"
     HOMEPAGE_URL https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}
     LANGUAGES CXX
@@ -192,7 +195,7 @@ if (WIN32)
 
     add_custom_command(TARGET appExec
         POST_BUILD
-        COMMAND ${signtool_EXECUTABLE} sign /f "${EXPECTED_PFX_PATH}" /tr http://sha256timestamp.ws.symantec.com/sha256/timestamp /td SHA256 /fd SHA256 $<TARGET_FILE:appExec>
+        COMMAND ${signtool_EXECUTABLE} sign /f "${EXPECTED_PFX_PATH}" /tr http://sha256timestamp.ws.symantec.com/sha256/timestamp /td SHA256 /fd SHA256 "$<TARGET_FILE:appExec>"
         VERBATIM
     )
 endif()

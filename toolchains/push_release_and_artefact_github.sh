@@ -4,7 +4,7 @@
 set -e
 
 ##
-##
+## add "bash -x" for this script to be verbose
 ##
 
 #
@@ -109,6 +109,22 @@ ninja -C $build_directory
 echo "====> Shipping Bundle ... <====="
 
 cpack --config ./$build_directory/CPackConfig.cmake -G $cpack_generator -B $artifacts_directory -D CPACK_PACKAGE_FILE_NAME=$package_name
+
+# on Windows target, sign installer !
+if [[ $os_name = "MINGW64_NT"* ]]; then
+  if ! command -v signtool &> /dev/null
+  then
+      echo "signtool must be in PATH, please refer to README.md. Please add [Ordinateur\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Kits\Installed Roots:KitsRoot10]/App Certification Kit to PATH."
+      exit 1
+  fi
+
+  #
+  echo "====> Signing Bundle ... <====="
+
+  #
+  expected_pfx_path="./certs/all.pfx"
+  signtool sign -f "$expected_pfx_path" -tr http://sha256timestamp.ws.symantec.com/sha256/timestamp -td SHA256 -fd SHA256 "$generated_artifact_path"
+fi
 
 ##
 ##

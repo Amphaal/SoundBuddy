@@ -79,7 +79,7 @@
             "options": {
                 "cwd": "${workspaceRoot}"
             },
-            "command": "./toolchains/push_release_and_artefact_github.sh"
+            "command": "bash -x ./toolchains/push_release_and_artefact_github.sh"
         }
     ]
 }

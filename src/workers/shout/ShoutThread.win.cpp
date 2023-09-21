@@ -1,6 +1,6 @@
 // SoundBuddy
 // Small companion app that feeds SoundVitrine with ITunes / Music library metadata
-// Copyright (C) 2019-2021 Guillaume Vara <guillaume.vara@gmail.com>
+// Copyright (C) 2019-2023 Guillaume Vara <guillaume.vara@gmail.com>
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
