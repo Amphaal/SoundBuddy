@@ -45,7 +45,7 @@ function(DeployPEDependencies target component)
     set(PEDeps_${component}_DIR ${CMAKE_BINARY_DIR}/PEDeps_${component} PARENT_SCOPE)
 
     configure_file(
-        ${CMAKE_SOURCE_DIR}/cmake/CMakeDependencies.in.sh
+        ${CMAKE_SOURCE_DIR}/cmake/win/CMakeDependencies.in.sh
         PEDeps_${component}.sh
         NEWLINE_STYLE LF
     )

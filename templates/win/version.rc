@@ -1,0 +1,90 @@
+// Microsoft Visual C++ resource script for embedding version information.
+// The format is described at:
+//   http://msdn.microsoft.com/en-gb/library/windows/desktop/aa380599(v=vs.85).aspx
+// The VERSIONINFO resource is described at:
+//   https://msdn.microsoft.com/en-gb/library/windows/desktop/aa381058(v=vs.85).aspx
+
+
+// Default values for required fields.
+
+#ifndef RC_VERSION_FIELD_1
+#define RC_VERSION_FIELD_1 @CMAKE_PROJECT_VERSION_MAJOR@
+#endif
+
+#ifndef RC_VERSION_FIELD_2
+#define RC_VERSION_FIELD_2 @CMAKE_PROJECT_VERSION_MINOR@
+#endif
+
+#ifndef RC_VERSION_FIELD_3
+#define RC_VERSION_FIELD_3 @CMAKE_PROJECT_VERSION_PATCH@
+#endif
+
+#ifndef RC_COMPANY_NAME
+#define RC_COMPANY_NAME "@APP_PUBLISHER@"
+#endif
+
+// has to be project name
+#ifndef RC_FILE_DESCRIPTION
+#define RC_FILE_DESCRIPTION "@CMAKE_PROJECT_NAME@"
+#endif
+
+#ifndef RC_FILE_VERSION
+#define RC_FILE_VERSION ""
+#endif
+
+#ifndef RC_INTERNAL_NAME
+#define RC_INTERNAL_NAME "@CMAKE_PROJECT_NAME@"
+#endif
+
+#ifndef RC_ORIGINAL_FILENAME
+#define RC_ORIGINAL_FILENAME "@CMAKE_PROJECT_NAME@"
+#endif
+
+#ifndef RC_PRODUCT_NAME
+#define RC_PRODUCT_NAME "@CMAKE_PROJECT_NAME@ - @CMAKE_PROJECT_DESCRIPTION@"
+#endif
+
+#ifndef RC_PRODUCT_VERSION
+#define RC_PRODUCT_VERSION "@CMAKE_PROJECT_VERSION_MAJOR@.@CMAKE_PROJECT_VERSION_MINOR@.@CMAKE_PROJECT_VERSION_PATCH@.0"
+#endif
+
+#ifndef RC_PRODUCT_INFO
+#define RC_PRODUCT_INFO "@CMAKE_PROJECT_HOMEPAGE_URL@"
+#endif
+
+1 VERSIONINFO
+FILEVERSION RC_VERSION_FIELD_1,RC_VERSION_FIELD_2,RC_VERSION_FIELD_3
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904B0"
+    BEGIN
+      // Required strings
+      VALUE "CompanyName", RC_COMPANY_NAME
+      VALUE "FileDescription", RC_FILE_DESCRIPTION
+      VALUE "FileVersion", RC_FILE_VERSION
+      VALUE "InternalName", RC_INTERNAL_NAME
+      VALUE "OriginalFilename", RC_ORIGINAL_FILENAME
+      VALUE "ProductName", RC_PRODUCT_NAME
+      VALUE "ProductVersion", RC_PRODUCT_VERSION
+      VALUE "Info", RC_PRODUCT_INFO
+
+      // Optional strings
+#ifdef RC_COMMENTS
+        VALUE "Comments", RC_COMMENTS
+#endif
+
+#ifdef RC_COPYRIGHT
+        VALUE "LegalCopyright", RC_COPYRIGHT
+#endif
+    END
+  END
+
+  BLOCK "VarFileInfo"
+  BEGIN
+    // The translation must correspond to the above BLOCK inside StringFileInfo
+    // langID     0x0409  U.S. English
+    // charsetID  0x04B0  Unicode
+    VALUE "Translation", 0x0409, 0x04B0, 0x040C, 0x04B0
+  END
+END

@@ -2,4 +2,5 @@
 /build_release/
 .vscode/ipch
 .DS_Store
+/certs/
 _CPack_Packages

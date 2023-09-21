@@ -18,6 +18,11 @@ list(APPEND CMAKE_MODULE_PATH
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Qt
 )
+
+if(WIN32)
+    list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/win)
+endif()
+
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out)
 
 #############
@@ -31,7 +36,7 @@ SET(GITHUB_REPO_NAME "SoundBuddy")
 
 ### PLEASE LET VERSION NEXT TO PROJECT NAME !!! since cmake has no documented way to do this, We use grep to ack project version on this specific line 
 project(${GITHUB_REPO_NAME} VERSION 0.6.2
-    DESCRIPTION "Small companion app that feeds SoundVitrine with ITunes / Music library metadata"
+    DESCRIPTION "Small companion app that feeds SoundVitrine with iTunes / Music library metadata"
     HOMEPAGE_URL https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}
     LANGUAGES CXX
 )
@@ -39,8 +44,18 @@ project(${GITHUB_REPO_NAME} VERSION 0.6.2
 # https://cmake.org/cmake/help/v3.2/module/CPackBundle.html#variable:CPACK_BUNDLE_APPLE_CERT_APP
 # https://github.com/ziglang/zig/issues/6971
 # Since recent SDK, if not signed, any executable will silently crash
-SET(APPLE_CODESIGN_ID "U2T7J2AC52")
-SET(APPLE_CERT_APP_CODE_SIGN_IDENTITY "Apple Development: Guillaume VARA (${APPLE_CODESIGN_ID})")
+if(APPLE)
+    if(NOT DEFINED ENV{"APPLE_CODESIGN_ID"})
+        message(FATAL_ERROR "APPLE_CODESIGN_ID is expected as env variable. Please check README.md for details.")
+    endif()
+
+    if(NOT DEFINED ENV{"APPLE_CERT_APP_CODE_SIGN_IDENTITY"})
+    message(FATAL_ERROR "APPLE_CERT_APP_CODE_SIGN_IDENTITY is expected as env variable. Please check README.md for details.")
+    endif()
+
+    SET(APPLE_CODESIGN_ID ENV{"APPLE_CODESIGN_ID"})
+    SET(APPLE_CERT_APP_CODE_SIGN_IDENTITY ENV{"APPLE_CERT_APP_CODE_SIGN_IDENTITY"})
+endif()
 
 ########################
 ## VERSION.H HANDLING ##
@@ -146,10 +161,23 @@ add_executable(appExec ${BUNDLE_TYPE}
     resources/resources.qrc
 ) 
 
+# generate debug symbols
 if (APPLE)
     add_custom_command(TARGET appExec
         COMMAND xcrun dsymutil $<TARGET_FILE:appExec> -o $<TARGET_BUNDLE_DIR:appExec>/../$<TARGET_FILE_NAME:appExec>.dSYM
     )
+endif()
+
+# add executable metadata for Windows .exe
+if (WIN32)
+    #
+    configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/templates/win/version.rc
+        ${CMAKE_CURRENT_BINARY_DIR}/version.rc
+    @ONLY)
+
+    #
+    target_sources(appExec PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
 endif()
 
 #
@@ -168,7 +196,7 @@ if (APPLE)
     #add highdpi support / menu behavior via plist template (MACOS)
     set_target_properties(appExec PROPERTIES 
         BUNDLE                              ON
-        MACOSX_BUNDLE_INFO_PLIST            ${CMAKE_CURRENT_SOURCE_DIR}/templates/Info.plist
+        MACOSX_BUNDLE_INFO_PLIST            ${CMAKE_CURRENT_SOURCE_DIR}/templates/osx/Info.plist
         MACOSX_BUNDLE_GUI_IDENTIFIER        com.${APP_PUBLISHER}.${CMAKE_PROJECT_NAME}
         MACOSX_BUNDLE_BUNDLE_NAME           ${CMAKE_PROJECT_NAME}
         MACOSX_BUNDLE_BUNDLE_VERSION        ${CMAKE_PROJECT_VERSION}
@@ -277,11 +305,9 @@ endif()
 include(DeployQt)
 DeployQt(appExec)
 
-#
-include(CMakeDependencies)
 
-
-if(MINGW)
+if(WIN32)
+    include(CMakeDependencies)
     DeployPEDependencies(appExec "AppRuntime")
 endif()
 
