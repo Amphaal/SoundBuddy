@@ -80,6 +80,14 @@
                 "cwd": "${workspaceRoot}"
             },
             "command": "bash -x ./toolchains/push_release_and_artefact_github.sh"
+        },
+        {
+            "label": "BB. Generate .pfx file for Windows certification",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceRoot}/toolchains"
+            },
+            "command": "bash -x ./win_generate_pfx.sh"
         }
     ]
 }
