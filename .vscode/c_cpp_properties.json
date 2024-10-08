@@ -24,7 +24,7 @@
                 "/opt/homebrew/opt/spdlog/include",
                 "/opt/homebrew/opt/fmt/include",
                 "/opt/homebrew/opt/asio/include",
-                "/opt/homebrew/opt/qt/include", 
+                "/opt/homebrew/opt/qt/include",
                 "/opt/homebrew/opt/qt/include/QtCore",
                 "/opt/homebrew/opt/qt/include/QtWidgets",
                 "/opt/homebrew/opt/qt/include/QtGui",
@@ -62,10 +62,10 @@
                 "${workspaceFolder}/deps/IFWUpdateChecker/src",
                 "${workspaceFolder}/deps/IFWUpdateChecker/deps/StupidHTTPDownloader/include",
                 "${workspaceFolder}/deps/IFWUpdateChecker/deps/tiny-process-library",
-                "${env:MINGW64_ROOT}/include/c++/13.2.0",
-                "${env:MINGW64_ROOT}/include/c++/13.2.0/tr1",
-                "${env:MINGW64_ROOT}/include/c++/13.2.0/x86_64-w64-mingw32",
-                "${env:MINGW64_ROOT}/lib/clang/16/include"
+                "${env:MINGW64_ROOT}/include/c++/14.1.0",
+                "${env:MINGW64_ROOT}/include/c++/14.1.0/tr1",
+                "${env:MINGW64_ROOT}/include/c++/14.1.0/x86_64-w64-mingw32",
+                "${env:MINGW64_ROOT}/lib/clang/18/include"
             ]
         }
     ],

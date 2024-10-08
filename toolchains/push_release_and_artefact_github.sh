@@ -122,8 +122,9 @@ if [[ $os_name = "MINGW64_NT"* ]]; then
   echo "====> Signing Bundle ... <====="
 
   #
+  timestamp_server="http://timestamp.acs.microsoft.com"
   expected_pfx_path="./certs/all.pfx"
-  signtool sign -f "$expected_pfx_path" -tr http://sha256timestamp.ws.symantec.com/sha256/timestamp -td SHA256 -fd SHA256 "$generated_artifact_path"
+  signtool sign -f "$expected_pfx_path" -tr "$timestamp_server" -td SHA256 -fd SHA256 "$generated_artifact_path"
 fi
 
 ##

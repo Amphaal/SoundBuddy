@@ -14,5 +14,6 @@ mingw-w64-x86_64-qt6-activeqt
 mingw-w64-x86_64-qt6-websockets
 mingw-w64-x86_64-qt6-translations
 mingw-w64-x86_64-qt6-declarative
+mingw-w64-x86_64-qt-installer-framework
 mingw-w64-x86_64-github-cli
 mingw-w64-x86_64-zlib

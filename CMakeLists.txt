@@ -193,9 +193,11 @@ if (WIN32)
         message(FATAL_ERROR ".pfx file is expected to be generated first on Windows targets to sign executables and installers. Please run toolchains/win_generate_pfx.sh in its folder first !")
     endif()
 
+    SET(TIMESTAMP_SERVER "http://timestamp.acs.microsoft.com")
+
     add_custom_command(TARGET appExec
         POST_BUILD
-        COMMAND ${signtool_EXECUTABLE} sign /f "${EXPECTED_PFX_PATH}" /tr http://timestamp.acs.microsoft.com /td SHA256 /fd SHA256 "$<TARGET_FILE:appExec>"
+        COMMAND ${signtool_EXECUTABLE} sign /f "${EXPECTED_PFX_PATH}" /tr "${TIMESTAMP_SERVER}" /td SHA256 /fd SHA256 "$<TARGET_FILE:appExec>"
         VERBATIM
     )
 endif()
