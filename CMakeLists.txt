@@ -39,7 +39,7 @@ SET(GITHUB_REPO_NAME "SoundBuddy")
 
 ### PLEASE LET VERSION NEXT TO PROJECT NAME !!! since cmake has no documented way to do this, We use grep to ack project version on this specific line 
 ### please make sure that project name is without whitespaces !!!
-project(${GITHUB_REPO_NAME} VERSION 0.6.3
+project(${GITHUB_REPO_NAME} VERSION 0.7.0
     DESCRIPTION "Small companion app that feeds SoundVitrine with iTunes / Music library metadata"
     HOMEPAGE_URL https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}
     LANGUAGES CXX
@@ -195,7 +195,7 @@ if (WIN32)
 
     add_custom_command(TARGET appExec
         POST_BUILD
-        COMMAND ${signtool_EXECUTABLE} sign /f "${EXPECTED_PFX_PATH}" /tr http://sha256timestamp.ws.symantec.com/sha256/timestamp /td SHA256 /fd SHA256 "$<TARGET_FILE:appExec>"
+        COMMAND ${signtool_EXECUTABLE} sign /f "${EXPECTED_PFX_PATH}" /tr http://timestamp.acs.microsoft.com /td SHA256 /fd SHA256 "$<TARGET_FILE:appExec>"
         VERBATIM
     )
 endif()

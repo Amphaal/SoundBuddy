@@ -10,7 +10,8 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Launch (lldb)",
+            "name": "Build & Launch (lldb)",
+            "preLaunchTask": "2. Build (Debug)",
             "windows": {
                 "program": "${workspaceFolder}/build_debug/out/SoundBuddy",
             },

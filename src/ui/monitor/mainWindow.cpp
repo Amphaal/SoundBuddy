@@ -83,7 +83,71 @@ void MainWindow::accessPreferences() {
 
 // open the warnings file on the OS
 void MainWindow::openWarnings() {
-    PlatformHelper::openFileInOS(AppSettings::getFeedWarningFilePath());
+    // PlatformHelper::openFileInOS(AppSettings::getFeedWarningFilePath());
+
+    //
+    QFile warnings(AppSettings::getFeedWarningFilePath());
+    warnings.open(QIODevice::ReadOnly | QIODevice::Text);
+        auto data = QJsonDocument::fromJson(warnings.readAll()).array();
+    warnings.close();
+
+    //
+    auto howMany = data.count();
+    if(howMany == 0) {
+        QMessageBox::information(this, tr("No warnings found"), tr("Congratulations, your latest export was flawless !"));
+        return;
+    }
+
+    QDialog display(this);
+    display.setModal(true);
+    display.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    auto colDef = data[0].toObject();
+    QTableWidget table(howMany, colDef.count(), &display);
+    table.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    table.horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+    table.setEditTriggers(QAbstractItemView::NoEditTriggers);
+    table.setHorizontalHeaderLabels(colDef.keys());
+
+    // for each row
+    howMany = 0;
+    for(auto i = data.begin(); i != data.end(); ++i) {
+       auto cellsData = i->toObject();
+
+        // each cell
+        int col = 0;
+        foreach(const QString &key, cellsData.keys()) {
+            auto cellData = cellsData.value(key).toString();
+            if(cellData.isEmpty()) {
+                auto item = new QTableWidgetItem(this->style()->standardIcon(QStyle::SP_MessageBoxWarning), tr("Missing !"));
+                auto font = item->font();
+                font.setBold(true);
+                font.setUnderline(true);
+                item->setFont(font);
+                table.setItem(howMany, col, item);
+            } else {
+                table.setItem(howMany, col, new QTableWidgetItem(cellData));
+            }
+            col++;
+        }
+
+        howMany++;
+    }
+
+    //
+    QVBoxLayout layout;
+    layout.addWidget(&table);
+    display.setLayout(&layout);
+
+
+    // Get the screen size (Qt5)
+    QRect screenGeometry = this->screen()->geometry();
+    int screenWidth = screenGeometry.width();
+    int screenHeight = screenGeometry.height();
+
+    // Set the dialog size to be at least half the size of the screen
+    display.resize(screenWidth / 2, screenHeight / 2);
+    display.exec();
 }
 
 void MainWindow::setupAutoUpdate() {

@@ -18,10 +18,22 @@ void PlatformHelper::openUrlInBrowser(const QString &url) {
 }
 
 void PlatformHelper::openFileInOS(const QString &filePath) {
-    QUrl url(filePath);
-    url.setScheme("file");
-    QDesktopServices::openUrl(
-        QDir::fromNativeSeparators(filePath) // takes URI, Windows backslashes are not welcomed
+    //
+    QUrl url(
+        QString("file:///" + QDir::fromNativeSeparators(
+            filePath
+       )),
+        QUrl::TolerantMode
+    );
+
+    //
+    //
+    //
+
+    qDebug() << "Trying to open" << url;
+    // https://doc.qt.io/qt-6/qdesktopservices.html#openUrl
+    auto success = QDesktopServices::openUrl(
+       url  // takes URI, Windows backslashes are not welcomed
     );
 }
 

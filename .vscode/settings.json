@@ -125,7 +125,8 @@
         "semaphore": "cpp",
         "shared_mutex": "cpp",
         "stdfloat": "cpp",
-        "stop_token": "cpp"
+        "stop_token": "cpp",
+        "text_encoding": "cpp"
     },
     "terminal.integrated.scrollback": 10000,
     "cmake.configureOnOpen": false
