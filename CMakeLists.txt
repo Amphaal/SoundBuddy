@@ -65,7 +65,8 @@ endif()
 ## VERSION.H HANDLING ##
 ########################
 
-SET(APP_PUBLISHER_ORG "LVWL") # please make sure that it without whitespaces !!!
+SET(APP_PUBLISHER_ORG "LVNWL") # Should always be the same as the org set in executable signer certificate
+SET(APP_PUBLISHER_ORG_PKG_NORM "lvnwl") # please make sure that publisher has no whitespaces and in lowercase !!!
 SET(DEST_PLATFORM_PRODUCT_NAME "SoundVitrine")
 SET(APP_PATCHNOTE_URL ${PROJECT_HOMEPAGE_URL}/releases)
 
@@ -219,7 +220,7 @@ if (APPLE)
     set_target_properties(appExec PROPERTIES 
         BUNDLE                              ON
         MACOSX_BUNDLE_INFO_PLIST            ${CMAKE_CURRENT_SOURCE_DIR}/templates/osx/Info.plist
-        MACOSX_BUNDLE_GUI_IDENTIFIER        com.${APP_PUBLISHER_ORG}.${CMAKE_PROJECT_NAME}
+        MACOSX_BUNDLE_GUI_IDENTIFIER        com.${APP_PUBLISHER_ORG_PKG_NORM}.${CMAKE_PROJECT_NAME}
         MACOSX_BUNDLE_BUNDLE_NAME           ${CMAKE_PROJECT_NAME}
         MACOSX_BUNDLE_BUNDLE_VERSION        ${CMAKE_PROJECT_VERSION}
         MACOSX_BUNDLE_SHORT_VERSION_STRING  ${CMAKE_PROJECT_VERSION} 

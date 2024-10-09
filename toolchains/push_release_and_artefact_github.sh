@@ -72,7 +72,7 @@ if [[ $os_name = "MINGW64_NT"* ]]; then
   #
   toolchain_os_type="msys2"
   descriptive_build_str="windows_$machine_arch"
-  cpack_generator="IFW"
+  cpack_generator="NSIS"
   package_output_ext="exe"
 
 # Check if the operating system is macOS

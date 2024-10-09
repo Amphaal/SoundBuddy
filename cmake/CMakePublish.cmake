@@ -35,53 +35,79 @@ SET(CPACK_IFW_VERBOSE ON)
 INCLUDE(CPack)
 INCLUDE(CPackIFW)
 
+# https://gitlab.kitware.com/cmake/cmake/-/issues/20072
+SET(CPACK_NSIS_INSTALL_ROOT "C:\\\\Program Files\\\\${APP_PUBLISHER_ORG}")
+SET(CPACK_PACKAGE_INSTALL_DIRECTORY "${PROJECT_NAME}")
+SET(CPACK_NSIS_PACKAGE_NAME "${PROJECT_NAME} ${CMAKE_PROJECT_VERSION}")
+
 # App
+SET(CPACK_COMPONENT_App_DISPLAY_NAME  "${PROJECT_NAME} ${CMAKE_PROJECT_VERSION}")
+SET(CPACK_COMPONENT_App_DESCRIPTION   ${PROJECT_DESCRIPTION})
 cpack_add_component(
-    "App" #DOWNLOADED
+    "App" REQUIRED #DOWNLOADED
+    DISPLAY_NAME ${CPACK_COMPONENT_App_DISPLAY_NAME}
+    DESCRIPTION ${CPACK_COMPONENT_App_DESCRIPTION}
 )
 
-#
-cpack_ifw_configure_component("App"
-    DISPLAY_NAME "${PROJECT_NAME} ${CMAKE_PROJECT_VERSION}"
-    DESCRIPTION 
-        ${PROJECT_DESCRIPTION}
-    SCRIPT "ifw/EndInstallerForm.js"
-    SORTING_PRIORITY 1000
-    USER_INTERFACES "ifw/EndInstallerForm.ui"
-    TRANSLATIONS "ifw/i18n/fr.qm" # as IFW binary translation file must be in file system when configuring, ensure copy of said file
-    FORCED_INSTALLATION
-)
+    # > IFW
+    cpack_ifw_configure_component("App"
+        DISPLAY_NAME 
+            ${CPACK_COMPONENT_App_DISPLAY_NAME}
+            fr ${CPACK_COMPONENT_App_DISPLAY_NAME}
+        DESCRIPTION 
+            ${CPACK_COMPONENT_App_DESCRIPTION}
+            fr ${CPACK_COMPONENT_App_DESCRIPTION}
+        SCRIPT "ifw/EndInstallerForm.js"
+        SORTING_PRIORITY 1000
+        USER_INTERFACES "ifw/EndInstallerForm.ui"
+        TRANSLATIONS "ifw/i18n/fr.qm" # as IFW binary translation file must be in file system when configuring, ensure copy of said file
+        FORCED_INSTALLATION
+    )
 
 
-# Runtime 
+# Runtime
+SET(CPACK_COMPONENT_AppRuntime_DISPLAY_NAME "Runtime")
+SET(CPACK_COMPONENT_AppRuntime_DESCRIPTION "Essential components used by ${PROJECT_NAME} and other libraries")
 cpack_add_component(
-    "AppRuntime" #DOWNLOADED
+    "AppRuntime" REQUIRED #DOWNLOADED
+    DISPLAY_NAME ${CPACK_COMPONENT_AppRuntime_DISPLAY_NAME}
+    DESCRIPTION ${CPACK_COMPONENT_AppRuntime_DESCRIPTION}
 )
-cpack_ifw_configure_component("AppRuntime"
-    DISPLAY_NAME 
-        "Runtime" 
-        fr "Composants de base"
-    DESCRIPTION 
-        "Essential components used by ${PROJECT_NAME} and other libraries"
-        fr "Composants essentiels utilisés par ${PROJECT_NAME} et autres librairies"
-    SORTING_PRIORITY 900
-    VERSION "1.0.0"
-    FORCED_INSTALLATION
-)
+
+    # > IFW
+    cpack_ifw_configure_component("AppRuntime"
+        DISPLAY_NAME 
+            ${CPACK_COMPONENT_AppRuntime_DISPLAY_NAME} 
+            fr "Composants de base"
+        DESCRIPTION 
+            ${CPACK_COMPONENT_AppRuntime_DESCRIPTION}
+            fr "Composants essentiels utilisés par ${PROJECT_NAME} et autres librairies"
+        SORTING_PRIORITY 900
+        VERSION "1.0.0"
+        FORCED_INSTALLATION
+    )
 
 # Qt
+SET(CPACK_COMPONENT_QtRuntime_DISPLAY_NAME "Qt ${Qt6Core_VERSION}")
+SET(CPACK_COMPONENT_QtRuntime_DESCRIPTION "Essential framework used by ${PROJECT_NAME}")
 cpack_add_component(
-    "QtRuntime" #DOWNLOADED
+    "QtRuntime" REQUIRED #DOWNLOADED
+    DISPLAY_NAME ${CPACK_COMPONENT_QtRuntime_DISPLAY_NAME}
+    DESCRIPTION ${CPACK_COMPONENT_QtRuntime_DESCRIPTION}
 )
-cpack_ifw_configure_component("QtRuntime"
-    DISPLAY_NAME "Qt ${Qt6Core_VERSION}"
-    DESCRIPTION 
-        "Essential framework used by ${PROJECT_NAME}"
-        fr "Framework essentiel utilisé par ${PROJECT_NAME}"
-    SORTING_PRIORITY 98
-    VERSION ${Qt6Core_VERSION}
-    FORCED_INSTALLATION
-)
+
+    # > IFW
+    cpack_ifw_configure_component("QtRuntime"
+        DISPLAY_NAME
+            ${CPACK_COMPONENT_QtRuntime_DISPLAY_NAME}
+            fr ${CPACK_COMPONENT_QtRuntime_DISPLAY_NAME}
+        DESCRIPTION 
+            ${CPACK_COMPONENT_QtRuntime_DESCRIPTION}
+            fr "Framework essentiel utilisé par ${PROJECT_NAME}"
+        SORTING_PRIORITY 98
+        VERSION ${Qt6Core_VERSION}
+        FORCED_INSTALLATION
+    )
 
 ######################################
 # CPACK IFW COMPONENTS CONFIGURATION #

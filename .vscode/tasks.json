@@ -65,6 +65,16 @@
             "problemMatcher": []
         },
         {
+            "label": "3a. Generate package (NSIS)",
+            "dependsOn": "2*. Build (Release)",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceRoot}/build_release"
+            },
+            "command": "cpack -G NSIS",
+            "problemMatcher": []
+        },
+        {
             "label": "3b. Generate package (IFW)",
             "dependsOn": "2*. Build (Release)",
             "type": "shell",
