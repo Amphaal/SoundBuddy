@@ -126,7 +126,10 @@
         "shared_mutex": "cpp",
         "stdfloat": "cpp",
         "stop_token": "cpp",
-        "text_encoding": "cpp"
+        "text_encoding": "cpp",
+        "expected": "cpp",
+        "*.inc": "cpp",
+        "*.def": "cpp"
     },
     "terminal.integrated.scrollback": 10000,
     "cmake.configureOnOpen": false

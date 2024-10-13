@@ -286,6 +286,38 @@ void MainWindow::runMBeat() {
     thread->start();
 }
 
+void MainWindow::_runBash() {
+    assert(this->shoutWorker);
+    auto &thread = this->bashWorker;
+
+    //
+    if(thread && thread->isRunning()) {
+        thread->quit();
+        thread->wait();
+    }
+
+    thread = new BashThread();
+
+        QObject::connect( 
+            thread, &QThread::finished,
+            thread, &QObject::deleteLater
+        );
+
+        QObject::connect(
+            thread, &QObject::destroyed,
+            [&thread]() { 
+                thread = nullptr; 
+            }
+        );
+
+        QObject::connect(
+            this->shoutWorker, &ShoutThread::newFileLocationShout,
+            thread, &BashThread::doStreamNewFile
+        );
+
+    thread->start();
+}
+
 void MainWindow::runShouts() {
     auto &thread = this->shoutWorker;
 
@@ -298,7 +330,7 @@ void MainWindow::runShouts() {
     thread = new ShoutThread(this->appSettings.getConnectivityInfos());
 
         this->shoutTab->bindWithWorker(thread);
-        QObject::connect(
+        QObject::connect( 
             thread, &QThread::finished,
             thread, &QObject::deleteLater
         );
@@ -311,6 +343,8 @@ void MainWindow::runShouts() {
         );
 
     thread->start();
+
+    _runBash();
 }
 
 void MainWindow::runFeeder() {

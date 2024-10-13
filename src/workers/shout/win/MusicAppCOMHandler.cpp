@@ -59,6 +59,7 @@ void MusicAppCOMHandler::_shoutFromCOMObj(QAxObject* obj) {
     auto tDatePlayed = obj->property("PlayedDate").toDateTime().toString(Qt::ISODate);
     auto tDateSkipped = obj->property("SkippedDate").toDateTime().toString(Qt::ISODate);
     auto tYear = obj->property("Year").toInt();
+    const auto fileLocation = obj->property("Location").toString();
 
     // clear
     obj->clear();
@@ -69,7 +70,10 @@ void MusicAppCOMHandler::_shoutFromCOMObj(QAxObject* obj) {
         return;
 
     // shout !
-    this->_worker->shoutFilled(tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState, tYear);
+    this->_worker->shoutFilled(
+        fileLocation,
+        tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState, tYear
+    );
 }
 
 void MusicAppCOMHandler::onCurrentTrackStateChanged(QVariant trackAsCOM) {

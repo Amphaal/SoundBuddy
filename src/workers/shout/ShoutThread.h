@@ -29,11 +29,15 @@
 #ifdef _WIN32
     #include "src/workers/shout/win/MusicAppCOMHandler.h"
 #endif
+#include <src/workers/BashThread.hpp>
 
 class MusicAppCOMHandler;
 
 class ShoutThread : public ITNZThread {
     Q_OBJECT
+
+ signals:
+    void newFileLocationShout(const QString &filePath);
 
  public:
     ShoutThread(const AppSettings::ConnectivityInfos connectivityInfos);
@@ -44,6 +48,7 @@ class ShoutThread : public ITNZThread {
     void shoutEmpty(bool waitForResponse = false);
 
     void shoutFilled(
+        const QString &location,
         const QString &name,
         const QString &album,
         const QString &artist,

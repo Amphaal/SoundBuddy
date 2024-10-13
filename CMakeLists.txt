@@ -299,6 +299,26 @@ target_link_libraries(appExec PRIVATE
     ZLIB::ZLIB
 )
 
+#
+#
+#
+
+find_package(PkgConfig)
+
+pkg_check_modules(ffmpeg REQUIRED IMPORTED_TARGET
+    libavcodec
+    libavdevice
+    libavfilter
+    libavformat
+    libavutil
+    libpostproc
+    libswresample
+    libswscale
+)
+
+target_link_libraries(appExec PRIVATE PkgConfig::ffmpeg)
+
+
 ########
 # QT 6 #
 ########

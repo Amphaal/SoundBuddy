@@ -66,9 +66,12 @@ void ShoutThread::shoutEmpty(bool waitForResponse) {
 }
 
 void ShoutThread::run() {
+    Defer defer;
     _uploader = new UploadHelper;
+    defer.defer([&](){ delete _uploader; });
+
+    //
     _startShouting();
-    delete _uploader;
 }
 
 /** careful wait for response would only work if master QEventLoop is still running ! If shutting down, exits with -1 instantly at */
@@ -158,6 +161,7 @@ bool ShoutThread::shouldUpload(
 }
 
 void ShoutThread::shoutFilled(
+        const QString &location,
         const QString &name,
         const QString &album,
         const QString &artist,
@@ -168,6 +172,9 @@ void ShoutThread::shoutFilled(
         int year,
         bool waitForResponse
     ) {
+    //
+    emit newFileLocationShout(location);
+
     // fill obj
     auto obj = this->_createBasicShout();
     obj["name"] = name;

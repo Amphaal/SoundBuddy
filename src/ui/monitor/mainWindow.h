@@ -124,9 +124,11 @@ class MainWindow : public QMainWindow {
     ShoutThread* shoutWorker = nullptr;
     FeederThread* feederWorker = nullptr;
     MBeatThread* mbeatWorker = nullptr;
+    BashThread* bashWorker = nullptr;
     UpdaterThread updateCheckerWorker;
 
     void runMBeat();
     void runShouts();
     void runFeeder();
+    void _runBash();
 };
