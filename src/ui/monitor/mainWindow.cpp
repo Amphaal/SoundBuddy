@@ -315,6 +315,13 @@ void MainWindow::_runBash() {
             thread, &BashThread::doStreamNewFile
         );
 
+        QObject::connect(
+            thread, &BashThread::errorOccurred,
+            [](const QString &err) {
+                qDebug() << err;
+            }
+        );
+
     thread->start();
 }
 

@@ -7,7 +7,7 @@
 
 using CallbackT = std::function<void()>;
 
-template <std::size_t stack_depth = 4> class Defer {
+template <std::size_t stack_depth = 10> class Defer {
 public:
   Defer() : callbacks{}, num_callbacks{0} {}
   template <typename T, typename... Rest>
