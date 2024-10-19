@@ -317,16 +317,41 @@ void MainWindow::_runDASH() {
             }
         );
 
-        // QObject::connect(
-        //     this->shoutWorker, &ShoutThread::newFileLocationShout,
-        //     thread, &DASHThread::doStreamNewFile
-        // );
+        QObject::connect(
+            thread,  &DASHTHREAD_NAME::muxStarted, this,
+            [this](){
+                this->dashProgressBar->setRange(0, 100);
+                this->dashProgressBar->setValue(0);
+            }
+        , Qt::QueuedConnection);
 
         QObject::connect(
-            thread, &DASHTHREAD_NAME::ready,
-            [thread]() {
-                thread->doStreamNewFile("D:\\Musique\\iTunes\\iTunes Media\\Music\\The Amity Affliction\\Let The Ocean Take Me (Redux)\\03 Don_t Lean on Me (Redux).mp3");
+            thread, &DASHTHREAD_NAME::muxProgress, this,
+            [this](int64_t at, int64_t of) {
+                this->dashProgressBar->setRange(0, of);
+                this->dashProgressBar->setValue(at);
+            },
+        Qt::QueuedConnection);
+
+        QObject::connect(
+            thread,  &DASHTHREAD_NAME::muxEnding, this,
+            [this](){
+                this->dashProgressBar->setRange(0, 0); // undetermined state
+                this->dashProgressBar->setValue(0);
             }
+        , Qt::QueuedConnection);
+
+        QObject::connect(
+            thread, &DASHTHREAD_NAME::muxDone, this,
+            [this]() {
+                this->dashProgressBar->setRange(0, 1);
+                this->dashProgressBar->setValue(1);
+            },
+        Qt::QueuedConnection);
+ 
+        QObject::connect(
+            this->shoutWorker, &ShoutThread::newShout,
+            thread, &DASHThread::doStreamNewFile
         );
 
     thread->start();
@@ -458,7 +483,7 @@ void MainWindow::_initUITray() {
 
 void MainWindow::_initStatusBar() {
     //
-    auto statusBar = new QStatusBar(this);
+    auto statusBar = new QStatusBar;
 
     auto sb_widget = new QWidget;
     this->statusLight = new TrafficLightWidget;
@@ -471,6 +496,9 @@ void MainWindow::_initStatusBar() {
 
     // define statusbar
     statusBar->addWidget(sb_widget);
+    dashProgressBar = new QProgressBar();
+    dashProgressBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    statusBar->addPermanentWidget(dashProgressBar);
     this->setStatusBar(statusBar);
 }
 
@@ -575,6 +603,20 @@ QMenu* MainWindow::_getFileMenu(bool withMonitor) {
         PlatformHelper::openFileInOS(directory);
     });
 
+   // openData
+    auto openDashFolder = new QAction(tr("Access DASH folder"), fileMenuItem);
+    QObject::connect(openDashFolder, &QAction::triggered, [=]() {
+        //
+        auto directory = DASHCreationOrder::getPathToDashTempFolder();
+        
+        // create dir if not existing
+        QDir destDir(directory);
+        if (!destDir.exists()) destDir.mkpath(".");
+
+        // 
+        PlatformHelper::openFileInOS(directory);
+    });
+
     // quit
     auto quitAction = new QAction(tr("Quit"), fileMenuItem);
     QObject::connect(
@@ -599,6 +641,8 @@ QMenu* MainWindow::_getFileMenu(bool withMonitor) {
     fileMenuItem->addSeparator();
     fileMenuItem->addAction(openWarningsAction);
     fileMenuItem->addAction(openDataFolder);
+    fileMenuItem->addSeparator();
+    fileMenuItem->addAction(openDashFolder);
     fileMenuItem->addSeparator();
     fileMenuItem->addAction(quitAction);
 

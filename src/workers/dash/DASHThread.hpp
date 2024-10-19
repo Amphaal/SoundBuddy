@@ -1,3 +1,22 @@
+// SoundBuddy
+// Small companion app that feeds SoundVitrine with ITunes / Music library metadata
+// Copyright (C) 2019-2023 Guillaume Vara <guillaume.vara@gmail.com>
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// Any graphical or audio resources available within the source code may
+// use a different license and copyright : please refer to their metadata
+// for further details. Resources without explicit references to a
+// different license and copyright still refer to this GPL.
+
 #pragma once
 
 #include <QThread>
@@ -16,6 +35,8 @@ extern "C" {
     #include <libavutil/audio_fifo.h>
     #include <libavfilter/avfilter.h>
     #include <libswresample/swresample.h>
+#include <src/helpers/HashHelper.hpp>
+#include "DASHCreationOrder.hpp"
 }
 
 class DASHThread : public QThread {
@@ -24,9 +45,15 @@ class DASHThread : public QThread {
     public:
         DASHThread(QObject* parent = nullptr) : QThread(parent) {}
 
-        void doStreamNewFile(const QString& pathToFileToStream) {
-            _wantedFilePath = pathToFileToStream;
+        void doStreamNewFile(const QString &filepathToStream, const QString &fileHash) {
+            //
+            if (_creationOrder.isSame(fileHash)) return;
+
+            //
             _hasAwaitingNewFileToStream = true;
+            _creationOrder.replaceOrder(filepathToStream, fileHash);
+
+            //
             emit _hasNewFileToRead(QPrivateSignal());
         }
 
@@ -39,13 +66,18 @@ class DASHThread : public QThread {
         void errorOccurred(const QString& error);
         void ready();
         void _hasNewFileToRead(QPrivateSignal);
+        
+        void muxStarted();
+        void muxProgress(int64_t at, int64_t of);
+        void muxEnding();
+        void muxDone();
 
     private:
         bool _hasAwaitingNewFileToStream = false;
         QMutex _m;
 
         // latest file path of a file we want to stream
-        QString _wantedFilePath;
+        DASHCreationOrder _creationOrder;
 
         ///
         const AVCodec* _inputCodec = nullptr; // codec found that could read latest file
@@ -60,10 +92,6 @@ class DASHThread : public QThread {
 
         SwrContext *_swrContext = nullptr;
 
-        static const QString _getPathToDashTempFolder() {
-            return "C:\\Users\\havea\\Desktop\\test\\";
-        }
-
         void _prepareContextsAndCodecs(std::function<void(int audioStreamIndex)> then) {
             Defer deferred;
 
@@ -71,7 +99,7 @@ class DASHThread : public QThread {
             // OPEN FILE and read metadata (important !)
             //
 
-            if (avformat_open_input(&_inputContext, _wantedFilePath.toStdString().c_str(), nullptr, nullptr) != 0) {
+            if (avformat_open_input(&_inputContext, _creationOrder.path().toStdString().c_str(), nullptr, nullptr) != 0) {
                 emit errorOccurred("Couldn't open input file.");
                 return;
             }
@@ -129,13 +157,16 @@ class DASHThread : public QThread {
             //
             // CONFIGURE output stream and context
             //
+            
+            // create dirty file
+            _creationOrder.mayGenerateDirtyFile();
 
             //
             avformat_alloc_output_context2(
                 &_outputContext, 
                 nullptr, 
-                // "opus",  (_getPathToDashTempFolder() + "out.opus").toStdString().c_str()
-                "dash", (_getPathToDashTempFolder() + "manifest.mpd").toStdString().c_str()
+                // "opus",  _creationOrder.getPathWithDestFolder("out.opus").toStdString().c_str()
+                "dash", _creationOrder.getPathWithDestFolder("manifest.mpd").toStdString().c_str()
             );
             if (!_outputContext) {
                 emit errorOccurred("Couldn't create output context for DASH.");
@@ -177,8 +208,18 @@ class DASHThread : public QThread {
             
             //
             if (QString(_outputContext->oformat->name) == "dash") {
-                av_dict_set(&_outputOptions, "media_seg_name", (_getPathToDashTempFolder() + "chunk-stream$RepresentationID$-$Number%05d$.$ext$").toStdString().c_str(), 0);
-                av_dict_set(&_outputOptions, "init_seg_name", (_getPathToDashTempFolder() + "init-stream$RepresentationID$.$ext$").toStdString().c_str(), 0);
+                //
+                av_dict_set(&_outputOptions, 
+                    "media_seg_name", 
+                    (_creationOrder.getPathWithDestFolder("chunk-stream$RepresentationID$-$Number%05d$.$ext$")).toStdString().c_str(),
+                0);
+
+                //
+                av_dict_set(&_outputOptions, 
+                    "init_seg_name", 
+                    (_creationOrder.getPathWithDestFolder("init-stream$RepresentationID$.$ext$")).toStdString().c_str(), 
+                0);
+
                 // av_dict_set(&_outputOptions, "seg_duration", "40", 0);
                 deferred.defer([this] { av_dict_free(&_outputOptions); });
             }
@@ -226,7 +267,7 @@ class DASHThread : public QThread {
             //
             //
             
-            auto then = std::bind(&DASHThread::__process, this, std::placeholders::_1);
+            auto then = std::bind(&DASHThread::_process, this, std::placeholders::_1);
             _prepareContextsAndCodecs(then);
         }
 
@@ -237,7 +278,9 @@ class DASHThread : public QThread {
         AVFrame* __passthroughOutputFrame;
         AVFrame* __outputFrame;
 
-        void __process(int audioStreamIndex) {
+        void _process(int audioStreamIndex) {
+            emit muxStarted();
+
             Defer deferred;
             int err;
             bool eof = false;
@@ -284,6 +327,7 @@ class DASHThread : public QThread {
 
             int64_t pts = 0;
             int64_t delayedSamples = 0;
+            int64_t writtenDur = 0;
 
             while (!flushed) {
                 //
@@ -291,12 +335,20 @@ class DASHThread : public QThread {
 
                 // read input file __inputFrame... negative values means end of file
                 err = av_read_frame(_inputContext, __inputPacket);
+
+                //
                 if (!err) {
                     // skip reading data if not the right stream index
                     if (__inputPacket->stream_index != audioStreamIndex) {
                         av_packet_unref(__inputPacket);
                         continue;
                     }
+
+                    //
+                    emit muxProgress(
+                        av_rescale_q(__inputPacket->pts, _inputContext->streams[audioStreamIndex]->time_base, (AVRational){1, AV_TIME_BASE}), 
+                        _inputContext->duration
+                    );
 
                     // forward data to decoder, skip if failed
                     if(avcodec_send_packet(_inputCodecContext, __inputPacket) < 0) {
@@ -307,6 +359,8 @@ class DASHThread : public QThread {
 
                 } else {
                     eof = true;
+                    emit muxEnding();
+                    avcodec_send_packet(_inputCodecContext, NULL); // SEND FLUSH PACKET
                 }
 
                 // analyze __inputFrame
@@ -357,8 +411,8 @@ class DASHThread : public QThread {
                             }
 
                             //
-                            __passthroughOutputFrame->pts = pts;
-                            pts += __passthroughOutputFrame->nb_samples;
+                            // __passthroughOutputFrame->pts = pts;
+                            // pts += __passthroughOutputFrame->nb_samples;
 
                             // skip if send failed
                             if(avcodec_send_frame(_outputCodecContext, __passthroughOutputFrame) < 0) {
@@ -388,8 +442,17 @@ class DASHThread : public QThread {
                             }
                         }
                     } while (__outputFrame->nb_samples && !flushed);
+
                 }
             }
+
+            //
+            if (flushed) {
+                _creationOrder.mayRemoveDirtyFile();
+            }
+            
+            //
+            emit muxDone();
         }
 
     protected:
@@ -413,9 +476,9 @@ class DASHThread : public QThread {
             deferred.defer([this] { av_channel_layout_uninit(&_outputCodecContext->ch_layout); });
 
             // Set codec parameters, including the sample rate
-            _outputCodecContext->sample_rate = _outputCodec->supported_samplerates[0];   // Opus usually works at 48kHz
-            _outputCodecContext->bit_rate = 64000;    // Set target bitrate
-            _outputCodecContext->sample_fmt = _outputCodec->sample_fmts[0];  // Set the sample format
+            _outputCodecContext->sample_rate = _outputCodec->supported_samplerates[0];      // Opus usually works at 48kHz
+            _outputCodecContext->bit_rate = 64000;                                          // Set target bitrate
+            _outputCodecContext->sample_fmt = _outputCodec->sample_fmts[0];                 // Set the sample format
             _outputCodecContext->time_base = (AVRational){ 1, _outputCodecContext->sample_rate };
 
             if (avcodec_open2(_outputCodecContext, _outputCodec, nullptr) < 0) {

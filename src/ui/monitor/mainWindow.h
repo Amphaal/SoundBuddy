@@ -38,6 +38,7 @@
 #include <QHideEvent>
 #include <QIcon>
 #include <QStatusBar>
+#include <QProgressBar>
 
 #include "src/helpers/PlatformHelper.h"
 
@@ -76,8 +77,10 @@ class MainWindow : public QMainWindow {
     QLabel* statusLabel;
     TrafficLightWidget* statusLight;
 
+    QProgressBar* dashProgressBar;
+
     ///
-    /// UI instanciation
+    /// UI instantiation 
     ///
 
     void _initUI();

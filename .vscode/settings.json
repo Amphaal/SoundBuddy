@@ -129,7 +129,8 @@
         "text_encoding": "cpp",
         "expected": "cpp",
         "*.inc": "cpp",
-        "*.def": "cpp"
+        "*.def": "cpp",
+        "qstandardpaths": "cpp"
     },
     "terminal.integrated.scrollback": 10000,
     "cmake.configureOnOpen": false

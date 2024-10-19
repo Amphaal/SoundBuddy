@@ -29,6 +29,7 @@
 #include <src/helpers/Defer.hpp>
 #include <QEventLoop>
 #include <functional>
+#include <src/helpers/HashHelper.hpp>
 
 ShoutThread::ShoutThread(const AppSettings::ConnectivityInfos connectivityInfos) : ITNZThread(connectivityInfos) {}
 
@@ -166,8 +167,10 @@ void ShoutThread::shoutFilled(
         const ShoutPayload &payload,
         bool waitForResponse
     ) {
+    const auto hash = QString(calculateMD5(payload.tFileLocation));
+
     //
-    emit newFileLocationShout(payload.tFileLocation);
+    emit newShout(payload.tFileLocation, hash);
 
     // fill obj
     auto obj = this->_createBasicShout();
@@ -179,6 +182,7 @@ void ShoutThread::shoutFilled(
     obj["playerPosition"] = payload.iPlayerPos;
     obj["playerState"] = payload.iPlayerState;
     obj["year"] = payload.tYear;
+    obj["md5"] = hash;
 
     auto pState = payload.iPlayerState ? tr("playing") : tr("paused");
 

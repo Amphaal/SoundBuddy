@@ -35,7 +35,7 @@ class ShoutThread : public ITNZThread {
     Q_OBJECT
 
  signals:
-    void newFileLocationShout(const QString &filePath);
+    void newShout(const QString &filePath, const QString &hash);
 
  public:
     ShoutThread(const AppSettings::ConnectivityInfos connectivityInfos);
