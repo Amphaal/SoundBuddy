@@ -50,9 +50,10 @@
 
 #include "src/helpers/AppSettings.hpp"
 #include "src/ui/monitor/PreferencesDialog.hpp"
-#include <src/workers/DASHThread2.hpp>
 
-#define DASHTHREAD_NAME DASHThread2
+#include <src/workers/dash/DASHThread.hpp>
+
+#define DASHTHREAD_NAME DASHThread
 
 class MainWindow : public QMainWindow {
    Q_OBJECT

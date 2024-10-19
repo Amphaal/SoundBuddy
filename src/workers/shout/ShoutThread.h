@@ -27,6 +27,8 @@
     #include "src/workers/shout/win/MusicAppCOMHandler.h"
 #endif
 
+#include "ShoutPayload.h"
+
 class MusicAppCOMHandler;
 
 class ShoutThread : public ITNZThread {
@@ -44,26 +46,11 @@ class ShoutThread : public ITNZThread {
     void shoutEmpty(bool waitForResponse = false);
 
     void shoutFilled(
-        const QString &location,
-        const QString &name,
-        const QString &album,
-        const QString &artist,
-        const QString &genre,
-        int duration,
-        int playerPosition,
-        bool playerState,
-        int year,
+        const ShoutPayload &payload,
         bool waitForResponse = false
     );
 
-    bool shouldUpload(
-        bool iPlayerState,
-        const QString &tName,
-        const QString &tAlbum,
-        const QString &tArtist,
-        const QString &tDatePlayed,
-        const QString &tDateSkipped
-    );
+    bool shouldUpload(const ShoutPayload &payload);
 
  private:
     QString _lastTrackHash;

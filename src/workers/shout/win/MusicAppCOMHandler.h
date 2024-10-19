@@ -40,10 +40,10 @@ class MusicAppCOMHandler : public QObject {
     
     //
     void listenUntilShutdown();
- 
+
  public slots:
     void onCurrentTrackStateChanged(QVariant trackAsCOM);
-    void stopListening();
+   void stopListening();
  
  private:
     void _shoutCurrentTrack();

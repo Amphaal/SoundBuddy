@@ -72,7 +72,7 @@ void ShoutThread::shoutEmpty(bool waitForResponse) {
 void ShoutThread::run() {
     Defer defer;
     _uploader = new UploadHelper;
-    defer.defer([&](){ delete _uploader; });
+    defer.defer([this](){ delete _uploader; });
 
     //
     _startShouting();
@@ -143,16 +143,14 @@ void ShoutThread::_shoutToServer(const QJsonObject &incoming, bool waitForRespon
 }
 
 // compare with old shout, if equivalent, don't reshout
-bool ShoutThread::shouldUpload(
-        bool iPlayerState,
-        const QString &tName,
-        const QString &tAlbum,
-        const QString &tArtist,
-        const QString &tDatePlayed,
-        const QString &tDateSkipped
-    ) {
+bool ShoutThread::shouldUpload(const ShoutPayload &payload) {
     // hash blueprint
-    const auto currHash = QString::number(iPlayerState) + tName + tAlbum + tArtist + (tDatePlayed >= tDateSkipped ? tDatePlayed : tDateSkipped);
+    const auto currHash = 
+        QString::number(payload.iPlayerState) + 
+        payload.tName + 
+        payload.tAlbum + 
+        payload.tArtist + 
+        (payload.tDatePlayed >= payload.tDateSkipped ? payload.tDatePlayed : payload.tDateSkipped);
 
     // check if strings are identical
     bool isHashIdentical = (this->_lastTrackHash == currHash);
@@ -165,40 +163,32 @@ bool ShoutThread::shouldUpload(
 }
 
 void ShoutThread::shoutFilled(
-        const QString &location,
-        const QString &name,
-        const QString &album,
-        const QString &artist,
-        const QString &genre,
-        int duration,
-        int playerPosition,
-        bool playerState,
-        int year,
+        const ShoutPayload &payload,
         bool waitForResponse
     ) {
     //
-    emit newFileLocationShout(location);
+    emit newFileLocationShout(payload.tFileLocation);
 
     // fill obj
     auto obj = this->_createBasicShout();
-    obj["name"] = name;
-    obj["album"] = album;
-    obj["artist"] = artist;
-    obj["genre"] = genre;
-    obj["duration"] = duration;
-    obj["playerPosition"] = playerPosition;
-    obj["playerState"] = playerState;
-    obj["year"] = year;
+    obj["name"] = payload.tName;
+    obj["album"] = payload.tAlbum;
+    obj["artist"] = payload.tArtist;
+    obj["genre"] = payload.tGenre;
+    obj["duration"] = payload.iDuration;
+    obj["playerPosition"] = payload.iPlayerPos;
+    obj["playerState"] = payload.iPlayerState;
+    obj["year"] = payload.tYear;
 
-    auto pState = playerState ? tr("playing") : tr("paused");
+    auto pState = payload.iPlayerState ? tr("playing") : tr("paused");
 
     // log...
     auto logMessage =
         tr("%1: Shouting -> %2 - %3 - %4 (%5)")
             .arg(QDateTime::currentDateTime().toString())
-            .arg(name)
-            .arg(album)
-            .arg(artist)
+            .arg(payload.tName)
+            .arg(payload.tAlbum)
+            .arg(payload.tArtist)
             .arg(pState);
 
     emit printLog(logMessage);

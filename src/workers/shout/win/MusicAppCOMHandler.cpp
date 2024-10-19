@@ -48,32 +48,31 @@ bool MusicAppCOMHandler::_isMusicAppPlaying() const {
 }
 
 void MusicAppCOMHandler::_shoutFromCOMObj(QAxObject* obj) {
+    ShoutPayload payload;
+
     // get values for shout
-    auto tName = obj->property("Name").toString();
-    auto tAlbum = obj->property("Album").toString();
-    auto tArtist = obj->property("Artist").toString();
-    auto tGenre = obj->property("Genre").toString();
-    auto iDuration = obj->property("Duration").toInt();
-    auto iPlayerPos = this->_musicAppObj->property("PlayerPosition").toInt();
-    auto iPlayerState = this->_isMusicAppPlaying();
-    auto tDatePlayed = obj->property("PlayedDate").toDateTime().toString(Qt::ISODate);
-    auto tDateSkipped = obj->property("SkippedDate").toDateTime().toString(Qt::ISODate);
-    auto tYear = obj->property("Year").toInt();
-    const auto fileLocation = obj->property("Location").toString();
+    payload.tName = obj->property("Name").toString();
+    payload.tAlbum = obj->property("Album").toString();
+    payload.tArtist = obj->property("Artist").toString();
+    payload.tGenre = obj->property("Genre").toString();
+    payload.iDuration = obj->property("Duration").toInt();
+    payload.iPlayerPos = this->_musicAppObj->property("PlayerPosition").toInt();
+    payload.iPlayerState = this->_isMusicAppPlaying();
+    payload.tDatePlayed = obj->property("PlayedDate").toDateTime().toString(Qt::ISODate);
+    payload.tDateSkipped = obj->property("SkippedDate").toDateTime().toString(Qt::ISODate);
+    payload.tYear = obj->property("Year").toInt();
+    payload.tFileLocation = obj->property("Location").toString();
 
     // clear
     obj->clear();
     delete obj;
 
     // compare with old shout, if equivalent, don't reshout
-    if(!this->_worker->shouldUpload(iPlayerState, tName, tAlbum, tArtist, tDatePlayed, tDateSkipped)) 
+    if(!this->_worker->shouldUpload(payload)) 
         return;
 
     // shout !
-    this->_worker->shoutFilled(
-        fileLocation,
-        tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState, tYear
-    );
+    this->_worker->shoutFilled(payload);
 }
 
 void MusicAppCOMHandler::onCurrentTrackStateChanged(QVariant trackAsCOM) {
@@ -92,5 +91,4 @@ void MusicAppCOMHandler::stopListening() {
     //
     this->_evtLoop.quit();
 }
-
 #endif

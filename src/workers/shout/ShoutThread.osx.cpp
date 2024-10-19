@@ -62,16 +62,7 @@ void ShoutThread::_startShouting() {
         }
 
         // default values and inst
-        QString tName;
-        QString tAlbum;
-        QString tArtist;
-        QString tGenre;
-        int iDuration;
-        int iPlayerPos;
-        bool iPlayerState = false;
-        QString tDateSkipped;
-        QString tDatePlayed;
-        int tYear;
+        ShoutPayload payload;
 
         // if has result
         if (result.size()) {
@@ -83,27 +74,25 @@ void ShoutThread::_startShouting() {
             const auto trackData = QJsonDocument::fromJson(result.data()).array();
 
             // get values for shout
-            tName = trackData[0].toString();
-            tAlbum = trackData[1].toString();
-            tArtist = trackData[2].toString();
-            tGenre = trackData[3].toString();
-            iDuration = trackData[4].toInt();
-            tYear = trackData[5].toInt();
-            iPlayerPos = trackData[6].toInt();
-            iPlayerState = trackData[7].toString() == "paused" ? 0 : 1;
-            tDateSkipped = trackData[8].toString();
-            tDatePlayed = trackData[9].toString();
+            payload.tFileLocation = trackData[0].toString();
+            payload.tName = trackData[1].toString();
+            payload.tAlbum = trackData[2].toString();
+            payload.tArtist = trackData[3].toString();
+            payload.tGenre = trackData[4].toString();
+            payload.iDuration = trackData[5].toInt();
+            payload.tYear = trackData[6].toInt();
+            payload.iPlayerPos = trackData[7].toInt();
+            payload.iPlayerState = trackData[8].toString() == "paused" ? 0 : 1;
+            payload.tDateSkipped = trackData[9].toString();
+            payload.tDatePlayed = trackData[10].toString();
         }
 
         // compare with old shout, if equivalent, don't reshout
-        if (this->shouldUpload(iPlayerState, tName, tAlbum, tArtist, tDatePlayed, tDateSkipped)) {
+        if (this->shouldUpload(payload)) {
             // if had results
             if (result.size()) {
                 // say track infos
-                this->shoutFilled(
-                    tName, tAlbum, tArtist, tGenre, iDuration, iPlayerPos, iPlayerState, tYear,
-                    true
-                );
+                this->shoutFilled(payload, true);
             } else {
                 // say nothing happens
                 this->shoutEmpty(true);
