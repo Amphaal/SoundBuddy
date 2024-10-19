@@ -286,9 +286,9 @@ void MainWindow::runMBeat() {
     thread->start();
 }
 
-void MainWindow::_runBash() {
+void MainWindow::_runDASH() {
     assert(this->shoutWorker);
-    auto &thread = this->bashWorker;
+    auto &thread = this->dashWorker;
 
     //
     if(thread && thread->isRunning()) {
@@ -296,7 +296,7 @@ void MainWindow::_runBash() {
         thread->wait();
     }
 
-    thread = new BashThread();
+    thread = new DASHTHREAD_NAME();
 
         QObject::connect( 
             thread, &QThread::finished,
@@ -311,14 +311,21 @@ void MainWindow::_runBash() {
         );
 
         QObject::connect(
-            this->shoutWorker, &ShoutThread::newFileLocationShout,
-            thread, &BashThread::doStreamNewFile
-        );
-
-        QObject::connect(
-            thread, &BashThread::errorOccurred,
+            thread, &DASHTHREAD_NAME::errorOccurred,
             [](const QString &err) {
                 qDebug() << err;
+            }
+        );
+
+        // QObject::connect(
+        //     this->shoutWorker, &ShoutThread::newFileLocationShout,
+        //     thread, &DASHThread::doStreamNewFile
+        // );
+
+        QObject::connect(
+            thread, &DASHTHREAD_NAME::ready,
+            [thread]() {
+                thread->doStreamNewFile("D:\\Musique\\iTunes\\iTunes Media\\Music\\The Amity Affliction\\Let The Ocean Take Me (Redux)\\03 Don_t Lean on Me (Redux).mp3");
             }
         );
 
@@ -351,7 +358,7 @@ void MainWindow::runShouts() {
 
     thread->start();
 
-    _runBash();
+    _runDASH();
 }
 
 void MainWindow::runFeeder() {

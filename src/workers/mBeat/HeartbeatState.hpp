@@ -37,14 +37,14 @@ class HeartbeatState {
             qDebug("MBeat: Reconnect...");
             goReconnect();
         } else {
-            qDebug("MBeat: Ping...");
+            // qDebug("MBeat: Ping...");
             goPing();
         }
       }
 
       //
       void ackPong(const std::function<void()>& goRecovery) {
-         qDebug("MBeat: ...Pong.");
+         // qDebug("MBeat: ...Pong.");
          //
          pongReceivedInPreviousCycle = true;
 
@@ -62,7 +62,7 @@ class HeartbeatState {
             if(pongReceivedInPreviousCycle) {
                // reset pong flag
                pongReceivedInPreviousCycle = false;
-               qDebug("MBeat: Ping...");
+               // qDebug("MBeat: Ping...");
                goPing();
             } else {
                //
@@ -78,7 +78,7 @@ class HeartbeatState {
                }
 
                // ack that we missed at last 1 pong on cycle
-               qDebug("MBeat: Pong missed...");
+               // qDebug("MBeat: Pong missed...");
                pongMissedInPreviousCycle = true;
             }
       }

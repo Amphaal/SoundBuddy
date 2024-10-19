@@ -26,6 +26,10 @@
 
 #include "src/i18n/trad.hpp"
 
+#include <src/helpers/Defer.hpp>
+#include <QEventLoop>
+#include <functional>
+
 ShoutThread::ShoutThread(const AppSettings::ConnectivityInfos connectivityInfos) : ITNZThread(connectivityInfos) {}
 
 void ShoutThread::quit() {

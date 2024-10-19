@@ -132,6 +132,7 @@ void MBeatThread::run() {
                 if(msgContent == "ok") {
                     //
                     _hbState.basicMessage();
+                    qDebug("MBeat: Credentials OK !");
                     emit updateConnectivityStatus(
                         tr("Logged as \"%1\"")
                             .arg(_connectivityInfos.username),
@@ -163,7 +164,7 @@ void MBeatThread::run() {
         QObject::connect(
             &pingTimer, &QTimer::timeout,
             [this, &socket, &url]() {
-                qDebug("MBeat: Checking pulse...");
+                // qDebug("MBeat: Checking pulse...");
                 _hbState.cycled([this, &socket, &url]{
                     //
                     _hbState.pingOrReconnect([&socket] () {
@@ -203,7 +204,7 @@ void MBeatThread::run() {
             _hbState.resetAnyReconnectionRegistered();
 
              // will (re)start periodically ping service for heartbeats
-             qDebug("MBeat: Ping...");
+            // qDebug("MBeat: Ping...");
             socket.ping();
             pingTimer.start();
 

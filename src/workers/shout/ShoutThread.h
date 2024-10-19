@@ -20,16 +20,12 @@
 #pragma once
 
 #include <QString>
-#include <QEventLoop>
-
-#include <functional>
 
 #include "src/workers/base/ITNZThread.hpp"
 
 #ifdef _WIN32
     #include "src/workers/shout/win/MusicAppCOMHandler.h"
 #endif
-#include <src/workers/BashThread.hpp>
 
 class MusicAppCOMHandler;
 

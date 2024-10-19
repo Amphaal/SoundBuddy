@@ -50,6 +50,9 @@
 
 #include "src/helpers/AppSettings.hpp"
 #include "src/ui/monitor/PreferencesDialog.hpp"
+#include <src/workers/DASHThread2.hpp>
+
+#define DASHTHREAD_NAME DASHThread2
 
 class MainWindow : public QMainWindow {
    Q_OBJECT
@@ -124,11 +127,11 @@ class MainWindow : public QMainWindow {
     ShoutThread* shoutWorker = nullptr;
     FeederThread* feederWorker = nullptr;
     MBeatThread* mbeatWorker = nullptr;
-    BashThread* bashWorker = nullptr;
+    DASHTHREAD_NAME* dashWorker = nullptr;
     UpdaterThread updateCheckerWorker;
 
     void runMBeat();
     void runShouts();
     void runFeeder();
-    void _runBash();
+    void _runDASH();
 };
