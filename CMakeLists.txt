@@ -32,7 +32,7 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out)
 ## STARTUP ##
 #############
 
-cmake_minimum_required(VERSION 3.14.3)
+cmake_minimum_required(VERSION 3.19)
 
 SET(GITHUB_REPO_OWNER "Amphaal")
 SET(GITHUB_REPO_NAME "SoundBuddy")
@@ -91,6 +91,12 @@ find_package(Qt6 REQUIRED COMPONENTS
     WebSockets
     Network
     LinguistTools
+)
+
+#
+qt_standard_project_setup(
+    I18N_SOURCE_LANGUAGE en
+    I18N_TRANSLATED_LANGUAGES fr
 )
 
 if(WIN32)
