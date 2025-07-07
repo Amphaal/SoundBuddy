@@ -92,6 +92,50 @@ class DASHThread : public QThread {
 
         SwrContext *_swrContext = nullptr;
 
+       static void _tryCleanupCacheDir() {
+            try {
+                QDir dir(DASHCreationOrder::getPathToDashTempFolder());
+                dir.setFilter(QDir::NoDotAndDotDot);
+                dir.removeRecursively();
+            } catch(...) {}
+        }
+
+        static constexpr int cacheSubdirLimit = 20;
+        static void _mayTidyUpCacheDir() {
+            try {
+                QDir dir(DASHCreationOrder::getPathToDashTempFolder());
+                dir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
+                if(!dir.exists()) return;
+
+                // Get a list of all subfolders
+                auto const folders = dir.entryInfoList();
+
+                // If there are fewer subfolders, no need to delete anything
+                if (folders.size() <= cacheSubdirLimit) {
+                    return;
+                }
+
+                // Sort folders by creation date (oldest first)
+                std::sort(folders.begin(), folders.end(), [](const QFileInfo &a, const QFileInfo &b) {
+                    return a.birthTime() < b.birthTime();
+                });
+
+                // Calculate how many folders to delete
+                int foldersToDelete = folders.size() - cacheSubdirLimit;
+
+                // Delete the oldest folders
+                for (int i = 0; i < foldersToDelete; ++i) {
+                    QDir folderToDelete(folders[i].absoluteFilePath());
+                    if (folderToDelete.removeRecursively()) {
+                        qDebug() << "Deleted folder:" << folders[i].absoluteFilePath();
+                    } else {
+                        qDebug() << "Failed to delete folder:" << folders[i].absoluteFilePath();
+                    }
+                }
+
+            } catch(...) {}
+        }
+
         void _prepareContextsAndCodecs(std::function<void(int audioStreamIndex)> then) {
             Defer deferred;
 
@@ -152,7 +196,7 @@ class DASHThread : public QThread {
                 emit errorOccurred("Could not open codec");
                 return;
             }
-            deferred.defer([this] { avcodec_close(_inputCodecContext); });
+            deferred.defer([this] { avcodec_free_context(&_inputCodecContext); });
 
             //
             // CONFIGURE output stream and context
@@ -267,6 +311,8 @@ class DASHThread : public QThread {
             //
             //
             
+            _mayTidyUpCacheDir();
+
             auto then = std::bind(&DASHThread::_process, this, std::placeholders::_1);
             _prepareContextsAndCodecs(then);
         }
@@ -457,6 +503,9 @@ class DASHThread : public QThread {
 
     protected:
         void run() override {
+            //
+            _tryCleanupCacheDir();
+
             // Find the encoder for the audio stream (e.g., OPUS)
             _outputCodec = avcodec_find_encoder(AV_CODEC_ID_OPUS);
             if (!_outputCodec) {
@@ -475,17 +524,26 @@ class DASHThread : public QThread {
             av_channel_layout_default(&_outputCodecContext->ch_layout, 2);
             deferred.defer([this] { av_channel_layout_uninit(&_outputCodecContext->ch_layout); });
 
+            //
+            const void* samplesFormatsAvailable = nullptr;
+            int samplesFormatsAvailableC = 0;
+            avcodec_get_supported_config(NULL, _outputCodec, AV_CODEC_CONFIG_SAMPLE_FORMAT, 0, &samplesFormatsAvailable, &samplesFormatsAvailableC);
+
+            const void* sampleratesAvailable = nullptr;
+            int sampleratesAvailableC = 0;
+            avcodec_get_supported_config(NULL, _outputCodec, AV_CODEC_CONFIG_SAMPLE_RATE, 0, &sampleratesAvailable, &sampleratesAvailableC);
+
             // Set codec parameters, including the sample rate
-            _outputCodecContext->sample_rate = _outputCodec->supported_samplerates[0];      // Opus usually works at 48kHz
-            _outputCodecContext->bit_rate = 64000;                                          // Set target bitrate
-            _outputCodecContext->sample_fmt = _outputCodec->sample_fmts[0];                 // Set the sample format
+            _outputCodecContext->sample_rate = ((const int*)sampleratesAvailable)[0];                   // Opus usually works at 48kHz
+            _outputCodecContext->bit_rate = 64000;                                                      // Set target bitrate
+            _outputCodecContext->sample_fmt =((const AVSampleFormat*)samplesFormatsAvailable)[0];       // Set the sample format
             _outputCodecContext->time_base = (AVRational){ 1, _outputCodecContext->sample_rate };
 
             if (avcodec_open2(_outputCodecContext, _outputCodec, nullptr) < 0) {
                 emit errorOccurred("Could not open codec");
                 return;
             }
-            deferred.defer([this] { avcodec_close(_outputCodecContext); });
+            deferred.defer([this] { avcodec_free_context(&_outputCodecContext); });
 
             //
             __fifo = av_audio_fifo_alloc(
@@ -511,5 +569,8 @@ class DASHThread : public QThread {
             
             //
             this->exec();
+            
+            //
+            _tryCleanupCacheDir();
         }
 };
