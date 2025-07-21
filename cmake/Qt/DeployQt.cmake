@@ -11,7 +11,7 @@ macro(DeployQt target)
 
         # Run deployqt immediately after build to determine Qt dependencies
         # SHOULD NOT BE "POST_BUILD" because pe-util might be used later on, and you want it to ignore QT libraries
-        add_custom_command(TARGET ${target}
+        add_custom_command(TARGET ${target} POST_BUILD
             COMMAND ${DEPLOYQT_EXE}
                     --verbose 0
                     --no-opengl-sw
@@ -24,7 +24,7 @@ macro(DeployQt target)
         )
 
         # SHOULD NOT BE "POST_BUILD" because pe-util might be used later on, and you want it to ignore QT libraries
-        add_custom_command(TARGET ${target}
+        add_custom_command(TARGET ${target} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different ${CMAKE_CURRENT_BINARY_DIR}/${QT_DEPS_OUTPUT_DIRNAME} $<TARGET_FILE_DIR:${target}>
         )
 

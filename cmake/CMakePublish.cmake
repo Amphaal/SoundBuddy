@@ -149,14 +149,14 @@ SET(APP_PACKAGE_LATEST_FULL ${APP_PACKAGE_LATEST}${CPACK_IFW_PACKAGE_FILE_EXTENS
 add_custom_target(zipForDeploy DEPENDS package)
 
 # zip repository
-add_custom_command(TARGET zipForDeploy
+add_custom_command(TARGET zipForDeploy POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E tar c ${CMAKE_BINARY_DIR}/repository.zip --format=zip .
     WORKING_DIRECTORY ${APP_REPOSITORY}
     COMMENT "Ziping IFW repository..."
 )
 
 # zip installer
-add_custom_command(TARGET zipForDeploy
+add_custom_command(TARGET zipForDeploy POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E rename ${CPACK_PACKAGE_FILE_NAME_FULL} ${APP_PACKAGE_LATEST_FULL}
     COMMAND ${CMAKE_COMMAND} -E tar c installer.zip --format=zip ${APP_PACKAGE_LATEST_FULL}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
@@ -164,7 +164,7 @@ add_custom_command(TARGET zipForDeploy
 )
 
 # cleanup
-add_custom_command(TARGET zipForDeploy
+add_custom_command(TARGET zipForDeploy POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E rm -r
         ${CPACK_PACKAGES_DIR} 
         ${APP_PACKAGE_LATEST_FULL}

@@ -47,7 +47,7 @@ function(HandleQtTranslation)
             )
         elseif(WIN32)
             #copy translations into output (for debug purposes)
-            add_custom_command(TARGET ${HandleQtTranslation_TARGET}   
+            add_custom_command(TARGET ${HandleQtTranslation_TARGET} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${HandleQtTranslation_TARGET}>/translations       
                 COMMAND ${CMAKE_COMMAND} -E copy_if_different ${HandleQtTranslation_QM_FILES} $<TARGET_FILE_DIR:${HandleQtTranslation_TARGET}>/translations
                 COMMENT "Copy Qt translation files"

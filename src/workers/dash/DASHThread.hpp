@@ -108,14 +108,14 @@ class DASHThread : public QThread {
                 if(!dir.exists()) return;
 
                 // Get a list of all subfolders
-                auto const folders = dir.entryInfoList();
+                auto folders = dir.entryInfoList();
 
                 // If there are fewer subfolders, no need to delete anything
                 if (folders.size() <= cacheSubdirLimit) {
                     return;
                 }
 
-                // Sort folders by creation date (oldest first)
+                // inplace sort folders by creation date (oldest first)
                 std::sort(folders.begin(), folders.end(), [](const QFileInfo &a, const QFileInfo &b) {
                     return a.birthTime() < b.birthTime();
                 });

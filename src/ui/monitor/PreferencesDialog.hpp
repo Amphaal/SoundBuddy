@@ -77,7 +77,7 @@ class PreferencesDialog : public QDialog {
             }
 
             QObject::connect(
-                this->_launchAppAtStartupChk, &QCheckBox::stateChanged,
+                this->_launchAppAtStartupChk, &QCheckBox::checkStateChanged,
                 this, &PreferencesDialog::_mightAddAppToStartup
             );
 
@@ -93,9 +93,9 @@ class PreferencesDialog : public QDialog {
 
     QCheckBox* _launchAppAtStartupChk;
 
-    void _mightAddAppToStartup() {
+    void _mightAddAppToStartup(Qt::CheckState checkState) {
         PlatformHelper::switchStartupLaunch();
-        this->_appSettings->setValue(AppSettings::MUST_RUN_AT_STARTUP, this->_launchAppAtStartupChk->isChecked());
+        this->_appSettings->setValue(AppSettings::MUST_RUN_AT_STARTUP, Qt::CheckState::Checked == checkState);
     }
 
     void closeEvent(QCloseEvent *event) override {

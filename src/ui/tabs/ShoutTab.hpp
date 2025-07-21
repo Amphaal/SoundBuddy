@@ -37,7 +37,7 @@ class ShoutTab : public TemplateTab {
         this->tButton->setText(tr("Connect to %1").arg(musicAppName()));
 
         QObject::connect(
-            this->checkAutoLaunch, &QCheckBox::stateChanged,
+            this->checkAutoLaunch, &QCheckBox::checkStateChanged,
             this, &ShoutTab::changeAutoLaunch
         );
 
@@ -54,7 +54,7 @@ class ShoutTab : public TemplateTab {
     AppSettings* _appSettings;
     QCheckBox* checkAutoLaunch = nullptr;
 
-    void changeAutoLaunch(bool isChecked) {
-        _appSettings->setValue(AppSettings::MUST_AUTORUN_SHOUT, isChecked);
+    void changeAutoLaunch(Qt::CheckState checkState) {
+        _appSettings->setValue(AppSettings::MUST_AUTORUN_SHOUT, checkState == Qt::CheckState::Checked);
     }
 };
