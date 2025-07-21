@@ -286,7 +286,11 @@ void MainWindow::runMBeat() {
     thread->start();
 }
 
-void MainWindow::_runDASH() {
+void MainWindow::_mayRunDASHStreamer() {
+    if (!this->appSettings.isDashStreamFeatureEnabled()) {
+        return;
+    }
+
     assert(this->shoutWorker);
     auto &thread = this->dashWorker;
 
@@ -383,7 +387,8 @@ void MainWindow::runShouts() {
 
     thread->start();
 
-    _runDASH();
+    //
+    _mayRunDASHStreamer();
 }
 
 void MainWindow::runFeeder() {

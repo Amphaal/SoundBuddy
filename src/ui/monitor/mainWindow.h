@@ -137,5 +137,5 @@ class MainWindow : public QMainWindow {
     void runMBeat();
     void runShouts();
     void runFeeder();
-    void _runDASH();
+    void _mayRunDASHStreamer();
 };

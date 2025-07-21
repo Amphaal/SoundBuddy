@@ -79,7 +79,7 @@
     <message>
         <location filename="../workers/feeder/FeederThread.cpp" line="137"/>
         <source>Went from %1 to %2</source>
-        <translation type="unfinished">On passe de %1 à %2</translation>
+        <translation>On passe de %1 à %2</translation>
     </message>
     <message>
         <location filename="../workers/feeder/FeederThread.cpp" line="155"/>
@@ -328,7 +328,7 @@
     <message>
         <location filename="../ui/monitor/PreferencesDialog.hpp" line="69"/>
         <source>Launch %1 at system boot</source>
-        <translation>Lancer %1 au demarrage système</translation>
+        <translation>Lancer %1 au démarrage système</translation>
     </message>
 </context>
 <context>
@@ -420,10 +420,6 @@
         <location filename="../workers/shout/ShoutThread.cpp" line="322"/>
         <source>Connecting to %1 ...</source>
         <translation>Connexion à %1 ...</translation>
-    </message>
-    <message>
-        <source>Went from %1 to %2</source>
-        <translation type="vanished">On passe de %1 à %2</translation>
     </message>
 </context>
 </TS>

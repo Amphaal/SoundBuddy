@@ -39,7 +39,10 @@ class PreferencesDialog : public QDialog {
         auto layout = new QGridLayout;
         this->setLayout(layout);
 
+        //
         // Platform connectivity
+        //
+
         auto connectivityGroup = new QGroupBox(tr("%1 connectivity").arg(DEST_PLATFORM_PRODUCT_NAME), this);
         connectivityGroup->setLayout(new QVBoxLayout);
 
@@ -62,7 +65,10 @@ class PreferencesDialog : public QDialog {
 
         layout->addWidget(connectivityGroup);
 
+        //
         // Automation
+        //
+
         auto automationGroup = new QGroupBox(tr("Automation"), this);
         automationGroup->setLayout(new QVBoxLayout);
 
@@ -82,6 +88,20 @@ class PreferencesDialog : public QDialog {
             );
 
         layout->addWidget(automationGroup);
+
+        //
+        // Experimental features
+        //
+
+        auto experimentalGroup = new QGroupBox(tr("Experimental"), this);
+        experimentalGroup->setLayout(new QVBoxLayout);
+
+            this->_enableDashStreamChk = new QCheckBox(tr("Enable DASH streaming"), this);
+            this->_enableDashStreamChk->setChecked(this->_appSettings->value(AppSettings::DASH_STREAM_FEATURE_ENABLED).toBool());
+
+            experimentalGroup->layout()->addWidget(this->_enableDashStreamChk);
+
+        layout->addWidget(experimentalGroup);
     }
 
  private:
@@ -92,6 +112,7 @@ class PreferencesDialog : public QDialog {
     QLineEdit* _PlatformPasswordEdit;
 
     QCheckBox* _launchAppAtStartupChk;
+    QCheckBox* _enableDashStreamChk;
 
     void _mightAddAppToStartup(Qt::CheckState checkState) {
         PlatformHelper::switchStartupLaunch();
@@ -99,9 +120,14 @@ class PreferencesDialog : public QDialog {
     }
 
     void closeEvent(QCloseEvent *event) override {
+        //
         this->_appSettings->setValue(AppSettings::PLATFORM_HOST_URL, this->_PlatformURLEdit->text());
         this->_appSettings->setValue(AppSettings::PLATFORM_USERNAME, this->_PlatformUsernameEdit->text());
         this->_appSettings->setValue(AppSettings::PLATFORM_PASSWORD, this->_PlatformPasswordEdit->text());
+        //
+        this->_appSettings->setValue(AppSettings::DASH_STREAM_FEATURE_ENABLED, this->_enableDashStreamChk->isChecked());
+
+        //
         this->_appSettings->sync();
     }
 };
