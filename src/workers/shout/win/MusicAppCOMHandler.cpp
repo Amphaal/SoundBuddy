@@ -34,8 +34,9 @@ void MusicAppCOMHandler::_shoutCurrentTrack() {
     auto currentTrack = this->_musicAppObj->querySubObject("CurrentTrack");
     
     // no current track, shout empty
-    if(!currentTrack || currentTrack->isNull()) 
+    if(!currentTrack || currentTrack->isNull()) {
         return this->_worker->shoutEmpty();
+    }
     
     //
     this->_shoutFromCOMObj(currentTrack);
@@ -48,26 +49,25 @@ bool MusicAppCOMHandler::_isMusicAppPlaying() const {
 }
 
 void MusicAppCOMHandler::_shoutFromCOMObj(QAxObject* obj) {
-    ShoutPayload payload;
-
-    // get values for shout from Player state
-    payload.iPlayerPosMS = this->_musicAppObj->property("PlayerPositionMS").toInt();
-    payload.iPlayerState = this->_isMusicAppPlaying();
-
     // get values for shout from Track
-    payload.tName = obj->property("Name").toString();
-    payload.tAlbum = obj->property("Album").toString();
-    payload.tArtist = obj->property("Artist").toString();
-    payload.tGenre = obj->property("Genre").toString();
-    payload.iDuration = obj->property("Duration").toInt();
-    payload.tDatePlayed = obj->property("PlayedDate").toDateTime().toString(Qt::ISODate);
-    payload.tDateSkipped = obj->property("SkippedDate").toDateTime().toString(Qt::ISODate);
-    payload.tYear = obj->property("Year").toInt();
-    payload.tFileLocation = obj->property("Location").toString();
+    ShoutPayload payload;
+        payload.tName = obj->property("Name").toString();
+        payload.tAlbum = obj->property("Album").toString();
+        payload.tArtist = obj->property("Artist").toString();
+        payload.tGenre = obj->property("Genre").toString();
+        payload.iDuration = obj->property("Duration").toInt();
+        payload.tDatePlayed = obj->property("PlayedDate").toDateTime().toString(Qt::ISODate);
+        payload.tDateSkipped = obj->property("SkippedDate").toDateTime().toString(Qt::ISODate);
+        payload.tYear = obj->property("Year").toInt();
+        payload.tFileLocation = obj->property("Location").toString();
 
-    // clear
+    // clear asap
     obj->clear();
     delete obj;
+
+        // get values for shout from Player state
+        payload.iPlayerPosMS = this->_musicAppObj->property("PlayerPositionMS").toInt();
+        payload.iPlayerState = this->_isMusicAppPlaying();
 
     // compare with old shout, if equivalent, don't reshout
     const auto shouldUpload = this->_worker->shouldUpload(payload);
@@ -84,12 +84,18 @@ void MusicAppCOMHandler::onPlayerStateChanged(QVariant currentTrackAsCOM) {
 }
 
 void MusicAppCOMHandler::onPeriodicalCheckJumpingTrack() {
-    //
-    const auto track = this->_musicAppObj->querySubObject("CurrentTrack");
-    if (track == nullptr) return;
-
-    const auto location = track->property("Location").toString();
+    // IMPORTANT NOTE: FOR SOME REASON, we have to check for pos first; if not, we'll end up locking both iTunes and SoundBuddy !
+    // TODO: find a way to not trigger "log errors-only" when attempting to check player pos when no tune is played...
     const auto posMS = this->_musicAppObj->property("PlayerPositionMS").toInt();
+
+    // THEN, AND ONLY THEN, extract location from current track
+    auto currentTrack = this->_musicAppObj->querySubObject("CurrentTrack");
+    if (!currentTrack) {
+        return;
+    }
+    const auto location = currentTrack->property("Location").toString();
+    currentTrack->clear();
+    delete currentTrack;
 
     //
     if (location != _jTracker.lLocation) {
