@@ -95,190 +95,160 @@
 <context>
     <name>MBeatThread</name>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="102"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="96"/>
         <source>Logged as &quot;%1&quot;</source>
         <translation>Connecté en tant que &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="192"/>
-        <source>Credential data missing</source>
-        <translation>Données manquantes pour l&apos;identification</translation>
-    </message>
-    <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="194"/>
-        <source>Empty users database</source>
-        <translation>Base de données utilisateur vide</translation>
-    </message>
-    <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="196"/>
-        <source>Username not found in database</source>
-        <translation>Utilisateur introuvable dans la base de données</translation>
-    </message>
-    <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="198"/>
-        <source>Password for the user not found in database</source>
-        <translation>Mot de passe de l&apos;utilisateur introuvable</translation>
-    </message>
-    <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="200"/>
-        <source>Password missmatch</source>
-        <translation>Mot de passe incorrect</translation>
-    </message>
-    <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="202"/>
-        <source>Unknown error from the validation request</source>
-        <translation>Erreur inconnue suite à la tentative de validation</translation>
-    </message>
-    <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="205"/>
-        <source>Server responded with : &quot;%1&quot;</source>
-        <translation>Reponse serveur : &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="132"/>
-        <source>Reconnecting to server...</source>
-        <translation>Reconnexion au serveur...</translation>
-    </message>
-    <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="51"/>
-        <source>Connecting to server...</source>
-        <translation>Connexion au serveur...</translation>
-    </message>
-    <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="33"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="40"/>
         <source>Waiting for appropriate credentials.</source>
         <translation>En attente d&apos;identifiants appropriés.</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="177"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="141"/>
         <source>Asking for credentials validation...</source>
         <translation>Demande de validation des identifiants...</translation>
     </message>
     <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="60"/>
+        <location filename="../workers/mBeat/MBeatThread.cpp" line="84"/>
         <source>An error occured while connecting with %1 platform : %2</source>
         <translation>Une erreur s&apos;est produite pendant la connexion à la plateforme %1 : %2</translation>
-    </message>
-    <message>
-        <location filename="../workers/mBeat/MBeatThread.cpp" line="78"/>
-        <source>Issue while reading response from %1 platform.</source>
-        <translation>Erreur durant la lecture de la réponse de la plateforme %1.</translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="401"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="548"/>
         <source>Options</source>
         <translation>Options</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="404"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="551"/>
         <source>Check for updates</source>
         <translation>Vérification de mises à jour</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="426"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="573"/>
         <source>Searching for updates...</source>
         <translation>Recherche des mises à jour...</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="434"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="581"/>
         <source>File</source>
         <translation>Fichier</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="475"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="636"/>
         <source>Open monitor...</source>
         <translation>Ouvrir le tableau de bord</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="437"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="584"/>
         <source>My %1</source>
         <translation>Mon %1</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="452"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="599"/>
         <source>Read latest upload warnings report</source>
         <translation>Visualiser les derniers avertissements d&apos;export</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="460"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="607"/>
         <source>Access upload data folder</source>
         <translation>Accéder aux données d&apos;export</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="467"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="614"/>
+        <source>Access DASH folder</source>
+        <translation>Accéder au dossier DASH</translation>
+    </message>
+    <message>
+        <location filename="../ui/monitor/mainWindow.cpp" line="628"/>
         <source>Quit</source>
         <translation>Quitter</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="515"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="678"/>
         <source>Shout worker running !</source>
         <translation>Shout en cours !</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="516"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="679"/>
         <source>Shout worker is actually running : Are you sure you want to exit ?</source>
         <translation>Les shouts sont actuellement scannés : Voulez-vous vraiment quitter ?</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="141"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="205"/>
         <source>Checking updates</source>
         <translation>Vérifier les mises à jour</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="142"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="206"/>
         <source>No updates available at the time.</source>
         <translation>Pas de mises à jour disponibles pour le moment.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="156"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="220"/>
         <source>Update Available</source>
         <translation>Mise à jour disponible</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="157"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="221"/>
         <source>An update is available for %1. Would you like to install it now ?</source>
         <translation>Une mise à jour a été trouvé pour %1. Voulez-vous l&apos;installer maintenant ?</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="111"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="175"/>
         <source>No remote URL given, probably because of an issue with the executable. Contact the developpers.</source>
         <translation>Aucune URL distante trouvée, probablement parce qu&apos;il y a un problème avec l&apos;executable. Contactez les développeurs.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="114"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="97"/>
+        <source>No warnings found</source>
+        <translation>Aucun avertissements trouvés</translation>
+    </message>
+    <message>
+        <location filename="../ui/monitor/mainWindow.cpp" line="97"/>
+        <source>Congratulations, your latest export was flawless !</source>
+        <translation>Félicitations, votre dernier export était sans fautes !</translation>
+    </message>
+    <message>
+        <location filename="../ui/monitor/mainWindow.cpp" line="122"/>
+        <source>Missing !</source>
+        <translation>Manquant !</translation>
+    </message>
+    <message>
+        <location filename="../ui/monitor/mainWindow.cpp" line="178"/>
         <source>Issue while finding the local package manifest.</source>
         <translation>Problème durant la recherche du manifeste de package local.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="117"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="181"/>
         <source>Issue while reading the local package manifest.</source>
         <translation>Problème durant la lecture du manifeste de package local.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="120"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="184"/>
         <source>Issue while finding the remote package update manifest.</source>
         <translation>Problème durant la recherche du manifeste de package distant.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="123"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="187"/>
         <source>Issue while reading the remote package update manifest.</source>
         <translation>Problème durant la lecture du manifeste de package distant.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="127"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="191"/>
         <source>No specified code linked to the error happening. Contact the developpers.</source>
         <translation>Aucun code erreur lié au problème en cours. Contactez les développeurs.</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="133"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="197"/>
         <source>Error while checking updates</source>
         <translation>Erreur durant la vérification des mises à jour</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/mainWindow.cpp" line="445"/>
+        <location filename="../ui/monitor/mainWindow.cpp" line="592"/>
         <source>Preferences</source>
         <translation>Paramètres</translation>
     </message>
@@ -301,34 +271,44 @@
         <translation>Paramètres</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/PreferencesDialog.hpp" line="51"/>
+        <location filename="../ui/monitor/PreferencesDialog.hpp" line="54"/>
         <source>Host URL</source>
         <translation>URL hôte</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/PreferencesDialog.hpp" line="43"/>
+        <location filename="../ui/monitor/PreferencesDialog.hpp" line="46"/>
         <source>%1 connectivity</source>
         <translation>Connectivité %1</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/PreferencesDialog.hpp" line="52"/>
+        <location filename="../ui/monitor/PreferencesDialog.hpp" line="55"/>
         <source>Username</source>
         <translation>Nom d&apos;utilisateur</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/PreferencesDialog.hpp" line="53"/>
+        <location filename="../ui/monitor/PreferencesDialog.hpp" line="56"/>
         <source>Password</source>
         <translation>Mot de passe</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/PreferencesDialog.hpp" line="66"/>
+        <location filename="../ui/monitor/PreferencesDialog.hpp" line="72"/>
         <source>Automation</source>
         <translation>Automatisation</translation>
     </message>
     <message>
-        <location filename="../ui/monitor/PreferencesDialog.hpp" line="69"/>
+        <location filename="../ui/monitor/PreferencesDialog.hpp" line="75"/>
         <source>Launch %1 at system boot</source>
         <translation>Lancer %1 au démarrage système</translation>
+    </message>
+    <message>
+        <location filename="../ui/monitor/PreferencesDialog.hpp" line="96"/>
+        <source>Experimental</source>
+        <translation>Expérimental</translation>
+    </message>
+    <message>
+        <location filename="../ui/monitor/PreferencesDialog.hpp" line="99"/>
+        <source>Enable DASH streaming</source>
+        <translation>Activer le streaming DASH</translation>
     </message>
 </context>
 <context>
@@ -365,59 +345,57 @@
 <context>
     <name>ShoutThread</name>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="59"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="64"/>
         <source>%1: Shouting -&gt; Nothing</source>
         <translation>%1: Shouting -&gt; Rien</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="92"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="114"/>
         <source>An error occured while shouting tracks infos to %1 platform : %2</source>
         <translation>Une erreur s&apos;est produite pendant le shout des informations du morceau à la plateforme %1 : %2</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="177"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="187"/>
         <source>playing</source>
         <translation>joue</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="177"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="187"/>
         <source>paused</source>
         <translation>en pause</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="181"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="191"/>
         <source>%1: Shouting -&gt; %2 - %3 - %4 (%5)</source>
         <translation>%1: Shouting -&gt; %2 - %3 - %4 (%5)</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="200"/>
-        <location filename="../workers/shout/ShoutThread.cpp" line="307"/>
+        <location filename="../workers/shout/ShoutThread.win.cpp" line="36"/>
         <source>Waiting for %1 to launch...</source>
         <translation>J&apos;attends que l&apos;app %1 se lance...</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="289"/>
-        <location filename="../workers/shout/ShoutThread.cpp" line="368"/>
+        <location filename="../workers/shout/ShoutThread.win.cpp" line="97"/>
         <source>Stopped listening to %1.</source>
         <translation>J&apos;ai fini d&apos;écouter %1.</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="335"/>
+        <location filename="../workers/shout/ShoutThread.win.cpp" line="64"/>
         <source>Initializing communication...</source>
         <translation>Initialisation de la communication...</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="359"/>
+        <location filename="../workers/shout/ShoutThread.win.cpp" line="88"/>
         <source>Listening to %1 !</source>
         <translation>J&apos;écoute %1 !</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="430"/>
+        <location filename="../workers/shout/ShoutThread.win.cpp" line="156"/>
         <source>Waiting for %1 to launch again...</source>
         <translation>J&apos;attends qu&apos;%1 se relance...</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="322"/>
+        <location filename="../workers/shout/ShoutThread.win.cpp" line="51"/>
         <source>Connecting to %1 ...</source>
         <translation>Connexion à %1 ...</translation>
     </message>

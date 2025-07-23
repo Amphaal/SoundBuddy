@@ -31,228 +31,160 @@ void MBeatThread::run() {
     qDebug("MBeat: Start");
 
     //
+    // Check connectivity infos
+    //
+
     if(!_connectivityInfos.areOK) {
+        //
         emit updateConnectivityStatus(
             tr("Waiting for appropriate credentials."),
             ConnectivityIndicator::NOK
         );
+
+        //
         return;
     }
 
     //
-    QUrl url(this->_connectivityInfos.getSoundSentryUrl() + "/login");
-    auto url_host = url.host();
-    const auto wantsUnsecure = url_host == "localhost" || url_host == "127.0.0.1";
-    url.setScheme(wantsUnsecure ? "ws" : "wss");
+    // Setup
+    //
 
     //
-    QWebSocket socket;
+    QNetworkAccessManager _manager;
+    auto request = this->_createPOSTRequest();
 
     //
+    QTimer pingTimer;
+    pingTimer.setSingleShot(true); // will require manual re-trigger
+
+    // on heartbeat intervals...
     QObject::connect(
-        &socket, &QWebSocket::stateChanged,
-        [this, &socket, &url](QAbstractSocket::SocketState state) {
-            switch(state) {
-                case QAbstractSocket::SocketState::HostLookupState:
-                case QAbstractSocket::SocketState::ConnectingState: {
-                    _hbState.basicMessage();
-                    emit updateConnectivityStatus(
-                        tr("Connecting to server..."),
-                        ConnectivityIndicator::ONGOING
-                    );
-                }  
-                break;
-
-                case QAbstractSocket::SocketState::UnconnectedState: {
-                    qDebug("MBeat: Cannot connect.");
-                    _hbState.registerReconnection();
-                }
-                break;
-
-                default: {
-                    // nothing to do
-                }
-                break;
-            }
-        }
-    );
-
-    qDebug("MBeat: Open...");
-    socket.open(url);
-
-    // handling errors
-    QObject::connect(
-        &socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::errorOccurred),
-        [this, &socket](QAbstractSocket::SocketError error) {
+        &pingTimer, &QTimer::timeout,
+        [this, &pingTimer, request, &_manager]() {
             //
-            _hbState.errorHappened();
-            emit updateConnectivityStatus(
-                tr("An error occured while connecting with %1 platform : %2")
-                    .arg(DEST_PLATFORM_PRODUCT_NAME)
-                    .arg(socket.errorString()),
-                ConnectivityIndicator::NOK
+            auto reply = this->_checkCredentials(request, &_manager);
+
+            // on finished
+            QObject::connect(
+                reply, &QNetworkReply::finished,
+                [this, &pingTimer, reply]() {
+                    // get HTTP status code
+                    const auto httpCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+
+                    //
+                    // handle status bar update
+                    //
+
+                    if (httpCode != 200) {
+                        // get body
+                        auto rOutput = reply->readAll();
+
+                        //
+                        emit updateConnectivityStatus(
+                            tr("An error occured while connecting with %1 platform : %2")
+                                .arg(DEST_PLATFORM_PRODUCT_NAME)
+                                .arg(rOutput.isEmpty() ? reply->errorString() : rOutput),
+                            ConnectivityIndicator::NOK
+                        );
+
+                        //
+                        qDebug("MBeat: Failure !");
+
+                    } else {
+                        //
+                        emit updateConnectivityStatus(
+                            tr("Logged as \"%1\"")
+                                .arg(_connectivityInfos.username),
+                            ConnectivityIndicator::OK
+                        );
+
+                        //
+                        qDebug("MBeat: Credentials OK !");
+                    }
+
+                    //
+                    // handle thread lifecycle
+                    //
+
+                    // if credentials are not accepted, no need to loop back again, user needs to update them.
+                    if (httpCode == 403) {
+                        this->quit(); // exit loop and thread
+                    } else {
+                        // get rid of this reply
+                        reply->deleteLater();
+
+                        // will retry to confirm 
+                        pingTimer.setInterval(HEARTBEAT_INTERVAL_MS);
+                        pingTimer.start();
+                        qDebug("MBeat: Will retry soon.");
+                    }
+                }
             );
         }
     );
 
-    // handling messages
-    QObject::connect(
-        &socket, &QWebSocket::textMessageReceived,
-        [this, &socket](const QString &message) {
-            //
-            QJsonParseError parseError;
-            auto document = QJsonDocument::fromJson(message.toUtf8(), &parseError);
-
-            auto parseErr = [this]() {
-                //
-                _hbState.errorHappened();
-                emit updateConnectivityStatus(
-                    tr("Issue while reading response from %1 platform.")
-                        .arg(DEST_PLATFORM_PRODUCT_NAME),
-                    ConnectivityIndicator::NOK
-                );
-            };
-
-            //
-            if (parseError.error != QJsonParseError::ParseError::NoError || !document.isObject()) {
-                parseErr();
-                return;
-            }
-
-            const auto jsonObj = document.object();
-            const auto msgType = jsonObj.value("id").toString();
-            const auto msgContent = jsonObj.value("r").toString();
-
-            //
-            //
-            //
-
-            //
-            if(msgType == "credentialsChecked") {
-                if(msgContent == "ok") {
-                    //
-                    _hbState.basicMessage();
-                    qDebug("MBeat: Credentials OK !");
-                    emit updateConnectivityStatus(
-                        tr("Logged as \"%1\"")
-                            .arg(_connectivityInfos.username),
-                        ConnectivityIndicator::OK
-                    );
-                } else {
-                    //
-                    _hbState.errorHappened();
-                    emit updateConnectivityStatus(
-                        _onCredentialsErrorMsg(msgContent),
-                        ConnectivityIndicator::NOK
-                    );
-                }
-            } else if (msgType == "databaseUpdated") {
-                qDebug("MBeat: Must Refresh credentials.");
-                this->_checkCredentials(socket);
-            } else {
-                parseErr();
-            }
-        }
-    );
-
-    // ping/pong feature
-    QTimer pingTimer;
-    pingTimer.setInterval(HEARTBEAT_INTERVAL);
+    // configure timer to trigger immediately after loop starts
+    pingTimer.setInterval(0);
     pingTimer.start();
 
-        // on heartbeat intervals...
-        QObject::connect(
-            &pingTimer, &QTimer::timeout,
-            [this, &socket, &url]() {
-                // qDebug("MBeat: Checking pulse...");
-                _hbState.cycled([this, &socket, &url]{
-                    //
-                    _hbState.pingOrReconnect([&socket] () {
-                        socket.ping();
-                    }, [&socket, &url] () {
-                        socket.open(url);
-                    });
-
-                    emit updateConnectivityStatus(
-                        tr("Reconnecting to server..."),
-                        ConnectivityIndicator::ONGOING
-                    );
-                }, [&socket]() {
-                    socket.ping();
-                });
-            }
-        );
-
-        // when response to pings are received
-        QObject::connect(
-            &socket, &QWebSocket::pong,
-            [this, &socket](quint64 elapsedTime, const QByteArray &payload) {
-                // tell we received pong
-                _hbState.ackPong([this, &socket]() {
-                    // if heartbeat failed somehow, recheck credentials
-                    this->_checkCredentials(socket);
-                });
-            }
-        );
-
-    // on connection !
-    QObject::connect(
-        &socket, &QWebSocket::connected,
-        [this, &socket, &pingTimer]() {
-            qDebug("MBeat: Connected !");
-            //
-            _hbState.resetAnyReconnectionRegistered();
-
-             // will (re)start periodically ping service for heartbeats
-            // qDebug("MBeat: Ping...");
-            socket.ping();
-            pingTimer.start();
-
-            // 
-            this->_checkCredentials(socket);
-        }
-    );
-
-
+    // start loop
     this->exec();
 
+    // loop has exited
     qDebug("MBeat: Shutdown");
 }
 
-void MBeatThread::_checkCredentials(QWebSocket &socket) {
+QNetworkReply* MBeatThread::_checkCredentials(QNetworkRequest* request, QNetworkAccessManager* manager) {
     //
     qDebug("MBeat: Checking credentials...");
-    _hbState.basicMessage();
     emit updateConnectivityStatus(
         tr("Asking for credentials validation..."),
         ConnectivityIndicator::ONGOING
     );
 
     //
-    QJsonObject payload;
-    payload["id"] = "checkCredentials";
-    payload["r"] = this->_connectivityInfos.password;
-    socket.sendTextMessage(QJsonDocument{payload}.toJson());
+    auto postData = this->_createPOSTData(manager);
+
+    // reply will be deleted along QNetworkAccessManager (it is his parent by default)
+    auto reply = manager->post(*request, postData);
+    return reply;
 }
 
-const QString MBeatThread::_onCredentialsErrorMsg(const QString& returnCode) const {
-    QString msg;
+QNetworkRequest* MBeatThread::_createPOSTRequest() {
+    //
+    QUrl url(this->_connectivityInfos.getSoundHeartbeatUrl() + "/creds");
+    auto url_host = url.host();
+    const auto wantsUnsecure = url_host == "localhost" || url_host == "127.0.0.1";
+    url.setScheme(wantsUnsecure ? "http" : "https");
+    
+    // build request
+    auto request = new QNetworkRequest(url);
+    request->setTransferTimeout(REQUEST_TIMEOUT_MS); // setup an earlier timeout
+    request->setRawHeader("Accept-Language", QLocale::system().name().toUtf8());
+    request->setRawHeader("X-Client-Id", APP_NAME);
+    request->setRawHeader("X-Client-Version", APP_CURRENT_VERSION);
 
-    if(returnCode == "cdm") {
-        msg = tr("Credential data missing");
-    } else if(returnCode == "eud") {
-        msg = tr("Empty users database");
-    } else if(returnCode == "unfid") {
-        msg = tr("Username not found in database");
-    } else if(returnCode == "nopass") {
-        msg = tr("Password for the user not found in database");
-    } else if(returnCode == "pmiss") {
-        msg = tr("Password missmatch");
-    } else {
-        return tr("Unknown error from the validation request");
-    }
+    //
+    return request;
+}
 
-    qDebug("MBeat: Credentials issue.");
+// note: cannot be reused; will be drained after any request attempt using it
+QHttpMultiPart* MBeatThread::_createPOSTData(QNetworkAccessManager* manager) {
+    //
+    auto postData = new QHttpMultiPart(QHttpMultiPart::ContentType::FormDataType, manager);
 
-    return tr("Server responded with : \"%1\"").arg(msg);
+        // username...
+        QHttpPart usernamePart;
+        usernamePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"username\""));
+        usernamePart.setBody(this->_connectivityInfos.username.toUtf8());
+
+        // password...
+        QHttpPart passwordPart;
+        passwordPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"password\""));
+        passwordPart.setBody(this->_connectivityInfos.password.toUtf8());
+
+    postData->append(usernamePart);
+    postData->append(passwordPart);
+
+    return postData;
 }

@@ -4,7 +4,7 @@
 <context>
     <name>EndInstallerForm</name>
     <message>
-        <location filename="../_ifw/EndInstallerForm.ui" line="29"/>
+        <location filename="../EndInstallerForm.ui" line="29"/>
         <source>Launch at close</source>
         <translation>Lancer automatiquement à la fermeture</translation>
     </message>

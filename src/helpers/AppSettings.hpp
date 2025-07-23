@@ -12,12 +12,14 @@ class AppSettings : public QSettings {
         const QString platformHostUrl = QString();
         const QString username = QString();
         const QString password = QString();
+
+        // Whenever infos are considered valid for usage
         bool areOK = false;
 
 
-        const QString getSoundSentryUrl() const {
+        const QString getSoundHeartbeatUrl() const {
             if(!areOK) return QString();
-            return platformHostUrl + "/sentry/" + username;
+            return platformHostUrl + "/hb";
         }
 
         const QString getPlaformHomeUrl() const {

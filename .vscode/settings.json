@@ -130,7 +130,14 @@
         "expected": "cpp",
         "*.inc": "cpp",
         "*.def": "cpp",
-        "qstandardpaths": "cpp"
+        "qstandardpaths": "cpp",
+        "qnetworkaccessmanager": "cpp",
+        "qthread": "cpp",
+        "qhttpmultipart": "cpp",
+        "qnetworkreply": "cpp",
+        "qnetworkrequest": "cpp",
+        "qurl": "cpp",
+        "qobject": "cpp"
     },
     "terminal.integrated.scrollback": 10000,
     "cmake.configureOnOpen": false

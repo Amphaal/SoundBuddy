@@ -494,16 +494,18 @@ void MainWindow::_initStatusBar() {
     this->statusLight = new TrafficLightWidget;
     this->statusLabel = new QLabel;
 
-    // define statusbar content
+    // add connectivity infos to bar
     sb_widget->setLayout(new QHBoxLayout);
     sb_widget->layout()->addWidget(this->statusLight);
     sb_widget->layout()->addWidget(this->statusLabel);
-
-    // define statusbar
     statusBar->addWidget(sb_widget);
+
+    // add DASH infos to bar
     dashProgressBar = new QProgressBar();
     dashProgressBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     statusBar->addPermanentWidget(dashProgressBar);
+
+    //
     this->setStatusBar(statusBar);
 }
 

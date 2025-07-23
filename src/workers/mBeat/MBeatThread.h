@@ -19,11 +19,14 @@
 
 #pragma once
 
+#include <QUrl>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QHttpMultiPart>
 #include <QThread>
-#include <QWebSocket>
 
 #include "src/helpers/AppSettings.hpp"
-#include "src/workers/mBeat/HeartbeatState.hpp"
 
 #include "src/ui/widgets/LightWidget.h"
 
@@ -41,11 +44,13 @@ class MBeatThread : public QThread {
 
  private:
     const AppSettings::ConnectivityInfos _connectivityInfos;
+    QNetworkReply* _checkCredentials(QNetworkRequest* request, QNetworkAccessManager* manager);
 
-    const QString _onCredentialsErrorMsg(const QString& returnCode) const;
-    void _checkCredentials(QWebSocket &socket);
+    //
+    QNetworkRequest* _createPOSTRequest();
+    QHttpMultiPart* _createPOSTData(QNetworkAccessManager* manager);
     
     // heartbeats
-    HeartbeatState _hbState;
-    static inline qint64 HEARTBEAT_INTERVAL = 10000;  // 10 sec.
+    static inline qint64 HEARTBEAT_INTERVAL_MS = 3000;  // 30 sec.
+    static inline qint64 REQUEST_TIMEOUT_MS = 3000;  // 3 sec.
 };

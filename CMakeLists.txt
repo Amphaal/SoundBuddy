@@ -39,7 +39,7 @@ SET(GITHUB_REPO_NAME "SoundBuddy")
 
 ### PLEASE LET VERSION NEXT TO PROJECT NAME !!! since cmake has no documented way to do this, We use grep to ack project version on this specific line 
 ### please make sure that project name is without whitespaces !!!
-project(${GITHUB_REPO_NAME} VERSION 0.7.0
+project(${GITHUB_REPO_NAME} VERSION 0.8.0
     DESCRIPTION "Small companion app that feeds SoundVitrine with iTunes / Music library metadata"
     HOMEPAGE_URL https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}
     LANGUAGES CXX
@@ -88,7 +88,6 @@ find_package(Qt6 REQUIRED COMPONENTS
     Core 
     Gui 
     Widgets
-    WebSockets
     Network
     LinguistTools
 )
@@ -251,6 +250,8 @@ HandleQtTranslation(
         "src/i18n/app_fr.ts"
 )
 
+add_dependencies(appExec update_translations)
+
 add_library(ifw INTERFACE)
 target_sources(ifw INTERFACE "ifw/EndInstallerForm.ui")
 
@@ -333,7 +334,6 @@ target_link_libraries(appExec PRIVATE
     Qt6::Core
     Qt6::Gui 
     Qt6::Widgets
-    Qt6::WebSockets
     Qt6::Network
 )
 
