@@ -50,14 +50,16 @@ bool MusicAppCOMHandler::_isMusicAppPlaying() const {
 void MusicAppCOMHandler::_shoutFromCOMObj(QAxObject* obj) {
     ShoutPayload payload;
 
-    // get values for shout
+    // get values for shout from Player state
+    payload.iPlayerPosMS = this->_musicAppObj->property("PlayerPositionMS").toInt();
+    payload.iPlayerState = this->_isMusicAppPlaying();
+
+    // get values for shout from Track
     payload.tName = obj->property("Name").toString();
     payload.tAlbum = obj->property("Album").toString();
     payload.tArtist = obj->property("Artist").toString();
     payload.tGenre = obj->property("Genre").toString();
     payload.iDuration = obj->property("Duration").toInt();
-    payload.iPlayerPos = this->_musicAppObj->property("PlayerPosition").toInt();
-    payload.iPlayerState = this->_isMusicAppPlaying();
     payload.tDatePlayed = obj->property("PlayedDate").toDateTime().toString(Qt::ISODate);
     payload.tDateSkipped = obj->property("SkippedDate").toDateTime().toString(Qt::ISODate);
     payload.tYear = obj->property("Year").toInt();
@@ -68,15 +70,42 @@ void MusicAppCOMHandler::_shoutFromCOMObj(QAxObject* obj) {
     delete obj;
 
     // compare with old shout, if equivalent, don't reshout
-    if(!this->_worker->shouldUpload(payload)) 
+    const auto shouldUpload = this->_worker->shouldUpload(payload);
+    if(!shouldUpload) {
         return;
+    }
 
     // shout !
     this->_worker->shoutFilled(payload);
 }
 
-void MusicAppCOMHandler::onCurrentTrackStateChanged(QVariant trackAsCOM) {
+void MusicAppCOMHandler::onPlayerStateChanged(QVariant currentTrackAsCOM) {
     _shoutCurrentTrack();
+}
+
+void MusicAppCOMHandler::onPeriodicalCheckJumpingTrack() {
+    //
+    const auto track = this->_musicAppObj->querySubObject("CurrentTrack");
+    if (track == nullptr) return;
+
+    const auto location = track->property("Location").toString();
+    const auto posMS = this->_musicAppObj->property("PlayerPositionMS").toInt();
+
+    //
+    if (location != _jTracker.lLocation) {
+        _jTracker.lLocation = location;
+        _jTracker.lPosMS = posMS;
+        return;
+    }
+
+    //
+    const auto diff = ((double)_jTracker.lPosMS) - posMS;
+    if (qFabs(diff) > 2000) {
+        _shoutCurrentTrack();
+    };
+    
+    //
+    _jTracker.lPosMS = posMS;
 }
 
 void MusicAppCOMHandler::listenUntilShutdown() {

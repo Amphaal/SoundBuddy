@@ -2,7 +2,7 @@
 
 struct ShoutPayload {
     bool iPlayerState;
-    int iPlayerPos;
+    int iPlayerPosMS;
     int iDuration;
     int tYear;
     QString tFileLocation;

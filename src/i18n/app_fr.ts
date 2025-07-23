@@ -355,47 +355,47 @@
         <translation>Une erreur s&apos;est produite pendant le shout des informations du morceau à la plateforme %1 : %2</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="187"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="188"/>
         <source>playing</source>
         <translation>joue</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="187"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="188"/>
         <source>paused</source>
         <translation>en pause</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.cpp" line="191"/>
+        <location filename="../workers/shout/ShoutThread.cpp" line="192"/>
         <source>%1: Shouting -&gt; %2 - %3 - %4 (%5)</source>
         <translation>%1: Shouting -&gt; %2 - %3 - %4 (%5)</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.win.cpp" line="36"/>
+        <location filename="../workers/shout/ShoutThread.win.cpp" line="37"/>
         <source>Waiting for %1 to launch...</source>
         <translation>J&apos;attends que l&apos;app %1 se lance...</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.win.cpp" line="97"/>
+        <location filename="../workers/shout/ShoutThread.win.cpp" line="106"/>
         <source>Stopped listening to %1.</source>
         <translation>J&apos;ai fini d&apos;écouter %1.</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.win.cpp" line="64"/>
+        <location filename="../workers/shout/ShoutThread.win.cpp" line="65"/>
         <source>Initializing communication...</source>
         <translation>Initialisation de la communication...</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.win.cpp" line="88"/>
+        <location filename="../workers/shout/ShoutThread.win.cpp" line="97"/>
         <source>Listening to %1 !</source>
         <translation>J&apos;écoute %1 !</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.win.cpp" line="156"/>
+        <location filename="../workers/shout/ShoutThread.win.cpp" line="167"/>
         <source>Waiting for %1 to launch again...</source>
         <translation>J&apos;attends qu&apos;%1 se relance...</translation>
     </message>
     <message>
-        <location filename="../workers/shout/ShoutThread.win.cpp" line="51"/>
+        <location filename="../workers/shout/ShoutThread.win.cpp" line="52"/>
         <source>Connecting to %1 ...</source>
         <translation>Connexion à %1 ...</translation>
     </message>

@@ -151,6 +151,7 @@ bool ShoutThread::shouldUpload(const ShoutPayload &payload) {
         payload.tName + 
         payload.tAlbum + 
         payload.tArtist + 
+        QString::number(payload.iPlayerPosMS) +
         (payload.tDatePlayed >= payload.tDateSkipped ? payload.tDatePlayed : payload.tDateSkipped);
 
     // check if strings are identical
@@ -179,7 +180,7 @@ void ShoutThread::shoutFilled(
     obj["artist"] = payload.tArtist;
     obj["genre"] = payload.tGenre;
     obj["duration"] = payload.iDuration;
-    obj["playerPosition"] = payload.iPlayerPos;
+    obj["playerPositionMS"] = payload.iPlayerPosMS;
     obj["playerState"] = payload.iPlayerState;
     obj["year"] = payload.tYear;
     obj["md5"] = hash;

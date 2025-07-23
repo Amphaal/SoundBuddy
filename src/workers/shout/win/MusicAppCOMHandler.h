@@ -30,10 +30,16 @@ class ShoutThread;
 class MusicAppCOMHandler : public QObject {
     Q_OBJECT
 
+   struct JumpTracker {
+      QString lLocation = QString();
+      qint64 lPosMS = 0;
+   };
+
  private:
     QAxObject* _musicAppObj;
     ShoutThread* _worker;
     QEventLoop _evtLoop;
+    JumpTracker _jTracker;
 
  public:
     MusicAppCOMHandler(QAxObject* musicAppObj, ShoutThread* worker);
@@ -42,8 +48,9 @@ class MusicAppCOMHandler : public QObject {
     void listenUntilShutdown();
 
  public slots:
-    void onCurrentTrackStateChanged(QVariant trackAsCOM);
-   void stopListening();
+    void onPlayerStateChanged(QVariant currentTrackAsCOM);
+    void onPeriodicalCheckJumpingTrack();
+    void stopListening();
  
  private:
     void _shoutCurrentTrack();

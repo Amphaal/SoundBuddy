@@ -23,6 +23,7 @@
 
 #include "src/workers/shout/win/MusicAppCOMHandler.h"
 
+#include <QTimer>
 #include <QAxObject>
 #include <windows.h>
 #include <combaseapi.h>
@@ -75,14 +76,22 @@ void ShoutThread::_startShouting() {
 
             auto oppe = QObject::connect(
                 musicAppObj, SIGNAL(OnPlayerPlayEvent(QVariant)),
-                this->_handler, SLOT(onCurrentTrackStateChanged(QVariant))
+                this->_handler, SLOT(onPlayerStateChanged(QVariant))
             );
 
             auto opse = QObject::connect(
                 musicAppObj, SIGNAL(OnPlayerStopEvent(QVariant)),
-                this->_handler, SLOT(onCurrentTrackStateChanged(QVariant))
+                this->_handler, SLOT(onPlayerStateChanged(QVariant))
             );
 
+        QTimer timer;
+        timer.setInterval(1000);
+        QObject::connect(
+            &timer, SIGNAL(timeout()),
+            this->_handler, SLOT(onPeriodicalCheckJumpingTrack())
+        );
+        timer.start();
+ 
         // log..
         emit printLog(
             tr("Listening to %1 !")
@@ -97,6 +106,8 @@ void ShoutThread::_startShouting() {
             tr("Stopped listening to %1.")
                 .arg(musicAppName())
         );
+
+        timer.deleteLater();
 
         // disconnect events
             QObject::disconnect(oatputqe);
