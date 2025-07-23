@@ -51,6 +51,6 @@ class MBeatThread : public QThread {
     QHttpMultiPart* _createPOSTData(QNetworkAccessManager* manager);
     
     // heartbeats
-    static inline qint64 HEARTBEAT_INTERVAL_MS = 3000;  // 30 sec.
+    static inline qint64 HEARTBEAT_INTERVAL_MS = 30000;  // 30 sec.
     static inline qint64 REQUEST_TIMEOUT_MS = 3000;  // 3 sec.
 };
