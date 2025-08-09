@@ -47,8 +47,12 @@ void MainWindow::onAppSettingsChanged() {
 
     // restart threads ?
     runMBeat();
-    if(this->shoutWorker && this->shoutWorker->isRunning()) runShouts();
-    if(this->feederWorker && this->feederWorker->isRunning()) runFeeder();
+    if(this->shoutWorker && this->shoutWorker->isRunning()) {
+        runShouts();
+    }
+    if(this->feederWorker && this->feederWorker->isRunning()) {
+        runFeeder();
+    }
 }
 
 void MainWindow::updateWarningsMenuItem() {
@@ -152,7 +156,7 @@ void MainWindow::openWarnings() {
 
 void MainWindow::setupAutoUpdate() {
     QObject::connect(
-        &this->updateCheckerWorker, &UpdaterThread::isNewerVersionAvailable,
+        &this->updateCheckerWorker, &UpdateCheckerThread::isNewerVersionAvailable,
         this, &MainWindow::onUpdateChecked
     );
 
@@ -276,13 +280,6 @@ void MainWindow::runMBeat() {
             thread, &QObject::deleteLater
         );
 
-        QObject::connect(
-            thread, &QObject::destroyed,
-            [&thread]() { 
-                thread = nullptr; 
-            }
-        );
-
     thread->start();
 }
 
@@ -300,7 +297,7 @@ void MainWindow::_mayRunDASHStreamer() {
         thread->wait();
     }
 
-    thread = new DASHTHREAD_NAME();
+    thread = new DASHThread();
 
         QObject::connect( 
             thread, &QThread::finished,
@@ -308,21 +305,14 @@ void MainWindow::_mayRunDASHStreamer() {
         );
 
         QObject::connect(
-            thread, &QObject::destroyed,
-            [&thread]() { 
-                thread = nullptr; 
-            }
-        );
-
-        QObject::connect(
-            thread, &DASHTHREAD_NAME::errorOccurred,
+            thread, &DASHThread::errorOccurred,
             [](const QString &err) {
                 qDebug() << err;
             }
         );
 
         QObject::connect(
-            thread,  &DASHTHREAD_NAME::muxStarted, this,
+            thread,  &DASHThread::muxStarted, this,
             [this](){
                 this->dashProgressBar->setRange(0, 100);
                 this->dashProgressBar->setValue(0);
@@ -330,7 +320,7 @@ void MainWindow::_mayRunDASHStreamer() {
         , Qt::QueuedConnection);
 
         QObject::connect(
-            thread, &DASHTHREAD_NAME::muxProgress, this,
+            thread, &DASHThread::muxProgress, this,
             [this](int64_t at, int64_t of) {
                 this->dashProgressBar->setRange(0, of);
                 this->dashProgressBar->setValue(at);
@@ -338,7 +328,7 @@ void MainWindow::_mayRunDASHStreamer() {
         Qt::QueuedConnection);
 
         QObject::connect(
-            thread,  &DASHTHREAD_NAME::muxEnding, this,
+            thread,  &DASHThread::muxEnding, this,
             [this](){
                 this->dashProgressBar->setRange(0, 0); // undetermined state
                 this->dashProgressBar->setValue(0);
@@ -346,7 +336,7 @@ void MainWindow::_mayRunDASHStreamer() {
         , Qt::QueuedConnection);
 
         QObject::connect(
-            thread, &DASHTHREAD_NAME::muxDone, this,
+            thread, &DASHThread::muxDone, this,
             [this]() {
                 this->dashProgressBar->setRange(0, 1);
                 this->dashProgressBar->setValue(1);
@@ -354,7 +344,7 @@ void MainWindow::_mayRunDASHStreamer() {
         Qt::QueuedConnection);
  
         QObject::connect(
-            this->shoutWorker, &ShoutThread::newShout,
+            this->shoutWorker, &ShoutWatcher::newAudioFileShouted,
             thread, &DASHThread::doStreamNewFile
         );
 
@@ -362,7 +352,12 @@ void MainWindow::_mayRunDASHStreamer() {
 }
 
 void MainWindow::runShouts() {
+    //
     auto &thread = this->shoutWorker;
+
+    //
+    // cleanup
+    //
 
     //
     if(thread && thread->isRunning()) {
@@ -370,20 +365,37 @@ void MainWindow::runShouts() {
         thread->wait();
     }
 
-    thread = new ShoutThread(this->appSettings.getConnectivityInfos());
+    //
+    if (this->shoutUploader) {
+        this->shoutUploader->waitForDrain();
+        this->shoutUploader->deleteLater();
+    }
 
-        this->shoutTab->bindWithWorker(thread);
-        QObject::connect( 
-            thread, &QThread::finished,
-            thread, &QObject::deleteLater
-        );
+    //
+    // instantiation and binding
+    //
 
-        QObject::connect(
-            thread, &QObject::destroyed,
-            [&thread]() { 
-                thread = nullptr; 
-            }
-        );
+    thread = new ShoutWatcher();
+    this->shoutUploader = new ShoutUploader(this->appSettings.getConnectivityInfos());
+
+    QObject::connect(
+        thread, &ShoutWatcher::shoutReadyToSend,
+        this->shoutUploader, &ShoutUploader::uploadAsShout,
+        Qt::QueuedConnection
+    );
+
+    QObject::connect( 
+        thread, &QThread::finished,
+        thread, &QObject::deleteLater
+    );
+
+    //
+    this->shoutTab->bindWithWorker(thread);
+    this->shoutTab->bindWithMessenger(this->shoutUploader);
+
+    //
+    // START !
+    //
 
     thread->start();
 
@@ -413,13 +425,6 @@ void MainWindow::runFeeder() {
         QObject::connect(
             thread, &QThread::finished,
             thread, &QObject::deleteLater
-        );
-
-        QObject::connect(
-            thread, &QObject::destroyed,
-            [&thread]() { 
-                thread = nullptr;
-            }
         );
 
     thread->start();
@@ -681,9 +686,12 @@ void MainWindow::closeEvent(QCloseEvent *event) {
             QMessageBox::No);
 
         if (msgboxRslt == QMessageBox::Yes) {
-            // makes sure to wait for shoutThread to end. Limits COM app retention on Windows
+            // makes sure to wait for ShoutWatcher to end. Limits COM app retention on Windows
             this->shoutWorker->quit();
             this->shoutWorker->wait();
+
+            //
+            shoutUploader->waitForDrain();
         } else {
             event->ignore();
             return;
@@ -692,7 +700,7 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 
     // if running 
     if (this->mbeatWorker && this->mbeatWorker->isRunning()) {
-        this->mbeatWorker->quit();   
+        this->mbeatWorker->quit();
     }
     
     // hide trayicon on shutdown for Windows, refereshes the UI frames of system tray

@@ -23,7 +23,7 @@
 #include <QString>
 
 #include "base/TemplateTab.h"
-#include "src/workers/shout/ShoutThread.h"
+#include "src/workers/shout/ShoutWatcher.h"
 
 #include "src/helpers/AppSettings.hpp"
 #include "src/i18n/trad.hpp"

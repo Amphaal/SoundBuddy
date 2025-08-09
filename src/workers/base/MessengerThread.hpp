@@ -19,38 +19,20 @@
 
 #pragma once
 
-#include <QString>
-#include <QJsonObject>
+#include "IMessenger.hpp"
 
-struct ShoutJSONParsingResult {
-    QJsonObject json;
-    QString audioFileHash;
-    bool isEmpty;
-};
+class MessengerThread : public QThread, public IMessenger {
+    Q_OBJECT
+    Q_INTERFACES(IMessenger)
 
-/** Shape of a Shout */
-struct ShoutPayload {
-    bool iPlayerState;
-    int iPlayerPosMS;
-    int iDuration;
-    int tYear;
-    QString tFileLocation;
-    QString tName;
-    QString tAlbum;
-    QString tArtist;
-    QString tGenre;
-    QString tDateSkipped;
-    QString tDatePlayed;
+ public:
+    MessengerThread() {}
+    virtual void quit() { QThread::quit(); }
 
-    /** generates shout data footprint, used to compare shout payloads for changes */
-    QString hasChangedHash() const;
-
-    /** gets the associated file's footprint */
-    QString getFileHash() const;
-
-    /** */
-    static QJsonObject toTimestampedJSON();
-
-    /** */
-    struct ShoutJSONParsingResult toJSON() const;
+ signals:
+    void forwardMessage(
+      const QString &message, 
+      const MessageType msgType = MessageType::STANDARD, 
+      const bool replacePreviousLine = false
+   );
 };

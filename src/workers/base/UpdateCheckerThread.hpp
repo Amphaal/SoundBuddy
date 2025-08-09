@@ -25,7 +25,7 @@ Q_DECLARE_METATYPE(UpdateChecker::CheckResults)
 
 #include "version.h"
 
-class UpdaterThread : public QThread {
+class UpdateCheckerThread : public QThread {
     Q_OBJECT
 
  public:

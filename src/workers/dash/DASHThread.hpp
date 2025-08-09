@@ -25,7 +25,7 @@
 #include <QMutex>
 #include <functional>
 
-#include <src/helpers/Defer.hpp>
+#include "src/helpers/Defer.hpp"
 
 extern "C" {
     #include <libavformat/avformat.h>
@@ -35,8 +35,8 @@ extern "C" {
     #include <libavutil/audio_fifo.h>
     #include <libavfilter/avfilter.h>
     #include <libswresample/swresample.h>
-#include <src/helpers/HashHelper.hpp>
-#include "DASHCreationOrder.hpp"
+    #include "src/helpers/HashHelper.hpp"
+    #include "DASHCreationOrder.hpp"
 }
 
 class DASHThread : public QThread {

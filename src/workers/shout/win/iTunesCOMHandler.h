@@ -17,40 +17,44 @@
 // for further details. Resources without explicit references to a
 // different license and copyright still refer to this GPL.
 
+#ifdef _WIN32
+
 #pragma once
 
-#include <QString>
-#include <QJsonObject>
+#include <QAxObject>
+#include <QEventLoop>
+#include <QVariant>
 
-struct ShoutJSONParsingResult {
-    QJsonObject json;
-    QString audioFileHash;
-    bool isEmpty;
+class ShoutWatcher;
+
+class iTunesCOMHandler : public QObject {
+    Q_OBJECT
+
+   struct JumpTracker {
+      QString lLocation = QString();
+      qint64 lPosMS = 0;
+   };
+
+ private:
+    QAxObject* _musicAppObj;
+    ShoutWatcher* _worker;
+    QEventLoop _evtLoop;
+    JumpTracker _jTracker;
+
+ public:
+    iTunesCOMHandler(QAxObject* musicAppObj, ShoutWatcher* worker);
+    
+    //
+    void listenUntilShutdown();
+
+ public slots:
+    void onPlayerStateChanged(QVariant currentTrackAsCOM);
+    void onPeriodicalCheckJumpingTrack();
+    void stopListening();
+ 
+ private:
+    void _processPayloadFromCurrentTrack();
+    bool _isMusicAppPlaying() const;
 };
 
-/** Shape of a Shout */
-struct ShoutPayload {
-    bool iPlayerState;
-    int iPlayerPosMS;
-    int iDuration;
-    int tYear;
-    QString tFileLocation;
-    QString tName;
-    QString tAlbum;
-    QString tArtist;
-    QString tGenre;
-    QString tDateSkipped;
-    QString tDatePlayed;
-
-    /** generates shout data footprint, used to compare shout payloads for changes */
-    QString hasChangedHash() const;
-
-    /** gets the associated file's footprint */
-    QString getFileHash() const;
-
-    /** */
-    static QJsonObject toTimestampedJSON();
-
-    /** */
-    struct ShoutJSONParsingResult toJSON() const;
-};
+#endif

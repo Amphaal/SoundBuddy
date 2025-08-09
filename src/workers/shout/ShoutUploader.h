@@ -19,38 +19,39 @@
 
 #pragma once
 
-#include <QString>
-#include <QJsonObject>
+#include <QObject>
+#include <QEventLoop>
 
-struct ShoutJSONParsingResult {
-    QJsonObject json;
-    QString audioFileHash;
-    bool isEmpty;
-};
+#include "src/workers/base/IMessenger.hpp"
+#include "src/helpers/AppSettings.hpp"
+#include "src/helpers/UploadHelper.hpp"
 
-/** Shape of a Shout */
-struct ShoutPayload {
-    bool iPlayerState;
-    int iPlayerPosMS;
-    int iDuration;
-    int tYear;
-    QString tFileLocation;
-    QString tName;
-    QString tAlbum;
-    QString tArtist;
-    QString tGenre;
-    QString tDateSkipped;
-    QString tDatePlayed;
+class ShoutUploader : public QObject, public IMessenger {
+    Q_OBJECT
+    Q_INTERFACES(IMessenger)
 
-    /** generates shout data footprint, used to compare shout payloads for changes */
-    QString hasChangedHash() const;
+ public:
+    ShoutUploader(const AppSettings::ConnectivityInfos connectivityInfos);
 
-    /** gets the associated file's footprint */
-    QString getFileHash() const;
+    //
+    void uploadAsShout(const QJsonObject &parsedShout);
 
-    /** */
-    static QJsonObject toTimestampedJSON();
+    /** will lock into an event loop until either timeout or all upload attempts finished */
+    void waitForDrain(unsigned long timeout = 1000);
 
-    /** */
-    struct ShoutJSONParsingResult toJSON() const;
+ private:
+    const AppSettings::ConnectivityInfos _connectivityInfos;
+    UploadHelper* _uploader;
+
+    //
+    int _pendingUploads = 0;
+    bool _drainTriggered = false;
+    QEventLoop* _drain = nullptr;
+
+ signals:
+    void forwardMessage(
+      const QString &message, 
+      const MessageType msgType = MessageType::STANDARD, 
+      const bool replacePreviousLine = false
+   );
 };

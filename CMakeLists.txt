@@ -149,12 +149,12 @@ file(GLOB_RECURSE APP_HPP_FILES "src/*.hpp")
 
 if (APPLE)
     list(REMOVE_ITEM APP_CPP_FILES 
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/workers/shout/win/MusicAppCOMHandler.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/workers/shout/ShoutThread.win.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/workers/shout/win/iTunesCOMHandler.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/workers/shout/ShoutWatcher.win.cpp
     )
 elseif (WIN32)
     list(REMOVE_ITEM APP_CPP_FILES 
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/workers/shout/ShoutThread.osx.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/workers/shout/ShoutWatcher.osx.cpp
     )
 endif()
 
