@@ -41,9 +41,8 @@ void ShoutUploader::waitForDrain(unsigned long timeout) {
     this->_drain = new QEventLoop;
 
 
-    //TODO(amphaal) fix segfault When QTimer still runs while _drain already exited
-    // will exit either way if draining takes too long
-    QTimer::singleShot(timeout, [this]() {
+    // note: if not setting this as context (`this` as 2cd argument), QTimer will execute whenever ShoutUploader still exists, resulting in segfault
+    QTimer::singleShot(timeout, this, [this]() {
         if (this->_drain && this->_drain->isRunning()) {
             qDebug() << "[ShoutUploader] Drain timed out. Force exiting.";
             this->_drain->exit();

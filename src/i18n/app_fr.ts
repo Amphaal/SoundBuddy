@@ -347,7 +347,7 @@
     <message>
         <location filename="../workers/shout/ShoutUploader.cpp" line="86"/>
         <source>An error occured while shouting tracks infos to %1 platform : %2</source>
-        <translation type="unfinished">Une erreur s&apos;est produite pendant le shout des informations du morceau à la plateforme %1 : %2</translation>
+        <translation>Une erreur s&apos;est produite pendant le shout des informations du morceau à la plateforme %1 : %2</translation>
     </message>
 </context>
 <context>
@@ -356,10 +356,6 @@
         <location filename="../workers/shout/ShoutWatcher.cpp" line="104"/>
         <source>%1: Shouting -&gt; Nothing</source>
         <translation>%1: Shouting -&gt; Rien</translation>
-    </message>
-    <message>
-        <source>An error occured while shouting tracks infos to %1 platform : %2</source>
-        <translation type="vanished">Une erreur s&apos;est produite pendant le shout des informations du morceau à la plateforme %1 : %2</translation>
     </message>
     <message>
         <location filename="../workers/shout/ShoutWatcher.cpp" line="60"/>

@@ -82,7 +82,7 @@ void ShoutWatcher::_execWatchSession() {
             payload.tGenre = trackData[4].toString();
             payload.iDuration = trackData[5].toInt();
             payload.tYear = trackData[6].toInt();
-            payload.iPlayerPosMS = trackData[7].toInt() * 1000; // TODO fetch MS values from script
+            payload.iPlayerPosMS = trackData[7].toInt() * 1000; // TODO get the real thing instead of emulating the millisecond track state
             payload.iPlayerState = trackData[8].toString() == "paused" ? 0 : 1;
             payload.tDateSkipped = trackData[9].toString();
             payload.tDatePlayed = trackData[10].toString();
