@@ -29,23 +29,24 @@
 #include <stdlib.h>
 
 #include "src/helpers/PlatformHelper.h"
+#include "src/helpers/UploadHelper.hpp"
 
 #include <ITunesLibraryParser.hpp>
 
 #include "src/i18n/trad.hpp"
 
-FeederThread::FeederThread(const AppSettings::ConnectivityInfos connectivityInfos) : ITNZThread(connectivityInfos) {}
+FeederThread::FeederThread(const AppSettings::ConnectivityInfos connectivityInfos) : _connectivityInfos(connectivityInfos) {}
 
 void FeederThread::run() {
     //
-    emit printLog(
+    emit forwardMessage(
         tr("WARNING ! Make sure you activated the XML file sharing in %1 > Preferences > Advanced.")
             .arg(musicAppName())
     );
 
     try {
         //
-        emit printLog(tr("Getting XML file location..."));
+        emit forwardMessage(tr("Getting XML file location..."));
 
             const auto musicAppLibPath = PlatformHelper::getMusicAppLibLocation().toStdString();
             const auto outputPath = AppSettings::getFeedOutputFilePath(false).toStdString();
@@ -59,17 +60,17 @@ void FeederThread::run() {
             );
 
         //
-        emit printLog(tr("Collecting tracks infos..."));
+        emit forwardMessage(tr("Collecting tracks infos..."));
             auto [libFile, results] = parser.getStoragedResults();
-        emit printLog(tr("Collection done !"));
+        emit forwardMessage(tr("Collection done !"));
 
         //
-        emit printLog(tr("Parsing infos into JSON..."));
+        emit forwardMessage(tr("Parsing infos into JSON..."));
 
             // if has missing fields tracks
             if(results.missingFieldsTracks.size()) {
                 //
-                emit printLog(
+                emit forwardMessage(
                     tr("WARNING ! %1 files in your library are missing important "
                     "metadata and consequently were removed from the output file ! "
                     "Please check the \"%2\" file for more informations.")
@@ -89,7 +90,7 @@ void FeederThread::run() {
             //
             if(!results.allTracksCount()) {
                 //
-                emit printLog(
+                emit forwardMessage(
                     tr("No music found in your %1 library. Please feed it some.")
                         .arg(musicAppName()),
                     MessageType::ISSUE
@@ -103,14 +104,14 @@ void FeederThread::run() {
             SuccessfulJSONParser outputParser { std::move(results.OKTracks) };
             outputParser.copyToFile(outputPath.c_str());
 
-        emit printLog(tr("Parsing done !"));
+        emit forwardMessage(tr("Parsing done !"));
 
         // send results
-        emit printLog(tr("OK, output file is ready for breakfast !"));
+        emit forwardMessage(tr("OK, output file is ready for breakfast !"));
 
         emit filesGenerated();
 
-        emit printLog(tr("Now we try to compress it..."));
+        emit forwardMessage(tr("Now we try to compress it..."));
 
             const auto output_view = outputParser.dataBuffer().view();
             auto compressedDataSize = compressBound(output_view.size()); // must be at least source len for starters, may be updated by zlib after sucessful compression
@@ -133,13 +134,13 @@ void FeederThread::run() {
             file.write(reinterpret_cast<const char *>(compressedData), compressedDataSize);
             file.close();
 
-        emit printLog(
+        emit forwardMessage(
             tr("Went from %1 to %2")
             .arg(QLocale::system().formattedDataSize(output_view.size()))
             .arg(QLocale::system().formattedDataSize(compressedDataSize))
         );
 
-        emit printLog(tr("Let's try to send now !"));
+        emit forwardMessage(tr("Let's try to send now !"));
             //
             auto qb_array = QByteArray::fromRawData(reinterpret_cast<const char *>(compressedData), compressedDataSize);
 
@@ -152,7 +153,7 @@ void FeederThread::run() {
                 qb_array,
             }, true);
 
-        emit printLog(tr("Sending... Waiting for response."));
+        emit forwardMessage(tr("Sending... Waiting for response."));
 
             // on finished
             QObject::connect(
@@ -167,12 +168,12 @@ void FeederThread::run() {
 
                     //
                     if (!rOutput.isEmpty()) {
-                        emit printLog(
+                        emit forwardMessage(
                             tr("Server responded: %1")
                                 .arg(rOutput)
                         );
                     } else {
-                        emit printLog(
+                        emit forwardMessage(
                             tr("No feedback from the server ? Strange... Please check the targeted host."),
                             MessageType::WARNING
                         );
@@ -188,10 +189,10 @@ void FeederThread::run() {
                 response, &QNetworkReply::errorOccurred,
                 [this, response](QNetworkReply::NetworkError) {
                     //
-                    emit printLog(
+                    emit forwardMessage(
                         tr("An error occured while sending tracks infos to %1 platform : %2")
                             .arg(DEST_PLATFORM_PRODUCT_NAME)
-                            .arg(prettyPrintErrorNetworkMessage(response)),
+                            .arg(IMessenger::prettyPrintErrorNetworkMessage(response)),
                         MessageType::ISSUE
                     );
 
@@ -212,7 +213,7 @@ void FeederThread::run() {
     //
     } catch (const std::exception& e) {
         // emit error as log
-        emit printLog(
+        emit forwardMessage(
             QString(e.what()),
             MessageType::ISSUE
         );

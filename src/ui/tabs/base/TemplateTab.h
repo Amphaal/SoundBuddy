@@ -27,24 +27,30 @@
 #include <QWindow>
 #include <QStyle>
 
-#include "src/workers/base/ITNZThread.hpp"
+#include "src/workers/base/MessengerThread.hpp"
 
 #include "LogScrollView.hpp"
 
 class TemplateTab : public QWidget {
+  Q_OBJECT 
+
  public:
     explicit TemplateTab(QWidget* parent = nullptr);
     QPushButton* tButton = nullptr;
-    void bindWithWorker(ITNZThread *bThread);
+
+    void bindWithWorker(MessengerThread *bThread);
+    void bindWithMessenger(IMessenger *bMessenger);
 
  protected:
-    ITNZThread* bThread = nullptr;
+    MessengerThread* bThread = nullptr;
     LogScrollView* lsv = nullptr;
     QScrollArea* scrollArea = nullptr;
 
     void scrollUpdate(int min, int max);
 
     void createNewLog();
+
+ protected slots:
     void printLog(const QString &message, const MessageType &msgType, const bool replacePreviousLine);
     void onThreadEnd();
     void onThreadStart();

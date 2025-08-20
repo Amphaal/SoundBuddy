@@ -62,19 +62,27 @@ void TemplateTab::onThreadStart() {
     this->createNewLog();
 }
 
-void TemplateTab::bindWithWorker(ITNZThread *bThread) {
-    QObject::connect(
-        bThread, &ITNZThread::printLog,
-        this, &TemplateTab::printLog
-    );
+void TemplateTab::bindWithWorker(MessengerThread *bThread) {
+    //
+    this->bindWithMessenger(bThread);
 
     QObject::connect(
         bThread, &QThread::started,
-        this, &TemplateTab::onThreadStart
+        this, &TemplateTab::onThreadStart,
+        Qt::UniqueConnection
     );
 
     QObject::connect(
         bThread, &QThread::finished,
-        this, &TemplateTab::onThreadEnd
+        this, &TemplateTab::onThreadEnd,
+        Qt::UniqueConnection
+    );
+}
+
+void TemplateTab::bindWithMessenger(IMessenger *bMessenger) {
+    QObject::connect(
+        dynamic_cast<QObject*>(bMessenger), SIGNAL(forwardMessage(const QString &, const MessageType &, const bool)),
+        this, SLOT(printLog(const QString &, const MessageType &, const bool)),
+        Qt::UniqueConnection
     );
 }

@@ -39,7 +39,7 @@ SET(GITHUB_REPO_NAME "SoundBuddy")
 
 ### PLEASE LET VERSION NEXT TO PROJECT NAME !!! since cmake has no documented way to do this, We use grep to ack project version on this specific line 
 ### please make sure that project name is without whitespaces !!!
-project(${GITHUB_REPO_NAME} VERSION 0.9.1
+project(${GITHUB_REPO_NAME} VERSION 0.9.2
     DESCRIPTION "Small companion app that feeds SoundVitrine with iTunes / Music library metadata"
     HOMEPAGE_URL https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}
     LANGUAGES CXX
@@ -149,12 +149,12 @@ file(GLOB_RECURSE APP_HPP_FILES "src/*.hpp")
 
 if (APPLE)
     list(REMOVE_ITEM APP_CPP_FILES 
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/workers/shout/win/MusicAppCOMHandler.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/workers/shout/ShoutThread.win.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/workers/shout/win/iTunesCOMHandler.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/workers/shout/ShoutWatcher.win.cpp
     )
 elseif (WIN32)
     list(REMOVE_ITEM APP_CPP_FILES 
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/workers/shout/ShoutThread.osx.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/workers/shout/ShoutWatcher.osx.cpp
     )
 endif()
 

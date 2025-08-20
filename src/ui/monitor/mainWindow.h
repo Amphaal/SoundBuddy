@@ -42,19 +42,18 @@
 
 #include "src/helpers/PlatformHelper.h"
 
+#include "src/workers/shout/ShoutUploader.h"
 #include "src/ui/tabs/ShoutTab.hpp"
 #include "src/ui/tabs/FeederTab.hpp"
 #include "src/workers/mBeat/MBeatThread.h"
-#include "src/workers/base/UpdaterThread.hpp"
+#include "src/workers/base/UpdateCheckerThread.hpp"
 
 #include "src/ui/widgets/TraficLight.hpp"
 
 #include "src/helpers/AppSettings.hpp"
 #include "src/ui/monitor/PreferencesDialog.hpp"
 
-#include <src/workers/dash/DASHThread.hpp>
-
-#define DASHTHREAD_NAME DASHThread
+#include "src/workers/dash/DASHThread.hpp"
 
 class MainWindow : public QMainWindow {
    Q_OBJECT
@@ -128,11 +127,12 @@ class MainWindow : public QMainWindow {
     void _initUITabs();
 
     // workers
-    ShoutThread* shoutWorker = nullptr;
+    ShoutWatcher* shoutWorker = nullptr;
+    ShoutUploader* shoutUploader = nullptr;
     FeederThread* feederWorker = nullptr;
     MBeatThread* mbeatWorker = nullptr;
-    DASHTHREAD_NAME* dashWorker = nullptr;
-    UpdaterThread updateCheckerWorker;
+    DASHThread* dashWorker = nullptr;
+    UpdateCheckerThread updateCheckerWorker;
 
     void runMBeat();
     void runShouts();

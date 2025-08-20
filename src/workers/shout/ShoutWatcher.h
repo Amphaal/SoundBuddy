@@ -20,25 +20,50 @@
 #pragma once
 
 #include <QString>
+#include <QJsonObject>
 
 #include "src/workers/base/MessengerThread.hpp"
 #include "src/helpers/AppSettings.hpp"
+#include "src/helpers/UploadHelper.hpp"
 
-class FeederThread : public MessengerThread {
-  Q_OBJECT
+#ifdef _WIN32
+    #include "src/workers/shout/win/iTunesCOMHandler.h"
+    #include <combaseapi.h>
+#endif
 
- public:
-    FeederThread(const AppSettings::ConnectivityInfos connectivityInfos);
+#include "ShoutPayload.h"
+#include "ShoutPayloadConsumer.h"
 
-    void run() override;
+class iTunesCOMHandler;
 
- private:
-   const AppSettings::ConnectivityInfos _connectivityInfos;
-
-    // log...
-    void _tracksEmitHelper();
-    void _tracksUnmolding(const char* filename);
+class ShoutWatcher : public MessengerThread {
+    Q_OBJECT
 
  signals:
-      void filesGenerated();
+    /** sent when a new audio file is played */
+    void newAudioFileShouted(const QString &filePath, const QString &fileHash);
+    void shoutReadyToSend(const QJsonObject &shoutAsJson);
+
+ public:
+    ShoutWatcher();
+
+    void run() override;
+    void quit() override;
+
+    void processPayload(const ShoutPayload &incomingPayload);
+
+ private:
+    ShoutPayloadConsumer _consumer;
+    bool _keepWatching = true;
+
+    #ifdef _WIN32
+        iTunesCOMHandler* _handler = nullptr;
+        DWORD _oldProcessID = NULL;
+    #endif
+
+    /** returns true if a session if available, else wait. returns false to exit */
+    bool _waitForAvailableSession();
+
+    /** locks and watch for shouts */
+    void _execWatchSession();
 };
